@@ -2,6 +2,7 @@ plugins {
     java
     eclipse
     id("net.minecraftforge.gradle") version ("5.1.+")
+    id("org.parchmentmc.librarian.forgegradle") version ("1.+")
     id("org.spongepowered.mixin") version ("0.7-SNAPSHOT")
     `maven-publish`
 }
@@ -12,6 +13,8 @@ val forgeVersion: String by project
 val modName: String by project
 val modAuthor: String by project
 val modId: String by project
+val mappingsChannel: String by project
+val mappingsVersion: String by project
 
 val baseArchiveName = "${modName}-forge-${minecraftVersion}"
 
@@ -20,7 +23,7 @@ base {
 }
 
 minecraft {
-    mappings("official", minecraftVersion)
+    mappings(mappingsChannel, "${mappingsVersion}-${minecraftVersion}")
 
     runs {
         create("client") {

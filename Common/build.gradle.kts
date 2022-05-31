@@ -11,6 +11,8 @@ val commonServerRunName: String? by project
 val modName: String by project
 val modId: String by project
 val fabricLoaderVersion: String by project
+val mappingsChannel: String by project
+val mappingsVersion: String by project
 
 val baseArchiveName = "${modName}-common-${minecraftVersion}"
 
@@ -28,7 +30,10 @@ loom {
 
 dependencies {
     minecraft("com.mojang:minecraft:${minecraftVersion}")
-    mappings(loom.officialMojangMappings())
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:${mappingsChannel}-${minecraftVersion}:${mappingsVersion}@zip")
+    })
     implementation("com.google.code.findbugs:jsr305:3.0.2")
 
     /**
