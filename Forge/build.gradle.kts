@@ -15,6 +15,9 @@ val modAuthor: String by project
 val modId: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
+val jeiVersion: String by project
+val almostlibVersion: String by project
+
 
 val baseArchiveName = "${modName}-forge-${minecraftVersion}"
 
@@ -61,6 +64,17 @@ sourceSets.main.get().resources.srcDir("src/generated/resources")
 dependencies {
     minecraft("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
     compileOnly(project(":Common"))
+
+    compileOnly( fg.deobf("mezz.jei:jei-${minecraftVersion}:${jeiVersion}:api"))
+    runtimeOnly( fg.deobf("mezz.jei:jei-${minecraftVersion}:${jeiVersion}"))
+
+    runtimeOnly(fg.deobf("curse.maven:IE-231951:3755665"))
+    runtimeOnly(fg.deobf("curse.maven:JAOPCA-266936:3802370"))
+    runtimeOnly(fg.deobf("curse.maven:cofh-69162:3803484"))
+    runtimeOnly(fg.deobf("curse.maven:thermalfoundation-222880:3803495"))
+    runtimeOnly(fg.deobf("curse.maven:thermalexp-69163:3803489"))
+    runtimeOnly(fg.deobf("curse.maven:mekanism-268560:3810540"))
+    runtimeOnly(fg.deobf("curse.maven:nihilo-400012:3810814"))
 
     annotationProcessor("org.spongepowered:mixin:${mixinVersion}:processor")
 }

@@ -4,9 +4,11 @@
   "package": "com.almostreliable.unitagged.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "RecipeManagerMixin",
+    "ReloadableServerResourcesMixin",
+    "TagLoaderMixin"
   ],
   "client": [
-    "ExampleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -11,6 +11,8 @@ val modName: String by project
 val modId: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
+val reiVersion: String by project
+val almostlibVersion: String by project
 
 val baseArchiveName = "${modName}-fabric-${minecraftVersion}"
 
@@ -24,8 +26,20 @@ dependencies {
         officialMojangMappings()
         parchment("org.parchmentmc.data:${mappingsChannel}-${minecraftVersion}:${mappingsVersion}@zip")
     })
+    implementation("com.google.code.findbugs:jsr305:3.0.2")
+
     modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
+    modApi("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
+
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${reiVersion}")
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${reiVersion}")
+
+    implementation("com.electronwill.night-config:core:3.6.4");
+    implementation("com.electronwill.night-config:toml:3.6.4");
+    include("com.electronwill.night-config:core:3.6.4");
+    include("com.electronwill.night-config:toml:3.6.4");
+
     implementation(project(":Common"))
 }
 

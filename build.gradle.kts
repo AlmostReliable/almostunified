@@ -18,9 +18,12 @@ plugins {
 
 allprojects {
     repositories {
+        mavenLocal()
         mavenCentral()
         maven("https://repo.spongepowered.org/repository/maven-public/")
         maven("https://maven.blamejared.com")
+        maven("https://maven.shedaniel.me")
+        maven("https://dvs1.progwml6.com/files/maven/")
         maven("https://www.cursemaven.com") {
             content {
                 includeGroup("curse.maven")

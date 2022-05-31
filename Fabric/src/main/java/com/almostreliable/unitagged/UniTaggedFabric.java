@@ -6,6 +6,6 @@ public class UniTaggedFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        UniTaggedCommon.init();
+        UniTagged.initializeRuntime();
     }
 }

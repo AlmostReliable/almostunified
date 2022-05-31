@@ -1,8 +1,11 @@
 package com.almostreliable.unitagged.impl;
 
-import com.almostreliable.unitagged.api.UniTaggedPlatform;
+import com.almostreliable.unitagged.UniTaggedPlatform;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.FMLPaths;
+
+import java.nio.file.Path;
 
 public class UniTaggedPlatformForge implements UniTaggedPlatform {
 
@@ -19,5 +22,10 @@ public class UniTaggedPlatformForge implements UniTaggedPlatform {
     @Override
     public boolean isDevelopmentEnvironment() {
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public Path getConfigPath() {
+        return FMLPaths.CONFIGDIR.get();
     }
 }

@@ -1,7 +1,9 @@
 package com.almostreliable.unitagged.impl;
 
-import com.almostreliable.unitagged.api.UniTaggedPlatform;
+import com.almostreliable.unitagged.UniTaggedPlatform;
 import net.fabricmc.loader.api.FabricLoader;
+
+import java.nio.file.Path;
 
 public class UniTaggedPlatformFabric implements UniTaggedPlatform {
 
@@ -20,5 +22,10 @@ public class UniTaggedPlatformFabric implements UniTaggedPlatform {
     public boolean isDevelopmentEnvironment() {
 
         return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public Path getConfigPath() {
+        return FabricLoader.getInstance().getConfigDir();
     }
 }

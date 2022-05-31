@@ -1,4 +1,6 @@
-package com.almostreliable.unitagged.api;
+package com.almostreliable.unitagged;
+
+import java.nio.file.Path;
 
 public interface UniTaggedPlatform {
 
@@ -25,4 +27,6 @@ public interface UniTaggedPlatform {
      * @return True if in a development environment, false otherwise.
      */
     boolean isDevelopmentEnvironment();
+
+    Path getConfigPath();
 }
