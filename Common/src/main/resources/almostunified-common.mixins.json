@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.almostreliable.unified.mixin",
+  "refmap": "almostunified.refmap.json",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "RecipeManagerMixin",
+    "ReloadableServerResourcesMixin",
+    "TagLoaderMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -58,8 +58,11 @@ loom {
             runDir("run")
         }
     }
-}
 
+    mixin {
+        defaultRefmapName.set("${modId}.refmap.json")
+    }
+}
 
 tasks.processResources {
     from(project(":Common").sourceSets.main.get().resources)

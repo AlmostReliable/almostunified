@@ -28,5 +28,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "UniTagged"
+rootProject.name = "AlmostUnified"
 include("Common", "Fabric", "Forge")

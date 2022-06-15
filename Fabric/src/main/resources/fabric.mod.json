@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.almostreliable.unitagged.UniTaggedFabric"
+      "com.almostreliable.unitagged.AlmostUnifiedFabric"
     ]
   },
   "mixins": [
