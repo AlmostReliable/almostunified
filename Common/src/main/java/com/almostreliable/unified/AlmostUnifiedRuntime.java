@@ -1,9 +1,11 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.RecipeTransformer;
-import com.almostreliable.unified.api.RecipeTransformers;
+import com.almostreliable.unified.api.RecipeTransformerFactory;
+import com.almostreliable.unified.api.RecipeTransformerRegistry;
 import com.almostreliable.unified.api.ReplacementLookupHelper;
 import com.almostreliable.unified.transformer.GenericRecipeTransformer;
+import com.almostreliable.unified.transformer.GenericRecipeTransformerFactory;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonElement;
@@ -14,6 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagManager;
+import org.apache.commons.lang3.time.StopWatch;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -24,6 +27,7 @@ public class AlmostUnifiedRuntime {
 
     protected final ModConfig config;
     protected final RecipeTransformer defaultTransformer = new GenericRecipeTransformer();
+    protected final RecipeTransformerFactory defaultFactory = new GenericRecipeTransformerFactory();
     @Nullable protected TagManager tagManager;
 
     public AlmostUnifiedRuntime() {
@@ -37,22 +41,63 @@ public class AlmostUnifiedRuntime {
     }
 
     public void transformRecipes(Map<ResourceLocation, JsonElement> recipes, ReplacementLookupHelper helper) {
+        int transformedRecipes = 0;
+        int transformedPropertiesInRecipes = 0;
+        long start = System.nanoTime();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         for (var entry : recipes.entrySet()) {
             if (entry.getValue() instanceof JsonObject json) {
-                transformRecipe(json, helper);
+                int changes = transformRecipe(json, helper);
+                if (changes > 0) {
+                    transformedRecipes++;
+                    transformedPropertiesInRecipes += changes;
+                }
             }
         }
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+        stopWatch.stop();
+        AlmostUnified.LOG.info("Transformed {}/{} recipes with {} changes in {}ms",
+                transformedRecipes,
+                recipes.size(),
+                transformedPropertiesInRecipes,
+                timeElapsed / 1000_000D);
     }
 
-    public void transformRecipe(JsonObject json, ReplacementLookupHelper helper) {
+    public int transformRecipe(JsonObject json, ReplacementLookupHelper helper) {
         ResourceLocation recipeType = getRecipeType(json);
         if (recipeType == null) {
-            return;
+            return 0;
         }
 
-        RecipeTransformer transformer = RecipeTransformers.getOrDefault(recipeType, defaultTransformer);
-        transformer.transformRecipe(json, helper);
+        RecipeTransformerFactory factory = RecipeTransformerRegistry.getOrDefault(recipeType, defaultFactory);
+        int transformedProperties = 0;
+        for (var entry : json.entrySet()) {
+            String property = entry.getKey();
+            RecipeTransformer recipeTransformer = factory.create(recipeType, property);
+            if (recipeTransformer == null) {
+                continue;
+            }
+
+            try {
+                JsonElement jsonValue = json.get(property);
+                JsonElement overriddenJson = recipeTransformer.transformRecipe(jsonValue.deepCopy(), helper);
+                if (overriddenJson != null && !jsonValue.equals(overriddenJson)) {
+                    entry.setValue(overriddenJson);
+                    transformedProperties++;
+                }
+            } catch (Exception e) {
+                AlmostUnified.LOG.warn("Error transforming recipe for type '{}' with property '{}': {}",
+                        recipeType,
+                        property,
+                        e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return transformedProperties;
     }
+
 
     @Nullable
     protected ResourceLocation getRecipeType(JsonObject recipeJson) {
@@ -82,14 +127,16 @@ public class AlmostUnifiedRuntime {
 
         for (ResourceLocation allowedTag : allowedTags) {
             Tag<? extends Holder<?>> holderTag = tags.get(allowedTag);
-            if(holderTag == null) {
+            if (holderTag == null) {
                 continue;
             }
 
             for (Holder<?> holder : holderTag.getValues()) {
                 ResourceLocation itemId = holder.unwrapKey().map(ResourceKey::location).orElse(null);
-                if(itemTagMap.containsKey(itemId)) {
-                    AlmostUnified.LOG.warn("Item '{}' already has a tag '{}' for recipe replacement. Skipping this tag", itemId, allowedTag);
+                if (itemTagMap.containsKey(itemId)) {
+                    AlmostUnified.LOG.warn("Item '{}' already has a tag '{}' for recipe replacement. Skipping this tag",
+                            itemId,
+                            allowedTag);
                     continue;
                 }
 
