@@ -44,8 +44,6 @@ public class AlmostUnifiedRuntime {
         int transformedRecipes = 0;
         int transformedPropertiesInRecipes = 0;
         long start = System.nanoTime();
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
         for (var entry : recipes.entrySet()) {
             if (entry.getValue() instanceof JsonObject json) {
                 int changes = transformRecipe(json, helper);
@@ -57,7 +55,6 @@ public class AlmostUnifiedRuntime {
         }
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
-        stopWatch.stop();
         AlmostUnified.LOG.info("Transformed {}/{} recipes with {} changes in {}ms",
                 transformedRecipes,
                 recipes.size(),

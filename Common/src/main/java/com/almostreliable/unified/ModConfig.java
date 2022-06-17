@@ -3,10 +3,12 @@ package com.almostreliable.unified;
 import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.ConfigSpec;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.file.FileConfig;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class ModConfig {
@@ -99,24 +101,15 @@ public class ModConfig {
             "rods",
             "storage_blocks");
     private static final List<String> DEFAULT_UNIFIES = getDefaultPatterns();
-    private final CommentedFileConfig config;
+    private final String name;
+
+    @Nullable private FileConfig currentConfig;
     private final ConfigSpec spec;
 
     public ModConfig(String name) {
-        config = CommentedFileConfig.ofConcurrent(AlmostUnifiedPlatform.INSTANCE.getConfigPath().resolve(name + ".toml"));
+        this.name = name;
+
         spec = new ConfigSpec();
-
-        config.setComment(UNIFICATION_MOD_PRIORITIES, "Mod priorities for unification's");
-        config.setComment(UNIFICATION_VARIABLES,
-                "Custom variables can be defined here. Look at the example for more info.\n" +
-                "They will be used in `resources.unify` to determine which tags or items should be unified.");
-        config.setComment(UNIFICATION_VARIABLES_MATERIALS, "List of materials to unify");
-        config.setComment(UNIFICATION_VARIABLES_TYPES, "List of types to unify");
-        config.setComment(UNIFICATION_PATTERN, """
-                Define how the pattern for unification's should work.
-                 - Using `{variable_names}`, will replace the values from `resources.variable_names` into the pattern.
-                 - If the pattern starts with `!`, it will be ignored.""");
-
         spec.defineList(UNIFICATION_MOD_PRIORITIES, () -> DEFAULT_MOD_PRIORITIES, o -> o instanceof String);
         spec.defineList(UNIFICATION_VARIABLES_MATERIALS, () -> DEFAULT_METALS, o -> o instanceof String);
         spec.defineList(UNIFICATION_VARIABLES_TYPES, () -> DEFAULT_TYPES, o -> o instanceof String);
@@ -131,26 +124,50 @@ public class ModConfig {
         }
     }
 
-    public void load() {
-        config.load();
+    protected FileConfig createConfig() {
+        CommentedFileConfig config = CommentedFileConfig.ofConcurrent(AlmostUnifiedPlatform.INSTANCE.getConfigPath().resolve(name + ".toml"));
+        config.setComment(UNIFICATION_MOD_PRIORITIES, "Mod priorities for unification's");
+        config.setComment(UNIFICATION_VARIABLES,
+                "Custom variables can be defined here. Look at the example for more info.\n" +
+                "They will be used in `resources.unify` to determine which tags or items should be unified.");
+        config.setComment(UNIFICATION_VARIABLES_MATERIALS, "List of materials to unify");
+        config.setComment(UNIFICATION_VARIABLES_TYPES, "List of types to unify");
+        config.setComment(UNIFICATION_PATTERN, """
+                Define how the pattern for unification's should work.
+                 - Using `{variable_names}`, will replace the values from `resources.variable_names` into the pattern.
+                 - If the pattern starts with `!`, it will be ignored.""");
 
-        if (!spec.isCorrect(config)) {
+        return config;
+    }
+
+    public void load() {
+        currentConfig = createConfig();
+        currentConfig.load();
+
+        if (!spec.isCorrect(currentConfig)) {
             AlmostUnified.LOG.warn("Config has missing or invalid values - correcting now");
-            spec.correct(config);
-            config.save();
+            spec.correct(currentConfig);
+            currentConfig.save();
         }
 
-        config.close();
+        currentConfig.close();
     }
 
     public List<String> getModPriorities() {
-        return config.get(UNIFICATION_MOD_PRIORITIES);
+        if(currentConfig == null) {
+            throw new IllegalStateException("Config is not loaded");
+        }
+        return currentConfig.get(UNIFICATION_MOD_PRIORITIES);
     }
 
     public List<ResourceLocation> getAllowedTags() {
+        if(currentConfig == null) {
+            throw new IllegalStateException("Config is not loaded");
+        }
+
         Multimap<String, String> variables = compileVariables();
         List<ResourceLocation> collectedPattern = new ArrayList<>();
-        Collection<String> patterns = config.get(UNIFICATION_PATTERN);
+        Collection<String> patterns = currentConfig.get(UNIFICATION_PATTERN);
 
         for (String pattern : patterns) {
             Collection<String> compiledPattern = compilePattern(pattern, variables);
@@ -208,13 +225,17 @@ public class ModConfig {
     }
 
     private Multimap<String, String> compileVariables() {
+        if(currentConfig == null) {
+            throw new IllegalStateException("Config is not loaded");
+        }
+
         Multimap<String, String> computedVariables = HashMultimap.create();
 
-        if (!config.contains(UNIFICATION_VARIABLES)) {
+        if (!currentConfig.contains(UNIFICATION_VARIABLES)) {
             return computedVariables;
         }
 
-        if (config.get(UNIFICATION_VARIABLES) instanceof Config variables) {
+        if (currentConfig.get(UNIFICATION_VARIABLES) instanceof Config variables) {
             Map<String, Object> values = variables.valueMap();
             values.forEach((k, v) -> {
                 if (v instanceof Collection<?> asCollection) {
