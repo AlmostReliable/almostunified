@@ -7,5 +7,5 @@ import javax.annotation.Nullable;
 @FunctionalInterface
 public interface RecipeTransformer {
     @Nullable
-    JsonElement transformRecipe(JsonElement json, ReplacementLookupHelper helper);
+    JsonElement transformRecipe(JsonElement json, RecipeTransformContext context);
 }

@@ -1,24 +1,19 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.RecipeTransformContext;
 import com.almostreliable.unified.api.RecipeTransformer;
 import com.almostreliable.unified.api.RecipeTransformerFactory;
 import com.almostreliable.unified.api.RecipeTransformerRegistry;
-import com.almostreliable.unified.api.ReplacementLookupHelper;
-import com.almostreliable.unified.transformer.GenericRecipeTransformer;
 import com.almostreliable.unified.transformer.GenericRecipeTransformerFactory;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagManager;
-import org.apache.commons.lang3.time.StopWatch;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +21,6 @@ import java.util.Map;
 public class AlmostUnifiedRuntime {
 
     protected final ModConfig config;
-    protected final RecipeTransformer defaultTransformer = new GenericRecipeTransformer();
     protected final RecipeTransformerFactory defaultFactory = new GenericRecipeTransformerFactory();
     @Nullable protected TagManager tagManager;
 
@@ -36,11 +30,11 @@ public class AlmostUnifiedRuntime {
 
     public void run(Map<ResourceLocation, JsonElement> recipes) {
         config.load();
-        ReplacementLookupHelper helper = createHelper(config.getAllowedTags(), config.getModPriorities());
-        transformRecipes(recipes, helper);
+        RecipeTransformContext helper = createContext(config.getAllowedTags(), config.getModPriorities());
+//        transformRecipes(recipes, helper);
     }
 
-    public void transformRecipes(Map<ResourceLocation, JsonElement> recipes, ReplacementLookupHelper helper) {
+    public void transformRecipes(Map<ResourceLocation, JsonElement> recipes, RecipeTransformContext helper) {
         int transformedRecipes = 0;
         int transformedPropertiesInRecipes = 0;
         long start = System.nanoTime();
@@ -62,7 +56,7 @@ public class AlmostUnifiedRuntime {
                 timeElapsed / 1000_000D);
     }
 
-    public int transformRecipe(JsonObject json, ReplacementLookupHelper helper) {
+    public int transformRecipe(JsonObject json, RecipeTransformContext helper) {
         ResourceLocation recipeType = getRecipeType(json);
         if (recipeType == null) {
             return 0;
@@ -106,42 +100,29 @@ public class AlmostUnifiedRuntime {
         this.tagManager = tagManager;
     }
 
-    protected ReplacementLookupHelper createHelper(List<ResourceLocation> allowedTags, List<String> modPriorities) {
+    protected RecipeTransformContext createContext(List<ResourceLocation> allowedTags, List<String> modPriorities) {
         if (tagManager == null) {
             throw new IllegalStateException("Internal error. TagManager was not updated correctly");
         }
 
-        var tags = tagManager
-                .getResult()
-                .stream()
-                .filter(result -> result.key().equals(Registry.ITEM_REGISTRY))
-                .findFirst()
-                .map(TagManager.LoadResult::tags)
-                .orElseThrow(() -> new IllegalStateException("No item tag result found"));
 
-        Map<ResourceLocation, ResourceLocation> itemTagMap = new HashMap<>();
-        Multimap<ResourceLocation, ResourceLocation> tagToEntry = HashMultimap.create();
+        TagMap tagMap = TagMap.create(tagManager);
+        Map<ResourceLocation, ResourceLocation> itemToTagMapping = new HashMap<>(allowedTags.size());
 
-        for (ResourceLocation allowedTag : allowedTags) {
-            Tag<? extends Holder<?>> holderTag = tags.get(allowedTag);
-            if (holderTag == null) {
-                continue;
-            }
-
-            for (Holder<?> holder : holderTag.getValues()) {
-                ResourceLocation itemId = holder.unwrapKey().map(ResourceKey::location).orElse(null);
-                if (itemTagMap.containsKey(itemId)) {
+        for (ResourceLocation tag : allowedTags) {
+            Collection<ResourceLocation> items = tagMap.getItems(tag);
+            for (ResourceLocation item : items) {
+                if (itemToTagMapping.containsKey(item)) {
                     AlmostUnified.LOG.warn("Item '{}' already has a tag '{}' for recipe replacement. Skipping this tag",
-                            itemId,
-                            allowedTag);
+                            item,
+                            tag);
                     continue;
                 }
 
-                itemTagMap.put(itemId, allowedTag);
-                tagToEntry.put(allowedTag, itemId);
+                itemToTagMapping.put(item, tag);
             }
         }
 
-        return new LookupByModPriority(itemTagMap, tagToEntry, modPriorities);
+        return new RecipeTransformContextImpl(tagMap, itemToTagMapping, modPriorities);
     }
 }
