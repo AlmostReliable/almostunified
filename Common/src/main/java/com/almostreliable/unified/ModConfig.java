@@ -6,7 +6,10 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -160,26 +163,27 @@ public class ModConfig {
         return currentConfig.get(UNIFICATION_MOD_PRIORITIES);
     }
 
-    public List<ResourceLocation> getAllowedTags() {
+    public List<TagKey<Item>> getAllowedTags() {
         if(currentConfig == null) {
             throw new IllegalStateException("Config is not loaded");
         }
 
         Multimap<String, String> variables = compileVariables();
-        List<ResourceLocation> collectedPattern = new ArrayList<>();
-        Collection<String> patterns = currentConfig.get(UNIFICATION_PATTERN);
+        List<TagKey<Item>> collectedPattern = new ArrayList<>();
 
+        Collection<String> patterns = currentConfig.get(UNIFICATION_PATTERN);
         for (String pattern : patterns) {
             Collection<String> compiledPattern = compilePattern(pattern, variables);
             if (pattern.startsWith("!")) {
-                collectedPattern.removeIf(p -> compiledPattern.contains(p.toString()));
+                collectedPattern.removeIf(p -> compiledPattern.contains(p.location().toString()));
             } else {
                 for (String s : compiledPattern) {
                     ResourceLocation rl = ResourceLocation.tryParse(s);
                     if (rl == null) {
                         AlmostUnified.LOG.warn("Invalid pattern: " + s);
                     } else {
-                        collectedPattern.add(rl);
+                        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, rl);
+                        collectedPattern.add(tag);
                     }
                 }
             }

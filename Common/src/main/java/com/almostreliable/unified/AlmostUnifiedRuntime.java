@@ -10,7 +10,9 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagManager;
+import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -30,8 +32,8 @@ public class AlmostUnifiedRuntime {
 
     public void run(Map<ResourceLocation, JsonElement> recipes) {
         config.load();
-        RecipeTransformContext helper = createContext(config.getAllowedTags(), config.getModPriorities());
-//        transformRecipes(recipes, helper);
+        RecipeTransformContext context = createContext(config.getAllowedTags(), config.getModPriorities());
+        transformRecipes(recipes, context);
     }
 
     public void transformRecipes(Map<ResourceLocation, JsonElement> recipes, RecipeTransformContext helper) {
@@ -100,16 +102,16 @@ public class AlmostUnifiedRuntime {
         this.tagManager = tagManager;
     }
 
-    protected RecipeTransformContext createContext(List<ResourceLocation> allowedTags, List<String> modPriorities) {
+    protected RecipeTransformContext createContext(List<TagKey<Item>> allowedTags, List<String> modPriorities) {
         if (tagManager == null) {
             throw new IllegalStateException("Internal error. TagManager was not updated correctly");
         }
 
 
         TagMap tagMap = TagMap.create(tagManager);
-        Map<ResourceLocation, ResourceLocation> itemToTagMapping = new HashMap<>(allowedTags.size());
+        Map<ResourceLocation, TagKey<Item>> itemToTagMapping = new HashMap<>(allowedTags.size());
 
-        for (ResourceLocation tag : allowedTags) {
+        for (TagKey<Item> tag : allowedTags) {
             Collection<ResourceLocation> items = tagMap.getItems(tag);
             for (ResourceLocation item : items) {
                 if (itemToTagMapping.containsKey(item)) {
