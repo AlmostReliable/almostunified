@@ -16,11 +16,11 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.almostreliable.unitagged.AlmostUnifiedFabric"
+      "com.almostreliable.unified.AlmostUnifiedFabric"
     ]
   },
   "mixins": [
-    "unitagged-common.mixins.json"
+    "almostunified-common.mixins.json"
   ],
   "depends": {
     "fabric": "*",
