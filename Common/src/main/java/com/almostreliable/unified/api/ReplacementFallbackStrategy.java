@@ -12,7 +12,6 @@ public interface ReplacementFallbackStrategy {
     /**
      * Determine a fallback for the given item.
      *
-     * @param lookupItem     the item to lookup
      * @param tag            the tag to replace the item with
      * @param potentialItems the potential items to replace with
      * @param tags           the tag map to use for lookup
@@ -20,5 +19,5 @@ public interface ReplacementFallbackStrategy {
      * @throws IllegalStateException if returning the lookupItem
      */
     @Nullable
-    ResourceLocation getFallback(ResourceLocation lookupItem, TagKey<Item> tag, Collection<ResourceLocation> potentialItems, TagMap tags);
+    ResourceLocation getFallback(TagKey<Item> tag, Collection<ResourceLocation> potentialItems, TagMap tags);
 }

@@ -1,12 +1,7 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.RecipeTransformContext;
-import com.almostreliable.unified.api.RecipeTransformer;
-import com.almostreliable.unified.api.RecipeTransformerFactory;
-import com.almostreliable.unified.api.RecipeTransformerRegistry;
-import com.almostreliable.unified.transformer.GenericRecipeTransformerFactory;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import com.almostreliable.unified.api.RecipeHandler;
+import com.almostreliable.unified.handler.RecipeHandlerFactory;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -23,72 +18,74 @@ import java.util.Map;
 public class AlmostUnifiedRuntime {
 
     protected final ModConfig config;
-    protected final RecipeTransformerFactory defaultFactory = new GenericRecipeTransformerFactory();
+    protected final RecipeHandlerFactory recipeHandlerFactory;
     @Nullable protected TagManager tagManager;
 
-    public AlmostUnifiedRuntime() {
+    public AlmostUnifiedRuntime(RecipeHandlerFactory recipeHandlerFactory) {
+        this.recipeHandlerFactory = recipeHandlerFactory;
         config = new ModConfig(BuildConfig.MOD_ID);
     }
 
     public void run(Map<ResourceLocation, JsonElement> recipes) {
         config.load();
-        RecipeTransformContext context = createContext(config.getAllowedTags(), config.getModPriorities());
-        transformRecipes(recipes, context);
+        ReplacementMap replacementMap = createContext(config.getAllowedTags(), config.getModPriorities());
+        transformRecipes(recipes, replacementMap);
     }
 
-    public void transformRecipes(Map<ResourceLocation, JsonElement> recipes, RecipeTransformContext helper) {
+    public void transformRecipes(Map<ResourceLocation, JsonElement> recipes, ReplacementMap replacementMap) {
         int transformedRecipes = 0;
-        int transformedPropertiesInRecipes = 0;
         long start = System.nanoTime();
         for (var entry : recipes.entrySet()) {
             if (entry.getValue() instanceof JsonObject json) {
-                int changes = transformRecipe(json, helper);
-                if (changes > 0) {
+                JsonObject transformedJson = transformRecipe(entry.getKey(), json, replacementMap);
+                if (transformedJson != null) {
                     transformedRecipes++;
-                    transformedPropertiesInRecipes += changes;
+                    entry.setValue(transformedJson);
                 }
             }
         }
         long finish = System.nanoTime();
         long timeElapsed = finish - start;
-        AlmostUnified.LOG.info("Transformed {}/{} recipes with {} changes in {}ms",
+        AlmostUnified.LOG.info("Transformed {}/{} recipes changes in {}ms",
                 transformedRecipes,
                 recipes.size(),
-                transformedPropertiesInRecipes,
                 timeElapsed / 1000_000D);
     }
 
-    public int transformRecipe(JsonObject json, RecipeTransformContext helper) {
+    @Nullable
+    public JsonObject transformRecipe(ResourceLocation id, JsonObject json, ReplacementMap replacementMap) {
         ResourceLocation recipeType = getRecipeType(json);
         if (recipeType == null) {
-            return 0;
+            return null;
         }
 
-        RecipeTransformerFactory factory = RecipeTransformerRegistry.getOrDefault(recipeType, defaultFactory);
-        int transformedProperties = 0;
-        for (var entry : json.entrySet()) {
-            String property = entry.getKey();
-            RecipeTransformer recipeTransformer = factory.create(recipeType, property);
-            if (recipeTransformer == null) {
-                continue;
+        RecipeContextImpl ctx = new RecipeContextImpl(recipeType, id, json, replacementMap);
+//        for (var entry : json.entrySet()) {
+
+        try {
+            RecipeHandler recipeHandler = recipeHandlerFactory.create(ctx);
+            if (recipeHandler == null) {
+                return null;
             }
 
-            try {
-                JsonElement jsonValue = json.get(property);
-                JsonElement overriddenJson = recipeTransformer.transformRecipe(jsonValue.deepCopy(), helper);
-                if (overriddenJson != null && !jsonValue.equals(overriddenJson)) {
-                    entry.setValue(overriddenJson);
-                    transformedProperties++;
-                }
-            } catch (Exception e) {
-                AlmostUnified.LOG.warn("Error transforming recipe for type '{}' with property '{}': {}",
+            JsonObject copy = json.deepCopy();
+            recipeHandler.transformRecipe(copy, ctx);
+            if (!json.equals(copy)) {
+                AlmostUnified.LOG.info("Transformed recipe '{}' for type '{}' ========> {}",
+                        id,
                         recipeType,
-                        property,
-                        e.getMessage());
-                e.printStackTrace();
+                        copy);
+
+                return copy;
             }
+        } catch (Exception e) {
+            AlmostUnified.LOG.warn("Error transforming recipe type '{}': {}",
+                    recipeType,
+                    e.getMessage());
+            e.printStackTrace();
         }
-        return transformedProperties;
+
+        return null;
     }
 
 
@@ -102,7 +99,7 @@ public class AlmostUnifiedRuntime {
         this.tagManager = tagManager;
     }
 
-    protected RecipeTransformContext createContext(List<TagKey<Item>> allowedTags, List<String> modPriorities) {
+    protected ReplacementMap createContext(List<TagKey<Item>> allowedTags, List<String> modPriorities) {
         if (tagManager == null) {
             throw new IllegalStateException("Internal error. TagManager was not updated correctly");
         }
@@ -125,6 +122,6 @@ public class AlmostUnifiedRuntime {
             }
         }
 
-        return new RecipeTransformContextImpl(tagMap, itemToTagMapping, modPriorities);
+        return new ReplacementMap(tagMap, itemToTagMapping, modPriorities);
     }
 }

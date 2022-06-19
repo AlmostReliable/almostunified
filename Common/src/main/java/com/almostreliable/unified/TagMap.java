@@ -35,7 +35,11 @@ public class TagMap {
             Tag<? extends Holder<?>> holderTag = entry.getValue();
 
             for (Holder<?> holder : holderTag.getValues()) {
-                holder.unwrapKey().map(ResourceKey::location).ifPresent(itemId -> tagMap.put(tag, itemId));
+                holder
+                        .unwrapKey()
+                        .map(ResourceKey::location)
+                        .filter(Registry.ITEM::containsKey)
+                        .ifPresent(itemId -> tagMap.put(tag, itemId));
             }
         }
 

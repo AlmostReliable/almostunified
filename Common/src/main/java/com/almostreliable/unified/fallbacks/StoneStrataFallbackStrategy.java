@@ -12,7 +12,7 @@ import java.util.Comparator;
 // TODO use config and not this :D
 public class StoneStrataFallbackStrategy implements ReplacementFallbackStrategy {
     @Override
-    public ResourceLocation getFallback(ResourceLocation lookupItem, TagKey<Item> tag, Collection<ResourceLocation> potentialItems, TagMap tags) {
+    public ResourceLocation getFallback(TagKey<Item> tag, Collection<ResourceLocation> potentialItems, TagMap tags) {
         if (tag.location().getPath().contains("ores")) {
             return potentialItems
                     .stream()

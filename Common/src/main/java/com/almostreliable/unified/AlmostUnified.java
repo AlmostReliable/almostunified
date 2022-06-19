@@ -1,5 +1,6 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.handler.RecipeHandlerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,11 +12,6 @@ public class AlmostUnified {
     @Nullable
     private static AlmostUnifiedRuntime RUNTIME;
 
-
-    public AlmostUnified() {
-//        MANAGER.register(new ResourceLocation("minecraft:crafting_shaped"), new ShapedRecipeTransformer());
-    }
-
     public static AlmostUnifiedRuntime getRuntime() {
         if (RUNTIME == null) {
             throw new IllegalStateException("AlmostUnifiedRuntime not initialized");
@@ -24,6 +20,8 @@ public class AlmostUnified {
     }
 
     static void initializeRuntime() {
-        RUNTIME = new AlmostUnifiedRuntime();
+        RecipeHandlerFactory factory = new RecipeHandlerFactory();
+//        factory.registerForMod("immersiveengineering", new IERecipeTransformerFactory());
+        RUNTIME = new AlmostUnifiedRuntime(factory);
     }
 }

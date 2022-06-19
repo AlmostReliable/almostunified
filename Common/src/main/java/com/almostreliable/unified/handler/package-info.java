@@ -1,5 +1,5 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-package com.almostreliable.unified.transformer;
+package com.almostreliable.unified.handler;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
