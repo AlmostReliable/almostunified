@@ -10,12 +10,18 @@ import java.util.Map;
 
 public class RecipeHandlerFactory {
     private final Map<ResourceLocation, RecipeHandler> transformersByType = new HashMap<>();
+    private final Map<String, RecipeHandler> transformersByModId = new HashMap<>();
 
     @Nullable
     public RecipeHandler create(RecipeContext context) {
-        RecipeHandler transformer = transformersByType.get(context.getType());
-        if (transformer != null) {
-            return transformer;
+        RecipeHandler byType = transformersByType.get(context.getType());
+        if (byType != null) {
+            return byType;
+        }
+
+        RecipeHandler byMod = transformersByModId.get(context.getModId());
+        if (byMod != null) {
+            return byMod;
         }
 
         if (context.hasProperty(ShapedRecipeKeyHandler.PATTERN_PROPERTY) &&
@@ -30,7 +36,15 @@ public class RecipeHandlerFactory {
         return null;
     }
 
-    public void register(ResourceLocation type, RecipeHandler transformer) {
+    public void registerForType(String type, RecipeHandler transformer) {
+        transformersByType.put(new ResourceLocation(type), transformer);
+    }
+
+    public void registerForType(ResourceLocation type, RecipeHandler transformer) {
         transformersByType.put(type, transformer);
+    }
+
+    public void registerForMod(String mod, RecipeHandler transformer) {
+        transformersByModId.put(mod, transformer);
     }
 }

@@ -19,9 +19,13 @@ public class AlmostUnified {
         return RUNTIME;
     }
 
+    public static boolean runtimeInitialized() {
+        return RUNTIME != null;
+    }
+
     static void initializeRuntime() {
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
-//        factory.registerForMod("immersiveengineering", new IERecipeTransformerFactory());
-        RUNTIME = new AlmostUnifiedRuntime(factory);
+        AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
+        RUNTIME = AlmostUnifiedPlatform.INSTANCE.createRuntime(factory);
     }
 }

@@ -10,16 +10,14 @@ import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class AlmostUnifiedRuntime {
+public abstract class AlmostUnifiedRuntime {
 
     protected final ModConfig config;
     protected final RecipeHandlerFactory recipeHandlerFactory;
     @Nullable protected TagManager tagManager;
+    protected List<String> modPriorities = new ArrayList<>();
 
     public AlmostUnifiedRuntime(RecipeHandlerFactory recipeHandlerFactory) {
         this.recipeHandlerFactory = recipeHandlerFactory;
@@ -28,7 +26,9 @@ public class AlmostUnifiedRuntime {
 
     public void run(Map<ResourceLocation, JsonElement> recipes) {
         config.load();
-        ReplacementMap replacementMap = createContext(config.getAllowedTags(), config.getModPriorities());
+        modPriorities = config.getModPriorities();
+        onRun();
+        ReplacementMap replacementMap = createContext(config.getAllowedTags(), modPriorities);
         transformRecipes(recipes, replacementMap);
     }
 
@@ -60,7 +60,6 @@ public class AlmostUnifiedRuntime {
         }
 
         RecipeContextImpl ctx = new RecipeContextImpl(recipeType, id, json, replacementMap);
-//        for (var entry : json.entrySet()) {
 
         try {
             RecipeHandler recipeHandler = recipeHandlerFactory.create(ctx);
@@ -71,10 +70,12 @@ public class AlmostUnifiedRuntime {
             JsonObject copy = json.deepCopy();
             recipeHandler.transformRecipe(copy, ctx);
             if (!json.equals(copy)) {
-                AlmostUnified.LOG.info("Transformed recipe '{}' for type '{}' ========> {}",
-                        id,
-                        recipeType,
-                        copy);
+                if (ctx.getType().getNamespace().equals("immersiveengineering")) {
+                    AlmostUnified.LOG.info("Transformed recipe '{}' for type '{}' ========> {}",
+                            id,
+                            recipeType,
+                            copy);
+                }
 
                 return copy;
             }
@@ -124,4 +125,6 @@ public class AlmostUnifiedRuntime {
 
         return new ReplacementMap(tagMap, itemToTagMapping, modPriorities);
     }
+
+    protected abstract void onRun();
 }

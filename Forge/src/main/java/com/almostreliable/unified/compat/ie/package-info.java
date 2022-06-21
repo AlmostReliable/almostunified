@@ -1,5 +1,5 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-package com.almostreliable.unified.impl;
+package com.almostreliable.unified.compat.ie;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

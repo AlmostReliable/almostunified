@@ -1,6 +1,7 @@
-package com.almostreliable.unified.impl;
+package com.almostreliable.unified;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.compat.ie.IERecipeHandler;
+import com.almostreliable.unified.handler.RecipeHandlerFactory;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -27,5 +28,15 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
     @Override
     public Path getConfigPath() {
         return FMLPaths.CONFIGDIR.get();
+    }
+
+    @Override
+    public void bindRecipeHandlers(RecipeHandlerFactory factory) {
+        factory.registerForMod(ModConstants.IE, new IERecipeHandler());
+    }
+
+    @Override
+    public AlmostUnifiedRuntime createRuntime(RecipeHandlerFactory factory) {
+        return new AlmostUnifiedRuntimeForge(factory);
     }
 }

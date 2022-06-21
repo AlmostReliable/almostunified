@@ -1,5 +1,7 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.handler.RecipeHandlerFactory;
+
 import java.nio.file.Path;
 
 public interface AlmostUnifiedPlatform {
@@ -29,4 +31,8 @@ public interface AlmostUnifiedPlatform {
     boolean isDevelopmentEnvironment();
 
     Path getConfigPath();
+
+    void bindRecipeHandlers(RecipeHandlerFactory factory);
+
+    AlmostUnifiedRuntime createRuntime(RecipeHandlerFactory factory);
 }

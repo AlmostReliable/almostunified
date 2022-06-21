@@ -68,7 +68,10 @@ dependencies {
     compileOnly( fg.deobf("mezz.jei:jei-${minecraftVersion}:${jeiVersion}:api"))
     runtimeOnly( fg.deobf("mezz.jei:jei-${minecraftVersion}:${jeiVersion}"))
 
-    runtimeOnly(fg.deobf("curse.maven:IE-231951:3755665"))
+    // required in dev for mixins
+    implementation(fg.deobf("curse.maven:IE-231951:3755665"))
+
+    // used for testing only
     runtimeOnly(fg.deobf("curse.maven:JAOPCA-266936:3802370"))
     runtimeOnly(fg.deobf("curse.maven:cofh-69162:3803484"))
     runtimeOnly(fg.deobf("curse.maven:thermalfoundation-222880:3803495"))
