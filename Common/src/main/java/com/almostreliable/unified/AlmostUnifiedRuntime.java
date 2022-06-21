@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -33,6 +34,8 @@ public abstract class AlmostUnifiedRuntime {
     }
 
     public void transformRecipes(Map<ResourceLocation, JsonElement> recipes, ReplacementMap replacementMap) {
+        Map<ResourceLocation, Integer> typeCount = new HashMap<>();
+
         int transformedRecipes = 0;
         long start = System.nanoTime();
         for (var entry : recipes.entrySet()) {
@@ -41,6 +44,10 @@ public abstract class AlmostUnifiedRuntime {
                 if (transformedJson != null) {
                     transformedRecipes++;
                     entry.setValue(transformedJson);
+
+                    // TODO for debugging remove this later
+                    ResourceLocation recipeType = getRecipeType(json);
+                    typeCount.compute(recipeType, (rl, old) -> old == null ? 1 : old + 1);
                 }
             }
         }
@@ -50,6 +57,9 @@ public abstract class AlmostUnifiedRuntime {
                 transformedRecipes,
                 recipes.size(),
                 timeElapsed / 1000_000D);
+        typeCount.entrySet().stream().sorted(Comparator.comparing(o -> o.getKey().toString())).forEach(entry -> {
+            AlmostUnified.LOG.info("{}: {}", StringUtils.leftPad(entry.getKey().toString(), 50), entry.getValue());
+        });
     }
 
     @Nullable
@@ -70,13 +80,6 @@ public abstract class AlmostUnifiedRuntime {
             JsonObject copy = json.deepCopy();
             recipeHandler.transformRecipe(copy, ctx);
             if (!json.equals(copy)) {
-                if (ctx.getType().getNamespace().equals("immersiveengineering")) {
-                    AlmostUnified.LOG.info("Transformed recipe '{}' for type '{}' ========> {}",
-                            id,
-                            recipeType,
-                            copy);
-                }
-
                 return copy;
             }
         } catch (Exception e) {
