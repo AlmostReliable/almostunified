@@ -11,7 +11,7 @@ public class AlmostUnifiedRuntimeForge extends AlmostUnifiedRuntime {
 
     @Override
     protected void onRun() {
-        if(AlmostUnifiedPlatform.INSTANCE.isModLoaded(ModConstants.IE)) {
+        if (AlmostUnifiedPlatform.INSTANCE.isModLoaded(ModConstants.IE)) {
             IEModPriorityOverride.overrideModPriorities(modPriorities).run();
         }
     }

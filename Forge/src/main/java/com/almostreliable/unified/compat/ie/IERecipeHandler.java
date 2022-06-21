@@ -18,10 +18,19 @@ public class IERecipeHandler implements RecipeHandler {
 
     @Override
     public void transformRecipe(JsonObject json, RecipeContext context) {
-        // alloy recipes
-        replaceIEIngredient(json.get("input0"), context);
-        replaceIEIngredient(json.get("input1"), context);
-        replaceIEResult(json.get("secondaries"), context);
+
+        replaceIEIngredient(json.get("input0"), context); // alloy recipes, refinery
+        replaceIEIngredient(json.get("input1"), context); // alloy recipes, refinery
+        replaceIEIngredient(json.get(RecipeConstants.INPUT),
+                context); // arc furnace, squeezer, cloche, coke oven, fermenter, fertilizer, metal_press
+        replaceIEIngredient(json.get("additives"), context); // arc furnace
+        replaceIEIngredient(json.get(RecipeConstants.INPUTS), context); // blueprint, mixer
+
+        replaceIEResult(json.get("secondaries"), context); // alloy recipes, crusher
+
+        JsonUtils.arrayForEach(json.get("secondaries"), JsonObject.class, secondary -> {
+            replaceIEResult(secondary.get(RecipeConstants.OUTPUT), context);
+        });
 
         replaceIEResult(json.get(RecipeConstants.RESULT), context);
         replaceIEResult(json.get(RecipeConstants.RESULTS), context);
