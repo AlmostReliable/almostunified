@@ -1,7 +1,7 @@
-package com.almostreliable.unified.handler;
+package com.almostreliable.unified.recipe.handler;
 
-import com.almostreliable.unified.api.RecipeHandler;
-import com.almostreliable.unified.api.RecipeTransformations;
+import com.almostreliable.unified.api.recipe.RecipeHandler;
+import com.almostreliable.unified.api.recipe.RecipeTransformations;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 

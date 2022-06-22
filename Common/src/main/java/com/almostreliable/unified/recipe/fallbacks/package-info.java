@@ -1,5 +1,5 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-package com.almostreliable.unified.fallbacks;
+package com.almostreliable.unified.recipe.fallbacks;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

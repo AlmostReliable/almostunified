@@ -1,8 +1,8 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.handler.RecipeHandlerFactory;
+import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
 
-public class AlmostUnifiedRuntimeFabric extends AlmostUnifiedRuntime{
+public class AlmostUnifiedRuntimeFabric extends AlmostUnifiedRuntime {
 
     AlmostUnifiedRuntimeFabric(RecipeHandlerFactory recipeHandlerFactory) {
         super(recipeHandlerFactory);

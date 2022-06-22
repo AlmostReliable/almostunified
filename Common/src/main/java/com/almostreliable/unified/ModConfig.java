@@ -16,13 +16,8 @@ import java.util.*;
 
 public class ModConfig {
 
-    private static final String UNIFICATION_MOD_PRIORITIES = "unification.mod_priorities";
-    private static final String UNIFICATION_VARIABLES = "unification.variables";
-    private static final String UNIFICATION_VARIABLES_MATERIALS = "unification.variables.materials";
-    private static final String UNIFICATION_VARIABLES_TYPES = "unification.variables.types";
-    private static final String UNIFICATION_PATTERN = "unification.pattern";
     @SuppressWarnings("SpellCheckingInspection")
-    private static final List<String> DEFAULT_MOD_PRIORITIES = List.of(
+    public static final List<String> DEFAULT_MOD_PRIORITIES = List.of(
             "kubejs",
             "crafttweaker",
             "minecraft",
@@ -42,7 +37,7 @@ public class ModConfig {
             "tconstruct",
             "mysticalagriculture");
     @SuppressWarnings("SpellCheckingInspection")
-    private static final List<String> DEFAULT_METALS = List.of("aeternium",
+    public static final List<String> DEFAULT_METALS = List.of("aeternium",
             "aluminum",
             "amber",
             "apatite",
@@ -94,7 +89,7 @@ public class ModConfig {
             "zinc"
 
     );
-    private static final List<String> DEFAULT_TYPES = List.of("nuggets",
+    public static final List<String> DEFAULT_TYPES = List.of("nuggets",
             "dusts",
             "gears",
             "gems",
@@ -103,11 +98,15 @@ public class ModConfig {
             "plates",
             "rods",
             "storage_blocks");
-    private static final List<String> DEFAULT_UNIFIES = getDefaultPatterns();
+    public static final List<String> DEFAULT_UNIFIES = getDefaultPatterns();
+    private static final String UNIFICATION_MOD_PRIORITIES = "unification.mod_priorities";
+    private static final String UNIFICATION_VARIABLES = "unification.variables";
+    private static final String UNIFICATION_VARIABLES_MATERIALS = "unification.variables.materials";
+    private static final String UNIFICATION_VARIABLES_TYPES = "unification.variables.types";
+    private static final String UNIFICATION_PATTERN = "unification.pattern";
     private final String name;
-
-    @Nullable private FileConfig currentConfig;
     private final ConfigSpec spec;
+    @Nullable private FileConfig currentConfig;
 
     public ModConfig(String name) {
         this.name = name;
@@ -128,7 +127,9 @@ public class ModConfig {
     }
 
     protected FileConfig createConfig() {
-        CommentedFileConfig config = CommentedFileConfig.ofConcurrent(AlmostUnifiedPlatform.INSTANCE.getConfigPath().resolve(name + ".toml"));
+        CommentedFileConfig config = CommentedFileConfig.ofConcurrent(AlmostUnifiedPlatform.INSTANCE
+                .getConfigPath()
+                .resolve(name + ".toml"));
         config.setComment(UNIFICATION_MOD_PRIORITIES, "Mod priorities for unification's");
         config.setComment(UNIFICATION_VARIABLES,
                 "Custom variables can be defined here. Look at the example for more info.\n" +
@@ -157,14 +158,14 @@ public class ModConfig {
     }
 
     public List<String> getModPriorities() {
-        if(currentConfig == null) {
+        if (currentConfig == null) {
             throw new IllegalStateException("Config is not loaded");
         }
         return currentConfig.get(UNIFICATION_MOD_PRIORITIES);
     }
 
     public List<TagKey<Item>> getAllowedTags() {
-        if(currentConfig == null) {
+        if (currentConfig == null) {
             throw new IllegalStateException("Config is not loaded");
         }
 
@@ -229,7 +230,7 @@ public class ModConfig {
     }
 
     private Multimap<String, String> compileVariables() {
-        if(currentConfig == null) {
+        if (currentConfig == null) {
             throw new IllegalStateException("Config is not loaded");
         }
 

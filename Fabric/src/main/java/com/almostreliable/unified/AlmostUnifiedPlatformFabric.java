@@ -1,6 +1,6 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.handler.RecipeHandlerFactory;
+import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;

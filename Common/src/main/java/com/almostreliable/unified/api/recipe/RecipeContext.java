@@ -1,4 +1,4 @@
-package com.almostreliable.unified.api;
+package com.almostreliable.unified.api.recipe;
 
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;

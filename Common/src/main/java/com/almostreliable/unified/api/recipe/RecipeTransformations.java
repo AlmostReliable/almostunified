@@ -1,4 +1,4 @@
-package com.almostreliable.unified.api;
+package com.almostreliable.unified.api.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import java.util.function.BiFunction;
 
 public interface RecipeTransformations {
+
     void forEachObject(String property, BiFunction<JsonObject, RecipeContext, JsonObject> consumer);
 
     void replaceIngredient(String property);

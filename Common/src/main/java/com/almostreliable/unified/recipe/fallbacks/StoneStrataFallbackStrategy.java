@@ -1,7 +1,7 @@
-package com.almostreliable.unified.fallbacks;
+package com.almostreliable.unified.recipe.fallbacks;
 
-import com.almostreliable.unified.TagMap;
-import com.almostreliable.unified.api.ReplacementFallbackStrategy;
+import com.almostreliable.unified.api.recipe.ReplacementFallbackStrategy;
+import com.almostreliable.unified.utils.TagMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

@@ -1,6 +1,6 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.handler.RecipeHandlerFactory;
+import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

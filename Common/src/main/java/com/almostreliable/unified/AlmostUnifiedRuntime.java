@@ -1,15 +1,14 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.handler.RecipeHandlerFactory;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.almostreliable.unified.recipe.RecipeTransformer;
+import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
+import com.almostreliable.unified.utils.ReplacementMap;
+import com.almostreliable.unified.utils.TagMap;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -31,84 +30,24 @@ public abstract class AlmostUnifiedRuntime {
         modPriorities = config.getModPriorities();
         onRun();
         ReplacementMap replacementMap = createContext(config.getAllowedTags(), modPriorities);
-        transformRecipes(recipes, replacementMap);
-    }
-
-    public void transformRecipes(Map<ResourceLocation, JsonElement> recipes, ReplacementMap replacementMap) {
-        Multimap<ResourceLocation, ResourceLocation> typeCount = HashMultimap.create();
-
-        int transformedRecipes = 0;
-        long start = System.nanoTime();
-        for (var entry : recipes.entrySet()) {
-            if (entry.getValue() instanceof JsonObject json) {
-                JsonObject transformedJson = transformRecipe(entry.getKey(), json, replacementMap);
-                if (transformedJson != null) {
-                    transformedRecipes++;
-                    entry.setValue(transformedJson);
-
-                    // TODO for debugging remove this later
-                    ResourceLocation recipeType = getRecipeType(json);
-                    typeCount.put(recipeType, entry.getKey());
-                }
-            }
-        }
-        long finish = System.nanoTime();
-        long timeElapsed = finish - start;
-        AlmostUnified.LOG.info("Transformed {}/{} recipes changes in {}ms",
-                transformedRecipes,
-                recipes.size(),
-                timeElapsed / 1000_000D);
-        // TODO Pls remove this on release
-        typeCount.asMap().entrySet().stream().sorted(Comparator.comparing(o -> o.getKey().toString())).forEach((e) -> {
-            AlmostUnified.LOG.info("{}: {} | {}",
-                    StringUtils.leftPad(e.getKey().toString(), 40),
-                    StringUtils.leftPad(String.valueOf(e.getValue().size()), 4),
-                    e.getValue().toString());
-        });
-    }
-
-    @Nullable
-    public JsonObject transformRecipe(ResourceLocation id, JsonObject json, ReplacementMap replacementMap) {
-        ResourceLocation recipeType = getRecipeType(json);
-        if (recipeType == null) {
-            return null;
-        }
-
-        try {
-            RecipeContextImpl ctx = new RecipeContextImpl(recipeType, id, json, replacementMap);
-            RecipeTransformationsImpl builder = new RecipeTransformationsImpl();
-            recipeHandlerFactory.create(builder, ctx);
-            JsonObject copy = json.deepCopy();
-            builder.transform(copy, ctx);
-            if (!json.equals(copy)) {
-                return copy;
-            }
-        } catch (Exception e) {
-            AlmostUnified.LOG.warn("Error transforming recipe type '{}': {}",
-                    recipeType,
-                    e.getMessage());
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @Nullable
-    protected ResourceLocation getRecipeType(JsonObject recipeJson) {
-        String type = recipeJson.get("type").getAsString();
-        return ResourceLocation.tryParse(type);
+        RecipeTransformer transformer = new RecipeTransformer(recipeHandlerFactory, replacementMap);
+        transformer.transformRecipes(recipes);
     }
 
     public void updateTagManager(TagManager tagManager) {
         this.tagManager = tagManager;
     }
 
-    protected ReplacementMap createContext(List<TagKey<Item>> allowedTags, List<String> modPriorities) {
+    protected TagMap createTagMap() {
         if (tagManager == null) {
             throw new IllegalStateException("Internal error. TagManager was not updated correctly");
         }
 
-        TagMap tagMap = TagMap.create(tagManager);
+        return TagMap.create(tagManager);
+    }
+
+    protected ReplacementMap createContext(List<TagKey<Item>> allowedTags, List<String> modPriorities) {
+        TagMap tagMap = createTagMap();
         Map<ResourceLocation, TagKey<Item>> itemToTagMapping = new HashMap<>(allowedTags.size());
 
         for (TagKey<Item> tag : allowedTags) {

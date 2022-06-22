@@ -1,9 +1,9 @@
 package com.almostreliable.unified.compat.ie;
 
-import com.almostreliable.unified.api.RecipeContext;
-import com.almostreliable.unified.api.RecipeHandler;
-import com.almostreliable.unified.api.RecipeTransformations;
-import com.almostreliable.unified.handler.RecipeConstants;
+import com.almostreliable.unified.api.recipe.RecipeConstants;
+import com.almostreliable.unified.api.recipe.RecipeContext;
+import com.almostreliable.unified.api.recipe.RecipeHandler;
+import com.almostreliable.unified.api.recipe.RecipeTransformations;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.Utils;
 import com.google.gson.JsonElement;

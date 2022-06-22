@@ -1,6 +1,6 @@
-package com.almostreliable.unified.api;
+package com.almostreliable.unified.api.recipe;
 
-import com.almostreliable.unified.TagMap;
+import com.almostreliable.unified.utils.TagMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

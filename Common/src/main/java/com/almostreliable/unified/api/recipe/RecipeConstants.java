@@ -1,4 +1,4 @@
-package com.almostreliable.unified.handler;
+package com.almostreliable.unified.api.recipe;
 
 public class RecipeConstants {
     public static final String ITEM = "item";

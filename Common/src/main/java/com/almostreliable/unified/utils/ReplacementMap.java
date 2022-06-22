@@ -1,7 +1,7 @@
-package com.almostreliable.unified;
+package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.api.ReplacementFallbackStrategy;
-import com.almostreliable.unified.fallbacks.StoneStrataFallbackStrategy;
+import com.almostreliable.unified.api.recipe.ReplacementFallbackStrategy;
+import com.almostreliable.unified.recipe.fallbacks.StoneStrataFallbackStrategy;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

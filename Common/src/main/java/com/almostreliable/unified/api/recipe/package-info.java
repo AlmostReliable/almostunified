@@ -1,5 +1,5 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-package com.almostreliable.unified.handler;
+package com.almostreliable.unified.api.recipe;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

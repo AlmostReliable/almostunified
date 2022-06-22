@@ -1,7 +1,8 @@
-package com.almostreliable.unified;
+package com.almostreliable.unified.recipe;
 
-import com.almostreliable.unified.api.RecipeContext;
-import com.almostreliable.unified.handler.RecipeConstants;
+import com.almostreliable.unified.api.recipe.RecipeConstants;
+import com.almostreliable.unified.api.recipe.RecipeContext;
+import com.almostreliable.unified.utils.ReplacementMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -60,7 +61,10 @@ public class RecipeContextImpl implements RecipeContext {
         }
 
         if (element instanceof JsonObject object) {
-            JsonElement replace = depthReplace(object.get(potentialFrom), potentialFrom, potentialTo, primitiveCallback);
+            JsonElement replace = depthReplace(object.get(potentialFrom),
+                    potentialFrom,
+                    potentialTo,
+                    primitiveCallback);
             if (replace != null) {
                 object.remove(potentialFrom);
                 object.add(potentialTo, replace);

@@ -1,4 +1,4 @@
-package com.almostreliable.unified;
+package com.almostreliable.unified.utils;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
