@@ -18,15 +18,13 @@ public interface RecipeContext {
     @Nullable
     TagKey<Item> getPreferredTagByItem(@Nullable ResourceLocation item);
 
-    boolean replaceIngredient(JsonElement element);
+    JsonElement replaceIngredient(JsonElement element);
 
-    boolean replaceResult(JsonElement element);
+    JsonElement replaceResult(JsonElement element);
 
     ResourceLocation getType();
 
     ResourceLocation getId();
-
-//    String getIterateProperty();
 
     boolean hasProperty(String property);
 

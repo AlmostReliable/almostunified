@@ -1,7 +1,8 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.RecipeHandler;
 import com.almostreliable.unified.handler.RecipeHandlerFactory;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +35,7 @@ public abstract class AlmostUnifiedRuntime {
     }
 
     public void transformRecipes(Map<ResourceLocation, JsonElement> recipes, ReplacementMap replacementMap) {
-        Map<ResourceLocation, Integer> typeCount = new HashMap<>();
+        Multimap<ResourceLocation, ResourceLocation> typeCount = HashMultimap.create();
 
         int transformedRecipes = 0;
         long start = System.nanoTime();
@@ -47,7 +48,7 @@ public abstract class AlmostUnifiedRuntime {
 
                     // TODO for debugging remove this later
                     ResourceLocation recipeType = getRecipeType(json);
-                    typeCount.compute(recipeType, (rl, old) -> old == null ? 1 : old + 1);
+                    typeCount.put(recipeType, entry.getKey());
                 }
             }
         }
@@ -57,8 +58,12 @@ public abstract class AlmostUnifiedRuntime {
                 transformedRecipes,
                 recipes.size(),
                 timeElapsed / 1000_000D);
-        typeCount.entrySet().stream().sorted(Comparator.comparing(o -> o.getKey().toString())).forEach(entry -> {
-            AlmostUnified.LOG.info("{}: {}", StringUtils.leftPad(entry.getKey().toString(), 50), entry.getValue());
+        // TODO Pls remove this on release
+        typeCount.asMap().entrySet().stream().sorted(Comparator.comparing(o -> o.getKey().toString())).forEach((e) -> {
+            AlmostUnified.LOG.info("{}: {} | {}",
+                    StringUtils.leftPad(e.getKey().toString(), 40),
+                    StringUtils.leftPad(String.valueOf(e.getValue().size()), 4),
+                    e.getValue().toString());
         });
     }
 
@@ -69,16 +74,12 @@ public abstract class AlmostUnifiedRuntime {
             return null;
         }
 
-        RecipeContextImpl ctx = new RecipeContextImpl(recipeType, id, json, replacementMap);
-
         try {
-            RecipeHandler recipeHandler = recipeHandlerFactory.create(ctx);
-            if (recipeHandler == null) {
-                return null;
-            }
-
+            RecipeContextImpl ctx = new RecipeContextImpl(recipeType, id, json, replacementMap);
+            RecipeTransformationsImpl builder = new RecipeTransformationsImpl();
+            recipeHandlerFactory.create(builder, ctx);
             JsonObject copy = json.deepCopy();
-            recipeHandler.transformRecipe(copy, ctx);
+            builder.transform(copy, ctx);
             if (!json.equals(copy)) {
                 return copy;
             }
@@ -91,7 +92,6 @@ public abstract class AlmostUnifiedRuntime {
 
         return null;
     }
-
 
     @Nullable
     protected ResourceLocation getRecipeType(JsonObject recipeJson) {
@@ -107,7 +107,6 @@ public abstract class AlmostUnifiedRuntime {
         if (tagManager == null) {
             throw new IllegalStateException("Internal error. TagManager was not updated correctly");
         }
-
 
         TagMap tagMap = TagMap.create(tagManager);
         Map<ResourceLocation, TagKey<Item>> itemToTagMapping = new HashMap<>(allowedTags.size());

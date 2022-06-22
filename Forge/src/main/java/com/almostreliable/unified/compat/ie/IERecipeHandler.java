@@ -2,6 +2,7 @@ package com.almostreliable.unified.compat.ie;
 
 import com.almostreliable.unified.api.RecipeContext;
 import com.almostreliable.unified.api.RecipeHandler;
+import com.almostreliable.unified.api.RecipeTransformations;
 import com.almostreliable.unified.handler.RecipeConstants;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.Utils;
@@ -16,24 +17,45 @@ public class IERecipeHandler implements RecipeHandler {
     // From IE
     protected static final String BASE_KEY = "base_ingredient";
 
+    // TODO make it cleaner
     @Override
-    public void transformRecipe(JsonObject json, RecipeContext context) {
+    public void collectTransformations(RecipeTransformations builder) {
+        builder.put("input0", (json, context) -> {
+            replaceIEIngredient(json, context);
+            return json;
+        }); // alloy recipes, refinery
+        builder.put("input1", (json, context) -> {
+            replaceIEIngredient(json, context);
+            return json;
+        }); // alloy recipes, refinery
+        builder.put(RecipeConstants.INPUT, (json, context) -> {
+            replaceIEIngredient(json, context);
+            return json;
+        }); // arc furnace, squeezer, cloche, coke oven, fermenter, fertilizer, metal_press
+        builder.put("additives", (json, context) -> {
+            replaceIEIngredient(json, context);
+            return json;
+        }); // arc furnace
+        builder.put(RecipeConstants.INPUTS, (json, context) -> {
+            replaceIEIngredient(json, context);
+            return json;
+        }); // blueprint, mixer
 
-        replaceIEIngredient(json.get("input0"), context); // alloy recipes, refinery
-        replaceIEIngredient(json.get("input1"), context); // alloy recipes, refinery
-        replaceIEIngredient(json.get(RecipeConstants.INPUT),
-                context); // arc furnace, squeezer, cloche, coke oven, fermenter, fertilizer, metal_press
-        replaceIEIngredient(json.get("additives"), context); // arc furnace
-        replaceIEIngredient(json.get(RecipeConstants.INPUTS), context); // blueprint, mixer
-
-        replaceIEResult(json.get("secondaries"), context); // alloy recipes, crusher
-
-        JsonUtils.arrayForEach(json.get("secondaries"), JsonObject.class, secondary -> {
-            replaceIEResult(secondary.get(RecipeConstants.OUTPUT), context);
+        // alloy recipes, crusher
+        builder.forEachObject("secondaries", (jsonObject, context) -> {
+            replaceIEResult(jsonObject.get(RecipeConstants.OUTPUT), context);
+            return jsonObject;
         });
 
-        replaceIEResult(json.get(RecipeConstants.RESULT), context);
-        replaceIEResult(json.get(RecipeConstants.RESULTS), context);
+        builder.put(RecipeConstants.RESULT, (json, context) -> {
+            replaceIEResult(json, context);
+            return json;
+        });
+
+        builder.put(RecipeConstants.RESULTS, (json, context) -> {
+            replaceIEResult(json, context);
+            return json;
+        });
     }
 
     protected void replaceIEResult(@Nullable JsonElement element, RecipeContext context) {
