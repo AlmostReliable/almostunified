@@ -6,6 +6,7 @@ import com.almostreliable.unified.api.recipe.RecipeHandler;
 import com.almostreliable.unified.api.recipe.RecipeTransformations;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.Utils;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -20,79 +21,65 @@ public class IERecipeHandler implements RecipeHandler {
     // TODO make it cleaner
     @Override
     public void collectTransformations(RecipeTransformations builder) {
-        builder.put("input0", (json, context) -> {
-            replaceIEIngredient(json, context);
-            return json;
-        }); // alloy recipes, refinery
-        builder.put("input1", (json, context) -> {
-            replaceIEIngredient(json, context);
-            return json;
-        }); // alloy recipes, refinery
-        builder.put(RecipeConstants.INPUT, (json, context) -> {
-            replaceIEIngredient(json, context);
-            return json;
-        }); // arc furnace, squeezer, cloche, coke oven, fermenter, fertilizer, metal_press
-        builder.put("additives", (json, context) -> {
-            replaceIEIngredient(json, context);
-            return json;
-        }); // arc furnace
-        builder.put(RecipeConstants.INPUTS, (json, context) -> {
-            replaceIEIngredient(json, context);
-            return json;
-        }); // blueprint, mixer
-
+        builder.put("input0", this::replaceIEIngredient); // alloy recipes, refinery
+        builder.put("input1", this::replaceIEIngredient); // alloy recipes, refinery
+        builder.put(RecipeConstants.INPUT,
+                this::replaceIEIngredient); // arc furnace, squeezer, cloche, coke oven, fermenter, fertilizer, metal_press
+        builder.put("additives", this::replaceIEIngredient); // arc furnace
+        builder.put(RecipeConstants.INPUTS, this::replaceIEIngredient); // blueprint, mixer
         // alloy recipes, crusher
-        builder.forEachObject("secondaries", (jsonObject, context) -> {
-            replaceIEResult(jsonObject.get(RecipeConstants.OUTPUT), context);
-            return jsonObject;
-        });
-
-        builder.put(RecipeConstants.RESULT, (json, context) -> {
-            replaceIEResult(json, context);
-            return json;
-        });
-
-        builder.put(RecipeConstants.RESULTS, (json, context) -> {
-            replaceIEResult(json, context);
-            return json;
-        });
+        builder.forEachObject("secondaries",
+                (jsonObject, context) ->
+                        replaceIEResult(jsonObject.get(RecipeConstants.OUTPUT), context) instanceof JsonObject
+                        ? jsonObject : null);
+        builder.put(RecipeConstants.RESULT, this::replaceIEResult);
+        builder.put(RecipeConstants.RESULTS, this::replaceIEResult);
     }
 
-    protected void replaceIEResult(@Nullable JsonElement element, RecipeContext context) {
-        if (element == null) {
-            return;
+    @Nullable
+    protected JsonElement replaceIEResult(@Nullable JsonElement element, RecipeContext context) {
+        if (element instanceof JsonArray array) {
+            if (JsonUtils.replaceOn(array, e -> this.replaceIEResult(e, context))) {
+                return array;
+            }
         }
 
-        JsonUtils.arrayForEach(element, JsonObject.class, json -> {
-            if (json.has(RecipeConstants.ITEM)) {
-                context.replaceResult(json);
-            } else if (json.has(RecipeConstants.TAG)) {
+        if (element instanceof JsonObject object) {
+            JsonElement tag = object.get(RecipeConstants.TAG);
+            if (tag != null) {
                 /*
                  * Immersive Engineering allows tags in result and filters them. So we replace the tags with
                  * the preferred item from our config.
                  */
-                ResourceLocation item = context.getPreferredItemByTag(Utils.toItemTag(json
+                ResourceLocation item = context.getPreferredItemByTag(Utils.toItemTag(object
                         .get(RecipeConstants.TAG)
                         .getAsString()));
                 if (item != null) {
-                    json.remove(RecipeConstants.TAG);
-                    json.addProperty(RecipeConstants.ITEM, item.toString());
+                    object.remove(RecipeConstants.TAG);
+                    object.addProperty(RecipeConstants.ITEM, item.toString());
+                    return object;
                 }
-            } else if (json.has(BASE_KEY)) {
-                replaceIEResult(json.get(BASE_KEY), context);
             }
-        });
+
+            JsonElement base = object.get(BASE_KEY);
+            if (base != null) {
+                JsonElement baseResult = replaceIEResult(base, context);
+                if (baseResult != null) {
+                    object.add(BASE_KEY, baseResult);
+                    return object;
+                }
+            }
+        }
+
+        return context.createResultReplacement(element);
     }
 
-    protected void replaceIEIngredient(@Nullable JsonElement element, RecipeContext context) {
-        if (element == null) {
-            return;
+    @Nullable
+    public JsonElement replaceIEIngredient(@Nullable JsonElement element, RecipeContext context) {
+        if (element instanceof JsonObject json && json.has(BASE_KEY)) {
+            return context.createIngredientReplacement(json.get(BASE_KEY));
         }
 
-        if (element instanceof JsonObject json && json.has(BASE_KEY)) {
-            context.replaceIngredient(json.get(BASE_KEY));
-        } else {
-            context.replaceIngredient(element);
-        }
+        return context.createIngredientReplacement(element);
     }
 }

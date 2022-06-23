@@ -45,6 +45,12 @@ dependencies {
      * DON'T USE THIS! NEEDED TO COMPILE THIS PROJECT
      */
     modCompileOnly("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
+
+    /**
+     * Test dependencies
+     */
+    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 }
 
 tasks.processResources {
@@ -74,4 +80,8 @@ buildConfig {
     buildConfigField("String", "MOD_NAME", "\"${modName}\"")
 
     packageName(project.group as String)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

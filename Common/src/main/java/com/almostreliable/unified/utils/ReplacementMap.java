@@ -1,5 +1,6 @@
 package com.almostreliable.unified.utils;
 
+import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.recipe.ReplacementFallbackStrategy;
 import com.almostreliable.unified.recipe.fallbacks.StoneStrataFallbackStrategy;
 import net.minecraft.resources.ResourceLocation;
@@ -8,6 +9,7 @@ import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,24 +17,43 @@ public class ReplacementMap {
 
     private final Collection<String> modPriorities;
     private final TagMap tagMap;
-    private final Map<ResourceLocation, TagKey<Item>> itemToTagMapping;
+    private final Map<ResourceLocation, UnifyTag<Item>> itemToTagMapping;
     // TODO - In the future this may be a list of multiple fallbacks.
     private final ReplacementFallbackStrategy fallbackStrategy = new StoneStrataFallbackStrategy();
 
-    public ReplacementMap(TagMap tagMap, Map<ResourceLocation, TagKey<Item>> itemToTagMapping, List<String> modPriorities) {
+    public ReplacementMap(TagMap tagMap, List<UnifyTag<Item>> allowedTags, List<String> modPriorities) {
         this.tagMap = tagMap;
-        this.itemToTagMapping = itemToTagMapping;
         this.modPriorities = modPriorities;
+        this.itemToTagMapping = createItemMapping(allowedTags);
+    }
+
+    protected Map<ResourceLocation, UnifyTag<Item>> createItemMapping(List<UnifyTag<Item>> allowedTags) {
+        Map<ResourceLocation, UnifyTag<Item>> itemToTagMapping = new HashMap<>(allowedTags.size());
+        for (UnifyTag<Item> tag : allowedTags) {
+            Collection<ResourceLocation> items = tagMap.getItems(tag);
+            for (ResourceLocation item : items) {
+                if (itemToTagMapping.containsKey(item)) {
+                    AlmostUnified.LOG.warn("Item '{}' already has a tag '{}' for recipe replacement. Skipping this tag",
+                            item,
+                            tag);
+                    continue;
+                }
+
+                itemToTagMapping.put(item, tag);
+            }
+        }
+
+        return itemToTagMapping;
     }
 
     @Nullable
-    public TagKey<Item> getPreferredTag(ResourceLocation item) {
+    public UnifyTag<Item> getPreferredTag(ResourceLocation item) {
         return itemToTagMapping.get(item);
     }
 
     @Nullable
     public ResourceLocation getReplacementForItem(ResourceLocation item) {
-        TagKey<Item> tag = getPreferredTag(item);
+        UnifyTag<Item> tag = getPreferredTag(item);
         if (tag == null) {
             return null;
         }
@@ -46,13 +67,17 @@ public class ReplacementMap {
     }
 
     @Nullable
-    public ResourceLocation getPreferredItemByTag(TagKey<Item> tag) {
+    public ResourceLocation getPreferredItemByTag(UnifyTag<Item> tag) {
         return getPreferredItemByTag(tag, null);
     }
 
     @Nullable
-    public ResourceLocation getPreferredItemByTag(TagKey<Item> tag, @Nullable String ignoredNamespace) {
+    public ResourceLocation getPreferredItemByTag(UnifyTag<Item> tag, @Nullable String ignoredNamespace) {
         for (String mod : modPriorities) {
+            if(mod.equals(ignoredNamespace)) {
+                return null;
+            }
+
             List<ResourceLocation> sameModItems = tagMap
                     .getItems(tag)
                     .stream()
@@ -62,7 +87,7 @@ public class ReplacementMap {
                 return sameModItems.get(0);
             }
 
-            if (sameModItems.size() > 1 && !mod.equals(ignoredNamespace)) {
+            if (sameModItems.size() > 1) {
                 ResourceLocation fallback = fallbackStrategy.getFallback(tag, sameModItems, tagMap);
                 if (fallback != null) {
                     return fallback;

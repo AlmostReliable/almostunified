@@ -32,7 +32,7 @@ public class RecipeTransformer {
         long start = System.nanoTime();
         for (var entry : recipes.entrySet()) {
             if (entry.getValue() instanceof JsonObject json) {
-                JsonObject transformedJson = transformRecipe(entry.getKey(), json);
+                JsonObject transformedJson = transformRecipe(json);
                 if (transformedJson != null) {
                     transformedRecipes++;
                     entry.setValue(transformedJson);
@@ -54,25 +54,24 @@ public class RecipeTransformer {
             AlmostUnified.LOG.info("{}: {} | {}",
                     StringUtils.leftPad(e.getKey().toString(), 40),
                     StringUtils.leftPad(String.valueOf(e.getValue().size()), 4),
-                    e.getValue().toString());
+                    e.getValue().stream().map(rl -> "\"" + rl.toString() + "\"").toList().toString());
         });
     }
 
     @Nullable
-    public JsonObject transformRecipe(ResourceLocation id, JsonObject json) {
+    public JsonObject transformRecipe(JsonObject json) {
         ResourceLocation recipeType = getRecipeType(json);
         if (recipeType == null) {
             return null;
         }
 
         try {
-            RecipeContextImpl ctx = new RecipeContextImpl(recipeType, id, json, replacementMap);
+            RecipeContextImpl ctx = new RecipeContextImpl(recipeType, json, replacementMap);
             RecipeTransformationsImpl builder = new RecipeTransformationsImpl();
             factory.create(builder, ctx);
-            JsonObject copy = json.deepCopy();
-            builder.transform(copy, ctx);
-            if (!json.equals(copy)) {
-                return copy;
+            JsonObject result = builder.transform(json, ctx);
+            if (result != null) {
+                return result;
             }
         } catch (Exception e) {
             AlmostUnified.LOG.warn("Error transforming recipe type '{}': {}",

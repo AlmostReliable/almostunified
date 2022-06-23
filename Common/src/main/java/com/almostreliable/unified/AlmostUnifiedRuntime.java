@@ -6,12 +6,12 @@ import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagManager;
-import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AlmostUnifiedRuntime {
 
@@ -29,7 +29,8 @@ public abstract class AlmostUnifiedRuntime {
         config.load();
         modPriorities = config.getModPriorities();
         onRun();
-        ReplacementMap replacementMap = createContext(config.getAllowedTags(), modPriorities);
+        TagMap tagMap = createTagMap();
+        ReplacementMap replacementMap = new ReplacementMap(tagMap, config.getAllowedTags(), modPriorities);
         RecipeTransformer transformer = new RecipeTransformer(recipeHandlerFactory, replacementMap);
         transformer.transformRecipes(recipes);
     }
@@ -44,27 +45,6 @@ public abstract class AlmostUnifiedRuntime {
         }
 
         return TagMap.create(tagManager);
-    }
-
-    protected ReplacementMap createContext(List<TagKey<Item>> allowedTags, List<String> modPriorities) {
-        TagMap tagMap = createTagMap();
-        Map<ResourceLocation, TagKey<Item>> itemToTagMapping = new HashMap<>(allowedTags.size());
-
-        for (TagKey<Item> tag : allowedTags) {
-            Collection<ResourceLocation> items = tagMap.getItems(tag);
-            for (ResourceLocation item : items) {
-                if (itemToTagMapping.containsKey(item)) {
-                    AlmostUnified.LOG.warn("Item '{}' already has a tag '{}' for recipe replacement. Skipping this tag",
-                            item,
-                            tag);
-                    continue;
-                }
-
-                itemToTagMapping.put(item, tag);
-            }
-        }
-
-        return new ReplacementMap(tagMap, itemToTagMapping, modPriorities);
     }
 
     protected abstract void onRun();

@@ -14,7 +14,7 @@ public class ShapedRecipeKeyHandler implements RecipeHandler {
     public void collectTransformations(RecipeTransformations builder) {
         builder.put(KEY_PROPERTY, JsonObject.class, (json, context) -> {
             for (var entry : json.entrySet()) {
-                JsonElement result = context.replaceIngredient(entry.getValue());
+                JsonElement result = context.createIngredientReplacement(entry.getValue());
                 if (result != null) {
                     entry.setValue(result);
                 }

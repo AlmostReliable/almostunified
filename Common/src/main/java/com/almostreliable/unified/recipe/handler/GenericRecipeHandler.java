@@ -18,11 +18,11 @@ public class GenericRecipeHandler implements RecipeHandler {
     @Override
     public void collectTransformations(RecipeTransformations builder) {
         for (String inputKey : inputKeys) {
-            builder.replaceIngredient(inputKey);
+            builder.put(inputKey, (json, ctx) -> ctx.createIngredientReplacement(json));
         }
 
         for (String outputKey : outputKeys) {
-            builder.replaceResult(outputKey);
+            builder.put(outputKey, (json, ctx) -> ctx.createResultReplacement(json));
         }
     }
 }

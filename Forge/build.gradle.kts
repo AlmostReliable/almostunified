@@ -61,6 +61,9 @@ minecraft {
 
 sourceSets.main.get().resources.srcDir("src/generated/resources")
 
+// from millions of solutions, this is the only one which works... :-)
+val commonTests: SourceSetOutput = project(":Common").sourceSets["test"].output
+
 dependencies {
     minecraft("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
     compileOnly(project(":Common"))
@@ -80,6 +83,14 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:nihilo-400012:3810814"))
 
     annotationProcessor("org.spongepowered:mixin:${mixinVersion}:processor")
+
+    /**
+     * Test dependencies
+     */
+    testImplementation(project(":Common"))
+    testImplementation(commonTests)
+    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 }
 
 mixin {
@@ -99,6 +110,10 @@ tasks {
     jar {
         finalizedBy("reobfJar")
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 publishing {

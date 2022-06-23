@@ -20,14 +20,14 @@ public class RecipeHandlerFactory {
             ShapedRecipeKeyHandler.INSTANCE.collectTransformations(builder);
         }
 
-        RecipeHandler byType = transformersByType.get(context.getType());
-        if (byType != null) {
-            byType.collectTransformations(builder);
-        }
-
         RecipeHandler byMod = transformersByModId.get(context.getModId());
         if (byMod != null) {
             byMod.collectTransformations(builder);
+        }
+
+        RecipeHandler byType = transformersByType.get(context.getType());
+        if (byType != null) {
+            byType.collectTransformations(builder);
         }
     }
 

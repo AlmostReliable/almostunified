@@ -10,4 +10,5 @@ public class RecipeConstants {
     public static final String OUTPUT = "output";
     public static final String RESULT = "result";
     public static final String RESULTS = "results";
+    public static final String VALUE = "value";
 }

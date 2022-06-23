@@ -12,8 +12,8 @@ import net.minecraft.world.item.Item;
 import java.util.*;
 
 public class TagMap {
-    private final Map<TagKey<Item>, Set<ResourceLocation>> tagsToItems = new HashMap<>();
-    private final Map<ResourceLocation, Set<TagKey<Item>>> itemsToTags = new HashMap<>();
+    private final Map<UnifyTag<Item>, Set<ResourceLocation>> tagsToItems = new HashMap<>();
+    private final Map<ResourceLocation, Set<UnifyTag<Item>>> itemsToTags = new HashMap<>();
 
     protected TagMap() {}
 
@@ -31,7 +31,7 @@ public class TagMap {
         TagMap tagMap = new TagMap();
 
         for (var entry : tags.entrySet()) {
-            TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, entry.getKey());
+            UnifyTag<Item> tag = UnifyTag.item(entry.getKey());
             Tag<? extends Holder<?>> holderTag = entry.getValue();
 
             for (Holder<?> holder : holderTag.getValues()) {
@@ -46,16 +46,24 @@ public class TagMap {
         return tagMap;
     }
 
-    protected void put(TagKey<Item> tag, ResourceLocation item) {
+    protected void put(UnifyTag<Item> tag, ResourceLocation item) {
         tagsToItems.computeIfAbsent(tag, k -> new HashSet<>()).add(item);
         itemsToTags.computeIfAbsent(item, k -> new HashSet<>()).add(tag);
     }
 
-    public Collection<ResourceLocation> getItems(TagKey<Item> tag) {
+    public Collection<ResourceLocation> getItems(UnifyTag<Item> tag) {
         return Collections.unmodifiableSet(tagsToItems.getOrDefault(tag, Collections.emptySet()));
     }
 
-    public Collection<TagKey<Item>> getTags(ResourceLocation items) {
+    public Collection<UnifyTag<Item>> getTags(ResourceLocation items) {
         return Collections.unmodifiableSet(itemsToTags.getOrDefault(items, Collections.emptySet()));
+    }
+
+    public int tagSize() {
+        return tagsToItems.size();
+    }
+
+    public int itemSize() {
+        return itemsToTags.size();
     }
 }

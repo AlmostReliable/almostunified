@@ -10,9 +10,9 @@ import javax.annotation.Nullable;
 
 public class Utils {
     public static final ResourceLocation UNUSED_ID = new ResourceLocation(BuildConfig.MOD_ID, "unused_id");
-    public static final TagKey<Item> UNUSED_TAG = TagKey.create(Registry.ITEM_REGISTRY, UNUSED_ID);
+    public static final UnifyTag<Item> UNUSED_TAG = UnifyTag.item(UNUSED_ID);
 
-    public static TagKey<Item> toItemTag(@Nullable String tag) {
+    public static UnifyTag<Item> toItemTag(@Nullable String tag) {
         if (tag == null) {
             return UNUSED_TAG;
         }
@@ -22,6 +22,6 @@ public class Utils {
             return UNUSED_TAG;
         }
 
-        return TagKey.create(Registry.ITEM_REGISTRY, rl);
+        return UnifyTag.item(rl);
     }
 }

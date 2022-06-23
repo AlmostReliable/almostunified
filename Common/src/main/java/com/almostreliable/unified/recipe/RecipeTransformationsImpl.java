@@ -33,16 +33,6 @@ public class RecipeTransformationsImpl implements RecipeTransformations {
     }
 
     @Override
-    public void replaceIngredient(String property) {
-        put(property, JsonElement.class, (jsonElement, context) -> context.replaceIngredient(jsonElement));
-    }
-
-    @Override
-    public void replaceResult(String property) {
-        put(property, JsonElement.class, (jsonElement, context) -> context.replaceResult(jsonElement));
-    }
-
-    @Override
     public void put(String property, BiFunction<JsonElement, RecipeContext, JsonElement> consumer) {
         consumers.put(property, new Entry<>(JsonElement.class, consumer));
     }
@@ -52,16 +42,37 @@ public class RecipeTransformationsImpl implements RecipeTransformations {
         consumers.put(property, new Entry<>(type, consumer));
     }
 
-    public void transform(JsonObject json, RecipeContext context) {
+    @Nullable
+    public JsonObject transform(JsonObject json, RecipeContext context) {
+        JsonObject changedValues = new JsonObject();
+
         for (var e : json.entrySet()) {
             Entry<?> consumer = consumers.get(e.getKey());
             if (consumer != null) {
-                JsonElement result = consumer.apply(e.getValue(), context);
-                if (result != null) {
-                    e.setValue(result);
+                JsonElement currentElement = e.getValue();
+                JsonElement transformedElement = consumer.apply(currentElement.deepCopy(), context);
+                if (transformedElement != null && !transformedElement.equals(currentElement)) {
+                    changedValues.add(e.getKey(), transformedElement);
                 }
             }
         }
+
+        if (changedValues.size() == 0) {
+            return null;
+        }
+
+        // helps to preserve the order of the elements
+        JsonObject result = new JsonObject();
+        for (var entry : json.entrySet()) {
+            JsonElement changedValue = changedValues.get(entry.getKey());
+            if (changedValue != null) {
+                result.add(entry.getKey(), changedValue);
+            } else {
+                result.add(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return result;
     }
 
     private record Entry<T extends JsonElement>(Class<T> expectedType,

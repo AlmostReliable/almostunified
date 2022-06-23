@@ -1,14 +1,13 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.utils.UnifyTag;
 import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.ConfigSpec;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
@@ -164,13 +163,13 @@ public class ModConfig {
         return currentConfig.get(UNIFICATION_MOD_PRIORITIES);
     }
 
-    public List<TagKey<Item>> getAllowedTags() {
+    public List<UnifyTag<Item>> getAllowedTags() {
         if (currentConfig == null) {
             throw new IllegalStateException("Config is not loaded");
         }
 
         Multimap<String, String> variables = compileVariables();
-        List<TagKey<Item>> collectedPattern = new ArrayList<>();
+        List<UnifyTag<Item>> collectedPattern = new ArrayList<>();
 
         Collection<String> patterns = currentConfig.get(UNIFICATION_PATTERN);
         for (String pattern : patterns) {
@@ -183,7 +182,7 @@ public class ModConfig {
                     if (rl == null) {
                         AlmostUnified.LOG.warn("Invalid pattern: " + s);
                     } else {
-                        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, rl);
+                        UnifyTag<Item> tag = UnifyTag.item(rl);
                         collectedPattern.add(tag);
                     }
                 }

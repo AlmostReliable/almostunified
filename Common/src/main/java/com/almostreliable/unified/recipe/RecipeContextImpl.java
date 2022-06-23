@@ -2,28 +2,26 @@ package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
+import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.ReplacementMap;
+import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.function.UnaryOperator;
 
 @SuppressWarnings("SameParameterValue")
 public class RecipeContextImpl implements RecipeContext {
     private final ResourceLocation type;
-    private final ResourceLocation id;
     private final JsonObject currentRecipe;
     private final ReplacementMap replacementMap;
 
-    public RecipeContextImpl(ResourceLocation type, ResourceLocation id, JsonObject currentRecipe, ReplacementMap replacementMap) {
+    public RecipeContextImpl(ResourceLocation type, JsonObject currentRecipe, ReplacementMap replacementMap) {
         this.type = type;
-        this.id = id;
         this.currentRecipe = currentRecipe;
         this.replacementMap = replacementMap;
     }
@@ -40,13 +38,17 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
-    public ResourceLocation getPreferredItemByTag(TagKey<Item> tag) {
+    public ResourceLocation getPreferredItemByTag(@Nullable UnifyTag<Item> tag) {
+        if (tag == null) {
+            return null;
+        }
+
         return replacementMap.getPreferredItemByTag(tag);
     }
 
     @Nullable
     @Override
-    public TagKey<Item> getPreferredTagByItem(@Nullable ResourceLocation item) {
+    public UnifyTag<Item> getPreferredTagByItem(@Nullable ResourceLocation item) {
         if (item == null) {
             return null;
         }
@@ -54,29 +56,70 @@ public class RecipeContextImpl implements RecipeContext {
         return replacementMap.getPreferredTag(item);
     }
 
+    @Override
     @Nullable
-    protected JsonElement depthReplace(JsonElement element, String potentialFrom, String potentialTo, UnaryOperator<JsonPrimitive> primitiveCallback) {
-        if (element instanceof JsonPrimitive primitive) {
-            return primitiveCallback.apply(primitive);
+    public JsonElement createIngredientReplacement(@Nullable JsonElement element) {
+        if (element == null) {
+            return null;
         }
+        JsonElement copy = element.deepCopy();
+        tryReplacingItemInIngredient(copy);
+        return element.equals(copy) ? null : copy;
+    }
 
-        if (element instanceof JsonObject object) {
-            JsonElement replace = depthReplace(object.get(potentialFrom),
-                    potentialFrom,
-                    potentialTo,
-                    primitiveCallback);
-            if (replace != null) {
-                object.remove(potentialFrom);
-                object.add(potentialTo, replace);
+    private void tryReplacingItemInIngredient(@Nullable JsonElement element) {
+        if (element instanceof JsonArray array) {
+            for (JsonElement e : array) {
+                tryReplacingItemInIngredient(e);
             }
         }
 
-        if (element instanceof JsonArray array) {
-            for (int i = 0; i < array.size(); i++) {
-                JsonElement replace = depthReplace(array.get(i), potentialFrom, potentialTo, primitiveCallback);
-                if (replace != null) {
-                    array.set(i, replace);
+        if (element instanceof JsonObject object) {
+            tryReplacingItemInIngredient(object.get(RecipeConstants.VALUE));
+            tryReplacingItemInIngredient(object.get(RecipeConstants.INGREDIENT));
+
+            if (object.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {
+                ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
+                UnifyTag<Item> tag = getPreferredTagByItem(item);
+                if (tag != null) {
+                    object.remove(RecipeConstants.ITEM);
+                    object.add(RecipeConstants.TAG, new JsonPrimitive(tag.location().toString()));
                 }
+            }
+        }
+    }
+
+    @Override
+    @Nullable
+    public JsonElement createResultReplacement(@Nullable JsonElement element) {
+        if (element == null) {
+            return null;
+        }
+        JsonElement copy = element.deepCopy();
+        JsonElement result = tryCreateResultReplacement(copy);
+        return element.equals(result) ? null : result;
+    }
+
+    @Nullable
+    private JsonElement tryCreateResultReplacement(JsonElement element) {
+        if (element instanceof JsonPrimitive primitive) {
+            ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
+            ResourceLocation replacement = getReplacementForItem(item);
+            if (replacement != null) {
+                return new JsonPrimitive(replacement.toString());
+            }
+            return null;
+        }
+
+        if (element instanceof JsonArray array) {
+            if (JsonUtils.replaceOn(array, this::tryCreateResultReplacement)) {
+                return element;
+            }
+        }
+
+        if (element instanceof JsonObject object) {
+            if (JsonUtils.replaceOn(object, RecipeConstants.ITEM, this::tryCreateResultReplacement)) {
+                return element;
             }
         }
 
@@ -84,38 +127,8 @@ public class RecipeContextImpl implements RecipeContext {
     }
 
     @Override
-    @Nullable
-    public JsonElement replaceIngredient(JsonElement element) {
-        return depthReplace(element, RecipeConstants.ITEM, RecipeConstants.TAG, primitive -> {
-            ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
-            TagKey<Item> tag = getPreferredTagByItem(item);
-            if (tag != null) {
-                return new JsonPrimitive(tag.location().toString());
-            }
-            return null;
-        });
-    }
-
-    @Override
-    public JsonElement replaceResult(JsonElement element) {
-        return depthReplace(element, RecipeConstants.ITEM, RecipeConstants.ITEM, primitive -> {
-            ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
-            ResourceLocation replacement = getReplacementForItem(item);
-            if (replacement != null) {
-                return new JsonPrimitive(replacement.toString());
-            }
-            return null;
-        });
-    }
-
-    @Override
     public ResourceLocation getType() {
         return type;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
     }
 
     @Override
