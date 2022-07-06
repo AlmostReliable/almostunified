@@ -2,7 +2,7 @@ package com.almostreliable.unified.recipe.handler;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeHandler;
-import com.almostreliable.unified.api.recipe.RecipeTransformations;
+import com.almostreliable.unified.api.recipe.RecipeTransformationBuilder;
 
 import java.util.Set;
 
@@ -16,7 +16,7 @@ public class GenericRecipeHandler implements RecipeHandler {
             RecipeConstants.RESULTS);
 
     @Override
-    public void collectTransformations(RecipeTransformations builder) {
+    public void collectTransformations(RecipeTransformationBuilder builder) {
         for (String inputKey : inputKeys) {
             builder.put(inputKey, (json, ctx) -> ctx.createIngredientReplacement(json));
         }

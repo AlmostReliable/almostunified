@@ -6,6 +6,7 @@ import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.utils.JsonQuery;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IERecipeHandlerTest {
     public final Gson gson = new Gson();
 
+    private final ResourceLocation defaultRecipeId = new ResourceLocation("default_test_recipe");
     private final String simpleAlloyRecipe = """
             {
                 "type": "immersiveengineering:alloy",
@@ -28,7 +30,7 @@ public class IERecipeHandlerTest {
         RecipeTransformer transformer = TestUtils.basicTransformer(f -> f.registerForMod(ModConstants.IE,
                 new IERecipeHandler()));
         JsonObject alloy = gson.fromJson(simpleAlloyRecipe, JsonObject.class);
-        JsonObject result = transformer.transformRecipe(alloy);
+        JsonObject result = transformer.transformRecipe(defaultRecipeId, alloy);
         assertNull(result, "Nothing to transform, so it should be null");
     }
 
@@ -41,7 +43,7 @@ public class IERecipeHandlerTest {
                 .getAsJsonObject("result")
                 .getAsJsonObject("base_ingredient")
                 .addProperty("tag", TestUtils.BRONZE_ORES_TAG.location().toString());
-        JsonObject result = transformer.transformRecipe(alloy);
+        JsonObject result = transformer.transformRecipe(defaultRecipeId, alloy);
         assertNotEquals(result, alloy, "Result should be different");
         assertNotNull(result, "Result should not be null");
         assertNull(JsonQuery.of(result, "result/base_ingredient/tag"), "Tag key should be removed");
@@ -60,7 +62,7 @@ public class IERecipeHandlerTest {
                 .getAsJsonObject("result")
                 .getAsJsonObject("base_ingredient")
                 .addProperty("item", TestUtils.mod3RL("bronze_ore").toString());
-        JsonObject result = transformer.transformRecipe(alloy);
+        JsonObject result = transformer.transformRecipe(defaultRecipeId, alloy);
         assertNotEquals(result, alloy, "Result should be different");
         assertNotNull(result, "Result should not be null");
         assertEquals(JsonQuery.of(result, ("result/base_ingredient/item")).asString(),
@@ -78,7 +80,7 @@ public class IERecipeHandlerTest {
                 .getAsJsonObject("result")
                 .getAsJsonObject("base_ingredient")
                 .addProperty("item", TestUtils.mod3RL("bronze_ore").toString());
-        JsonObject result = transformer.transformRecipe(alloy);
+        JsonObject result = transformer.transformRecipe(defaultRecipeId, alloy);
         assertNotEquals(result, alloy, "Result should be different");
         assertNotNull(result, "Result should not be null");
         assertEquals(JsonQuery.of(result, ("result/base_ingredient/item")).asString(),

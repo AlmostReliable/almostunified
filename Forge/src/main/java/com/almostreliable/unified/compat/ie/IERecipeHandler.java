@@ -3,7 +3,7 @@ package com.almostreliable.unified.compat.ie;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeHandler;
-import com.almostreliable.unified.api.recipe.RecipeTransformations;
+import com.almostreliable.unified.api.recipe.RecipeTransformationBuilder;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.Utils;
 import com.google.gson.JsonArray;
@@ -20,7 +20,7 @@ public class IERecipeHandler implements RecipeHandler {
 
     // TODO make it cleaner
     @Override
-    public void collectTransformations(RecipeTransformations builder) {
+    public void collectTransformations(RecipeTransformationBuilder builder) {
         builder.put("input0", this::replaceIEIngredient); // alloy recipes, refinery
         builder.put("input1", this::replaceIEIngredient); // alloy recipes, refinery
         builder.put(RecipeConstants.INPUT,

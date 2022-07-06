@@ -1,5 +1,7 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.recipe.RecipeDumper;
+import com.almostreliable.unified.recipe.RecipeTransformationResult;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
@@ -32,7 +34,8 @@ public abstract class AlmostUnifiedRuntime {
         TagMap tagMap = createTagMap();
         ReplacementMap replacementMap = new ReplacementMap(tagMap, config.getAllowedTags(), modPriorities);
         RecipeTransformer transformer = new RecipeTransformer(recipeHandlerFactory, replacementMap);
-        transformer.transformRecipes(recipes);
+        RecipeTransformationResult result = transformer.transformRecipes(recipes);
+        new RecipeDumper(result).dump();
     }
 
     public void updateTagManager(TagManager tagManager) {

@@ -32,6 +32,11 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
     }
 
     @Override
+    public Path getLogPath() {
+        return FMLPaths.GAMEDIR.get().resolve("logs").resolve(BuildConfig.MOD_ID);
+    }
+
+    @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
         factory.registerForMod(ModConstants.IE, new IERecipeHandler());
     }

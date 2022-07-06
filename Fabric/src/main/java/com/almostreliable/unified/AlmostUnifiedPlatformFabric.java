@@ -28,6 +28,11 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
     }
 
     @Override
+    public Path getLogPath() {
+        return FabricLoader.getInstance().getGameDir().resolve("logs").resolve(BuildConfig.MOD_ID);
+    }
+
+    @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
 
     }

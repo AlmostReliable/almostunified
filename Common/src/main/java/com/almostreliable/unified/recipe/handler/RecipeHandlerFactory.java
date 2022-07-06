@@ -2,7 +2,7 @@ package com.almostreliable.unified.recipe.handler;
 
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeHandler;
-import com.almostreliable.unified.api.recipe.RecipeTransformations;
+import com.almostreliable.unified.api.recipe.RecipeTransformationBuilder;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ public class RecipeHandlerFactory {
     private final Map<ResourceLocation, RecipeHandler> transformersByType = new HashMap<>();
     private final Map<String, RecipeHandler> transformersByModId = new HashMap<>();
 
-    public void create(RecipeTransformations builder, RecipeContext context) {
+    public void fillTransformations(RecipeTransformationBuilder builder, RecipeContext context) {
         GenericRecipeHandler.INSTANCE.collectTransformations(builder);
 
         if (context.hasProperty(ShapedRecipeKeyHandler.PATTERN_PROPERTY) &&
@@ -20,12 +20,13 @@ public class RecipeHandlerFactory {
             ShapedRecipeKeyHandler.INSTANCE.collectTransformations(builder);
         }
 
-        RecipeHandler byMod = transformersByModId.get(context.getModId());
+        ResourceLocation type = context.getType();
+        RecipeHandler byMod = transformersByModId.get(type.getNamespace());
         if (byMod != null) {
             byMod.collectTransformations(builder);
         }
 
-        RecipeHandler byType = transformersByType.get(context.getType());
+        RecipeHandler byType = transformersByType.get(type);
         if (byType != null) {
             byType.collectTransformations(builder);
         }

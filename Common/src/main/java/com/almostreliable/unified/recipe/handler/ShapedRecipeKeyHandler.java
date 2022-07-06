@@ -1,7 +1,7 @@
 package com.almostreliable.unified.recipe.handler;
 
 import com.almostreliable.unified.api.recipe.RecipeHandler;
-import com.almostreliable.unified.api.recipe.RecipeTransformations;
+import com.almostreliable.unified.api.recipe.RecipeTransformationBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -11,7 +11,7 @@ public class ShapedRecipeKeyHandler implements RecipeHandler {
     public static final String KEY_PROPERTY = "key";
 
     @Override
-    public void collectTransformations(RecipeTransformations builder) {
+    public void collectTransformations(RecipeTransformationBuilder builder) {
         builder.put(KEY_PROPERTY, JsonObject.class, (json, context) -> {
             for (var entry : json.entrySet()) {
                 JsonElement result = context.createIngredientReplacement(entry.getValue());

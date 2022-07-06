@@ -16,13 +16,13 @@ import javax.annotation.Nullable;
 
 @SuppressWarnings("SameParameterValue")
 public class RecipeContextImpl implements RecipeContext {
-    private final ResourceLocation type;
-    private final JsonObject currentRecipe;
-    private final ReplacementMap replacementMap;
 
-    public RecipeContextImpl(ResourceLocation type, JsonObject currentRecipe, ReplacementMap replacementMap) {
-        this.type = type;
-        this.currentRecipe = currentRecipe;
+    private final ReplacementMap replacementMap;
+    private final JsonObject originalRecipe;
+
+
+    public RecipeContextImpl(JsonObject json, ReplacementMap replacementMap) {
+        this.originalRecipe = json;
         this.replacementMap = replacementMap;
     }
 
@@ -128,11 +128,12 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Override
     public ResourceLocation getType() {
-        return type;
+        String type = originalRecipe.get("type").getAsString();
+        return new ResourceLocation(type);
     }
 
     @Override
     public boolean hasProperty(String property) {
-        return currentRecipe.has(property);
+        return originalRecipe.has(property);
     }
 }

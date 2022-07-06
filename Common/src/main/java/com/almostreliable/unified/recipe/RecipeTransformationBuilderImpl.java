@@ -1,7 +1,7 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.api.recipe.RecipeContext;
-import com.almostreliable.unified.api.recipe.RecipeTransformations;
+import com.almostreliable.unified.api.recipe.RecipeTransformationBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public class RecipeTransformationsImpl implements RecipeTransformations {
+public class RecipeTransformationBuilderImpl implements RecipeTransformationBuilder {
     private final Map<String, Entry<?>> consumers = new HashMap<>();
 
     @Override
@@ -42,7 +42,6 @@ public class RecipeTransformationsImpl implements RecipeTransformations {
         consumers.put(property, new Entry<>(type, consumer));
     }
 
-    @Nullable
     public JsonObject transform(JsonObject json, RecipeContext context) {
         JsonObject changedValues = new JsonObject();
 
