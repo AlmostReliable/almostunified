@@ -14,7 +14,6 @@ public class ReplacementMapTests {
     @Test
     public void getPreferredItemByTag() {
         ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(),
-                TestUtils.TEST_ALLOWED_TAGS,
                 TestUtils.TEST_MOD_PRIORITIES);
         assertEquals(map.getPreferredItemByTag(TestUtils.BRONZE_ORES_TAG), TestUtils.mod1RL("bronze_ore"));
         assertNotEquals(map.getPreferredItemByTag(TestUtils.BRONZE_ORES_TAG), TestUtils.mod2RL("bronze_ore"));
@@ -30,7 +29,7 @@ public class ReplacementMapTests {
     public void getPreferredItemByTag_ReversePriority() {
         // We reverse the order. See `testTagMap` for the mapping.
         List<String> reverse = Lists.reverse(TestUtils.TEST_MOD_PRIORITIES);
-        ReplacementMap reverseMap = new ReplacementMap(TagMapTests.testTagMap(), TestUtils.TEST_ALLOWED_TAGS, reverse);
+        ReplacementMap reverseMap = new ReplacementMap(TagMapTests.testTagMap(), reverse);
         assertEquals(reverseMap.getPreferredItemByTag(TestUtils.BRONZE_ORES_TAG), TestUtils.mod3RL("bronze_ore"));
         assertEquals(reverseMap.getPreferredItemByTag(TestUtils.INVAR_ORES_TAG), TestUtils.mod4RL("invar_ore"));
         assertEquals(reverseMap.getPreferredItemByTag(TestUtils.TIN_ORES_TAG), TestUtils.mod4RL("tin_ore"));
@@ -40,7 +39,6 @@ public class ReplacementMapTests {
     @Test
     public void getPreferredTag() {
         ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(),
-                TestUtils.TEST_ALLOWED_TAGS,
                 TestUtils.TEST_MOD_PRIORITIES);
 
         assertEquals(map.getPreferredTag(TestUtils.mod1RL("bronze_ore")), TestUtils.BRONZE_ORES_TAG);

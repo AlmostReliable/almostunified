@@ -6,9 +6,11 @@ import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagManager;
+import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -31,8 +33,9 @@ public abstract class AlmostUnifiedRuntime {
         config.load();
         modPriorities = config.getModPriorities();
         onRun();
-        TagMap tagMap = createTagMap();
-        ReplacementMap replacementMap = new ReplacementMap(tagMap, config.getAllowedTags(), modPriorities);
+        List<UnifyTag<Item>> allowedTags = config.getAllowedTags();
+        TagMap tagMap = createTagMap(allowedTags);
+        ReplacementMap replacementMap = new ReplacementMap(tagMap, modPriorities);
         RecipeTransformer transformer = new RecipeTransformer(recipeHandlerFactory, replacementMap);
         RecipeTransformationResult result = transformer.transformRecipes(recipes);
         new RecipeDumper(result).dump();
@@ -42,12 +45,12 @@ public abstract class AlmostUnifiedRuntime {
         this.tagManager = tagManager;
     }
 
-    protected TagMap createTagMap() {
+    protected TagMap createTagMap(List<UnifyTag<Item>> allowedTags) {
         if (tagManager == null) {
             throw new IllegalStateException("Internal error. TagManager was not updated correctly");
         }
 
-        return TagMap.create(tagManager);
+        return TagMap.create(tagManager, allowedTags::contains);
     }
 
     protected abstract void onRun();

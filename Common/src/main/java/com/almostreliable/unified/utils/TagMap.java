@@ -5,11 +5,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class TagMap {
     private final Map<UnifyTag<Item>, Set<ResourceLocation>> tagsToItems = new HashMap<>();
@@ -17,7 +17,7 @@ public class TagMap {
 
     protected TagMap() {}
 
-    public static TagMap create(TagManager tagManager) {
+    public static TagMap create(TagManager tagManager, Predicate<UnifyTag<Item>> filter) {
         Objects.requireNonNull(tagManager, "Requires a non-null tag manager");
 
         var tags = tagManager
@@ -32,6 +32,10 @@ public class TagMap {
 
         for (var entry : tags.entrySet()) {
             UnifyTag<Item> tag = UnifyTag.item(entry.getKey());
+            if (!filter.test(tag)) {
+                continue;
+            }
+
             Tag<? extends Holder<?>> holderTag = entry.getValue();
 
             for (Holder<?> holder : holderTag.getValues()) {

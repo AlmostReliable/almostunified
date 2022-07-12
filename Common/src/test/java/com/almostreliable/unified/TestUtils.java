@@ -5,7 +5,6 @@ import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMapTests;
 import com.almostreliable.unified.utils.UnifyTag;
-import com.google.gson.Gson;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -67,7 +66,6 @@ public class TestUtils {
 
     public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {
         ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(),
-                TestUtils.TEST_ALLOWED_TAGS,
                 TestUtils.TEST_MOD_PRIORITIES);
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         consumer.accept(factory);
