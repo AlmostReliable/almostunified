@@ -9,7 +9,11 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 public class RecipeTransformer {
 
@@ -29,23 +33,59 @@ public class RecipeTransformer {
     }
 
     public RecipeTransformationResult transformRecipes(Map<ResourceLocation, JsonElement> recipes) {
+        ConcurrentMap<ResourceLocation, List<RawRecipe>> rawRecipesByType = recipes
+                .entrySet()
+                .parallelStream()
+                .filter(entry -> entry.getValue().isJsonObject() && hasValidType(entry.getValue().getAsJsonObject()))
+                .map(entry -> new RawRecipe(entry.getKey(), entry.getValue().getAsJsonObject()))
+                .collect(Collectors.groupingByConcurrent(RawRecipe::getType));
+
         RecipeTransformationResult recipeTransformationResult = new RecipeTransformationResult();
 
-        for (var entry : recipes.entrySet()) {
-            if (!hasValidType(entry.getValue().getAsJsonObject())) {
-                continue;
-            }
-
-            if (entry.getValue() instanceof JsonObject json) {
-                JsonObject result = transformRecipe(entry.getKey(), json);
-                recipeTransformationResult.track(entry.getKey(), json, result);
+        rawRecipesByType.forEach((type, rawRecipes) -> {
+            for (int curIndex = 0; curIndex < rawRecipes.size(); curIndex++) {
+                RawRecipe curRecipe = rawRecipes.get(curIndex);
+                JsonObject result = transformRecipe(curRecipe.getId(), curRecipe.getOriginal());
                 if (result != null) {
-                    entry.setValue(result);
+                    recipeTransformationResult.track(curRecipe.getId(), curRecipe.getOriginal(), result); // TODO remove
+
+                    curRecipe.setTransformed(result);
+
+                    for (int compareIndex = 0; compareIndex < curIndex; compareIndex++) { // TODO extract
+                        RawRecipe toCompare = rawRecipes.get(compareIndex);
+                        if(toCompare.isDuplicate()) continue;
+                        JsonObject json = toCompare.isTransformed() ? toCompare.getTransformed() : toCompare.getOriginal();
+                        if(result.equals(json)) { // TODO replace with cool equal which has additional compare rules
+                            toCompare.markAsDuplicate();
+                        }
+                    }
                 }
             }
-        }
+        });
+
+        Map<ResourceLocation, List<RawRecipe>> duplicates = new HashMap<>();
+        rawRecipesByType.forEach((type, rawRecipes) -> {
+            List<RawRecipe> duplicatesForType = rawRecipes.stream().filter(RawRecipe::isDuplicate).collect(Collectors.toList());
+            if(!duplicatesForType.isEmpty()) {
+                duplicates.put(type, duplicatesForType);
+            }
+        });
 
         recipeTransformationResult.end();
+
+//        for (var entry : recipes.entrySet()) {
+//            if (!hasValidType(entry.getValue().getAsJsonObject())) {
+//                continue;
+//            }
+//
+//            if (entry.getValue() instanceof JsonObject json) {
+//                JsonObject result = transformRecipe(entry.getKey(), json);
+//                recipeTransformationResult.track(entry.getKey(), json, result);
+//                if (result != null) {
+//                    entry.setValue(result);
+//                }
+//            }
+//        }
         return recipeTransformationResult;
     }
 

@@ -5,6 +5,8 @@ import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMapTests;
 import com.almostreliable.unified.utils.UnifyTag;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -70,5 +72,16 @@ public class TestUtils {
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         consumer.accept(factory);
         return new RecipeTransformer(factory, map);
+    }
+
+    public static JsonObject json(String json) {
+        return new Gson().fromJson(json, JsonObject.class);
+    }
+
+    public static JsonObject json(String json, Consumer<JsonObject> consumer) {
+        Gson gson = new Gson();
+        JsonObject obj = gson.fromJson(json, JsonObject.class);
+        consumer.accept(obj);
+        return obj;
     }
 }
