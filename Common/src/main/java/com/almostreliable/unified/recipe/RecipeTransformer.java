@@ -9,9 +9,9 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
@@ -50,26 +50,28 @@ public class RecipeTransformer {
                     recipeTransformationResult.track(curRecipe.getId(), curRecipe.getOriginal(), result); // TODO remove
 
                     curRecipe.setTransformed(result);
-
-                    for (int compareIndex = 0; compareIndex < curIndex; compareIndex++) { // TODO extract
-                        RawRecipe toCompare = rawRecipes.get(compareIndex);
-                        if(toCompare.isDuplicate()) continue;
-                        JsonObject json = toCompare.isTransformed() ? toCompare.getTransformed() : toCompare.getOriginal();
-                        if(result.equals(json)) { // TODO replace with cool equal which has additional compare rules
-                            toCompare.markAsDuplicate();
-                        }
-                    }
+                    handleDuplicate(curRecipe, rawRecipes);
                 }
             }
+
+            List<DuplicateLink> duplicateLinks = rawRecipes
+                    .stream()
+                    .map(RawRecipe::getDuplicateLink)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .toList();
+
+            String s = "";
         });
 
-        Map<ResourceLocation, List<RawRecipe>> duplicates = new HashMap<>();
-        rawRecipesByType.forEach((type, rawRecipes) -> {
-            List<RawRecipe> duplicatesForType = rawRecipes.stream().filter(RawRecipe::isDuplicate).collect(Collectors.toList());
-            if(!duplicatesForType.isEmpty()) {
-                duplicates.put(type, duplicatesForType);
-            }
-        });
+//        Map<ResourceLocation, List<RawRecipe>> duplicates = new HashMap<>();
+
+//        rawRecipesByType.forEach((type, rawRecipes) -> {
+//            List<RawRecipe> duplicatesForType = rawRecipes.stream().filter(RawRecipe::isDuplicate).collect(Collectors.toList());
+//            if(!duplicatesForType.isEmpty()) {
+//                duplicates.put(type, duplicatesForType);
+//            }
+//        });
 
         recipeTransformationResult.end();
 
@@ -89,6 +91,43 @@ public class RecipeTransformer {
         return recipeTransformationResult;
     }
 
+    private void handleDuplicate(RawRecipe curRecipe, List<RawRecipe> rawRecipes) {
+        if(curRecipe.getDuplicateLink() != null) {
+            AlmostUnified.LOG.error("Duplication already handled for recipe {}", curRecipe.getId());
+            return;
+        }
+
+        for (RawRecipe rawRecipe : rawRecipes) {
+            if (rawRecipe == curRecipe) {
+                return;
+            }
+
+            if (handleDuplicate(curRecipe, rawRecipe)) {
+                return;
+            }
+        }
+    }
+
+    private boolean handleDuplicate(RawRecipe curRecipe, RawRecipe rawRecipe) {
+        DuplicateLink link = rawRecipe.getDuplicateLink();
+        if(link != null) {
+            RawRecipe master = link.getMaster();
+            RawRecipe compare = curRecipe.compare(master);
+            if(compare != null) {
+                link.updateMaster(compare);
+                return true;
+            }
+        } else {
+            RawRecipe compare = curRecipe.compare(rawRecipe);
+            if(compare != null) {
+                rawRecipe.linkDuplicate(compare);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     @Nullable
     public JsonObject transformRecipe(ResourceLocation recipeId, JsonObject json) {
         try {
@@ -107,4 +146,5 @@ public class RecipeTransformer {
         }
         return null;
     }
+
 }
