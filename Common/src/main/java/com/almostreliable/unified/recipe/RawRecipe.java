@@ -17,7 +17,6 @@ public class RawRecipe {
     @Nullable private DuplicateLink duplicateLink;
     @Nullable private JsonObject transformedRecipe;
 
-
     public RawRecipe(ResourceLocation id, JsonObject originalRecipe) {
         this.id = id;
         this.originalRecipe = originalRecipe;
@@ -108,5 +107,12 @@ public class RawRecipe {
         }
 
         return null;
+    }
+
+    @Override
+    public String toString() {
+        String duplicate = duplicateLink != null ? " (duplicate)" : "";
+        String transformed = transformedRecipe != null ? " (transformed)" : "";
+        return String.format("['%s'] %s%s%s", type, id, duplicate, transformed);
     }
 }

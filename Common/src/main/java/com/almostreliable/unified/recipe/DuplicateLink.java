@@ -1,5 +1,6 @@
 package com.almostreliable.unified.recipe;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -13,19 +14,25 @@ public class DuplicateLink {
     }
 
     void updateMaster(RawRecipe master) {
-        4 = {DuplicateLink@28142}         Objects.requireNonNull(master);
+        Objects.requireNonNull(master);
         addDuplicate(master);
         this.currentMaster = master;
     }
 
     void addDuplicate(RawRecipe recipe) {
-        if(recipe == null) {
-            String s = "";
-        }
         recipes.add(recipe);
     }
 
     public RawRecipe getMaster() {
         return currentMaster;
+    }
+
+    public Set<RawRecipe> getRecipes() {
+        return Collections.unmodifiableSet(recipes);
+    }
+
+    @Override
+    public String toString() {
+        return "Link{currentMaster=" + currentMaster + ", recipes=" + recipes.size() + "}";
     }
 }
