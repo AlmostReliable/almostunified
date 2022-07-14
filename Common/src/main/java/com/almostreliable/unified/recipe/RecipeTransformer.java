@@ -9,6 +9,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,6 +43,7 @@ public class RecipeTransformer {
 
         RecipeTransformationResult recipeTransformationResult = new RecipeTransformationResult();
 
+        Map<ResourceLocation, List<RawRecipe.DuplicateLink>> links = new HashMap<>();
         rawRecipesByType.forEach((type, rawRecipes) -> {
             for (int curIndex = 0; curIndex < rawRecipes.size(); curIndex++) {
                 RawRecipe curRecipe = rawRecipes.get(curIndex);
@@ -53,26 +55,17 @@ public class RecipeTransformer {
                     handleDuplicate(curRecipe, rawRecipes);
                 }
             }
-
             // TODO remove later
-            List<DuplicateLink> duplicateLinks = rawRecipes
+            List<RawRecipe.DuplicateLink> duplicateLinks = rawRecipes
                     .stream()
                     .map(RawRecipe::getDuplicateLink)
                     .filter(Objects::nonNull)
                     .distinct()
                     .toList();
-
-            String s = "";
+            if(duplicateLinks.size() > 0) {
+                links.put(type, duplicateLinks);
+            }
         });
-
-//        Map<ResourceLocation, List<RawRecipe>> duplicates = new HashMap<>();
-
-//        rawRecipesByType.forEach((type, rawRecipes) -> {
-//            List<RawRecipe> duplicatesForType = rawRecipes.stream().filter(RawRecipe::isDuplicate).collect(Collectors.toList());
-//            if(!duplicatesForType.isEmpty()) {
-//                duplicates.put(type, duplicatesForType);
-//            }
-//        });
 
         recipeTransformationResult.end();
 
@@ -103,31 +96,11 @@ public class RecipeTransformer {
                 return;
             }
 
-            if (handleDuplicate(curRecipe, rawRecipe)) {
+            if (curRecipe.handleDuplicate(rawRecipe)) {
                 return;
             }
         }
     }
-
-    private boolean handleDuplicate(RawRecipe curRecipe, RawRecipe rawRecipe) {
-        DuplicateLink link = rawRecipe.getDuplicateLink();
-        if(link != null) {
-            RawRecipe master = link.getMaster();
-            RawRecipe compare = curRecipe.compare(master);
-            if(compare != null) {
-                link.updateMaster(compare);
-                return true;
-            }
-        } else {
-            RawRecipe compare = curRecipe.compare(rawRecipe);
-            if(compare != null) {
-                rawRecipe.linkDuplicate(compare);
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     @Nullable
     public JsonObject transformRecipe(ResourceLocation recipeId, JsonObject json) {

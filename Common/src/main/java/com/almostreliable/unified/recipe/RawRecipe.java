@@ -6,9 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class RawRecipe {
     private final ResourceLocation id;
@@ -40,14 +38,19 @@ public class RawRecipe {
         return originalRecipe;
     }
 
-    void linkDuplicate(RawRecipe recipe) {
-        Objects.requireNonNull(recipe);
-        if(recipe.getDuplicateLink() != null) {
-            AlmostUnified.LOG.error("Recipe {} already linked", recipe.getId());
+    private void setDuplicateLink(@Nullable DuplicateLink duplicateLink) {
+        Objects.requireNonNull(duplicateLink);
+        if (hasDuplicateLink()) {
+            throw new IllegalStateException("Recipe already linked");
         }
 
-        this.duplicateLink = new DuplicateLink(this);
-        this.duplicateLink.addDuplicate(recipe);
+        this.duplicateLink = duplicateLink;
+        this.duplicateLink.addDuplicate(this);
+    }
+
+
+    public boolean hasDuplicateLink() {
+        return duplicateLink != null;
     }
 
     @Nullable
@@ -114,5 +117,63 @@ public class RawRecipe {
         String duplicate = duplicateLink != null ? " (duplicate)" : "";
         String transformed = transformedRecipe != null ? " (transformed)" : "";
         return String.format("['%s'] %s%s%s", type, id, duplicate, transformed);
+    }
+
+    public boolean handleDuplicate(RawRecipe recipe) {
+        if (hasDuplicateLink()) {
+            throw new IllegalStateException("Recipe already linked");
+        }
+
+        DuplicateLink link = recipe.getDuplicateLink();
+        if(link != null) {
+            RawRecipe compare = compare(link.getMaster());
+            if(compare != null) {
+                link.updateMaster(this);
+                setDuplicateLink(link);
+                return true;
+            }
+        } else {
+            RawRecipe compare = compare(recipe);
+            if(compare != null) {
+                DuplicateLink newLink = new DuplicateLink(compare);
+                setDuplicateLink(newLink);
+                recipe.setDuplicateLink(newLink);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static class DuplicateLink {
+        private RawRecipe currentMaster;
+        private final Set<RawRecipe> recipes = new HashSet<>();
+
+        private DuplicateLink(RawRecipe master) {
+            updateMaster(master);
+        }
+
+        private void updateMaster(RawRecipe master) {
+            Objects.requireNonNull(master);
+            addDuplicate(master);
+            this.currentMaster = master;
+        }
+
+        private void addDuplicate(RawRecipe recipe) {
+            recipes.add(recipe);
+        }
+
+        public RawRecipe getMaster() {
+            return currentMaster;
+        }
+
+        public Set<RawRecipe> getRecipes() {
+            return Collections.unmodifiableSet(recipes);
+        }
+
+        @Override
+        public String toString() {
+            return "Link{currentMaster=" + currentMaster + ", recipes=" + recipes.size() + "}";
+        }
     }
 }
