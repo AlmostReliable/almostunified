@@ -53,7 +53,7 @@ public class IERecipeHandler implements RecipeHandler {
                  */
                 ResourceLocation item = context.getPreferredItemByTag(Utils.toItemTag(object
                         .get(RecipeConstants.TAG)
-                        .getAsString()));
+                        .getAsString()), $ -> true);
                 if (item != null) {
                     object.remove(RecipeConstants.TAG);
                     object.addProperty(RecipeConstants.ITEM, item.toString());

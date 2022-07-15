@@ -15,6 +15,13 @@ import java.util.*;
 
 public class ModConfig {
 
+    public static final List<String> DEFAULT_STONE_STRATA = List.of("stone",
+            "nether",
+            "deepslate",
+            "granite",
+            "diorite",
+            "andesite");
+
     @SuppressWarnings("SpellCheckingInspection")
     public static final List<String> DEFAULT_MOD_PRIORITIES = List.of(
             "kubejs",
@@ -69,8 +76,6 @@ public class ModConfig {
             "lapis",
             "lead",
             "lumium",
-            "mana",
-            "manyullyn",
             "nickel",
             "obsidian",
             "osmium",
@@ -93,6 +98,7 @@ public class ModConfig {
             "gears",
             "gems",
             "ingots",
+            "raw_materials",
             "ores",
             "plates",
             "rods",
@@ -118,7 +124,7 @@ public class ModConfig {
     }
 
     private static List<String> getDefaultPatterns() {
-        if (AlmostUnifiedPlatform.INSTANCE.getPlatformName().equals("Forge")) {
+        if (AlmostUnifiedPlatform.INSTANCE.getPlatform().equals("Forge")) {
             return List.of("forge:{types}/{materials}");
         } else {
             return List.of("c:{materials}_{types}");
@@ -154,6 +160,10 @@ public class ModConfig {
         }
 
         currentConfig.close();
+    }
+
+    public List<String> getStoneStrata() {
+        return Collections.unmodifiableList(DEFAULT_STONE_STRATA);
     }
 
     public List<String> getModPriorities() {

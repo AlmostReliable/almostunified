@@ -35,7 +35,7 @@ public abstract class AlmostUnifiedRuntime {
         onRun();
         List<UnifyTag<Item>> allowedTags = config.getAllowedTags();
         TagMap tagMap = createTagMap(allowedTags);
-        ReplacementMap replacementMap = new ReplacementMap(tagMap, modPriorities);
+        ReplacementMap replacementMap = new ReplacementMap(tagMap, modPriorities, config.getStoneStrata());
         RecipeTransformer transformer = new RecipeTransformer(recipeHandlerFactory, replacementMap);
         RecipeTransformationResult result = transformer.transformRecipes(recipes);
         new RecipeDumper(result).dump();

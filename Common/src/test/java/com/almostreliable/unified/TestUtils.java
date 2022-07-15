@@ -68,7 +68,7 @@ public class TestUtils {
 
     public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {
         ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(),
-                TestUtils.TEST_MOD_PRIORITIES);
+                TestUtils.TEST_MOD_PRIORITIES, ModConfig.DEFAULT_STONE_STRATA);
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         consumer.accept(factory);
         return new RecipeTransformer(factory, map);

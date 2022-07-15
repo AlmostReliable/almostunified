@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
+import java.util.function.Predicate;
 
 @SuppressWarnings("SameParameterValue")
 public class RecipeContextImpl implements RecipeContext {
@@ -38,12 +39,12 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
-    public ResourceLocation getPreferredItemByTag(@Nullable UnifyTag<Item> tag) {
+    public ResourceLocation getPreferredItemByTag(@Nullable UnifyTag<Item> tag, Predicate<ResourceLocation> filter) {
         if (tag == null) {
             return null;
         }
 
-        return replacementMap.getPreferredItemByTag(tag);
+        return replacementMap.getPreferredItemForTag(tag, filter);
     }
 
     @Nullable
@@ -53,7 +54,7 @@ public class RecipeContextImpl implements RecipeContext {
             return null;
         }
 
-        return replacementMap.getPreferredTag(item);
+        return replacementMap.getPreferredTagForItem(item);
     }
 
     @Override

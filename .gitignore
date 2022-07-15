@@ -20,5 +20,6 @@ build
 
 # other
 *.log
+*.log.gz
 eclipse
 run

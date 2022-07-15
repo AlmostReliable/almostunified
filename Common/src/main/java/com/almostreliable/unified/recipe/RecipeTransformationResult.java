@@ -23,17 +23,18 @@ public class RecipeTransformationResult {
         this.startTime = System.currentTimeMillis();
     }
 
-    public void track(ResourceLocation recipe, JsonObject json, @Nullable JsonObject result) {
-        Entry entry = new Entry(json, result);
-        ResourceLocation type = entry.getType();
+    // TODO refactor or remove and just use RawRecipe
+    public void track(RecipeLink recipe) {
+        Entry entry = new Entry(recipe.getOriginal(), recipe.getTransformed());
+        ResourceLocation type = recipe.getType();
 
-        if (allTrackedRecipes.contains(type, recipe)) {
+        if (allTrackedRecipes.contains(type, recipe.getId())) {
             throw new IllegalArgumentException("Already tracking " + type + ":" + recipe);
         }
-        allTrackedRecipes.put(type, recipe, entry);
+        allTrackedRecipes.put(type, recipe.getId(), entry);
 
         if (entry.isTransformed()) {
-            transformedRecipes.put(type, recipe, entry);
+            transformedRecipes.put(type, recipe.getId(), entry);
         }
     }
 

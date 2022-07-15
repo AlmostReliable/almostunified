@@ -2,12 +2,11 @@ package com.almostreliable.unified.api.recipe;
 
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.function.UnaryOperator;
+import java.util.function.Predicate;
 
 public interface RecipeContext {
 
@@ -15,7 +14,7 @@ public interface RecipeContext {
     ResourceLocation getReplacementForItem(@Nullable ResourceLocation item);
 
     @Nullable
-    ResourceLocation getPreferredItemByTag(@Nullable UnifyTag<Item> tag);
+    ResourceLocation getPreferredItemByTag(@Nullable UnifyTag<Item> tag, Predicate<ResourceLocation> filter);
 
     @Nullable
     UnifyTag<Item> getPreferredTagByItem(@Nullable ResourceLocation item);

@@ -9,11 +9,11 @@ public interface AlmostUnifiedPlatform {
     AlmostUnifiedPlatform INSTANCE = PlatformLoader.load(AlmostUnifiedPlatform.class);
 
     /**
-     * Gets the name of the current platform
+     * Gets the current platform
      *
-     * @return The name of the current platform.
+     * @return The current platform.
      */
-    String getPlatformName();
+    Platform getPlatform();
 
     /**
      * Checks if a mod with the given id is loaded.

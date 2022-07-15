@@ -8,8 +8,8 @@ import java.nio.file.Path;
 public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
 
     @Override
-    public String getPlatformName() {
-        return "Fabric";
+    public Platform getPlatform() {
+        return Platform.Fabric;
     }
 
     @Override

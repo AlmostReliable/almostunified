@@ -1,29 +1,54 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.recipe.ReplacementFallbackStrategy;
-import com.almostreliable.unified.recipe.fallbacks.StoneStrataFallbackStrategy;
+import com.almostreliable.unified.AlmostUnifiedPlatform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ReplacementMap {
 
     private final Collection<String> modPriorities;
+    private final List<String> stoneStrata;
     private final TagMap tagMap;
-    // TODO - In the future this may be a list of multiple fallbacks.
-    private final ReplacementFallbackStrategy fallbackStrategy = new StoneStrataFallbackStrategy();
 
-    public ReplacementMap(TagMap tagMap, List<String> modPriorities) {
+    public ReplacementMap(TagMap tagMap, List<String> modPriorities, List<String> stoneStrata) {
         this.tagMap = tagMap;
         this.modPriorities = modPriorities;
+        this.stoneStrata = stoneStrata;
+    }
+
+    /**
+     * Returns the stone strata from given item. Method works on the requirement that it's an item which has a stone strata.
+     * Use {@link #isStoneStrataTag(UnifyTag)} to fill this requirement.
+     *
+     * @param item The item to get the stone strata from.
+     * @return The stone strata of the item. Returning empty string means clean-stone strata.
+     */
+    private String getStoneStrata(ResourceLocation item) {
+        for (String stone : stoneStrata) {
+            if (item.getPath().startsWith(stone + "_")) {
+                return stone;
+            }
+        }
+
+        return "";
+    }
+
+    private boolean isStoneStrataTag(UnifyTag<Item> tag) {
+        String tagString = tag.location().toString();
+        return switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
+            case Forge -> tagString.startsWith("forge:ores/");
+            case Fabric -> tagString.matches("c:ores/.+") || tagString.matches("c:.+_ore");
+        };
     }
 
     @Nullable
-    public UnifyTag<Item> getPreferredTag(ResourceLocation item) {
+    public UnifyTag<Item> getPreferredTagForItem(ResourceLocation item) {
         Collection<UnifyTag<Item>> tags = tagMap.getTags(item);
 
         if (tags.isEmpty()) {
@@ -42,44 +67,31 @@ public class ReplacementMap {
 
     @Nullable
     public ResourceLocation getReplacementForItem(ResourceLocation item) {
-        UnifyTag<Item> tag = getPreferredTag(item);
-        if (tag == null) {
+        UnifyTag<Item> t = getPreferredTagForItem(item);
+        if (t == null) {
             return null;
         }
 
-        ResourceLocation preferredItem = getPreferredItemByTag(tag, item.getNamespace());
-        if (item.equals(preferredItem)) {
-            return null;
+        if (isStoneStrataTag(t)) {
+            String stone = getStoneStrata(item);
+            return getPreferredItemForTag(t, i -> stone.equals(getStoneStrata(i)));
         }
 
-        return preferredItem;
+        return getPreferredItemForTag(t, i -> true);
     }
 
     @Nullable
-    public ResourceLocation getPreferredItemByTag(UnifyTag<Item> tag) {
-        return getPreferredItemByTag(tag, null);
-    }
+    public ResourceLocation getPreferredItemForTag(UnifyTag<Item> tag, Predicate<ResourceLocation> itemFilter) {
+        List<ResourceLocation> items = tagMap
+                .getItems(tag)
+                .stream()
+                .filter(itemFilter)
+                .toList();
 
-    @Nullable
-    public ResourceLocation getPreferredItemByTag(UnifyTag<Item> tag, @Nullable String ignoredNamespace) {
-        for (String mod : modPriorities) {
-            if (mod.equals(ignoredNamespace)) {
-                return null;
-            }
-
-            List<ResourceLocation> sameModItems = tagMap
-                    .getItems(tag)
-                    .stream()
-                    .filter(i -> i.getNamespace().equals(mod))
-                    .toList();
-            if (sameModItems.size() == 1) {
-                return sameModItems.get(0);
-            }
-
-            if (sameModItems.size() > 1) {
-                ResourceLocation fallback = fallbackStrategy.getFallback(tag, sameModItems, tagMap);
-                if (fallback != null) {
-                    return fallback;
+        for (String modPriority : modPriorities) {
+            for (ResourceLocation item : items) {
+                if (item.getNamespace().equals(modPriority)) {
+                    return item;
                 }
             }
         }

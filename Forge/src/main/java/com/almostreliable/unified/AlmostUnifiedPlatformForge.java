@@ -12,8 +12,8 @@ import java.nio.file.Path;
 public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
 
     @Override
-    public String getPlatformName() {
-        return "Forge";
+    public Platform getPlatform() {
+        return Platform.Forge;
     }
 
     @Override

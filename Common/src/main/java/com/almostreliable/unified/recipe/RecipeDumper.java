@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 
 public class RecipeDumper {
@@ -54,16 +55,22 @@ public class RecipeDumper {
     private void dumpTransformedRecipes(StringBuilder stringBuilder, boolean full) {
         result.forEachTransformedRecipe((type, recipes) -> {
             stringBuilder.append(type.toString()).append(" {\n");
-            recipes.forEach((resourceLocation, entry) -> {
-                stringBuilder.append("\t- ").append(resourceLocation.toString()).append("\n");
-                if (full) {
-                    stringBuilder.append("\t\t    Original: ").append(entry.originalRecipe().toString()).append("\n");
-                    stringBuilder
-                            .append("\t\t Transformed: ")
-                            .append(entry.transformedRecipe().toString())
-                            .append("\n\n");
-                }
-            });
+            recipes.entrySet()
+                    .stream()
+                    .sorted(Comparator.comparing(o -> o.getKey().toString()))
+                    .forEach((e) -> {
+                        stringBuilder.append("\t- ").append(e.getKey().toString()).append("\n");
+                        if (full) {
+                            stringBuilder
+                                    .append("\t\t    Original: ")
+                                    .append(e.getValue().originalRecipe().toString())
+                                    .append("\n");
+                            stringBuilder
+                                    .append("\t\t Transformed: ")
+                                    .append(e.getValue().transformedRecipe().toString())
+                                    .append("\n\n");
+                        }
+                    });
             stringBuilder.append("}\n\n");
         });
     }
