@@ -3,15 +3,14 @@ package com.almostreliable.unified.recipe;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RecipeTransformer {
@@ -36,11 +35,12 @@ public class RecipeTransformer {
      * After unification, recipes will be checked for duplicates. All duplicates will be removed from the map.
      *
      * @param recipes The map of recipes to transform.
-     * @return
+     * @return The result of the transformation.
      */
-    public RecipeTransformationResult transformRecipes(Map<ResourceLocation, JsonElement> recipes) {
+    public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes) {
         AlmostUnified.LOG.warn("Recipe counts: " + recipes.size());
-        RecipeTransformationResult rtr = new RecipeTransformationResult();
+
+        Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
         byType.forEach((type, recipeLinks) -> {
             Set<RecipeLink.DuplicateLink> duplicates = new HashSet<>(recipeLinks.size());
@@ -52,7 +52,7 @@ public class RecipeTransformer {
                         duplicates.add(curRecipe.getDuplicateLink());
                     }
                 }
-                rtr.track(curRecipe); // TODO remove
+                result.add(curRecipe); // TODO remove
             }
 
             for (RecipeLink.DuplicateLink link : duplicates) {
@@ -60,9 +60,9 @@ public class RecipeTransformer {
                 recipes.put(link.createNewRecipeId(), link.getMaster().getActual());
             }
         });
-        rtr.end();
+
         AlmostUnified.LOG.warn("Recipe counts afterwards: " + recipes.size());
-        return rtr;
+        return result;
     }
 
     private Map<ResourceLocation, List<RecipeLink>> groupRecipesByType(Map<ResourceLocation, JsonElement> recipes) {
@@ -96,6 +96,7 @@ public class RecipeTransformer {
     /**
      * Transforms a single recipe link. This method will modify the recipe link in-place.
      * {@link RecipeHandlerFactory} will apply multiple transformations onto the recipe.
+     *
      * @param recipe The recipe link to transform.
      */
     public void transformRecipe(RecipeLink recipe) {
@@ -112,6 +113,42 @@ public class RecipeTransformer {
                     recipe.getId(),
                     e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public static class Result {
+        private final Multimap<ResourceLocation, RecipeLink> allRecipesByType = HashMultimap.create();
+        private final Multimap<ResourceLocation, RecipeLink> unifiedRecipesByType = HashMultimap.create();
+
+        private void add(RecipeLink link) {
+            if (allRecipesByType.containsEntry(link.getType(), link)) {
+                throw new IllegalStateException("Already tracking recipe type " + link.getType());
+            }
+
+            allRecipesByType.put(link.getType(), link);
+            if (link.isTransformed()) {
+                unifiedRecipesByType.put(link.getType(), link);
+            }
+        }
+
+        public Collection<RecipeLink> getRecipes(ResourceLocation type) {
+            return Collections.unmodifiableCollection(allRecipesByType.get(type));
+        }
+
+        public Collection<RecipeLink> getUnifiedRecipes(ResourceLocation type) {
+            return Collections.unmodifiableCollection(unifiedRecipesByType.get(type));
+        }
+
+        public int getRecipeCount() {
+            return allRecipesByType.size();
+        }
+
+        public int getUnifiedRecipeCount() {
+            return unifiedRecipesByType.size();
+        }
+
+        public Set<ResourceLocation> getUnifiedRecipeTypes() {
+            return unifiedRecipesByType.keySet();
         }
     }
 }
