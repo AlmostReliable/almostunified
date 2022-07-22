@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 
 import java.util.function.BiFunction;
 
-public interface RecipeTransformationBuilder {
+public interface RecipeUnifierBuilder {
 
     void forEachObject(String property, BiFunction<JsonObject, RecipeContext, JsonObject> consumer);
 

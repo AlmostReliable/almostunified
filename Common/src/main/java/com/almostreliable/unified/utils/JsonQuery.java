@@ -9,6 +9,10 @@ public class JsonQuery {
 
     private final JsonElement element;
 
+    JsonQuery(JsonElement element) {
+        this.element = element;
+    }
+
     public static JsonQuery of(JsonElement element) {
         return new JsonQuery(element);
     }
@@ -17,7 +21,7 @@ public class JsonQuery {
         String[] parts = path.split("/");
         JsonQuery current = of(element);
         for (String part : parts) {
-            if(StringUtils.isNumeric(part)) {
+            if (StringUtils.isNumeric(part)) {
                 current = current.get(Integer.parseInt(part));
             } else {
                 current = current.get(part);
@@ -26,17 +30,13 @@ public class JsonQuery {
         return current;
     }
 
-    JsonQuery(JsonElement element) {
-        this.element = element;
-    }
-
     public JsonQuery get(String identifier) {
-        if(!element.isJsonObject()) {
+        if (!element.isJsonObject()) {
             throw new IllegalArgumentException("Expected JsonObject, got " + element.getClass());
         }
 
         JsonElement child = element.getAsJsonObject().get(identifier);
-        if(child == null) {
+        if (child == null) {
             return null;
         }
 
@@ -44,12 +44,12 @@ public class JsonQuery {
     }
 
     public JsonQuery get(int index) {
-        if(!element.isJsonArray()) {
+        if (!element.isJsonArray()) {
             throw new IllegalArgumentException("Expected JsonArray, got " + element.getClass());
         }
 
         JsonElement child = element.getAsJsonArray().get(index);
-        if(child == null) {
+        if (child == null) {
             return null;
         }
 

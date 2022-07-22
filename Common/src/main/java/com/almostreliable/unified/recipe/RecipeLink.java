@@ -13,7 +13,7 @@ public class RecipeLink {
     private final ResourceLocation type;
     private final JsonObject originalRecipe;
     @Nullable private DuplicateLink duplicateLink;
-    @Nullable private JsonObject transformedRecipe;
+    @Nullable private JsonObject unifiedRecipe;
 
     public RecipeLink(ResourceLocation id, JsonObject originalRecipe) {
         this.id = id;
@@ -95,21 +95,21 @@ public class RecipeLink {
     }
 
     @Nullable
-    public JsonObject getTransformed() {
-        return transformedRecipe;
+    public JsonObject getUnified() {
+        return unifiedRecipe;
     }
 
-    public boolean isTransformed() {
-        return transformedRecipe != null;
+    public boolean isUnified() {
+        return unifiedRecipe != null;
     }
 
-    public void setTransformed(JsonObject transformedRecipe) {
-        Objects.requireNonNull(transformedRecipe);
-        if (isTransformed()) {
-            throw new IllegalStateException("Recipe already transformed");
+    void setUnified(JsonObject json) {
+        Objects.requireNonNull(json);
+        if (isUnified()) {
+            throw new IllegalStateException("Recipe already unified");
         }
 
-        this.transformedRecipe = transformedRecipe;
+        this.unifiedRecipe = json;
     }
 
     private List<String> getIgnoredFields() {
@@ -127,8 +127,8 @@ public class RecipeLink {
     @Override
     public String toString() {
         String duplicate = duplicateLink != null ? " (duplicate)" : "";
-        String transformed = transformedRecipe != null ? " (transformed)" : "";
-        return String.format("['%s'] %s%s%s", type, id, duplicate, transformed);
+        String unified = unifiedRecipe != null ? " (unified)" : "";
+        return String.format("['%s'] %s%s%s", type, id, duplicate, unified);
     }
 
     /**
@@ -165,7 +165,7 @@ public class RecipeLink {
     }
 
     public JsonObject getActual() {
-        return getTransformed() != null ? getTransformed() : getOriginal();
+        return getUnified() != null ? getUnified() : getOriginal();
     }
 
     public static class DuplicateLink {

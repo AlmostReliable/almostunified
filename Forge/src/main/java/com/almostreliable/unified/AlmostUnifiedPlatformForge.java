@@ -1,7 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.compat.ie.IERecipeHandler;
+import com.almostreliable.unified.compat.ie.IERecipeUnifier;
 import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -38,7 +38,7 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
 
     @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
-        factory.registerForMod(ModConstants.IE, new IERecipeHandler());
+        factory.registerForMod(ModConstants.IE, new IERecipeUnifier());
     }
 
     @Override

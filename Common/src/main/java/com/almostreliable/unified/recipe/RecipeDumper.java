@@ -83,7 +83,7 @@ public class RecipeDumper {
                             .append("\n");
                     stringBuilder
                             .append("\t\t Transformed: ")
-                            .append(recipe.getTransformed().toString())
+                            .append(recipe.getUnified().toString())
                             .append("\n\n");
                 }
             });

@@ -45,9 +45,9 @@ public class RecipeTransformer {
         byType.forEach((type, recipeLinks) -> {
             Set<RecipeLink.DuplicateLink> duplicates = new HashSet<>(recipeLinks.size());
             for (RecipeLink curRecipe : recipeLinks) {
-                transformRecipe(curRecipe);
-                if (curRecipe.isTransformed()) {
-                    recipes.put(curRecipe.getId(), curRecipe.getTransformed());
+                unifyRecipe(curRecipe);
+                if (curRecipe.isUnified()) {
+                    recipes.put(curRecipe.getId(), curRecipe.getUnified());
                     if (handleDuplicate(curRecipe, recipeLinks)) {
                         duplicates.add(curRecipe.getDuplicateLink());
                     }
@@ -94,22 +94,22 @@ public class RecipeTransformer {
     }
 
     /**
-     * Transforms a single recipe link. This method will modify the recipe link in-place.
-     * {@link RecipeHandlerFactory} will apply multiple transformations onto the recipe.
+     * Unifies a single recipe link. This method will modify the recipe link in-place.
+     * {@link RecipeHandlerFactory} will apply multiple unification's onto the recipe.
      *
-     * @param recipe The recipe link to transform.
+     * @param recipe The recipe link to unify.
      */
-    public void transformRecipe(RecipeLink recipe) {
+    public void unifyRecipe(RecipeLink recipe) {
         try {
             RecipeContextImpl ctx = new RecipeContextImpl(recipe.getOriginal(), replacementMap);
-            RecipeTransformationBuilderImpl builder = new RecipeTransformationBuilderImpl();
-            factory.fillTransformations(builder, ctx);
-            JsonObject result = builder.transform(recipe.getOriginal(), ctx);
+            RecipeUnifierBuilderImpl builder = new RecipeUnifierBuilderImpl();
+            factory.fillUnifier(builder, ctx);
+            JsonObject result = builder.unify(recipe.getOriginal(), ctx);
             if (result != null) {
-                recipe.setTransformed(result);
+                recipe.setUnified(result);
             }
         } catch (Exception e) {
-            AlmostUnified.LOG.warn("Error transforming recipe '{}': {}",
+            AlmostUnified.LOG.warn("Error unifying recipe '{}': {}",
                     recipe.getId(),
                     e.getMessage());
             e.printStackTrace();
@@ -126,7 +126,7 @@ public class RecipeTransformer {
             }
 
             allRecipesByType.put(link.getType(), link);
-            if (link.isTransformed()) {
+            if (link.isUnified()) {
                 unifiedRecipesByType.put(link.getType(), link);
             }
         }

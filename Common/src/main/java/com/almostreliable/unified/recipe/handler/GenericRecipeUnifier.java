@@ -1,13 +1,13 @@
 package com.almostreliable.unified.recipe.handler;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
-import com.almostreliable.unified.api.recipe.RecipeHandler;
-import com.almostreliable.unified.api.recipe.RecipeTransformationBuilder;
+import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
 
 import java.util.Set;
 
-public class GenericRecipeHandler implements RecipeHandler {
-    public static final GenericRecipeHandler INSTANCE = new GenericRecipeHandler();
+public class GenericRecipeUnifier implements RecipeUnifier {
+    public static final GenericRecipeUnifier INSTANCE = new GenericRecipeUnifier();
     private final Set<String> inputKeys = Set.of(RecipeConstants.INPUT,
             RecipeConstants.INGREDIENT,
             RecipeConstants.INGREDIENTS);
@@ -16,7 +16,7 @@ public class GenericRecipeHandler implements RecipeHandler {
             RecipeConstants.RESULTS);
 
     @Override
-    public void collectTransformations(RecipeTransformationBuilder builder) {
+    public void collectUnifier(RecipeUnifierBuilder builder) {
         for (String inputKey : inputKeys) {
             builder.put(inputKey, (json, ctx) -> ctx.createIngredientReplacement(json));
         }

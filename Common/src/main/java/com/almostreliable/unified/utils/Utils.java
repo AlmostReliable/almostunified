@@ -1,9 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.BuildConfig;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;

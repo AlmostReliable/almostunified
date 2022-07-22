@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IERecipeHandlerTest {
+public class IERecipeUnifierTest {
     public final Gson gson = new Gson();
 
     private final ResourceLocation defaultRecipeId = new ResourceLocation("default_test_recipe");
@@ -29,29 +29,29 @@ public class IERecipeHandlerTest {
     @Test
     public void notMatching() {
         RecipeTransformer transformer = TestUtils.basicTransformer(f -> f.registerForMod(ModConstants.IE,
-                new IERecipeHandler()));
+                new IERecipeUnifier()));
         JsonObject alloy = gson.fromJson(simpleAlloyRecipe, JsonObject.class);
         RecipeLink recipe = new RecipeLink(defaultRecipeId, alloy);
-        transformer.transformRecipe(recipe);
-        assertFalse(recipe.isTransformed(), "Nothing to transform, so it should be false");
+        transformer.unifyRecipe(recipe);
+        assertFalse(recipe.isUnified(), "Nothing to transform, so it should be false");
     }
 
     @Test
     public void resultTagMatches() {
         RecipeTransformer transformer = TestUtils.basicTransformer(f -> f.registerForMod(ModConstants.IE,
-                new IERecipeHandler()));
+                new IERecipeUnifier()));
         JsonObject alloy = gson.fromJson(simpleAlloyRecipe, JsonObject.class);
         alloy
                 .getAsJsonObject("result")
                 .getAsJsonObject("base_ingredient")
                 .addProperty("tag", TestUtils.BRONZE_ORES_TAG.location().toString());
         RecipeLink recipe = new RecipeLink(defaultRecipeId, alloy);
-        transformer.transformRecipe(recipe);
+        transformer.unifyRecipe(recipe);
 
-        assertNotEquals(recipe.getTransformed(), alloy, "Result should be different");
-        assertNotNull(recipe.getTransformed(), "Result should not be null");
-        assertNull(JsonQuery.of(recipe.getTransformed(), "result/base_ingredient/tag"), "Tag key should be removed");
-        assertEquals(JsonQuery.of(recipe.getTransformed(), "result/base_ingredient/item").asString(),
+        assertNotEquals(recipe.getUnified(), alloy, "Result should be different");
+        assertNotNull(recipe.getUnified(), "Result should not be null");
+        assertNull(JsonQuery.of(recipe.getUnified(), "result/base_ingredient/tag"), "Tag key should be removed");
+        assertEquals(JsonQuery.of(recipe.getUnified(), "result/base_ingredient/item").asString(),
                 TestUtils.mod1RL("bronze_ore").toString(),
                 "Result should be bronze_ore");
     }
@@ -59,7 +59,7 @@ public class IERecipeHandlerTest {
     @Test
     public void resultItemMatches() {
         RecipeTransformer transformer = TestUtils.basicTransformer(f -> f.registerForMod(ModConstants.IE,
-                new IERecipeHandler()));
+                new IERecipeUnifier()));
         JsonObject alloy = gson.fromJson(simpleAlloyRecipe, JsonObject.class);
         alloy.getAsJsonObject("result").getAsJsonObject("base_ingredient").remove("tag");
         alloy
@@ -67,11 +67,11 @@ public class IERecipeHandlerTest {
                 .getAsJsonObject("base_ingredient")
                 .addProperty("item", TestUtils.mod3RL("bronze_ore").toString());
         RecipeLink recipe = new RecipeLink(defaultRecipeId, alloy);
-        transformer.transformRecipe(recipe);
+        transformer.unifyRecipe(recipe);
 
-        assertNotEquals(recipe.getTransformed(), alloy, "Result should be different");
-        assertNotNull(recipe.getTransformed(), "Result should not be null");
-        assertEquals(JsonQuery.of(recipe.getTransformed(), ("result/base_ingredient/item")).asString(),
+        assertNotEquals(recipe.getUnified(), alloy, "Result should be different");
+        assertNotNull(recipe.getUnified(), "Result should not be null");
+        assertEquals(JsonQuery.of(recipe.getUnified(), ("result/base_ingredient/item")).asString(),
                 TestUtils.mod1RL("bronze_ore").toString(),
                 "Transformer should replace bronze_ore from mod3 with bronze_ore from mod1");
     }
@@ -79,7 +79,7 @@ public class IERecipeHandlerTest {
     @Test
     public void inputAlloyItemMatches() {
         RecipeTransformer transformer = TestUtils.basicTransformer(f -> f.registerForMod(ModConstants.IE,
-                new IERecipeHandler()));
+                new IERecipeUnifier()));
         JsonObject alloy = gson.fromJson(simpleAlloyRecipe, JsonObject.class);
         alloy.getAsJsonObject("result").getAsJsonObject("base_ingredient").remove("tag");
         alloy
@@ -87,11 +87,11 @@ public class IERecipeHandlerTest {
                 .getAsJsonObject("base_ingredient")
                 .addProperty("item", TestUtils.mod3RL("bronze_ore").toString());
         RecipeLink recipe = new RecipeLink(defaultRecipeId, alloy);
-        transformer.transformRecipe(recipe);
+        transformer.unifyRecipe(recipe);
 
-        assertNotEquals(recipe.getTransformed(), alloy, "Result should be different");
-        assertNotNull(recipe.getTransformed(), "Result should not be null");
-        assertEquals(JsonQuery.of(recipe.getTransformed(), ("result/base_ingredient/item")).asString(),
+        assertNotEquals(recipe.getUnified(), alloy, "Result should be different");
+        assertNotNull(recipe.getUnified(), "Result should not be null");
+        assertEquals(JsonQuery.of(recipe.getUnified(), ("result/base_ingredient/item")).asString(),
                 TestUtils.mod1RL("bronze_ore").toString(),
                 "Transformer should replace bronze_ore from mod3 with bronze_ore from mod1");
     }

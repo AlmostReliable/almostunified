@@ -2,8 +2,8 @@ package com.almostreliable.unified.compat.ie;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
-import com.almostreliable.unified.api.recipe.RecipeHandler;
-import com.almostreliable.unified.api.recipe.RecipeTransformationBuilder;
+import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.Utils;
 import com.google.gson.JsonArray;
@@ -13,14 +13,14 @@ import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class IERecipeHandler implements RecipeHandler {
+public class IERecipeUnifier implements RecipeUnifier {
 
     // From IE
     protected static final String BASE_KEY = "base_ingredient";
 
     // TODO make it cleaner
     @Override
-    public void collectTransformations(RecipeTransformationBuilder builder) {
+    public void collectUnifier(RecipeUnifierBuilder builder) {
         builder.put("input0", this::replaceIEIngredient); // alloy recipes, refinery
         builder.put("input1", this::replaceIEIngredient); // alloy recipes, refinery
         builder.put(RecipeConstants.INPUT,

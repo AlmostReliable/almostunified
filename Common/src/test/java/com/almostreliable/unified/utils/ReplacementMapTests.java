@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ReplacementMapTests {
 
@@ -45,6 +46,7 @@ public class ReplacementMapTests {
                 TestUtils.TEST_MOD_PRIORITIES, ModConfig.DEFAULT_STONE_STRATA);
 
         assertEquals(map.getPreferredTagForItem(TestUtils.mod1RL("bronze_ore")), TestUtils.BRONZE_ORES_TAG);
-        assertNull(map.getPreferredTagForItem(new ResourceLocation("minecraft:diamond")), "We don't have a tag for diamond");
+        assertNull(map.getPreferredTagForItem(new ResourceLocation("minecraft:diamond")),
+                "We don't have a tag for diamond");
     }
 }

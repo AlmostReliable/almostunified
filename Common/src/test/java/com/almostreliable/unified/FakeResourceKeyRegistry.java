@@ -15,7 +15,8 @@ public class FakeResourceKeyRegistry {
             c.setAccessible(true);
             return (ResourceKey<Registry<T>>) c.newInstance(new ResourceLocation("test_registry"),
                     new ResourceLocation(name));
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }
