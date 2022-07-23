@@ -52,7 +52,7 @@ public class RecipeTransformer {
                         duplicates.add(curRecipe.getDuplicateLink());
                     }
                 }
-                result.add(curRecipe); // TODO remove
+                result.add(curRecipe);
             }
 
             for (RecipeLink.DuplicateLink link : duplicates) {
@@ -120,6 +120,8 @@ public class RecipeTransformer {
         private final Multimap<ResourceLocation, RecipeLink> allRecipesByType = HashMultimap.create();
         private final Multimap<ResourceLocation, RecipeLink> unifiedRecipesByType = HashMultimap.create();
 
+        private final Multimap<ResourceLocation, RecipeLink.DuplicateLink> duplicatesByType = HashMultimap.create();
+
         private void add(RecipeLink link) {
             if (allRecipesByType.containsEntry(link.getType(), link)) {
                 throw new IllegalStateException("Already tracking recipe type " + link.getType());
@@ -128,6 +130,10 @@ public class RecipeTransformer {
             allRecipesByType.put(link.getType(), link);
             if (link.isUnified()) {
                 unifiedRecipesByType.put(link.getType(), link);
+            }
+
+            if(link.hasDuplicateLink()) {
+                duplicatesByType.put(link.getType(), link.getDuplicateLink());
             }
         }
 
@@ -139,12 +145,24 @@ public class RecipeTransformer {
             return Collections.unmodifiableCollection(unifiedRecipesByType.get(type));
         }
 
+        public Collection<RecipeLink.DuplicateLink> getDuplicates(ResourceLocation type) {
+            return Collections.unmodifiableCollection(duplicatesByType.get(type));
+        }
+
         public int getRecipeCount() {
             return allRecipesByType.size();
         }
 
         public int getUnifiedRecipeCount() {
             return unifiedRecipesByType.size();
+        }
+
+        public int getDuplicatesCount() {
+            return duplicatesByType.size();
+        }
+
+        public int getDuplicateRecipesCount() {
+            return duplicatesByType.values().stream().mapToInt(l -> l.getRecipes().size()).sum();
         }
 
         public Set<ResourceLocation> getUnifiedRecipeTypes() {
