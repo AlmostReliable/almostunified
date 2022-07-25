@@ -1,7 +1,7 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
+import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;

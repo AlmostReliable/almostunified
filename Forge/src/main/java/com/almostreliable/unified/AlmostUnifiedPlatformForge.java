@@ -2,7 +2,7 @@ package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.compat.ie.IERecipeUnifier;
-import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
+import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;

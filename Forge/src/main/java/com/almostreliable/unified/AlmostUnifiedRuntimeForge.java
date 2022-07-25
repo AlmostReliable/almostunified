@@ -2,7 +2,7 @@ package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.compat.ie.IEModPriorityOverride;
-import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
+import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 
 public class AlmostUnifiedRuntimeForge extends AlmostUnifiedRuntime {
 

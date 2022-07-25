@@ -1,4 +1,4 @@
-package com.almostreliable.unified.recipe.handler;
+package com.almostreliable.unified.recipe.unifier;
 
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;

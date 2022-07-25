@@ -1,7 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.recipe.RecipeTransformer;
-import com.almostreliable.unified.recipe.handler.RecipeHandlerFactory;
+import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMapTests;
 import com.almostreliable.unified.utils.UnifyTag;
