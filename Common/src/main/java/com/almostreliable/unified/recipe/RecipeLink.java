@@ -6,7 +6,10 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class RecipeLink {
     private final ResourceLocation id;
@@ -31,22 +34,18 @@ public class RecipeLink {
      * If base comparison succeed then the recipes will be compared for equality with rules from {@link JsonCompare.Rule}.
      * Rules are sorted, first rule with the highest priority will be used.
      *
-     * @param first         first recipe to compare
-     * @param second        second recipe to compare
-     * @param rules         rules to use for comparison
-     * @param ignoredFields fields to ignore in comparison
+     * @param first           first recipe to compare
+     * @param second          second recipe to compare
+     * @param compareSettings Settings to use for comparison.
      * @return the recipe where rules are applied and the recipes are compared for equality, or null if the recipes are not equal
      */
     @Nullable
-    public static RecipeLink compare(RecipeLink first, RecipeLink second, LinkedHashMap<String, JsonCompare.Rule> rules, List<String> ignoredFields) {
+    public static RecipeLink compare(RecipeLink first, RecipeLink second, JsonCompare.CompareSettings compareSettings) {
         JsonObject selfActual = first.getActual();
         JsonObject toCompareActual = second.getActual();
 
-        Set<String> ignoredFieldsWithRules = new HashSet<>(first.getIgnoredFields());
-        ignoredFieldsWithRules.addAll(rules.keySet());
-
-        if (JsonCompare.matches(selfActual, toCompareActual, ignoredFieldsWithRules)) {
-            JsonObject compare = JsonCompare.compare(rules, selfActual, toCompareActual);
+        if (JsonCompare.matches(selfActual, toCompareActual, compareSettings.getIgnoredFields())) {
+            JsonObject compare = JsonCompare.compare(compareSettings.getRules(), selfActual, toCompareActual);
             if (compare == null) {
                 return null;
             }
@@ -112,18 +111,6 @@ public class RecipeLink {
         this.unifiedRecipe = json;
     }
 
-    private List<String> getIgnoredFields() {
-        return List.of("conditions");
-    }
-
-    private LinkedHashMap<String, JsonCompare.Rule> getRules() {
-        LinkedHashMap<String, JsonCompare.Rule> rules = new LinkedHashMap<>();
-        rules.put("experience", new JsonCompare.HigherRule());
-        rules.put("cookingtime", new JsonCompare.LowerRule());
-        rules.put("energy", new JsonCompare.HigherRule());
-        return rules;
-    }
-
     @Override
     public String toString() {
         String duplicate = duplicateLink != null ? " (duplicate)" : "";
@@ -135,24 +122,25 @@ public class RecipeLink {
      * Checks for duplicate against given recipe data. If recipe data already has a duplicate link,
      * the master from the link will be used. Otherwise, we will create a new link if needed.
      *
-     * @param recipe Recipe data to check for duplicate against.
+     * @param recipe          Recipe data to check for duplicate against.
+     * @param compareSettings Settings to use for comparison.
      * @return True if recipe is a duplicate, false otherwise.
      */
-    public boolean handleDuplicate(RecipeLink recipe) {
+    public boolean handleDuplicate(RecipeLink recipe, JsonCompare.CompareSettings compareSettings) {
         if (hasDuplicateLink()) {
             throw new IllegalStateException("Recipe already linked");
         }
 
         DuplicateLink link = recipe.getDuplicateLink();
         if (link != null) {
-            RecipeLink compare = RecipeLink.compare(this, link.getMaster(), getRules(), getIgnoredFields());
+            RecipeLink compare = RecipeLink.compare(this, link.getMaster(), compareSettings);
             if (compare != null) {
                 link.updateMaster(this);
                 setDuplicateLink(link);
                 return true;
             }
         } else {
-            RecipeLink compare = RecipeLink.compare(this, recipe, getRules(), getIgnoredFields());
+            RecipeLink compare = RecipeLink.compare(this, recipe, compareSettings);
             if (compare != null) {
                 DuplicateLink newLink = new DuplicateLink(compare);
                 setDuplicateLink(newLink);

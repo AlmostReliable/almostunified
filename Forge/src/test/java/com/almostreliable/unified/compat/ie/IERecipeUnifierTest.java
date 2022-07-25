@@ -2,6 +2,7 @@ package com.almostreliable.unified.compat.ie;
 
 import com.almostreliable.unified.TestUtils;
 import com.almostreliable.unified.api.ModConstants;
+import com.almostreliable.unified.compat.IERecipeUnifier;
 import com.almostreliable.unified.recipe.RecipeLink;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.utils.JsonQuery;

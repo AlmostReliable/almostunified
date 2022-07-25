@@ -2,6 +2,7 @@ package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.config.UnifyConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -11,15 +12,12 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class ReplacementMap {
-
-    private final Collection<String> modPriorities;
-    private final List<String> stoneStrata;
     private final TagMap tagMap;
+    private final UnifyConfig unifyConfig;
 
-    public ReplacementMap(TagMap tagMap, List<String> modPriorities, List<String> stoneStrata) {
+    public ReplacementMap(TagMap tagMap, UnifyConfig unifyConfig) {
         this.tagMap = tagMap;
-        this.modPriorities = modPriorities;
-        this.stoneStrata = stoneStrata;
+        this.unifyConfig = unifyConfig;
     }
 
     /**
@@ -30,7 +28,7 @@ public class ReplacementMap {
      * @return The stone strata of the item. Returning empty string means clean-stone strata.
      */
     private String getStoneStrata(ResourceLocation item) {
-        for (String stone : stoneStrata) {
+        for (String stone : unifyConfig.getStoneStrata()) {
             if (item.getPath().startsWith(stone + "_")) {
                 return stone;
             }
@@ -88,7 +86,7 @@ public class ReplacementMap {
                 .filter(itemFilter)
                 .toList();
 
-        for (String modPriority : modPriorities) {
+        for (String modPriority : unifyConfig.getModPriorities()) {
             for (ResourceLocation item : items) {
                 if (item.getNamespace().equals(modPriority)) {
                     return item;

@@ -5,8 +5,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import java.util.stream.StreamSupport;
 
 public class JsonUtils {
     public static JsonArray arrayOrSelf(@Nullable JsonElement element) {
@@ -71,5 +73,15 @@ public class JsonUtils {
             return true;
         }
         return false;
+    }
+
+    public static JsonArray toArray(List<String> list) {
+        JsonArray array = new JsonArray();
+        list.forEach(array::add);
+        return array;
+    }
+
+    public static List<String> toList(JsonArray array) {
+        return StreamSupport.stream(array.spliterator(), false).map(JsonElement::getAsString).toList();
     }
 }

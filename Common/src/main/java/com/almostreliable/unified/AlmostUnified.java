@@ -26,6 +26,6 @@ public class AlmostUnified {
     static void initializeRuntime() {
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
-        RUNTIME = AlmostUnifiedPlatform.INSTANCE.createRuntime(factory);
+        RUNTIME = new AlmostUnifiedRuntime(factory);
     }
 }

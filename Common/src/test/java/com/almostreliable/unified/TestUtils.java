@@ -1,5 +1,7 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.config.Defaults;
+import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
@@ -12,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -26,6 +29,13 @@ public class TestUtils {
             TEST_MOD_3,
             TEST_MOD_4,
             TEST_MOD_5);
+    public static UnifyConfig DEFAULT_UNIFY_CONFIG = new UnifyConfig(Defaults.STONE_STRATA,
+            Defaults.MATERIALS,
+            Defaults.TAGS,
+            TestUtils.TEST_MOD_PRIORITIES,
+            new HashSet<>(),
+            new HashSet<>(),
+            new HashSet<>());
     public static final ResourceKey<Registry<Item>> FAKE_ITEM_REGISTRY = FakeResourceKeyRegistry.create("item");
     public static final UnifyTag<Item> BRONZE_ORES_TAG = tag("forge:ores/bronze");
     public static final UnifyTag<Item> INVAR_ORES_TAG = tag("forge:ores/invar");
@@ -67,11 +77,10 @@ public class TestUtils {
     }
 
     public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {
-        ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(),
-                TestUtils.TEST_MOD_PRIORITIES, ModConfig.DEFAULT_STONE_STRATA);
+        ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(), DEFAULT_UNIFY_CONFIG);
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         consumer.accept(factory);
-        return new RecipeTransformer(factory, map);
+        return new RecipeTransformer(factory, map, DEFAULT_UNIFY_CONFIG, duplicationConfig);
     }
 
     public static JsonObject json(String json) {

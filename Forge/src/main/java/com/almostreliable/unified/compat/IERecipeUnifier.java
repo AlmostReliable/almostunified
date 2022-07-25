@@ -1,4 +1,4 @@
-package com.almostreliable.unified.compat.ie;
+package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;

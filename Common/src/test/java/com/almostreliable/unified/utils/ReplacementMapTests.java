@@ -1,12 +1,8 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.ModConfig;
 import com.almostreliable.unified.TestUtils;
-import com.google.common.collect.Lists;
 import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -15,8 +11,7 @@ public class ReplacementMapTests {
 
     @Test
     public void getPreferredItemByTag() {
-        ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(),
-                TestUtils.TEST_MOD_PRIORITIES, ModConfig.DEFAULT_STONE_STRATA);
+        ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(), TestUtils.DEFAULT_UNIFY_CONFIG);
 //        assertEquals(map.getPreferredItemByTag(TestUtils.BRONZE_ORES_TAG), TestUtils.mod1RL("bronze_ore"));
 //        assertNotEquals(map.getPreferredItemByTag(TestUtils.BRONZE_ORES_TAG), TestUtils.mod2RL("bronze_ore"));
 //        assertEquals(map.getPreferredItemByTag(TestUtils.INVAR_ORES_TAG), TestUtils.mod1RL("invar_ore"));
@@ -28,22 +23,8 @@ public class ReplacementMapTests {
     }
 
     @Test
-    public void getPreferredItemByTag_ReversePriority() {
-        // We reverse the order. See `testTagMap` for the mapping.
-        List<String> reverse = Lists.reverse(TestUtils.TEST_MOD_PRIORITIES);
-        ReplacementMap reverseMap = new ReplacementMap(TagMapTests.testTagMap(),
-                reverse,
-                ModConfig.DEFAULT_STONE_STRATA);
-//        assertEquals(reverseMap.getPreferredItemByTag(TestUtils.BRONZE_ORES_TAG), TestUtils.mod3RL("bronze_ore"));
-//        assertEquals(reverseMap.getPreferredItemByTag(TestUtils.INVAR_ORES_TAG), TestUtils.mod4RL("invar_ore"));
-//        assertEquals(reverseMap.getPreferredItemByTag(TestUtils.TIN_ORES_TAG), TestUtils.mod4RL("tin_ore"));
-//        assertEquals(reverseMap.getPreferredItemByTag(TestUtils.SILVER_ORES_TAG), TestUtils.mod5RL("silver_ore"));
-    }
-
-    @Test
     public void getPreferredTag() {
-        ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(),
-                TestUtils.TEST_MOD_PRIORITIES, ModConfig.DEFAULT_STONE_STRATA);
+        ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(), TestUtils.DEFAULT_UNIFY_CONFIG);
 
         assertEquals(map.getPreferredTagForItem(TestUtils.mod1RL("bronze_ore")), TestUtils.BRONZE_ORES_TAG);
         assertNull(map.getPreferredTagForItem(new ResourceLocation("minecraft:diamond")),

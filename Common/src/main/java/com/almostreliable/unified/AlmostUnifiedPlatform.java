@@ -35,6 +35,4 @@ public interface AlmostUnifiedPlatform {
     Path getLogPath();
 
     void bindRecipeHandlers(RecipeHandlerFactory factory);
-
-    AlmostUnifiedRuntime createRuntime(RecipeHandlerFactory factory);
 }

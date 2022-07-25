@@ -1,7 +1,10 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.config.DuplicationConfig;
+import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -17,15 +20,20 @@ public class RecipeTransformer {
 
     private final RecipeHandlerFactory factory;
     private final ReplacementMap replacementMap;
+    private final UnifyConfig unifyConfig;
+    private final DuplicationConfig duplicationConfig;
 
-    public RecipeTransformer(RecipeHandlerFactory factory, ReplacementMap replacementMap) {
+    public RecipeTransformer(RecipeHandlerFactory factory, ReplacementMap replacementMap, UnifyConfig unifyConfig, DuplicationConfig duplicationConfig) {
         this.factory = factory;
         this.replacementMap = replacementMap;
+        this.unifyConfig = unifyConfig;
+        this.duplicationConfig = duplicationConfig;
     }
 
     public boolean hasValidType(JsonObject json) {
-        if (json.get("type") instanceof JsonPrimitive type) {
-            return ResourceLocation.tryParse(type.getAsString()) != null;
+        if (json.get("type") instanceof JsonPrimitive primitive) {
+            ResourceLocation type = ResourceLocation.tryParse(primitive.getAsString());
+            return type != null && unifyConfig.includeRecipeType(type);
         }
         return false;
     }
@@ -65,27 +73,42 @@ public class RecipeTransformer {
         return result;
     }
 
-    private Map<ResourceLocation, List<RecipeLink>> groupRecipesByType(Map<ResourceLocation, JsonElement> recipes) {
+    public Map<ResourceLocation, List<RecipeLink>> groupRecipesByType(Map<ResourceLocation, JsonElement> recipes) {
         return recipes
                 .entrySet()
                 .stream()
-                .filter(entry -> entry.getValue().isJsonObject() && hasValidType(entry.getValue().getAsJsonObject()))
+                .filter(entry -> includeRecipe(entry.getKey(), entry.getValue()))
                 .map(entry -> new RecipeLink(entry.getKey(), entry.getValue().getAsJsonObject()))
                 .collect(Collectors.groupingByConcurrent(RecipeLink::getType));
     }
 
+    private boolean includeRecipe(ResourceLocation recipe, JsonElement json) {
+        return unifyConfig.includeRecipe(recipe) && json.isJsonObject() &&
+               hasValidType(json.getAsJsonObject());
+    }
+
     private boolean handleDuplicate(RecipeLink curRecipe, List<RecipeLink> recipes) {
+        if (duplicationConfig.shouldIgnoreRecipe(curRecipe)) {
+            return false;
+        }
+
         if (curRecipe.getDuplicateLink() != null) {
             AlmostUnified.LOG.error("Duplication already handled for recipe {}", curRecipe.getId());
             return false;
         }
 
+        JsonCompare.CompareSettings compareSettings = duplicationConfig.getCompareSettings(curRecipe.getType());
         for (RecipeLink recipeLink : recipes) {
-            if (recipeLink == curRecipe) {
+            if (!curRecipe.getType().equals(recipeLink.getType())) {
+                throw new IllegalStateException(
+                        "Recipe types do not match for " + curRecipe.getId() + " and " + recipeLink.getId());
+            }
+
+            if (recipeLink == curRecipe || duplicationConfig.shouldIgnoreRecipe(recipeLink)) {
                 continue;
             }
 
-            if (curRecipe.handleDuplicate(recipeLink)) {
+            if (curRecipe.handleDuplicate(recipeLink, compareSettings)) {
                 return true;
             }
         }
@@ -132,7 +155,7 @@ public class RecipeTransformer {
                 unifiedRecipesByType.put(link.getType(), link);
             }
 
-            if(link.hasDuplicateLink()) {
+            if (link.hasDuplicateLink()) {
                 duplicatesByType.put(link.getType(), link.getDuplicateLink());
             }
         }

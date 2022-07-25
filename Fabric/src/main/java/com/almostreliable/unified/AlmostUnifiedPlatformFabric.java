@@ -36,9 +36,4 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
 
     }
-
-    @Override
-    public AlmostUnifiedRuntime createRuntime(RecipeHandlerFactory factory) {
-        return new AlmostUnifiedRuntimeFabric(factory);
-    }
 }

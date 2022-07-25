@@ -1,5 +1,8 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.config.Config;
+import com.almostreliable.unified.config.DuplicationConfig;
+import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
@@ -12,36 +15,31 @@ import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AlmostUnifiedRuntime {
-
-    protected final ModConfig config;
+public class AlmostUnifiedRuntime {
     protected final RecipeHandlerFactory recipeHandlerFactory;
     @Nullable protected TagManager tagManager;
-    protected List<String> modPriorities = new ArrayList<>();
 
     public AlmostUnifiedRuntime(RecipeHandlerFactory recipeHandlerFactory) {
         this.recipeHandlerFactory = recipeHandlerFactory;
-        config = new ModConfig(BuildConfig.MOD_ID);
     }
 
     public void run(Map<ResourceLocation, JsonElement> recipes) {
-        config.load();
-        modPriorities = config.getModPriorities();
-        onRun();
-        List<UnifyTag<Item>> allowedTags = config.getAllowedTags();
+        DuplicationConfig dupConfig = Config.load(DuplicationConfig.NAME, new DuplicationConfig.Serializer());
+        UnifyConfig unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
+
+        List<UnifyTag<Item>> allowedTags = unifyConfig.bakeTags();
         TagMap tagMap = createTagMap(allowedTags);
-        ReplacementMap replacementMap = new ReplacementMap(tagMap, modPriorities, config.getStoneStrata());
+        ReplacementMap replacementMap = new ReplacementMap(tagMap, unifyConfig);
 
         long startTime = System.currentTimeMillis();
-        RecipeTransformer.Result result = new RecipeTransformer(recipeHandlerFactory, replacementMap)
-                .transformRecipes(recipes);
-        long endTime = System.currentTimeMillis();
-
-        new RecipeDumper(result, startTime, endTime).dump();
+        RecipeTransformer.Result result = new RecipeTransformer(recipeHandlerFactory,
+                replacementMap,
+                unifyConfig,
+                dupConfig).transformRecipes(recipes);
+        new RecipeDumper(result, startTime, System.currentTimeMillis()).dump();
     }
 
     public void updateTagManager(TagManager tagManager) {
@@ -55,6 +53,4 @@ public abstract class AlmostUnifiedRuntime {
 
         return TagMap.create(tagManager, allowedTags::contains);
     }
-
-    protected abstract void onRun();
 }
