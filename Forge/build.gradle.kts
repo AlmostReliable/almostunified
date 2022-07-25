@@ -81,6 +81,8 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:thermalexp-69163:3803489"))
     runtimeOnly(fg.deobf("curse.maven:mekanism-268560:3810540"))
     runtimeOnly(fg.deobf("curse.maven:nihilo-400012:3810814"))
+    runtimeOnly(fg.deobf("curse.maven:industrialforegoing-266515:3848558"))
+    runtimeOnly(fg.deobf("curse.maven:titanium-287342:3819942")) // for industrialforegoing
 
     annotationProcessor("org.spongepowered:mixin:${mixinVersion}:processor")
 
