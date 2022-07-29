@@ -68,19 +68,20 @@ dependencies {
     minecraft("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
     compileOnly(project(":Common"))
 
-    compileOnly( fg.deobf("mezz.jei:jei-${minecraftVersion}:${jeiVersion}:api"))
-    runtimeOnly( fg.deobf("mezz.jei:jei-${minecraftVersion}:${jeiVersion}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}:${jeiVersion}:api"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}:${jeiVersion}"))
 
-    // used for testing only
-    runtimeOnly(fg.deobf("curse.maven:JAOPCA-266936:3802370"))
-    runtimeOnly(fg.deobf("curse.maven:IE-231951:3755665"))
-    runtimeOnly(fg.deobf("curse.maven:cofh-69162:3803484"))
-    runtimeOnly(fg.deobf("curse.maven:thermalfoundation-222880:3803495"))
-    runtimeOnly(fg.deobf("curse.maven:thermalexp-69163:3803489"))
-    runtimeOnly(fg.deobf("curse.maven:mekanism-268560:3810540"))
-    runtimeOnly(fg.deobf("curse.maven:nihilo-400012:3810814"))
-    runtimeOnly(fg.deobf("curse.maven:industrialforegoing-266515:3848558"))
-    runtimeOnly(fg.deobf("curse.maven:titanium-287342:3819942")) // for industrialforegoing
+    fileTree("extra-mods-$minecraftVersion") { include("**/*.jar") }
+        .forEach { f ->
+            val sepIndex = f.nameWithoutExtension.lastIndexOf('-');
+            if(sepIndex == -1) {
+                throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
+            }
+            val mod = f.nameWithoutExtension.substring(0, sepIndex);
+            val version = f.nameWithoutExtension.substring(sepIndex + 1);
+            println("Extra mod $mod with version $version detected")
+            runtimeOnly(fg.deobf("extra-mods:$mod:$version"))
+        }
 
     annotationProcessor("org.spongepowered:mixin:${mixinVersion}:processor")
 
@@ -89,8 +90,8 @@ dependencies {
      */
     testImplementation(project(":Common"))
     testImplementation(commonTests)
-    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 }
 
 mixin {

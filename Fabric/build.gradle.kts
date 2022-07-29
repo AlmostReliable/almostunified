@@ -40,6 +40,18 @@ dependencies {
     include("com.electronwill.night-config:core:3.6.4");
     include("com.electronwill.night-config:toml:3.6.4");
 
+    fileTree("extra-mods-$minecraftVersion") { include("**/*.jar") }
+        .forEach { f ->
+            val sepIndex = f.nameWithoutExtension.lastIndexOf('-');
+            if(sepIndex == -1) {
+                throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
+            }
+            val mod = f.nameWithoutExtension.substring(0, sepIndex);
+            val version = f.nameWithoutExtension.substring(sepIndex + 1);
+            println("Extra mod $mod with version $version detected")
+            modLocalRuntime("extra-mods:$mod:$version")
+        }
+
     implementation(project(":Common"))
 }
 

@@ -18,6 +18,10 @@ plugins {
 
 allprojects {
     repositories {
+        flatDir {
+            name = "extra-mods"
+            dir(file("extra-mods-$minecraftVersion"))
+        }
         mavenLocal()
         mavenCentral()
         maven("https://repo.spongepowered.org/repository/maven-public/")

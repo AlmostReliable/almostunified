@@ -19,6 +19,7 @@ build
 .gradle
 
 # other
+extra-mods-*
 *.log
 *.log.gz
 eclipse
