@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -84,6 +85,8 @@ public class ReplacementMap {
                 .getItems(tag)
                 .stream()
                 .filter(itemFilter)
+                // Helps us to get the clean stone variant first in case of a stone strata tag
+                .sorted(Comparator.comparingInt(value -> value.toString().length()))
                 .toList();
 
         for (String modPriority : unifyConfig.getModPriorities()) {

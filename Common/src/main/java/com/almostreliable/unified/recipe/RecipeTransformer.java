@@ -5,15 +5,20 @@ import com.almostreliable.unified.config.DuplicationConfig;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.JsonCompare;
+import com.almostreliable.unified.utils.JsonQuery;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RecipeTransformer {
@@ -50,27 +55,65 @@ public class RecipeTransformer {
 
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
-        byType.forEach((type, recipeLinks) -> {
-            Set<RecipeLink.DuplicateLink> duplicates = new HashSet<>(recipeLinks.size());
-            for (RecipeLink curRecipe : recipeLinks) {
-                unifyRecipe(curRecipe);
-                if (curRecipe.isUnified()) {
-                    recipes.put(curRecipe.getId(), curRecipe.getUnified());
-                    if (handleDuplicate(curRecipe, recipeLinks)) {
-                        duplicates.add(curRecipe.getDuplicateLink());
-                    }
-                }
-                result.add(curRecipe);
-            }
 
-            for (RecipeLink.DuplicateLink link : duplicates) {
-                link.getRecipes().forEach(recipe -> recipes.remove(recipe.getId()));
-                recipes.put(link.createNewRecipeId(), link.getMaster().getActual());
+        ResourceLocation fcLocation = new ResourceLocation("forge:conditional");
+        byType.forEach((type, recipeLinks) -> {
+            if (type.equals(fcLocation)) {
+                recipeLinks.forEach(recipeLink -> handleForgeConditionals(recipeLink).ifPresent(json -> recipes.put(
+                        recipeLink.getId(),
+                        json)));
+            } else {
+                transformRecipes(recipeLinks, recipes::put, recipes::remove);
             }
         });
 
+        byType.values().stream().flatMap(Collection::stream).forEach(result::add);
         AlmostUnified.LOG.warn("Recipe counts afterwards: " + recipes.size());
         return result;
+    }
+
+    private Optional<JsonObject> handleForgeConditionals(RecipeLink recipeLink) {
+        JsonObject copy = recipeLink.getOriginal().deepCopy();
+
+        if (copy.get("recipes") instanceof JsonArray recipes) {
+            for (JsonElement element : recipes) {
+                JsonQuery
+                        .of(element, "recipe")
+                        .asObject()
+                        .map(jsonObject -> new RecipeLink(recipeLink.getId(), jsonObject))
+                        .ifPresent(temporaryLink -> {
+                            unifyRecipe(temporaryLink);
+                            if (temporaryLink.isUnified()) {
+                                element.getAsJsonObject().add("recipe", temporaryLink.getUnified());
+                            }
+                        });
+            }
+
+            if (!copy.equals(recipeLink.getOriginal())) {
+                recipeLink.setUnified(copy);
+                return Optional.of(copy);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    private void transformRecipes(List<RecipeLink> recipeLinks, BiConsumer<ResourceLocation, JsonElement> onAdd, Consumer<ResourceLocation> onRemove) {
+        Set<RecipeLink.DuplicateLink> duplicates = new HashSet<>(recipeLinks.size());
+        for (RecipeLink curRecipe : recipeLinks) {
+            unifyRecipe(curRecipe);
+            if (curRecipe.isUnified()) {
+                onAdd.accept(curRecipe.getId(), curRecipe.getUnified());
+                if (handleDuplicate(curRecipe, recipeLinks)) {
+                    duplicates.add(curRecipe.getDuplicateLink());
+                }
+            }
+        }
+
+        for (RecipeLink.DuplicateLink link : duplicates) {
+            link.getRecipes().forEach(recipe -> onRemove.accept(recipe.getId()));
+            onAdd.accept(link.createNewRecipeId(), link.getMaster().getActual());
+        }
     }
 
     public Map<ResourceLocation, List<RecipeLink>> groupRecipesByType(Map<ResourceLocation, JsonElement> recipes) {
@@ -83,8 +126,7 @@ public class RecipeTransformer {
     }
 
     private boolean includeRecipe(ResourceLocation recipe, JsonElement json) {
-        return unifyConfig.includeRecipe(recipe) && json.isJsonObject() &&
-               hasValidType(json.getAsJsonObject());
+        return unifyConfig.includeRecipe(recipe) && json.isJsonObject() && hasValidType(json.getAsJsonObject());
     }
 
     private boolean handleDuplicate(RecipeLink curRecipe, List<RecipeLink> recipes) {
@@ -132,9 +174,7 @@ public class RecipeTransformer {
                 recipe.setUnified(result);
             }
         } catch (Exception e) {
-            AlmostUnified.LOG.warn("Error unifying recipe '{}': {}",
-                    recipe.getId(),
-                    e.getMessage());
+            AlmostUnified.LOG.warn("Error unifying recipe '{}': {}", recipe.getId(), e.getMessage());
             e.printStackTrace();
         }
     }

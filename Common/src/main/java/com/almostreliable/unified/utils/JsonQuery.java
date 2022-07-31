@@ -5,12 +5,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
+
 public class JsonQuery {
 
-    private final JsonElement element;
+    @Nullable private final JsonElement element;
 
-    JsonQuery(JsonElement element) {
+    JsonQuery(@Nullable JsonElement element) {
         this.element = element;
+    }
+
+    JsonQuery() {
+        this.element = null;
     }
 
     public static JsonQuery of(JsonElement element) {
@@ -31,56 +38,45 @@ public class JsonQuery {
     }
 
     public JsonQuery get(String identifier) {
-        if (!element.isJsonObject()) {
-            throw new IllegalArgumentException("Expected JsonObject, got " + element.getClass());
+        if (element instanceof JsonObject json) {
+            JsonElement child = json.get(identifier);
+            if (child != null) {
+                return new JsonQuery(child);
+            }
         }
 
-        JsonElement child = element.getAsJsonObject().get(identifier);
-        if (child == null) {
-            return null;
-        }
-
-        return new JsonQuery(child);
+        return new JsonQuery();
     }
 
     public JsonQuery get(int index) {
-        if (!element.isJsonArray()) {
-            throw new IllegalArgumentException("Expected JsonArray, got " + element.getClass());
+        if (element instanceof JsonArray json && 0 <= index && index < json.size()) {
+            JsonElement child = json.get(index);
+            if (child != null) {
+                return new JsonQuery(child);
+            }
+
         }
 
-        JsonElement child = element.getAsJsonArray().get(index);
-        if (child == null) {
-            return null;
-        }
-
-        return new JsonQuery(child);
+        return new JsonQuery();
     }
 
     public JsonQuery get(String identifier, int index) {
         return get(identifier).get(index);
     }
 
-    public JsonObject asObject() {
-        return element.getAsJsonObject();
+    public Optional<JsonElement> asElement() {
+        return Optional.ofNullable(element);
     }
 
-    public JsonArray asArray() {
-        return element.getAsJsonArray();
+    public Optional<JsonObject> asObject() {
+        return asElement().filter(JsonObject.class::isInstance).map(JsonObject.class::cast);
     }
 
-    public String asString() {
-        return element.getAsString();
+    public Optional<JsonArray> asArray() {
+        return asElement().filter(JsonArray.class::isInstance).map(JsonArray.class::cast);
     }
 
-    public int asInt() {
-        return element.getAsInt();
-    }
-
-    public boolean asBoolean() {
-        return element.getAsBoolean();
-    }
-
-    public float asFloat() {
-        return element.getAsFloat();
+    public Optional<String> asString() {
+        return asElement().filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsString);
     }
 }

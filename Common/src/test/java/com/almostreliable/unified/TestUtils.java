@@ -80,7 +80,7 @@ public class TestUtils {
         ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(), DEFAULT_UNIFY_CONFIG);
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         consumer.accept(factory);
-        return new RecipeTransformer(factory, map, DEFAULT_UNIFY_CONFIG, duplicationConfig);
+        return new RecipeTransformer(factory, map, DEFAULT_UNIFY_CONFIG, null);
     }
 
     public static JsonObject json(String json) {
