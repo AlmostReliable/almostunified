@@ -5,6 +5,7 @@ import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.UnifyTag;
+import com.almostreliable.unified.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -120,6 +121,16 @@ public class RecipeContextImpl implements RecipeContext {
 
         if (element instanceof JsonObject object) {
             if (JsonUtils.replaceOn(object, RecipeConstants.ITEM, this::tryCreateResultReplacement)) {
+                return element;
+            }
+
+            // Some mods have tags for results instead of items. We replace those with the preferred item.
+            if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
+                ResourceLocation item = getPreferredItemByTag(Utils.toItemTag(primitive.getAsString()), $ -> true);
+                if (item != null) {
+                    object.remove(RecipeConstants.TAG);
+                    object.add(RecipeConstants.ITEM, new JsonPrimitive(item.toString()));
+                }
                 return element;
             }
         }
