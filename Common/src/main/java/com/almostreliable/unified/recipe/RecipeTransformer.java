@@ -15,7 +15,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -65,9 +64,9 @@ public class RecipeTransformer {
             } else {
                 transformRecipes(recipeLinks, recipes::put, recipes::remove);
             }
+            result.addAll(recipeLinks);
         });
 
-        byType.values().stream().flatMap(Collection::stream).forEach(result::add);
         AlmostUnified.LOG.warn("Recipe counts afterwards: " + recipes.size());
         return result;
     }
@@ -198,6 +197,10 @@ public class RecipeTransformer {
             if (link.hasDuplicateLink()) {
                 duplicatesByType.put(link.getType(), link.getDuplicateLink());
             }
+        }
+
+        private void addAll(Collection<RecipeLink> links) {
+            links.forEach(this::add);
         }
 
         public Collection<RecipeLink> getRecipes(ResourceLocation type) {
