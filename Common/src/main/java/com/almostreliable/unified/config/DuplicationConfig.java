@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DuplicationConfig extends Config {
-    public static final String NAME = BuildConfig.MOD_ID + "-duplicates";
+    public static final String NAME = "duplicates";
     private final JsonCompare.CompareSettings defaultRules;
     private final LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules;
     private final Set<ResourceLocation> ignoreRecipeTypes;

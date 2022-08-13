@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class UnifyConfig extends Config {
-    public static String NAME = BuildConfig.MOD_ID + "-unify";
+    public static String NAME = "unify";
     private final List<String> stoneStrata;
     private final List<String> materials;
     private final List<String> unbakedTags;

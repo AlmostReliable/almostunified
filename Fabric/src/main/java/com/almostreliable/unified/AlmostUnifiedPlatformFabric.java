@@ -24,7 +24,7 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
 
     @Override
     public Path getConfigPath() {
-        return FabricLoader.getInstance().getConfigDir();
+        return FabricLoader.getInstance().getConfigDir().resolve(BuildConfig.MOD_ID);
     }
 
     @Override

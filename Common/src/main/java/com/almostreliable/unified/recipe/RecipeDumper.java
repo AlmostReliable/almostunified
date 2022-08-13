@@ -27,23 +27,30 @@ public class RecipeDumper {
         this.endTime = endTime;
     }
 
-    public void dump() {
+    public void dump(boolean dumpOverview, boolean dumpUnify, boolean dumpDuplicate) {
         String last = "# Last execution: " + format.format(new Date(startTime));
 
-        StringBuilder overviewBuilder = new StringBuilder();
-        overviewBuilder.append(last).append("\n");
-        dumpOverview(overviewBuilder);
-        write(overviewBuilder, AlmostUnifiedPlatform.INSTANCE.getLogPath(), "overview_dump.txt");
+        if (dumpOverview) {
+            StringBuilder overviewBuilder = new StringBuilder();
+            overviewBuilder.append(last).append("\n");
+            dumpOverview(overviewBuilder);
+            write(overviewBuilder, AlmostUnifiedPlatform.INSTANCE.getLogPath(), "overview_dump.txt");
+        }
 
-        StringBuilder unifyStringBuilder = new StringBuilder();
-        unifyStringBuilder.append(last).append("\n");
-        dumpUnifyRecipes(unifyStringBuilder, true);
-        write(unifyStringBuilder, AlmostUnifiedPlatform.INSTANCE.getLogPath(), "unify_dump.txt");
+        if (dumpUnify) {
+            StringBuilder unifyStringBuilder = new StringBuilder();
+            unifyStringBuilder.append(last).append("\n");
+            dumpUnifyRecipes(unifyStringBuilder, true);
+            write(unifyStringBuilder, AlmostUnifiedPlatform.INSTANCE.getLogPath(), "unify_dump.txt");
+        }
 
-        StringBuilder duplicatesStringBuilder = new StringBuilder();
-        duplicatesStringBuilder.append(last).append("\n");
-        dumpDuplicates(duplicatesStringBuilder);
-        write(duplicatesStringBuilder, AlmostUnifiedPlatform.INSTANCE.getLogPath(), "duplicates_dump.txt");
+        if (dumpDuplicate) {
+            StringBuilder duplicatesStringBuilder = new StringBuilder();
+            duplicatesStringBuilder.append(last).append("\n");
+            dumpDuplicates(duplicatesStringBuilder);
+            write(duplicatesStringBuilder, AlmostUnifiedPlatform.INSTANCE.getLogPath(), "duplicates_dump.txt");
+        }
+
     }
 
     private void dumpDuplicates(StringBuilder stringBuilder) {

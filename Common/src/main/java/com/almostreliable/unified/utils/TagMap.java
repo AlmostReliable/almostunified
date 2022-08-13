@@ -70,4 +70,8 @@ public class TagMap {
     public int itemSize() {
         return itemsToTags.size();
     }
+
+    public Collection<UnifyTag<Item>> getTags() {
+        return Collections.unmodifiableSet(tagsToItems.keySet());
+    }
 }

@@ -6,6 +6,7 @@ import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.JsonQuery;
+import com.almostreliable.unified.utils.RecipeTypePropertiesLogger;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -26,6 +27,8 @@ public class RecipeTransformer {
     private final ReplacementMap replacementMap;
     private final UnifyConfig unifyConfig;
     private final DuplicationConfig duplicationConfig;
+
+    private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
     public RecipeTransformer(RecipeHandlerFactory factory, ReplacementMap replacementMap, UnifyConfig unifyConfig, DuplicationConfig duplicationConfig) {
         this.factory = factory;
@@ -172,6 +175,7 @@ public class RecipeTransformer {
             if (result != null) {
                 recipe.setUnified(result);
             }
+            propertiesLogger.log(recipe.getType(), recipe.getOriginal(), builder.getKeys());
         } catch (Exception e) {
             AlmostUnified.LOG.warn("Error unifying recipe '{}': {}", recipe.getId(), e.getMessage());
             e.printStackTrace();

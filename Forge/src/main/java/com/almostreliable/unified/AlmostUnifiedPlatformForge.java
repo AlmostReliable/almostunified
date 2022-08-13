@@ -28,7 +28,7 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
 
     @Override
     public Path getConfigPath() {
-        return FMLPaths.CONFIGDIR.get();
+        return FMLPaths.CONFIGDIR.get().resolve(BuildConfig.MOD_ID);
     }
 
     @Override

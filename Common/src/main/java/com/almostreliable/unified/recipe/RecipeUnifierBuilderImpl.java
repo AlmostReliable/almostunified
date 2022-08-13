@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -72,6 +73,10 @@ public class RecipeUnifierBuilderImpl implements RecipeUnifierBuilder {
         }
 
         return result;
+    }
+
+    public Collection<String> getKeys() {
+        return consumers.keySet();
     }
 
     private record Entry<T extends JsonElement>(Class<T> expectedType,
