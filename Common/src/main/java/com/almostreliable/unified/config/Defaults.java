@@ -101,16 +101,16 @@ public class Defaults {
                     "c:rods/{material}",
                     "c:storage_blocks/{material}",
                     // Modder's just can't decide
-                    "c:{materials}_nuggets",
-                    "c:{materials}_dusts",
-                    "c:{materials}_gears",
-                    "c:{materials}_gems",
-                    "c:{materials}_ingots",
-                    "c:{materials}_raw_materials",
-                    "c:{materials}_ores",
-                    "c:{materials}_plates",
-                    "c:{materials}_rods",
-                    "c:{materials}_storage_blocks"
+                    "c:{material}_nuggets",
+                    "c:{material}_dusts",
+                    "c:{material}_gears",
+                    "c:{material}_gems",
+                    "c:{material}_ingots",
+                    "c:{material}_raw_materials",
+                    "c:{material}_ores",
+                    "c:{material}_plates",
+                    "c:{material}_rods",
+                    "c:{material}_storage_blocks"
             );
         };
     }
