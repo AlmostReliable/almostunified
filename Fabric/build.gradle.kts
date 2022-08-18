@@ -12,7 +12,7 @@ val modId: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
 val reiVersion: String by project
-val almostlibVersion: String by project
+val jeiVersion: String by project
 
 val baseArchiveName = "${modName}-fabric-${minecraftVersion}"
 

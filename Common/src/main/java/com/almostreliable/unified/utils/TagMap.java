@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 
@@ -16,6 +17,20 @@ public class TagMap {
     private final Map<ResourceLocation, Set<UnifyTag<Item>>> itemsToTags = new HashMap<>();
 
     protected TagMap() {}
+
+    public static TagMap create(Collection<UnifyTag<Item>> unifyTags) {
+        TagMap tagMap = new TagMap();
+
+        unifyTags.forEach(ut -> {
+            TagKey<Item> asTagKey = TagKey.create(Registry.ITEM_REGISTRY, ut.location());
+            Registry.ITEM.getTagOrEmpty(asTagKey).forEach(holder -> {
+                ResourceLocation key = Registry.ITEM.getKey(holder.value());
+                tagMap.put(ut, key);
+            });
+        });
+
+        return tagMap;
+    }
 
     public static TagMap create(TagManager tagManager, Predicate<UnifyTag<Item>> filter) {
         Objects.requireNonNull(tagManager, "Requires a non-null tag manager");

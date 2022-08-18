@@ -13,7 +13,8 @@ val modId: String by project
 val fabricLoaderVersion: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
-val almostlibVersion: String by project
+val reiVersion: String by project
+val jeiVersion: String by project
 
 val baseArchiveName = "${modName}-common-${minecraftVersion}"
 
@@ -40,6 +41,8 @@ dependencies {
     implementation("com.electronwill.night-config:toml:3.6.4");
     include("com.electronwill.night-config:core:3.6.4");
     include("com.electronwill.night-config:toml:3.6.4");
+
+    modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
 
     /**
      * DON'T USE THIS! NEEDED TO COMPILE THIS PROJECT
