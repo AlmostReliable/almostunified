@@ -35,11 +35,6 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${reiVersion}")
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${reiVersion}")
 
-    implementation("com.electronwill.night-config:core:3.6.4");
-    implementation("com.electronwill.night-config:toml:3.6.4");
-    include("com.electronwill.night-config:core:3.6.4");
-    include("com.electronwill.night-config:toml:3.6.4");
-
     fileTree("extra-mods-$minecraftVersion") { include("**/*.jar") }
         .forEach { f ->
             val sepIndex = f.nameWithoutExtension.lastIndexOf('-');

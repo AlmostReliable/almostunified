@@ -37,10 +37,6 @@ dependencies {
         parchment("org.parchmentmc.data:${mappingsChannel}-${minecraftVersion}:${mappingsVersion}@zip")
     })
     implementation("com.google.code.findbugs:jsr305:3.0.2")
-    implementation("com.electronwill.night-config:core:3.6.4");
-    implementation("com.electronwill.night-config:toml:3.6.4");
-    include("com.electronwill.night-config:core:3.6.4");
-    include("com.electronwill.night-config:toml:3.6.4");
 
     modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
 
