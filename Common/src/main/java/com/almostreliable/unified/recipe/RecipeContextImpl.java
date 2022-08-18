@@ -40,7 +40,7 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
-    public ResourceLocation getPreferredItemByTag(@Nullable UnifyTag<Item> tag, Predicate<ResourceLocation> filter) {
+    public ResourceLocation getPreferredItemForTag(@Nullable UnifyTag<Item> tag, Predicate<ResourceLocation> filter) {
         if (tag == null) {
             return null;
         }
@@ -50,7 +50,7 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
-    public UnifyTag<Item> getPreferredTagByItem(@Nullable ResourceLocation item) {
+    public UnifyTag<Item> getPreferredTagForItem(@Nullable ResourceLocation item) {
         if (item == null) {
             return null;
         }
@@ -82,7 +82,7 @@ public class RecipeContextImpl implements RecipeContext {
 
             if (object.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {
                 ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
-                UnifyTag<Item> tag = getPreferredTagByItem(item);
+                UnifyTag<Item> tag = getPreferredTagForItem(item);
                 if (tag != null) {
                     object.remove(RecipeConstants.ITEM);
                     object.add(RecipeConstants.TAG, new JsonPrimitive(tag.location().toString()));
@@ -126,7 +126,7 @@ public class RecipeContextImpl implements RecipeContext {
 
             // Some mods have tags for results instead of items. We replace those with the preferred item.
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
-                ResourceLocation item = getPreferredItemByTag(Utils.toItemTag(primitive.getAsString()), $ -> true);
+                ResourceLocation item = getPreferredItemForTag(Utils.toItemTag(primitive.getAsString()), $ -> true);
                 if (item != null) {
                     object.remove(RecipeConstants.TAG);
                     object.add(RecipeConstants.ITEM, new JsonPrimitive(item.toString()));

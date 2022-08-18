@@ -51,7 +51,7 @@ public class IERecipeUnifier implements RecipeUnifier {
                  * Immersive Engineering allows tags in result and filters them. So we replace the tags with
                  * the preferred item from our config.
                  */
-                ResourceLocation item = context.getPreferredItemByTag(Utils.toItemTag(object
+                ResourceLocation item = context.getPreferredItemForTag(Utils.toItemTag(object
                         .get(RecipeConstants.TAG)
                         .getAsString()), $ -> true);
                 if (item != null) {

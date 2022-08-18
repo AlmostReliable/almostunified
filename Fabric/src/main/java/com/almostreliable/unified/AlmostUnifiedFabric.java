@@ -6,6 +6,5 @@ public class AlmostUnifiedFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        AlmostUnified.initializeRuntime();
     }
 }

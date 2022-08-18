@@ -19,6 +19,6 @@ public class ReloadableServerResourcesMixin {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void yoinkServerResources(RegistryAccess.Frozen frozen, Commands.CommandSelection commandSelection, int i, CallbackInfo ci) {
-        AlmostUnified.getRuntime().updateTagManager(tagManager);
+        AlmostUnified.updateTagManager(tagManager);
     }
 }

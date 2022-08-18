@@ -13,7 +13,7 @@ val modId: String by project
 val fabricLoaderVersion: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
-val reiVersion: String by project
+val kubejsVersion: String by project
 val jeiVersion: String by project
 
 val baseArchiveName = "${modName}-common-${minecraftVersion}"
@@ -38,6 +38,7 @@ dependencies {
     })
     implementation("com.google.code.findbugs:jsr305:3.0.2")
 
+    modApi("dev.latvian.mods:kubejs-fabric:${kubejsVersion}")
     modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
 
     /**

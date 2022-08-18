@@ -16,32 +16,48 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 
-import javax.annotation.Nullable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AlmostUnifiedRuntime {
     protected final RecipeHandlerFactory recipeHandlerFactory;
-    @Nullable protected TagManager tagManager;
+    private final TagMap tagMap;
+    private final DuplicationConfig dupConfig;
+    private final UnifyConfig unifyConfig;
+    private final DebugConfig debugConfig;
+    private final ReplacementMap replacementMap;
 
-    public AlmostUnifiedRuntime(RecipeHandlerFactory recipeHandlerFactory) {
+    private AlmostUnifiedRuntime(RecipeHandlerFactory recipeHandlerFactory, TagMap tagMap, DuplicationConfig dupConfig, UnifyConfig unifyConfig, DebugConfig debugConfig) {
         this.recipeHandlerFactory = recipeHandlerFactory;
+        this.tagMap = tagMap;
+        this.dupConfig = dupConfig;
+        this.unifyConfig = unifyConfig;
+        this.debugConfig = debugConfig;
+        this.replacementMap = new ReplacementMap(this.tagMap, this.unifyConfig);
     }
 
-    public void run(Map<ResourceLocation, JsonElement> recipes) {
+    public static AlmostUnifiedRuntime create(TagManager tagManager) {
+        Objects.requireNonNull(tagManager);
+
         createGitIgnoreIfNotExists();
         DuplicationConfig dupConfig = Config.load(DuplicationConfig.NAME, new DuplicationConfig.Serializer());
         UnifyConfig unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
         DebugConfig debugConfig = Config.load(DebugConfig.NAME, new DebugConfig.Serializer());
 
-        debugConfig.logRecipes(recipes, "recipes_before_unification");
+        RecipeHandlerFactory factory = new RecipeHandlerFactory();
+        AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
 
         List<UnifyTag<Item>> allowedTags = unifyConfig.bakeTags();
-        TagMap tagMap = createTagMap(allowedTags);
-        ReplacementMap replacementMap = new ReplacementMap(tagMap, unifyConfig);
+        TagMap tagMap = TagMap.create(tagManager, allowedTags::contains);
 
+        return new AlmostUnifiedRuntime(factory, tagMap, dupConfig, unifyConfig, debugConfig);
+    }
+
+    public void run(Map<ResourceLocation, JsonElement> recipes) {
+        debugConfig.logRecipes(recipes, "recipes_before_unification.txt");
         debugConfig.logUnifyTagDump(tagMap);
 
         long startTime = System.currentTimeMillis();
@@ -52,27 +68,23 @@ public class AlmostUnifiedRuntime {
         RecipeDumper dumper = new RecipeDumper(result, startTime, System.currentTimeMillis());
         dumper.dump(debugConfig.dumpOverview, debugConfig.dumpUnification, debugConfig.dumpDuplicates);
 
-        debugConfig.logRecipes(recipes, "recipes_after_unification");
+        debugConfig.logRecipes(recipes, "recipes_after_unification.txt");
     }
 
-    private void createGitIgnoreIfNotExists() {
+    public TagMap getTagMap() {
+        return tagMap;
+    }
+
+    public ReplacementMap getReplacementMap() {
+        return replacementMap;
+    }
+
+    private static void createGitIgnoreIfNotExists() {
         Path path = AlmostUnifiedPlatform.INSTANCE.getConfigPath();
         if (!(Files.exists(path) && Files.isDirectory(path))) {
             FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getConfigPath(),
                     ".gitignore",
                     sb -> sb.append(DebugConfig.NAME).append(".json").append("\n"));
         }
-    }
-
-    public void updateTagManager(TagManager tagManager) {
-        this.tagManager = tagManager;
-    }
-
-    protected TagMap createTagMap(List<UnifyTag<Item>> allowedTags) {
-        if (tagManager == null) {
-            throw new IllegalStateException("Internal error. TagManager was not updated correctly");
-        }
-
-        return TagMap.create(tagManager, allowedTags::contains);
     }
 }

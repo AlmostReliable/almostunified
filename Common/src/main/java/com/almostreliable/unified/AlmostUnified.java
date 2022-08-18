@@ -1,6 +1,6 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import net.minecraft.tags.TagManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,8 +9,8 @@ import javax.annotation.Nullable;
 public class AlmostUnified {
 
     public static final Logger LOG = LogManager.getLogger(BuildConfig.MOD_NAME);
-    @Nullable
-    private static AlmostUnifiedRuntime RUNTIME;
+    @Nullable private static AlmostUnifiedRuntime RUNTIME;
+    @Nullable private static TagManager tagManager;
 
     public static AlmostUnifiedRuntime getRuntime() {
         if (RUNTIME == null) {
@@ -19,13 +19,15 @@ public class AlmostUnified {
         return RUNTIME;
     }
 
-    public static boolean runtimeInitialized() {
-        return RUNTIME != null;
+    public static void reloadRuntime() {
+        if (tagManager == null) {
+            throw new IllegalStateException("Internal error. TagManager was not updated correctly");
+        }
+
+        RUNTIME = AlmostUnifiedRuntime.create(tagManager);
     }
 
-    static void initializeRuntime() {
-        RecipeHandlerFactory factory = new RecipeHandlerFactory();
-        AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
-        RUNTIME = new AlmostUnifiedRuntime(factory);
+    public static void updateTagManager(TagManager tm) {
+        tagManager = tm;
     }
 }

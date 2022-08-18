@@ -14,10 +14,10 @@ public interface RecipeContext {
     ResourceLocation getReplacementForItem(@Nullable ResourceLocation item);
 
     @Nullable
-    ResourceLocation getPreferredItemByTag(@Nullable UnifyTag<Item> tag, Predicate<ResourceLocation> filter);
+    ResourceLocation getPreferredItemForTag(@Nullable UnifyTag<Item> tag, Predicate<ResourceLocation> filter);
 
     @Nullable
-    UnifyTag<Item> getPreferredTagByItem(@Nullable ResourceLocation item);
+    UnifyTag<Item> getPreferredTagForItem(@Nullable ResourceLocation item);
 
     JsonElement createIngredientReplacement(@Nullable JsonElement element);
 
