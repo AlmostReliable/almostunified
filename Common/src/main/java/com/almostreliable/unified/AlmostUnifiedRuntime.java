@@ -42,6 +42,8 @@ public class AlmostUnifiedRuntime {
         TagMap tagMap = createTagMap(allowedTags);
         ReplacementMap replacementMap = new ReplacementMap(tagMap, unifyConfig);
 
+        debugConfig.logUnifyTagDump(tagMap);
+
         long startTime = System.currentTimeMillis();
         RecipeTransformer.Result result = new RecipeTransformer(recipeHandlerFactory,
                 replacementMap,
