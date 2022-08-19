@@ -17,7 +17,7 @@ public class AlmostKube extends KubeJSPlugin {
     @Override
     public void addBindings(BindingsEvent event) {
         if (event.type == ScriptType.SERVER) {
-            event.add("AlmostUnify", UnifyWrapper.class);
+            event.add("AlmostUnified", UnifyWrapper.class);
         }
     }
 
