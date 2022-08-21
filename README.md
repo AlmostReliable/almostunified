@@ -35,19 +35,19 @@ This project is using the [MultiLoader Template] from [Jared].
 This project is licensed under the [GNU Lesser General Public License v3.0][license].
 
 <!-- Badges -->
-[version_badge]: https://img.shields.io/github/v/release/AlmostReliable/almost-unified?style=flat-square
-[version_link]: https://github.com/AlmostReliable/almost-unified/releases/latest
+[version_badge]: https://img.shields.io/github/v/release/AlmostReliable/almostunified?style=flat-square
+[version_link]: https://github.com/AlmostReliable/almostunified/releases/latest
 [total_downloads_badge]: http://cf.way2muchnoise.eu/full_633823.svg?badge_style=flat
-[workflow_status_badge]: https://img.shields.io/github/workflow/status/AlmostReliable/almost-unified/CI?style=flat-square
-[workflow_status_link]: https://github.com/AlmostReliable/almost-unified/actions
-[license_badge]: https://img.shields.io/github/license/AlmostReliable/almost-unified?style=flat-square
+[workflow_status_badge]: https://img.shields.io/github/workflow/status/AlmostReliable/almostunified/CI?style=flat-square
+[workflow_status_link]: https://github.com/AlmostReliable/almostunified/actions
+[license_badge]: https://img.shields.io/github/license/AlmostReliable/almostunified?style=flat-square
 
 <!-- Links -->
 [minecraft]: https://www.minecraft.net/
 [discord]: https://discord.com/invite/ThFnwZCyYY
-[releases]: https://github.com/AlmostReliable/almost-unified/releases
+[releases]: https://github.com/AlmostReliable/almostunified/releases
 [curseforge]: https://www.curseforge.com/minecraft/mc-mods/almost-unified
-[wiki]: https://github.com/AlmostReliable/almost-unified/wiki
+[wiki]: https://github.com/AlmostReliable/almostunified/wiki
 [forge]: http://files.minecraftforge.net/
 [fabric]: https://fabricmc.net/
 [changelog]: CHANGELOG.md
