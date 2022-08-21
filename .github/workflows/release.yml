@@ -1,0 +1,120 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v1.18-*.*.*'
+
+env:
+  JAVA_DIST: 'zulu'
+  JAVA_VERSION: 17
+  MOD_ID: 'almostunified'
+  MOD_NAME: 'AlmostUnified'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DIST }}
+          cache: gradle
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Assemble the JARs
+        run: ./gradlew assemble
+
+      - name: Move JARs to build directory
+        run: |
+          mkdir -p build/libs
+          mv -f Forge/build/libs/*.jar build/libs
+          mv -f Fabric/build/libs/*.jar build/libs
+
+      - name: Collect version information
+        run: |
+          shopt -s failglob # print a warning if a glob does not match anything
+          set_var() {
+            echo $1="$2"
+            echo $1="$2" >> $GITHUB_ENV
+            declare -g $1="$2"
+          }
+          set_var JAR_FILE $(eval echo build/libs/${{ env.MOD_ID }}-*-*-*.jar)
+          set_var MINECRAFT_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f3)
+          set_var MOD_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f4)
+          set_var RELEASE_TYPE "$(echo ${GITHUB_REF##*/} | cut -d- -f5)"
+          set_var RELEASE_TYPE "$([[ -z $RELEASE_TYPE ]] && echo release || echo $RELEASE_TYPE)"
+
+      - name: Install changelog parser
+        uses: taiki-e/install-action@parse-changelog
+
+      - name: Parse changelog
+        run: parse-changelog CHANGELOG.md ${{ env.MOD_VERSION }} > changes.md
+
+      - name: Release Fabric to CF and MR
+        uses: Kir-Antipov/mc-publish@v3.1
+        with:
+          curseforge-id: 633823
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          modrinth-id: sdaSaQEz
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          files: build/libs/${{ env.MOD_ID }}-fabric-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}.jar
+          name: ${{ env.MOD_NAME }}-Fabric-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
+          version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}+fabric
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: changes.md
+
+          loaders: fabric
+          game-versions: ${{ env.MINECRAFT_VERSION }}
+          version-resolver: exact
+          java: ${{ env.JAVA_VERSION }}
+          retry-attempts: 2
+          retry-delay: 10000
+
+      - name: Release Forge to CF and MR
+        uses: Kir-Antipov/mc-publish@v3.1
+        with:
+          curseforge-id: 633823
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          modrinth-id: sdaSaQEz
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          files: build/libs/${{ env.MOD_ID }}-forge-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}.jar
+          name: ${{ env.MOD_NAME }}-Forge-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
+          version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}+forge
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: changes.md
+
+          loaders: forge
+          game-versions: ${{ env.MINECRAFT_VERSION }}
+          version-resolver: exact
+          java: ${{ env.JAVA_VERSION }}
+          retry-attempts: 2
+          retry-delay: 10000
+
+      - name: Release to GitHub
+        uses: Kir-Antipov/mc-publish@v3.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          files: build/libs/${{ env.MOD_ID }}-*-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}.jar
+          version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: changes.md
+          retry-attempts: 2
+          retry-delay: 10000

@@ -14,7 +14,7 @@ val mappingsVersion: String by project
 val reiVersion: String by project
 val jeiVersion: String by project
 
-val baseArchiveName = "${modName}-fabric-${minecraftVersion}"
+val baseArchiveName = "${modId}-fabric-${minecraftVersion}"
 
 base {
     archivesName.set(baseArchiveName)

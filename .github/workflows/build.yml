@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '1.18'
+    tags-ignore:
+      - '**'
+  pull_request:
+    branches:
+      - '1.18'
+
+env:
+  JAVA_DIST: 'zulu'
+  JAVA_VERSION: 17
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DIST }}
+          cache: gradle
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Build
+        run: ./gradlew build --stacktrace

@@ -19,7 +19,7 @@ val jeiVersion: String by project
 val almostlibVersion: String by project
 
 
-val baseArchiveName = "${modName}-forge-${minecraftVersion}"
+val baseArchiveName = "${modId}-forge-${minecraftVersion}"
 
 base {
     archivesName.set(baseArchiveName)
