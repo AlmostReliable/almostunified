@@ -1,6 +1,7 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonObject;
@@ -94,7 +95,8 @@ public class UnifyConfig extends Config {
                     Defaults.MOD_PRIORITIES);
             List<String> materials = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MATERIALS)),
                     Defaults.MATERIALS);
-            List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.TAGS);
+            List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)),
+                    Defaults.getTags(AlmostUnifiedPlatform.INSTANCE.getPlatform()));
             Set<UnifyTag<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
                     .stream()
@@ -112,7 +114,14 @@ public class UnifyConfig extends Config {
                     .collect(Collectors.toSet()), new HashSet<>());
             boolean hideJeiRei = safeGet(() -> json.getAsJsonPrimitive(HIDE_JEI_REI).getAsBoolean(), true);
 
-            return new UnifyConfig(stoneStrata, materials, tags, mods, ignoredTags, ignoredRecipeTypes, ignoredRecipes, hideJeiRei);
+            return new UnifyConfig(stoneStrata,
+                    materials,
+                    tags,
+                    mods,
+                    ignoredTags,
+                    ignoredRecipeTypes,
+                    ignoredRecipes,
+                    hideJeiRei);
         }
 
         @Override

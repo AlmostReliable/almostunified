@@ -1,6 +1,7 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.Platform;
 
 import java.util.List;
 
@@ -73,10 +74,8 @@ public class Defaults {
             "rods",
             "storage_blocks");
 
-    public static final List<String> TAGS = getDefaultPatterns();
-
-    private static List<String> getDefaultPatterns() {
-        return switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
+    public static List<String> getTags(Platform platform) {
+        return switch (platform) {
             case Forge -> List.of(
                     "forge:nuggets/{material}",
                     "forge:dusts/{material}",

@@ -31,7 +31,7 @@ public class TestUtils {
             TEST_MOD_5);
     public static UnifyConfig DEFAULT_UNIFY_CONFIG = new UnifyConfig(Defaults.STONE_STRATA,
             Defaults.MATERIALS,
-            Defaults.TAGS,
+            Defaults.getTags(Platform.Forge),
             TestUtils.TEST_MOD_PRIORITIES,
             new HashSet<>(),
             new HashSet<>(),
