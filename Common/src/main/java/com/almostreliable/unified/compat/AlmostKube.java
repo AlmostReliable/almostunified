@@ -38,7 +38,7 @@ public class AlmostKube extends KubeJSPlugin {
             return ItemStackJS.of(replacement);
         }
 
-        public static ItemStackJS getPreferredItemForItem(ResourceLocation tag) {
+        public static ItemStackJS getPreferredItemForTag(ResourceLocation tag) {
             UnifyTag<Item> asUnifyTag = UnifyTag.item(tag);
             ResourceLocation item = AlmostUnified
                     .getRuntime()
