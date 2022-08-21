@@ -11,8 +11,8 @@ val modName: String by project
 val modId: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
+val extraModsDirectory: String by project
 val reiVersion: String by project
-val jeiVersion: String by project
 
 val baseArchiveName = "${modId}-fabric-${minecraftVersion}"
 
@@ -35,7 +35,7 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${reiVersion}")
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${reiVersion}")
 
-    fileTree("extra-mods-$minecraftVersion") { include("**/*.jar") }
+    fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
         .forEach { f ->
             val sepIndex = f.nameWithoutExtension.lastIndexOf('-');
             if(sepIndex == -1) {
@@ -44,7 +44,7 @@ dependencies {
             val mod = f.nameWithoutExtension.substring(0, sepIndex);
             val version = f.nameWithoutExtension.substring(sepIndex + 1);
             println("Extra mod $mod with version $version detected")
-            modLocalRuntime("extra-mods:$mod:$version")
+            modLocalRuntime("$extraModsDirectory:$mod:$version")
         }
 
     implementation(project(":Common"))

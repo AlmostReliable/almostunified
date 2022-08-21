@@ -1,23 +1,20 @@
 plugins {
     java
     eclipse
+    `maven-publish`
     id("net.minecraftforge.gradle") version ("5.1.+")
     id("org.parchmentmc.librarian.forgegradle") version ("1.+")
-    id("org.spongepowered.mixin") version ("0.7-SNAPSHOT")
-    `maven-publish`
+    id("org.spongepowered.mixin") version ("0.7.+")
 }
 
 val minecraftVersion: String by project
 val mixinVersion: String by project
 val forgeVersion: String by project
-val modName: String by project
-val modAuthor: String by project
 val modId: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
+val extraModsDirectory: String by project
 val jeiVersion: String by project
-val almostlibVersion: String by project
-
 
 val baseArchiveName = "${modId}-forge-${minecraftVersion}"
 
@@ -72,7 +69,7 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-forge-api:${jeiVersion}"))
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-forge:${jeiVersion}"))
 
-    fileTree("extra-mods-$minecraftVersion") { include("**/*.jar") }
+    fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
         .forEach { f ->
             val sepIndex = f.nameWithoutExtension.lastIndexOf('-');
             if(sepIndex == -1) {
@@ -81,7 +78,7 @@ dependencies {
             val mod = f.nameWithoutExtension.substring(0, sepIndex);
             val version = f.nameWithoutExtension.substring(sepIndex + 1);
             println("Extra mod $mod with version $version detected")
-            runtimeOnly(fg.deobf("extra-mods:$mod:$version"))
+            runtimeOnly(fg.deobf("$extraModsDirectory:$mod:$version"))
         }
 
     annotationProcessor("org.spongepowered:mixin:${mixinVersion}:processor")

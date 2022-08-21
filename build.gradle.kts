@@ -8,6 +8,7 @@ val modName: String by project
 val modAuthor: String by project
 val modDescription: String by project
 val forgeMinVersion: String by project
+val extraModsDirectory: String by project
 val githubUser: String by project
 val githubRepo: String by project
 
@@ -19,8 +20,8 @@ plugins {
 allprojects {
     repositories {
         flatDir {
-            name = "extra-mods"
-            dir(file("extra-mods-$minecraftVersion"))
+            name = extraModsDirectory
+            dir(file("$extraModsDirectory-$minecraftVersion"))
         }
         mavenLocal()
         mavenCentral()
@@ -81,9 +82,9 @@ subprojects {
     }
 
     tasks.processResources {
-        val resourceTargets = listOf<String>("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
+        val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
 
-        val replaceProperties = mapOf<String, String>(
+        val replaceProperties = mapOf(
             "version" to project.version as String,
             "license" to license,
             "modId" to modId,
