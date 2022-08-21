@@ -3,6 +3,8 @@ package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.config.Config;
+import com.almostreliable.unified.config.UnifyConfig;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -26,7 +28,12 @@ public class AlmostJEI implements IModPlugin {
             return;
         }
 
-        Collection<ItemStack> items = HideHelper.createHidingList();
+        UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
+        if(config.reiOrJeiDisabled()) {
+            return;
+        }
+
+        Collection<ItemStack> items = HideHelper.createHidingList(config);
         if (!items.isEmpty()) {
             jei.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, items);
         }

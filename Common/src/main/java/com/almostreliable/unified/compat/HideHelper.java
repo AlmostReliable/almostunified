@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 
 public class HideHelper {
 
-    public static Collection<ItemStack> createHidingList() {
-        UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
+    public static Collection<ItemStack> createHidingList(UnifyConfig config) {
         List<UnifyTag<Item>> unifyTags = config.bakeTags();
         TagMap tagMap = TagMap.create(unifyTags);
         ReplacementMap repMap = new ReplacementMap(tagMap, config);

@@ -1,10 +1,10 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -20,8 +20,9 @@ public class UnifyConfig extends Config {
     private final Set<UnifyTag<Item>> ignoredTags;
     private final Set<ResourceLocation> ignoredRecipeTypes;
     private final Set<ResourceLocation> ignoredRecipes;
+    private final boolean hideJeiRei;
 
-    public UnifyConfig(List<String> stoneStrata, List<String> materials, List<String> unbakedTags, List<String> modPriorities, Set<UnifyTag<Item>> ignoredTags, Set<ResourceLocation> ignoredRecipeTypes, Set<ResourceLocation> ignoredRecipes) {
+    public UnifyConfig(List<String> stoneStrata, List<String> materials, List<String> unbakedTags, List<String> modPriorities, Set<UnifyTag<Item>> ignoredTags, Set<ResourceLocation> ignoredRecipeTypes, Set<ResourceLocation> ignoredRecipes, boolean hideJeiRei) {
         this.stoneStrata = stoneStrata;
         this.materials = materials;
         this.unbakedTags = unbakedTags;
@@ -29,6 +30,7 @@ public class UnifyConfig extends Config {
         this.ignoredTags = ignoredTags;
         this.ignoredRecipeTypes = ignoredRecipeTypes;
         this.ignoredRecipes = ignoredRecipes;
+        this.hideJeiRei = hideJeiRei;
     }
 
     public List<String> getStoneStrata() {
@@ -68,6 +70,10 @@ public class UnifyConfig extends Config {
         return result;
     }
 
+    public boolean reiOrJeiDisabled() {
+        return !hideJeiRei;
+    }
+
     public static class Serializer extends Config.Serializer<UnifyConfig> {
 
         public static final String STONE_STRATA = "stoneStrata";
@@ -77,6 +83,8 @@ public class UnifyConfig extends Config {
         public static final String IGNORED_TAGS = "ignoredTags";
         public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
         public static final String IGNORED_RECIPES = "ignoredRecipes";
+
+        public static final String HIDE_JEI_REI = "itemsHidingJeiRei";
 
         @Override
         public UnifyConfig deserialize(JsonObject json) {
@@ -102,8 +110,9 @@ public class UnifyConfig extends Config {
                     .stream()
                     .map(ResourceLocation::new)
                     .collect(Collectors.toSet()), new HashSet<>());
+            boolean hideJeiRei = safeGet(() -> json.getAsJsonPrimitive(HIDE_JEI_REI).getAsBoolean(), true);
 
-            return new UnifyConfig(stoneStrata, materials, tags, mods, ignoredTags, ignoredRecipeTypes, ignoredRecipes);
+            return new UnifyConfig(stoneStrata, materials, tags, mods, ignoredTags, ignoredRecipeTypes, ignoredRecipes, hideJeiRei);
         }
 
         @Override
@@ -129,6 +138,7 @@ public class UnifyConfig extends Config {
                             .stream()
                             .map(ResourceLocation::toString)
                             .collect(Collectors.toList())));
+            json.add(HIDE_JEI_REI, new JsonPrimitive(config.hideJeiRei));
             return json;
         }
     }
