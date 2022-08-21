@@ -12,7 +12,7 @@
     "sources": "https://github.com/${githubUser}/${githubRepo}/issues"
   },
   "license": "${license}",
-  "icon": "assets/${modId}/icon.png",
+  "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [

@@ -2,6 +2,7 @@ modLoader = "javafml"
 loaderVersion = "[${forgeMinVersion},)"
 issueTrackerURL = "https://github.com/${githubUser}/${githubRepo}/issues"
 license = "${license}"
+logoFile = "logo.png"
 
 [[mods]]
 modId = "${modId}"
