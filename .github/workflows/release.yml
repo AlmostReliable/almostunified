@@ -31,6 +31,7 @@ jobs:
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
@@ -57,7 +58,7 @@ jobs:
           set_var JAR_FILE $(eval echo build/libs/${{ env.MOD_ID }}-*-*-*.jar)
           set_var MINECRAFT_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f3)
           set_var MOD_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f4)
-          set_var RELEASE_TYPE "$(echo ${GITHUB_REF##*/} | cut -d- -f5)"
+          set_var RELEASE_TYPE "$(echo ${GITHUB_REF##*/} | cut -d- -f3)"
           set_var RELEASE_TYPE "$([[ -z $RELEASE_TYPE ]] && echo release || echo $RELEASE_TYPE)"
 
       - name: Install changelog parser
@@ -67,7 +68,7 @@ jobs:
         run: parse-changelog CHANGELOG.md ${{ env.MOD_VERSION }} > changes.md
 
       - name: Release Fabric to CF and MR
-        uses: Kir-Antipov/mc-publish@v3.1
+        uses: Kir-Antipov/mc-publish@v3.2
         with:
           curseforge-id: 633823
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
@@ -84,11 +85,20 @@ jobs:
           game-versions: ${{ env.MINECRAFT_VERSION }}
           version-resolver: exact
           java: ${{ env.JAVA_VERSION }}
+
+          curseforge-dependencies: |
+            jei | suggests | *
+            roughly-enough-items | suggests | *
+            kubejs | suggests | *
+          modrinth-dependencies: |
+            roughly-enough-items | suggests | *
+            kubejs | suggests | *
+
           retry-attempts: 2
           retry-delay: 10000
 
       - name: Release Forge to CF and MR
-        uses: Kir-Antipov/mc-publish@v3.1
+        uses: Kir-Antipov/mc-publish@v3.2
         with:
           curseforge-id: 633823
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
@@ -105,14 +115,24 @@ jobs:
           game-versions: ${{ env.MINECRAFT_VERSION }}
           version-resolver: exact
           java: ${{ env.JAVA_VERSION }}
+
+          curseforge-dependencies: |
+            jei | suggests | *
+            roughly-enough-items | suggests | *
+            kubejs | suggests | *
+          modrinth-dependencies: |
+            roughly-enough-items | suggests | *
+            kubejs | suggests | *
+
           retry-attempts: 2
           retry-delay: 10000
 
       - name: Release to GitHub
-        uses: Kir-Antipov/mc-publish@v3.1
+        uses: Kir-Antipov/mc-publish@v3.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: build/libs/${{ env.MOD_ID }}-*-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}.jar
+          name: v${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
           version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: changes.md
