@@ -58,6 +58,8 @@ This project is licensed under the [GNU Lesser General Public License v3.0][lice
 [releases]: https://github.com/AlmostReliable/almostunified/releases
 [forge]: http://files.minecraftforge.net/
 [fabric]: https://fabricmc.net/
+[forge-loom]: https://github.com/FabricMC/fabric-loom
+[parchment]: https://parchmentmc.org/
 [multiLoader template]: https://github.com/jaredlll08/MultiLoader-Template
 [jared]: https://github.com/jaredlll08
 [mo_shark]: https://www.curseforge.com/members/mo_shark
