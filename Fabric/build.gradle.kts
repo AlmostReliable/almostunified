@@ -24,7 +24,8 @@ dependencies {
     minecraft("com.mojang:minecraft:${minecraftVersion}")
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:${mappingsChannel}-${minecraftVersion}:${mappingsVersion}@zip")
+        // TODO: change this when updating to 1.19.2
+        parchment("org.parchmentmc.data:${mappingsChannel}-${minecraftVersion}.2:${mappingsVersion}@zip")
     })
     implementation("com.google.code.findbugs:jsr305:3.0.2")
 

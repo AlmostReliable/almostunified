@@ -82,7 +82,11 @@ jobs:
           changelog-file: changes.md
 
           loaders: fabric
-          game-versions: ${{ env.MINECRAFT_VERSION }}
+          # TODO: change this when updating to 1.19.2
+          game-versions: |
+            1.19
+            1.19.1
+            1.19.2
           version-resolver: exact
           java: ${{ env.JAVA_VERSION }}
 
@@ -112,7 +116,11 @@ jobs:
           changelog-file: changes.md
 
           loaders: forge
-          game-versions: ${{ env.MINECRAFT_VERSION }}
+          # TODO: change this when updating to 1.19.2
+          game-versions: |
+            1.19
+            1.19.1
+            1.19.2
           version-resolver: exact
           java: ${{ env.JAVA_VERSION }}
 
