@@ -16,12 +16,14 @@ public class DuplicationConfig extends Config {
     private final LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules;
     private final Set<ResourceLocation> ignoreRecipeTypes;
     private final Set<ResourceLocation> ignoreRecipes;
+    private final boolean strictMode;
 
-    public DuplicationConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<ResourceLocation> ignoreRecipeTypes, Set<ResourceLocation> ignoreRecipes) {
+    public DuplicationConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<ResourceLocation> ignoreRecipeTypes, Set<ResourceLocation> ignoreRecipes, boolean strictMode) {
         this.defaultRules = defaultRules;
         this.overrideRules = overrideRules;
         this.ignoreRecipeTypes = ignoreRecipeTypes;
         this.ignoreRecipes = ignoreRecipes;
+        this.strictMode = strictMode;
     }
 
     public boolean shouldIgnoreRecipe(RecipeLink recipe) {
@@ -32,11 +34,16 @@ public class DuplicationConfig extends Config {
         return overrideRules.getOrDefault(type, defaultRules);
     }
 
+    public boolean isStrictMode() {
+        return strictMode;
+    }
+
     public static class Serializer extends Config.Serializer<DuplicationConfig> {
         public static final String DEFAULT_DUPLICATE_RULES = "defaultDuplicateRules";
         public static final String OVERRIDE_DUPLICATE_RULES = "overrideDuplicateRules";
         public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
         public static final String IGNORED_RECIPES = "ignoredRecipes";
+        public static final String STRICT_MODE = "strictMode";
 
         @Override
         public DuplicationConfig deserialize(JsonObject json) {
@@ -54,8 +61,9 @@ public class DuplicationConfig extends Config {
                             entry -> createCompareSet(entry.getValue().getAsJsonObject()),
                             (a, b) -> b,
                             LinkedHashMap::new)), new LinkedHashMap<>());
+            boolean strictMode = safeGet(() -> json.get(STRICT_MODE).getAsBoolean(), false);
 
-            return new DuplicationConfig(defaultRules, overrideRules, ignoreRecipeTypes, ignoreRecipes);
+            return new DuplicationConfig(defaultRules, overrideRules, ignoreRecipeTypes, ignoreRecipes, strictMode);
         }
 
         private JsonCompare.CompareSettings defaultSet() {
@@ -85,6 +93,7 @@ public class DuplicationConfig extends Config {
                 overrides.add(rl.toString(), compareSettings.serialize());
             });
             json.add(OVERRIDE_DUPLICATE_RULES, overrides);
+            json.addProperty(STRICT_MODE, false);
 
             return json;
         }

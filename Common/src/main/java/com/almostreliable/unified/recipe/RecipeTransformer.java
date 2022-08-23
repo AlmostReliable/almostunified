@@ -111,9 +111,9 @@ public class RecipeTransformer {
             }
         }
 
-        for (RecipeLink unifiedLink : unified) {
-            if (handleDuplicate(unifiedLink, recipeLinks)) {
-                duplicates.add(unifiedLink.getDuplicateLink());
+        for (RecipeLink recipeLink : duplicationConfig.isStrictMode() ? recipeLinks : unified) {
+            if (handleDuplicate(recipeLink, recipeLinks)) {
+                duplicates.add(recipeLink.getDuplicateLink());
             }
         }
 
