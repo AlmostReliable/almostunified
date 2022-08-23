@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning].
 
 ## [0.0.2] - 2022-08-23
 
-Fix duplicates will not be removed after check
+### Fixed
+- multiple duplicates are not removed after unification
 
 ## [0.0.1] - 2022-08-21
 
