@@ -83,10 +83,10 @@ public class RecipeLink {
         return duplicateLink;
     }
 
-    private void setDuplicateLink(@Nullable DuplicateLink duplicateLink) {
+    private void updateDuplicateLink(@Nullable DuplicateLink duplicateLink) {
         Objects.requireNonNull(duplicateLink);
-        if (hasDuplicateLink()) {
-            throw new IllegalStateException("Recipe already linked");
+        if (hasDuplicateLink() && getDuplicateLink() != duplicateLink) {
+            throw new IllegalStateException("Recipe is already linked to " + getDuplicateLink());
         }
 
         this.duplicateLink = duplicateLink;
@@ -122,34 +122,48 @@ public class RecipeLink {
      * Checks for duplicate against given recipe data. If recipe data already has a duplicate link,
      * the master from the link will be used. Otherwise, we will create a new link if needed.
      *
-     * @param recipe          Recipe data to check for duplicate against.
+     * @param otherRecipe     Recipe data to check for duplicate against.
      * @param compareSettings Settings to use for comparison.
      * @return True if recipe is a duplicate, false otherwise.
      */
-    public boolean handleDuplicate(RecipeLink recipe, JsonCompare.CompareSettings compareSettings) {
-        if (hasDuplicateLink()) {
-            throw new IllegalStateException("Recipe already linked");
+    public boolean handleDuplicate(RecipeLink otherRecipe, JsonCompare.CompareSettings compareSettings) {
+        DuplicateLink selfDuplicate = getDuplicateLink();
+        DuplicateLink otherDuplicate = otherRecipe.getDuplicateLink();
+
+        if (selfDuplicate != null && otherDuplicate != null) {
+            return selfDuplicate == otherDuplicate;
         }
 
-        DuplicateLink link = recipe.getDuplicateLink();
-        if (link != null) {
-            RecipeLink compare = RecipeLink.compare(this, link.getMaster(), compareSettings);
-            if (compare != null) {
-                link.updateMaster(this);
-                setDuplicateLink(link);
-                return true;
+        if (selfDuplicate == null && otherDuplicate == null) {
+            RecipeLink compare = RecipeLink.compare(this, otherRecipe, compareSettings);
+            if (compare == null) {
+                return false;
             }
-        } else {
-            RecipeLink compare = RecipeLink.compare(this, recipe, compareSettings);
-            if (compare != null) {
-                DuplicateLink newLink = new DuplicateLink(compare);
-                setDuplicateLink(newLink);
-                recipe.setDuplicateLink(newLink);
-                return true;
-            }
+
+            DuplicateLink newLink = new DuplicateLink(compare);
+            updateDuplicateLink(newLink);
+            otherRecipe.updateDuplicateLink(newLink);
+            return true;
         }
 
-        return false;
+        if (otherDuplicate != null) {
+            RecipeLink compare = RecipeLink.compare(this, otherDuplicate.getMaster(), compareSettings);
+            if (compare == null) {
+                return false;
+            }
+            otherDuplicate.updateMaster(compare);
+            updateDuplicateLink(otherDuplicate);
+            return true;
+        }
+
+        // selfDuplicate != null
+        RecipeLink compare = RecipeLink.compare(selfDuplicate.getMaster(), otherRecipe, compareSettings);
+        if (compare == null) {
+            return false;
+        }
+        selfDuplicate.updateMaster(compare);
+        otherRecipe.updateDuplicateLink(selfDuplicate);
+        return true;
     }
 
     public JsonObject getActual() {
