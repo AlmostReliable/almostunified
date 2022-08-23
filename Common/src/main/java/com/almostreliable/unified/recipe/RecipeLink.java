@@ -135,7 +135,7 @@ public class RecipeLink {
         }
 
         if (selfDuplicate == null && otherDuplicate == null) {
-            RecipeLink compare = RecipeLink.compare(this, otherRecipe, compareSettings);
+            RecipeLink compare = compare(this, otherRecipe, compareSettings);
             if (compare == null) {
                 return false;
             }
@@ -147,7 +147,7 @@ public class RecipeLink {
         }
 
         if (otherDuplicate != null) {
-            RecipeLink compare = RecipeLink.compare(this, otherDuplicate.getMaster(), compareSettings);
+            RecipeLink compare = compare(this, otherDuplicate.getMaster(), compareSettings);
             if (compare == null) {
                 return false;
             }
@@ -157,7 +157,7 @@ public class RecipeLink {
         }
 
         // selfDuplicate != null
-        RecipeLink compare = RecipeLink.compare(selfDuplicate.getMaster(), otherRecipe, compareSettings);
+        RecipeLink compare = compare(selfDuplicate.getMaster(), otherRecipe, compareSettings);
         if (compare == null) {
             return false;
         }
