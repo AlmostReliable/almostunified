@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DebugConfig extends Config {
-    public static String NAME = "debug";
+    public static final String NAME = "debug";
 
     public final boolean dumpTagMap;
     public final boolean dumpDuplicates;
@@ -35,20 +35,17 @@ public class DebugConfig extends Config {
         }
 
         FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), "unify_tag_dump.txt", sb -> {
-            tagMap
+            sb.append(tagMap
                     .getTags()
                     .stream()
                     .sorted(Comparator.comparing(t -> t.location().toString()))
-                    .forEach(t -> sb
-                            .append(StringUtils.rightPad(t.location().toString(), 40))
-                            .append(" => ")
-                            .append(tagMap
-                                    .getItems(t)
-                                    .stream()
-                                    .map(ResourceLocation::toString)
-                                    .sorted()
-                                    .collect(Collectors.joining(", ")))
-                            .append("\n"));
+                    .map(t -> StringUtils.rightPad(t.location().toString(), 40) + " => " + tagMap
+                            .getItems(t)
+                            .stream()
+                            .map(ResourceLocation::toString)
+                            .sorted()
+                            .collect(Collectors.joining(", ")) + "\n")
+                    .collect(Collectors.joining()));
         });
     }
 

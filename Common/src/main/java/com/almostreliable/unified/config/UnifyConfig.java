@@ -13,7 +13,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class UnifyConfig extends Config {
-    public static String NAME = "unify";
+    public static final String NAME = "unify";
+
     private final List<String> stoneStrata;
     private final List<String> materials;
     private final List<String> unbakedTags;
@@ -102,16 +103,8 @@ public class UnifyConfig extends Config {
                     .stream()
                     .map(s -> UnifyTag.item(new ResourceLocation(s)))
                     .collect(Collectors.toSet()), new HashSet<>());
-            Set<ResourceLocation> ignoredRecipeTypes = safeGet(() -> JsonUtils
-                    .toList(json.getAsJsonArray(IGNORED_RECIPE_TYPES))
-                    .stream()
-                    .map(ResourceLocation::new)
-                    .collect(Collectors.toSet()), new HashSet<>());
-            Set<ResourceLocation> ignoredRecipes = safeGet(() -> JsonUtils
-                    .toList(json.getAsJsonArray(IGNORED_RECIPES))
-                    .stream()
-                    .map(ResourceLocation::new)
-                    .collect(Collectors.toSet()), new HashSet<>());
+            Set<ResourceLocation> ignoredRecipeTypes = deserializeResourceLocations(json, IGNORED_RECIPE_TYPES);
+            Set<ResourceLocation> ignoredRecipes = deserializeResourceLocations(json, IGNORED_RECIPES);
             boolean hideJeiRei = safeGet(() -> json.getAsJsonPrimitive(HIDE_JEI_REI).getAsBoolean(), true);
 
             return new UnifyConfig(stoneStrata,
@@ -137,16 +130,8 @@ public class UnifyConfig extends Config {
                             .map(UnifyTag::location)
                             .map(ResourceLocation::toString)
                             .toList()));
-            json.add(IGNORED_RECIPE_TYPES,
-                    JsonUtils.toArray(config.ignoredRecipeTypes
-                            .stream()
-                            .map(ResourceLocation::toString)
-                            .collect(Collectors.toList())));
-            json.add(IGNORED_RECIPES,
-                    JsonUtils.toArray(config.ignoredRecipes
-                            .stream()
-                            .map(ResourceLocation::toString)
-                            .collect(Collectors.toList())));
+            serializeResourceLocations(json, IGNORED_RECIPE_TYPES, config.ignoredRecipeTypes);
+            serializeResourceLocations(json, IGNORED_RECIPES, config.ignoredRecipes);
             json.add(HIDE_JEI_REI, new JsonPrimitive(config.hideJeiRei));
             return json;
         }

@@ -2,16 +2,21 @@ package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class Config {
 
@@ -41,10 +46,9 @@ public class Config {
     }
 
     private static JsonObject safeLoadJson(String file) {
-        try {
-            Path p = createConfigDir();
-            BufferedReader bufferedReader = Files.newBufferedReader(buildPath(p, file));
-            return new Gson().fromJson(bufferedReader, JsonObject.class);
+        Path p = createConfigDir();
+        try (BufferedReader reader = Files.newBufferedReader(buildPath(p, file))) {
+            return new Gson().fromJson(reader, JsonObject.class);
         } catch (Exception ignored) {
         }
         return new JsonObject();
@@ -64,15 +68,15 @@ public class Config {
         return p.resolve(name + ".json");
     }
 
-    public static abstract class Serializer<T extends Config> {
-        private boolean invalid = false;
+    public abstract static class Serializer<T extends Config> {
+        private boolean valid = true;
 
         protected void setInvalid() {
-            this.invalid = true;
+            this.valid = false;
         }
 
         public boolean isInvalid() {
-            return invalid;
+            return !valid;
         }
 
         public <V> V safeGet(Supplier<V> supplier, V defaultValue) {
@@ -82,6 +86,22 @@ public class Config {
                 setInvalid();
             }
             return defaultValue;
+        }
+
+        protected Set<ResourceLocation> deserializeResourceLocations(JsonObject json, String configKey) {
+            return safeGet(() -> JsonUtils
+                    .toList(json.getAsJsonArray(configKey))
+                    .stream()
+                    .map(ResourceLocation::new)
+                    .collect(Collectors.toSet()), new HashSet<>());
+        }
+
+        protected void serializeResourceLocations(JsonObject json, String configKey, Set<ResourceLocation> resourceLocations) {
+            json.add(configKey,
+                    JsonUtils.toArray(resourceLocations
+                            .stream()
+                            .map(ResourceLocation::toString)
+                            .toList()));
         }
 
         public abstract T deserialize(JsonObject json);

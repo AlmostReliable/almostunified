@@ -1,20 +1,11 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.Platform;
 
 import java.util.List;
 
-
-public class Defaults {
-    public static final List<String> STONE_STRATA = List.of("stone",
-            "nether",
-            "deepslate",
-            "granite",
-            "diorite",
-            "andesite");
-
-    @SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings("SpellCheckingInspection")
+public final class Defaults {
     public static final List<String> MOD_PRIORITIES = List.of(
             "minecraft",
             "kubejs",
@@ -23,7 +14,12 @@ public class Defaults {
             "thermal",
             "immersiveengineering",
             "mekanism");
-    @SuppressWarnings("SpellCheckingInspection")
+    public static final List<String> STONE_STRATA = List.of("stone",
+            "nether",
+            "deepslate",
+            "granite",
+            "diorite",
+            "andesite");
     public static final List<String> MATERIALS = List.of("aeternium",
             "aluminum",
             "amber",
@@ -62,17 +58,8 @@ public class Defaults {
             "zinc"
 
     );
-    public static final List<String> TYPES = List.of(
-            "nuggets",
-            "dusts",
-            "gears",
-            "gems",
-            "ingots",
-            "raw_materials",
-            "ores",
-            "plates",
-            "rods",
-            "storage_blocks");
+
+    private Defaults() {}
 
     public static List<String> getTags(Platform platform) {
         return switch (platform) {
