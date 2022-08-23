@@ -13,6 +13,9 @@ A [Minecraft] mod to unify resources.
 
 </div>
 
+## **📖 Wiki**
+For an in-depth explanation of the mod, its functionality, config descriptions, FAQs and more, check out the [wiki].
+
 ## **🔧 Manual Installation**
 1. Download the latest **mod jar** from the [releases], from [CurseForge] or [Modrinth].
 2. Install Minecraft [Forge] or [Fabric].
