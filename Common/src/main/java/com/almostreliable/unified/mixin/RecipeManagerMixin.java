@@ -22,7 +22,7 @@ public class RecipeManagerMixin {
             AlmostUnified.reloadRuntime();
             AlmostUnified.getRuntime().run(object);
         } catch (Exception e) {
-            AlmostUnified.LOG.error(e);
+            AlmostUnified.LOG.error(e.getMessage(), e);
         }
     }
 }

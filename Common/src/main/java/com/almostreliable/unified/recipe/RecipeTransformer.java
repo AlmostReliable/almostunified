@@ -102,13 +102,18 @@ public class RecipeTransformer {
 
     private void transformRecipes(List<RecipeLink> recipeLinks, BiConsumer<ResourceLocation, JsonElement> onAdd, Consumer<ResourceLocation> onRemove) {
         Set<RecipeLink.DuplicateLink> duplicates = new HashSet<>(recipeLinks.size());
+        List<RecipeLink> unified = new ArrayList<>(recipeLinks.size());
         for (RecipeLink curRecipe : recipeLinks) {
             unifyRecipe(curRecipe);
             if (curRecipe.isUnified()) {
                 onAdd.accept(curRecipe.getId(), curRecipe.getUnified());
-                if (handleDuplicate(curRecipe, recipeLinks)) {
-                    duplicates.add(curRecipe.getDuplicateLink());
-                }
+                unified.add(curRecipe);
+            }
+        }
+
+        for (RecipeLink unifiedLink : unified) {
+            if (handleDuplicate(unifiedLink, recipeLinks)) {
+                duplicates.add(unifiedLink.getDuplicateLink());
             }
         }
 
@@ -142,6 +147,7 @@ public class RecipeTransformer {
         }
 
         JsonCompare.CompareSettings compareSettings = duplicationConfig.getCompareSettings(curRecipe.getType());
+        boolean foundDuplicate = false;
         for (RecipeLink recipeLink : recipes) {
             if (!curRecipe.getType().equals(recipeLink.getType())) {
                 throw new IllegalStateException(
@@ -152,12 +158,10 @@ public class RecipeTransformer {
                 continue;
             }
 
-            if (curRecipe.handleDuplicate(recipeLink, compareSettings)) {
-                return true;
-            }
+            foundDuplicate |= curRecipe.handleDuplicate(recipeLink, compareSettings);
         }
 
-        return false;
+        return foundDuplicate;
     }
 
     /**
