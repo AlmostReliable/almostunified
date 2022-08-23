@@ -32,10 +32,5 @@
     "fabric": "*",
     "minecraft": ">=${minecraftVersion}",
     "java": ">=17"
-  },
-  "suggests" : {
-    "jei": "*",
-    "rei": "*",
-    "kubejs": "*"
   }
 }
