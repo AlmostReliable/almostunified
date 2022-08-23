@@ -67,7 +67,7 @@ public class RecipeDumper {
                     .sorted(Comparator.comparing(r -> r.getId().toString()))
                     .map(recipe -> "\t\t- " + recipe.getId() + "\n")
                     .collect(Collectors.joining("",
-                            "\t" + link.getMaster().getId() + " (Renamed to: " + link.createNewRecipeId() + ")\n",
+                            "\t" + link.getMaster().getId() + " (Renamed to: " + link.getMaster().createNewRecipeId() + ")\n",
                             "\n"))).collect(Collectors.joining("", type + " {\n", "}\n\n")));
         });
     }
