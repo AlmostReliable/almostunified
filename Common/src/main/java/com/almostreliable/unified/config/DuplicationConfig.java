@@ -1,19 +1,17 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.recipe.RecipeLink;
 import com.almostreliable.unified.utils.JsonCompare;
-import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DuplicationConfig extends Config {
     public static final String NAME = "duplicates";
+
     private final JsonCompare.CompareSettings defaultRules;
     private final LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules;
     private final Set<ResourceLocation> ignoreRecipeTypes;
@@ -42,28 +40,20 @@ public class DuplicationConfig extends Config {
 
         @Override
         public DuplicationConfig deserialize(JsonObject json) {
-            Set<ResourceLocation> ignoreRecipeTypes = safeGet(() -> JsonUtils
-                    .toList(json.getAsJsonArray(IGNORED_RECIPE_TYPES))
-                    .stream()
-                    .map(ResourceLocation::new)
-                    .collect(Collectors.toSet()), new HashSet<>());
-            Set<ResourceLocation> ignoreRecipes = safeGet(() -> JsonUtils
-                    .toList(json.getAsJsonArray(IGNORED_RECIPES))
-                    .stream()
-                    .map(ResourceLocation::new)
-                    .collect(Collectors.toSet()), new HashSet<>());
+            Set<ResourceLocation> ignoreRecipeTypes = deserializeResourceLocations(json, IGNORED_RECIPE_TYPES);
+            Set<ResourceLocation> ignoreRecipes = deserializeResourceLocations(json, IGNORED_RECIPES);
 
             JsonCompare.CompareSettings defaultRules = safeGet(() -> createCompareSet(json.getAsJsonObject(
                             DEFAULT_DUPLICATE_RULES)),
                     defaultSet());
-            LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules = safeGet(() -> {
-                LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrides = new LinkedHashMap<>();
-                json.getAsJsonObject(OVERRIDE_DUPLICATE_RULES).entrySet().forEach(entry -> {
-                    overrides.put(new ResourceLocation(entry.getKey()),
-                            createCompareSet(entry.getValue().getAsJsonObject()));
-                });
-                return overrides;
-            }, new LinkedHashMap<>());
+            LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules = safeGet(() -> json
+                    .getAsJsonObject(OVERRIDE_DUPLICATE_RULES)
+                    .entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(entry -> new ResourceLocation(entry.getKey()),
+                            entry -> createCompareSet(entry.getValue().getAsJsonObject()),
+                            (a, b) -> b,
+                            LinkedHashMap::new)), new LinkedHashMap<>());
 
             return new DuplicationConfig(defaultRules, overrideRules, ignoreRecipeTypes, ignoreRecipes);
         }
@@ -87,16 +77,8 @@ public class DuplicationConfig extends Config {
         public JsonObject serialize(DuplicationConfig config) {
             JsonObject json = new JsonObject();
 
-            json.add(IGNORED_RECIPE_TYPES,
-                    JsonUtils.toArray(config.ignoreRecipeTypes
-                            .stream()
-                            .map(ResourceLocation::toString)
-                            .collect(Collectors.toList())));
-            json.add(IGNORED_RECIPES,
-                    JsonUtils.toArray(config.ignoreRecipes
-                            .stream()
-                            .map(ResourceLocation::toString)
-                            .collect(Collectors.toList())));
+            serializeResourceLocations(json, IGNORED_RECIPE_TYPES, config.ignoreRecipeTypes);
+            serializeResourceLocations(json, IGNORED_RECIPES, config.ignoreRecipes);
             json.add(DEFAULT_DUPLICATE_RULES, config.defaultRules.serialize());
             JsonObject overrides = new JsonObject();
             config.overrideRules.forEach((rl, compareSettings) -> {
