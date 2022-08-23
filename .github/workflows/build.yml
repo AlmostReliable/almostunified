@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - '1.18'
+      - '1.19'
     tags-ignore:
       - '**'
   pull_request:
     branches:
-      - '1.18'
+      - '1.19'
 
 env:
   JAVA_DIST: 'zulu'
