@@ -1,6 +1,6 @@
 plugins {
     `maven-publish`
-    id("fabric-loom") version "0.10-SNAPSHOT"
+    id("fabric-loom") version "0.12-SNAPSHOT"
     id("com.github.gmazzo.buildconfig") version "3.0.3"
 }
 

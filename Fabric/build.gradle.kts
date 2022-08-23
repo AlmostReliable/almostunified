@@ -1,7 +1,7 @@
 plugins {
     idea
     `maven-publish`
-    id("fabric-loom") version "0.10-SNAPSHOT"
+    id("fabric-loom") version "0.12-SNAPSHOT"
 }
 
 val minecraftVersion: String by project

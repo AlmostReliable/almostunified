@@ -1,6 +1,6 @@
 {
   "required": true,
-  "minVersion": "0.8.4",
+  "minVersion": "0.8.5",
   "package": "com.almostreliable.unified.mixin",
   "refmap": "almostunified.refmap.json",
   "compatibilityLevel": "JAVA_17",
