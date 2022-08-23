@@ -4,7 +4,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
@@ -51,9 +50,9 @@ public class TagMap {
                 continue;
             }
 
-            Tag<? extends Holder<?>> holderTag = entry.getValue();
+            var holderTag = entry.getValue();
 
-            for (Holder<?> holder : holderTag.getValues()) {
+            for (Holder<?> holder : holderTag) {
                 holder
                         .unwrapKey()
                         .map(ResourceKey::location)

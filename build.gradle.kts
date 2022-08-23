@@ -26,18 +26,11 @@ allprojects {
         mavenLocal()
         mavenCentral()
         maven("https://repo.spongepowered.org/repository/maven-public/")
-        maven("https://maven.blamejared.com")
         maven("https://maven.shedaniel.me")
         maven("https://dvs1.progwml6.com/files/maven/")
         maven("https://maven.saps.dev/minecraft") {
             content {
                 includeGroup("dev.latvian.mods")
-                includeGroup("dev.ftb.mods")
-            }
-        }
-        maven("https://www.cursemaven.com") {
-            content {
-                includeGroup("curse.maven")
             }
         }
     }
