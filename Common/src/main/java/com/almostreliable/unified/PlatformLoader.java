@@ -2,7 +2,8 @@ package com.almostreliable.unified;
 
 import java.util.ServiceLoader;
 
-public class PlatformLoader {
+@SuppressWarnings("UtilityClassWithoutPrivateConstructor")
+public final class PlatformLoader {
     static <T> T load(Class<T> clazz) {
         final T loadedService = ServiceLoader.load(clazz)
                 .findFirst()

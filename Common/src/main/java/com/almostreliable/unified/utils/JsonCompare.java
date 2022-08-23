@@ -8,9 +8,11 @@ import com.google.gson.JsonPrimitive;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class JsonCompare {
+public final class JsonCompare {
 
-    public static int compare(JsonObject first, JsonObject second, LinkedHashMap<String, Rule> rules) {
+    private JsonCompare() {}
+
+    public static int compare(JsonObject first, JsonObject second, Map<String, Rule> rules) {
         for (var entry : rules.entrySet()) {
             JsonElement fElement = first.get(entry.getKey());
             JsonElement sElement = second.get(entry.getKey());
@@ -27,7 +29,7 @@ public class JsonCompare {
         return 0;
     }
 
-    public static JsonObject compare(LinkedHashMap<String, Rule> rules, JsonObject... jsonObjects) {
+    public static JsonObject compare(Map<String, Rule> rules, JsonObject... jsonObjects) {
         List<JsonObject> unsorted = Arrays.asList(jsonObjects);
         unsorted.sort((f, s) -> compare(f, s, rules));
         return unsorted.get(0);
@@ -143,16 +145,16 @@ public class JsonCompare {
             });
 
             json.getAsJsonObject(RULES).entrySet().forEach(e -> {
-                JsonCompare.Rule r = switch (e.getValue().getAsString()) {
-                    case JsonCompare.HigherRule.NAME -> new JsonCompare.HigherRule();
-                    case JsonCompare.LowerRule.NAME -> new JsonCompare.LowerRule();
+                Rule r = switch (e.getValue().getAsString()) {
+                    case HigherRule.NAME -> new HigherRule();
+                    case LowerRule.NAME -> new LowerRule();
                     default -> throw new IllegalArgumentException("Unknown rule <" + e.getValue().getAsString() + ">");
                 };
                 addRule(e.getKey(), r);
             });
         }
 
-        public LinkedHashMap<String, Rule> getRules() {
+        public Map<String, Rule> getRules() {
             return rules;
         }
     }

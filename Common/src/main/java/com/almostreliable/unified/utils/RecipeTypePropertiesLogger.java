@@ -4,10 +4,7 @@ import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class RecipeTypePropertiesLogger {
@@ -28,23 +25,13 @@ public class RecipeTypePropertiesLogger {
 
     public void writeFile() {
         StringBuilder sb = new StringBuilder();
-        properties.forEach((mod, properties) -> {
+        properties.forEach((mod, props) -> {
             sb.append(mod).append(":\n");
-            properties.sort(String::compareTo);
-            properties.forEach(property -> sb.append("    ").append(property).append("\n"));
+            props.sort(String::compareTo);
+            props.forEach(property -> sb.append("    ").append(property).append("\n"));
         });
 
         Path path = AlmostUnifiedPlatform.INSTANCE.getLogPath();
-        try {
-            Files.createDirectories(path);
-            Path filePath = path.resolve("debug_recipe_properties.txt");
-            Files.writeString(filePath,
-                    sb.toString(),
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING,
-                    StandardOpenOption.WRITE);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        FileUtils.write(path, "debug_recipe_properties.txt", stringBuilder -> sb.append(sb));
     }
 }

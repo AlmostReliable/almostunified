@@ -49,7 +49,7 @@ public class JsonQuery {
     }
 
     public JsonQuery get(int index) {
-        if (element instanceof JsonArray json && 0 <= index && index < json.size()) {
+        if (element instanceof JsonArray json && index >= 0 && index < json.size()) {
             JsonElement child = json.get(index);
             if (child != null) {
                 return new JsonQuery(child);

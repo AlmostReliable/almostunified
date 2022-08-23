@@ -9,7 +9,7 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
 
     @Override
     public Platform getPlatform() {
-        return Platform.Fabric;
+        return Platform.FABRIC;
     }
 
     @Override
