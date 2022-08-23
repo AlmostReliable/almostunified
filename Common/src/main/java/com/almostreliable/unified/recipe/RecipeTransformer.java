@@ -141,11 +141,6 @@ public class RecipeTransformer {
             return false;
         }
 
-        if (curRecipe.getDuplicateLink() != null) {
-            AlmostUnified.LOG.error("Duplication already handled for recipe {}", curRecipe.getId());
-            return false;
-        }
-
         JsonCompare.CompareSettings compareSettings = duplicationConfig.getCompareSettings(curRecipe.getType());
         boolean foundDuplicate = false;
         for (RecipeLink recipeLink : recipes) {
