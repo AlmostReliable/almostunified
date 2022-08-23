@@ -11,8 +11,11 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public class ReplacementMap {
+    private static final Pattern FABRIC_STRATA_PATTERN = Pattern.compile("(c:ores/.+|c:.+_ore)");
+
     private final TagMap tagMap;
     private final UnifyConfig unifyConfig;
 
@@ -41,8 +44,8 @@ public class ReplacementMap {
     private boolean isStoneStrataTag(UnifyTag<Item> tag) {
         String tagString = tag.location().toString();
         return switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
-            case Forge -> tagString.startsWith("forge:ores/");
-            case Fabric -> tagString.matches("c:ores/.+") || tagString.matches("c:.+_ore");
+            case FORGE -> tagString.startsWith("forge:ores/");
+            case FABRIC -> FABRIC_STRATA_PATTERN.matcher(tagString).matches();
         };
     }
 

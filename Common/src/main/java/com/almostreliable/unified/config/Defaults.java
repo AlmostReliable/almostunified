@@ -63,7 +63,7 @@ public final class Defaults {
 
     public static List<String> getTags(Platform platform) {
         return switch (platform) {
-            case Forge -> List.of(
+            case FORGE -> List.of(
                     "forge:nuggets/{material}",
                     "forge:dusts/{material}",
                     "forge:gears/{material}",
@@ -75,7 +75,7 @@ public final class Defaults {
                     "forge:rods/{material}",
                     "forge:storage_blocks/{material}"
             );
-            case Fabric -> List.of(
+            case FABRIC -> List.of(
                     "c:nuggets/{material}",
                     "c:dusts/{material}",
                     "c:gears/{material}",

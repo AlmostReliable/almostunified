@@ -1,18 +1,17 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.utils.FileUtils;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RecipeDumper {
@@ -62,20 +61,14 @@ public class RecipeDumper {
                     .toList();
             if (duplicates.isEmpty()) return;
 
-            stringBuilder.append(type).append(" {\n");
-            duplicates.forEach(link -> {
-                stringBuilder
-                        .append("\t")
-                        .append(link.getMaster().getId())
-                        .append(" (Renamed to: ")
-                        .append(link.createNewRecipeId())
-                        .append(")\n");
-                link.getRecipes().stream().sorted(Comparator.comparing(r -> r.getId().toString())).forEach(recipe -> {
-                    stringBuilder.append("\t\t- ").append(recipe.getId()).append("\n");
-                });
-                stringBuilder.append("\n");
-            });
-            stringBuilder.append("}\n\n");
+            stringBuilder.append(duplicates.stream().map(link -> link
+                    .getRecipes()
+                    .stream()
+                    .sorted(Comparator.comparing(r -> r.getId().toString()))
+                    .map(recipe -> "\t\t- " + recipe.getId() + "\n")
+                    .collect(Collectors.joining("",
+                            "\t" + link.getMaster().getId() + " (Renamed to: " + link.createNewRecipeId() + ")\n",
+                            "\n"))).collect(Collectors.joining("", type + " {\n", "}\n\n")));
         });
     }
 
@@ -147,7 +140,7 @@ public class RecipeDumper {
                             .append("\n");
                     stringBuilder
                             .append("\t\t Transformed: ")
-                            .append(recipe.getUnified().toString())
+                            .append(recipe.getUnified() == null ? "NOT UNIFIED" : recipe.getUnified().toString())
                             .append("\n\n");
                 }
             });
@@ -173,17 +166,7 @@ public class RecipeDumper {
     }
 
     private void write(StringBuilder stringBuilder, Path path, String fileName) {
-        try {
-            Files.createDirectories(path);
-            Path filePath = path.resolve(fileName);
-            Files.writeString(filePath,
-                    stringBuilder.toString(),
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING,
-                    StandardOpenOption.WRITE);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        FileUtils.write(path, fileName, sb -> sb.append(stringBuilder));
     }
 
     private long getTotalTime() {

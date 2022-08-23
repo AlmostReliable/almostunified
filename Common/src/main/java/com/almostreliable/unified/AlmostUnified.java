@@ -6,7 +6,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 
-public class AlmostUnified {
+@SuppressWarnings("UtilityClassWithoutPrivateConstructor")
+public final class AlmostUnified {
 
     public static final Logger LOG = LogManager.getLogger(BuildConfig.MOD_NAME);
     @Nullable private static AlmostUnifiedRuntime RUNTIME;

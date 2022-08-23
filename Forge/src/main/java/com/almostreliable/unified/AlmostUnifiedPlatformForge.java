@@ -13,7 +13,7 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
 
     @Override
     public Platform getPlatform() {
-        return Platform.Forge;
+        return Platform.FORGE;
     }
 
     @Override

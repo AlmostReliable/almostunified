@@ -170,7 +170,7 @@ public class RecipeLink {
         return getUnified() != null ? getUnified() : getOriginal();
     }
 
-    public static class DuplicateLink {
+    public static final class DuplicateLink {
         private final Set<RecipeLink> recipes = new HashSet<>();
         private RecipeLink currentMaster;
 

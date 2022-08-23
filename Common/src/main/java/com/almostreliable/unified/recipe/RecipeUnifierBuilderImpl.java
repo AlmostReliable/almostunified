@@ -43,6 +43,7 @@ public class RecipeUnifierBuilderImpl implements RecipeUnifierBuilder {
         consumers.put(property, new Entry<>(type, consumer));
     }
 
+    @Nullable
     public JsonObject unify(JsonObject json, RecipeContext context) {
         JsonObject changedValues = new JsonObject();
 

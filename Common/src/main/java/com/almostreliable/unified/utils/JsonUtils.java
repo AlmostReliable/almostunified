@@ -10,7 +10,10 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.StreamSupport;
 
-public class JsonUtils {
+public final class JsonUtils {
+
+    private JsonUtils() {}
+
     public static JsonArray arrayOrSelf(@Nullable JsonElement element) {
         if (element == null) {
             return new JsonArray();

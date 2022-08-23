@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class AlmostUnifiedRuntime {
-    protected final RecipeHandlerFactory recipeHandlerFactory;
+public final class AlmostUnifiedRuntime {
+    private final RecipeHandlerFactory recipeHandlerFactory;
     private final TagMap tagMap;
     private final DuplicationConfig dupConfig;
     private final UnifyConfig unifyConfig;

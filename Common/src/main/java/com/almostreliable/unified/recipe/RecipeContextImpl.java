@@ -113,10 +113,8 @@ public class RecipeContextImpl implements RecipeContext {
             return null;
         }
 
-        if (element instanceof JsonArray array) {
-            if (JsonUtils.replaceOn(array, this::tryCreateResultReplacement)) {
-                return element;
-            }
+        if (element instanceof JsonArray array && JsonUtils.replaceOn(array, this::tryCreateResultReplacement)) {
+            return element;
         }
 
         if (element instanceof JsonObject object) {

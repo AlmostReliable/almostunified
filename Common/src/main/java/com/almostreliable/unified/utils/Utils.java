@@ -6,9 +6,11 @@ import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 
-public class Utils {
+public final class Utils {
     public static final ResourceLocation UNUSED_ID = new ResourceLocation(BuildConfig.MOD_ID, "unused_id");
     public static final UnifyTag<Item> UNUSED_TAG = UnifyTag.item(UNUSED_ID);
+
+    private Utils() {}
 
     public static UnifyTag<Item> toItemTag(@Nullable String tag) {
         if (tag == null) {
