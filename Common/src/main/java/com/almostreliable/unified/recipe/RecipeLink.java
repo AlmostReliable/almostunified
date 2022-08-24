@@ -174,7 +174,7 @@ public class RecipeLink {
         StringBuilder sb = new StringBuilder();
         if (isUnified()) sb.append("u");
         if (hasDuplicateLink()) sb.append("d");
-        if (sb.length() > 0) sb.append("/");
+        if (!sb.isEmpty()) sb.append("/");
         sb.append(getId().getNamespace()).append("/").append(getId().getPath());
         return new ResourceLocation(BuildConfig.MOD_ID, sb.toString());
     }
