@@ -170,6 +170,23 @@ public class RecipeLink {
         return getUnified() != null ? getUnified() : getOriginal();
     }
 
+    public ResourceLocation createNewRecipeId() {
+        StringBuilder sb = new StringBuilder();
+        if (isUnified()) sb.append("u");
+        if (hasDuplicateLink()) sb.append("d");
+        if (!sb.isEmpty()) sb.append("/");
+        sb.append(getId().getNamespace()).append("/").append(getId().getPath());
+        return new ResourceLocation(BuildConfig.MOD_ID, sb.toString());
+    }
+
+    public String getDumpInfo() {
+        if (isUnified() || hasDuplicateLink()) {
+            return getId() + " (Renamed to: " + createNewRecipeId() + ")";
+        }
+
+        return getId().toString();
+    }
+
     public static final class DuplicateLink {
         private final Set<RecipeLink> recipes = new HashSet<>();
         private RecipeLink currentMaster;
@@ -199,11 +216,6 @@ public class RecipeLink {
         @Override
         public String toString() {
             return "Link{currentMaster=" + currentMaster + ", recipes=" + recipes.size() + "}";
-        }
-
-        public ResourceLocation createNewRecipeId() {
-            String id = String.format("%s_%s", currentMaster.getId().getNamespace(), currentMaster.getId().getPath());
-            return new ResourceLocation(BuildConfig.MOD_ID, id);
         }
     }
 }

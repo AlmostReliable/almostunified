@@ -118,8 +118,15 @@ public class RecipeTransformer {
         }
 
         for (RecipeLink.DuplicateLink link : duplicates) {
-            link.getRecipes().forEach(recipe -> onRemove.accept(recipe.getId()));
-            onAdd.accept(link.createNewRecipeId(), link.getMaster().getActual());
+            link.getRecipes().forEach(recipe -> {
+                onRemove.accept(recipe.getId());
+                unified.remove(recipe);
+            });
+            onAdd.accept(link.getMaster().createNewRecipeId(), link.getMaster().getActual());
+        }
+        for (RecipeLink link : unified) {
+            onRemove.accept(link.getId());
+            onAdd.accept(link.createNewRecipeId(), link.getActual());
         }
     }
 
