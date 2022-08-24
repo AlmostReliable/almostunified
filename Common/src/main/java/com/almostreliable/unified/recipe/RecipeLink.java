@@ -171,8 +171,20 @@ public class RecipeLink {
     }
 
     public ResourceLocation createNewRecipeId() {
-        String newId = String.format("%s_%s", getId().getNamespace(), getId().getPath());
-        return new ResourceLocation(BuildConfig.MOD_ID, newId);
+        StringBuilder sb = new StringBuilder();
+        if (isUnified()) sb.append("u");
+        if (hasDuplicateLink()) sb.append("d");
+        if (sb.length() > 0) sb.append("/");
+        sb.append(getId().getNamespace()).append("/").append(getId().getPath());
+        return new ResourceLocation(BuildConfig.MOD_ID, sb.toString());
+    }
+
+    public String getDumpInfo() {
+        if (isUnified() || hasDuplicateLink()) {
+            return getId() + " (Renamed to: " + createNewRecipeId() + ")";
+        }
+
+        return getId().toString();
     }
 
     public static final class DuplicateLink {

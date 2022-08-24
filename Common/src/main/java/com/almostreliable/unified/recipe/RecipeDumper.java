@@ -30,24 +30,24 @@ public class RecipeDumper {
         String last = "# Last execution: " + format.format(new Date(startTime));
 
         if (dumpOverview) {
-            StringBuilder overviewBuilder = new StringBuilder();
-            overviewBuilder.append(last).append("\n");
-            dumpOverview(overviewBuilder);
-            write(overviewBuilder, AlmostUnifiedPlatform.INSTANCE.getLogPath(), "overview_dump.txt");
+            FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), "overview_dump.txt", sb -> {
+                sb.append(last).append("\n");
+                dumpOverview(sb);
+            });
         }
 
         if (dumpUnify) {
-            StringBuilder unifyStringBuilder = new StringBuilder();
-            unifyStringBuilder.append(last).append("\n");
-            dumpUnifyRecipes(unifyStringBuilder, true);
-            write(unifyStringBuilder, AlmostUnifiedPlatform.INSTANCE.getLogPath(), "unify_dump.txt");
+            FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), "unify_dump.txt", sb -> {
+                sb.append(last).append("\n");
+                dumpUnifyRecipes(sb);
+            });
         }
 
         if (dumpDuplicate) {
-            StringBuilder duplicatesStringBuilder = new StringBuilder();
-            duplicatesStringBuilder.append(last).append("\n");
-            dumpDuplicates(duplicatesStringBuilder);
-            write(duplicatesStringBuilder, AlmostUnifiedPlatform.INSTANCE.getLogPath(), "duplicates_dump.txt");
+            FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), "duplicates_dump.txt", sb -> {
+                sb.append(last).append("\n");
+                dumpDuplicates(sb);
+            });
         }
 
     }
@@ -61,15 +61,20 @@ public class RecipeDumper {
                     .toList();
             if (duplicates.isEmpty()) return;
 
-            stringBuilder.append(duplicates.stream().map(link -> link
-                    .getRecipes()
+            stringBuilder.append(duplicates
                     .stream()
-                    .sorted(Comparator.comparing(r -> r.getId().toString()))
-                    .map(recipe -> "\t\t- " + recipe.getId() + "\n")
-                    .collect(Collectors.joining("",
-                            "\t" + link.getMaster().getId() + " (Renamed to: " + link.getMaster().createNewRecipeId() + ")\n",
-                            "\n"))).collect(Collectors.joining("", type + " {\n", "}\n\n")));
+                    .map(this::createDuplicatesDump)
+                    .collect(Collectors.joining("", type + " {\n", "}\n\n")));
         });
+    }
+
+    private String createDuplicatesDump(RecipeLink.DuplicateLink link) {
+        return link
+                .getRecipes()
+                .stream()
+                .sorted(Comparator.comparing(r -> r.getId().toString()))
+                .map(r -> "\t\t- " + r.getId() + "\n")
+                .collect(Collectors.joining("", String.format("\t%s\n", link.getMaster().getDumpInfo()), "\n"));
     }
 
     private void dumpOverview(StringBuilder stringBuilder) {
@@ -127,22 +132,21 @@ public class RecipeDumper {
         });
     }
 
-    private void dumpUnifyRecipes(StringBuilder stringBuilder, boolean full) {
+    private void dumpUnifyRecipes(StringBuilder stringBuilder) {
         getSortedUnifiedRecipeTypes().forEach(type -> {
             stringBuilder.append(type.toString()).append(" {\n");
 
             getSortedUnifiedRecipes(type).forEach(recipe -> {
-                stringBuilder.append("\t- ").append(recipe.getId()).append("\n");
-                if (full) {
-                    stringBuilder
-                            .append("\t\t    Original: ")
-                            .append(recipe.getOriginal().toString())
-                            .append("\n");
-                    stringBuilder
-                            .append("\t\t Transformed: ")
-                            .append(recipe.getUnified() == null ? "NOT UNIFIED" : recipe.getUnified().toString())
-                            .append("\n\n");
-                }
+                stringBuilder
+                        .append("\t- ")
+                        .append(recipe.getDumpInfo())
+                        .append("\n")
+                        .append("\t\t    Original: ")
+                        .append(recipe.getOriginal().toString())
+                        .append("\n")
+                        .append("\t\t Transformed: ")
+                        .append(recipe.getUnified() == null ? "NOT UNIFIED" : recipe.getUnified().toString())
+                        .append("\n\n");
             });
 
             stringBuilder.append("}\n\n");
@@ -165,13 +169,7 @@ public class RecipeDumper {
         return result.getUnifiedRecipes(type).stream().sorted(Comparator.comparing(r -> r.getId().toString()));
     }
 
-    private void write(StringBuilder stringBuilder, Path path, String fileName) {
-        FileUtils.write(path, fileName, sb -> sb.append(stringBuilder));
-    }
-
     private long getTotalTime() {
         return endTime - startTime;
     }
-
-
 }
