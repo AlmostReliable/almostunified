@@ -44,21 +44,16 @@ public class RecipeLink {
         JsonObject selfActual = first.getActual();
         JsonObject toCompareActual = second.getActual();
 
-        if (JsonCompare.matches(selfActual, toCompareActual, compareSettings.getIgnoredFields())) {
-            JsonObject compare = JsonCompare.compare(compareSettings.getRules(), selfActual, toCompareActual);
-            if (compare == null) {
-                return null;
-            }
-
-            if (compare == selfActual) {
-                return first;
-            }
-
-            if (compare == toCompareActual) {
-                return second;
-            }
+        JsonObject compare = null;
+        if (first.getType().toString().equals("minecraft:crafting_shaped")) {
+            compare = JsonCompare.compareShaped(selfActual, toCompareActual, compareSettings.getIgnoredFields());
+        } else if (JsonCompare.matches(selfActual, toCompareActual, compareSettings.getIgnoredFields())) {
+            compare = JsonCompare.compare(compareSettings.getRules(), selfActual, toCompareActual);
         }
 
+        if (compare == null) return null;
+        if (compare == selfActual) return first;
+        if (compare == toCompareActual) return second;
         return null;
     }
 

@@ -35,6 +35,54 @@ public final class JsonCompare {
         return unsorted.get(0);
     }
 
+    @Nullable
+    public static JsonObject compareShaped(JsonObject first, JsonObject second, Collection<String> ignoredFields) {
+        if (!matches(first, second, ignoredFields)) return null;
+
+        JsonArray firstPattern = JsonUtils.arrayOrSelf(first.get("pattern"));
+        JsonArray secondPattern = JsonUtils.arrayOrSelf(second.get("pattern"));
+
+        if (firstPattern.size() != secondPattern.size()) {
+            return null;
+        }
+        for (int i = 0; i < firstPattern.size(); i++) {
+            if (JsonUtils.stringOrSelf(firstPattern.get(i)).length() !=
+                JsonUtils.stringOrSelf(secondPattern.get(i)).length()) {
+                return null;
+            }
+        }
+
+        var firstKeyMap = createShapedKeyMap(first);
+        var secondKeyMap = createShapedKeyMap(second);
+
+        for (int i = 0; i < firstPattern.size(); i++) {
+            String firstPatternString = JsonUtils.stringOrSelf(firstPattern.get(i));
+            String secondPatternString = JsonUtils.stringOrSelf(secondPattern.get(i));
+
+            for (int j = 0; j < firstPatternString.length(); j++) {
+                char firstChar = firstPatternString.charAt(j);
+                char secondChar = secondPatternString.charAt(j);
+                if (!firstKeyMap.containsKey(firstChar) || !secondKeyMap.containsKey(secondChar)) {
+                    return null;
+                }
+                if (!firstKeyMap.get(firstChar).equals(secondKeyMap.get(secondChar))) {
+                    return null;
+                }
+            }
+        }
+
+        return first;
+    }
+
+    private static Map<Character, JsonObject> createShapedKeyMap(JsonObject json) {
+        JsonObject keys = JsonUtils.objectOrSelf(json.get("key"));
+        Map<Character, JsonObject> keyMap = new HashMap<>();
+        for (Map.Entry<String, JsonElement> patterKey : keys.entrySet()) {
+            keyMap.put(patterKey.getKey().charAt(0), JsonUtils.objectOrSelf(patterKey.getValue()));
+        }
+        return keyMap;
+    }
+
     public static boolean matches(JsonObject first, JsonObject second, Collection<String> ignoredProperties) {
         List<String> firstValidKeys = first
                 .keySet()

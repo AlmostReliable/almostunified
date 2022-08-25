@@ -3,6 +3,7 @@ package com.almostreliable.unified.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -34,6 +35,20 @@ public final class JsonUtils {
                 consumer.accept(filter.cast(e));
             }
         }
+    }
+
+    public static JsonObject objectOrSelf(@Nullable JsonElement element) {
+        if (element instanceof JsonObject jsonObject) {
+            return jsonObject;
+        }
+        return new JsonObject();
+    }
+
+    public static String stringOrSelf(@Nullable JsonElement element) {
+        if (element instanceof JsonPrimitive primitive) {
+            return primitive.getAsString();
+        }
+        return "";
     }
 
     /**
