@@ -156,7 +156,7 @@ public class JsonCompareTest {
 
         JsonObject first = TestUtils.json(recipe1);
         JsonObject second = TestUtils.json(recipe2);
-        JsonObject result = JsonCompare.compareShaped(first, second);
+        JsonObject result = JsonCompare.compareShaped(first, second, List.of("pattern", "key"));
         assertNull(result);
     }
 
@@ -200,7 +200,7 @@ public class JsonCompareTest {
 
         JsonObject first = TestUtils.json(recipe1);
         JsonObject second = TestUtils.json(recipe2);
-        JsonObject result = JsonCompare.compareShaped(first, second);
+        JsonObject result = JsonCompare.compareShaped(first, second, List.of("pattern", "key"));
         assertEquals(first, result);
     }
 }

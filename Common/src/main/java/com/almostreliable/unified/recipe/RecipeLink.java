@@ -46,7 +46,7 @@ public class RecipeLink {
 
         JsonObject compare = null;
         if (first.getType().toString().equals("minecraft:crafting_shaped")) {
-            compare = JsonCompare.compareShaped(selfActual, toCompareActual);
+            compare = JsonCompare.compareShaped(selfActual, toCompareActual, compareSettings.getIgnoredFields());
         } else if (JsonCompare.matches(selfActual, toCompareActual, compareSettings.getIgnoredFields())) {
             compare = JsonCompare.compare(compareSettings.getRules(), selfActual, toCompareActual);
         }

@@ -36,8 +36,8 @@ public final class JsonCompare {
     }
 
     @Nullable
-    public static JsonObject compareShaped(JsonObject first, JsonObject second) {
-        if (!matches(first, second, List.of("pattern", "key"))) return null;
+    public static JsonObject compareShaped(JsonObject first, JsonObject second, Collection<String> ignoredFields) {
+        if (!matches(first, second, ignoredFields)) return null;
 
         JsonArray firstPattern = JsonUtils.arrayOrSelf(first.get("pattern"));
         JsonArray secondPattern = JsonUtils.arrayOrSelf(second.get("pattern"));
