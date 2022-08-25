@@ -35,6 +35,53 @@ public final class JsonCompare {
         return unsorted.get(0);
     }
 
+    @Nullable
+    public static JsonObject compareShaped(JsonObject first, JsonObject second) {
+        if (!matches(first, second, List.of("pattern", "key"))) return null;
+
+        JsonArray firstPattern = first.getAsJsonArray("pattern");
+        JsonArray secondPattern = second.getAsJsonArray("pattern");
+
+        if (firstPattern.size() != secondPattern.size()) {
+            return null;
+        }
+        for (int i = 0; i < firstPattern.size(); i++) {
+            if (firstPattern.get(i).getAsString().length() != secondPattern.get(i).getAsString().length()) {
+                return null;
+            }
+        }
+
+        var firstKeyMap = createShapedKeyMap(first);
+        var secondKeyMap = createShapedKeyMap(second);
+
+        for (int i = 0; i < firstPattern.size(); i++) {
+            String firstPatternString = firstPattern.get(i).getAsString();
+            String secondPatternString = secondPattern.get(i).getAsString();
+
+            for (int j = 0; j < firstPatternString.length(); j++) {
+                char firstChar = firstPatternString.charAt(j);
+                char secondChar = secondPatternString.charAt(j);
+                if (!firstKeyMap.containsKey(firstChar) || !secondKeyMap.containsKey(secondChar)) {
+                    return null;
+                }
+                if (!firstKeyMap.get(firstChar).equals(secondKeyMap.get(secondChar))) {
+                    return null;
+                }
+            }
+        }
+
+        return first;
+    }
+
+    private static Map<Character, JsonObject> createShapedKeyMap(JsonObject json) {
+        JsonObject keys = json.getAsJsonObject("key");
+        Map<Character, JsonObject> keyMap = new HashMap<>();
+        for (Map.Entry<String, JsonElement> patterKey : keys.entrySet()) {
+            keyMap.put(patterKey.getKey().charAt(0), patterKey.getValue().getAsJsonObject());
+        }
+        return keyMap;
+    }
+
     public static boolean matches(JsonObject first, JsonObject second, Collection<String> ignoredProperties) {
         List<String> firstValidKeys = first
                 .keySet()
