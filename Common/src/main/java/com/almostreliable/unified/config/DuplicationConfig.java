@@ -52,7 +52,7 @@ public class DuplicationConfig extends Config {
 
             JsonCompare.CompareSettings defaultRules = safeGet(() -> createCompareSet(json.getAsJsonObject(
                             DEFAULT_DUPLICATE_RULES)),
-                    defaultRules());
+                    defaultSettings());
             LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules = safeGet(() -> json
                     .getAsJsonObject(OVERRIDE_DUPLICATE_RULES)
                     .entrySet()
@@ -66,7 +66,7 @@ public class DuplicationConfig extends Config {
             return new DuplicationConfig(defaultRules, overrideRules, ignoreRecipeTypes, ignoreRecipes, strictMode);
         }
 
-        private JsonCompare.CompareSettings defaultRules() {
+        private JsonCompare.CompareSettings defaultSettings() {
             JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
             result.ignoreField("conditions");
             result.addRule("cookingtime", new JsonCompare.HigherRule());
