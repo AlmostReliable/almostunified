@@ -39,14 +39,15 @@ public final class JsonCompare {
     public static JsonObject compareShaped(JsonObject first, JsonObject second) {
         if (!matches(first, second, List.of("pattern", "key"))) return null;
 
-        JsonArray firstPattern = first.getAsJsonArray("pattern");
-        JsonArray secondPattern = second.getAsJsonArray("pattern");
+        JsonArray firstPattern = JsonUtils.arrayOrSelf(first.get("pattern"));
+        JsonArray secondPattern = JsonUtils.arrayOrSelf(second.get("pattern"));
 
         if (firstPattern.size() != secondPattern.size()) {
             return null;
         }
         for (int i = 0; i < firstPattern.size(); i++) {
-            if (firstPattern.get(i).getAsString().length() != secondPattern.get(i).getAsString().length()) {
+            if (JsonUtils.stringOrSelf(firstPattern.get(i)).length() !=
+                JsonUtils.stringOrSelf(secondPattern.get(i)).length()) {
                 return null;
             }
         }
@@ -55,8 +56,8 @@ public final class JsonCompare {
         var secondKeyMap = createShapedKeyMap(second);
 
         for (int i = 0; i < firstPattern.size(); i++) {
-            String firstPatternString = firstPattern.get(i).getAsString();
-            String secondPatternString = secondPattern.get(i).getAsString();
+            String firstPatternString = JsonUtils.stringOrSelf(firstPattern.get(i));
+            String secondPatternString = JsonUtils.stringOrSelf(secondPattern.get(i));
 
             for (int j = 0; j < firstPatternString.length(); j++) {
                 char firstChar = firstPatternString.charAt(j);
@@ -74,10 +75,10 @@ public final class JsonCompare {
     }
 
     private static Map<Character, JsonObject> createShapedKeyMap(JsonObject json) {
-        JsonObject keys = json.getAsJsonObject("key");
+        JsonObject keys = JsonUtils.objectOrSelf(json.get("key"));
         Map<Character, JsonObject> keyMap = new HashMap<>();
         for (Map.Entry<String, JsonElement> patterKey : keys.entrySet()) {
-            keyMap.put(patterKey.getKey().charAt(0), patterKey.getValue().getAsJsonObject());
+            keyMap.put(patterKey.getKey().charAt(0), JsonUtils.objectOrSelf(patterKey.getValue()));
         }
         return keyMap;
     }

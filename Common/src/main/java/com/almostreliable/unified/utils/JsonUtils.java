@@ -36,6 +36,30 @@ public final class JsonUtils {
         }
     }
 
+    public static JsonObject objectOrSelf(@Nullable JsonElement element) {
+        if (element == null) {
+            return new JsonObject();
+        }
+
+        if (element.isJsonObject()) {
+            return element.getAsJsonObject();
+        }
+
+        return new JsonObject();
+    }
+
+    public static String stringOrSelf(@Nullable JsonElement element) {
+        if (element == null) {
+            return "";
+        }
+
+        if (element.isJsonPrimitive()) {
+            return element.getAsString();
+        }
+
+        return "";
+    }
+
     /**
      * Loops through the array and applies the given callback to each element.
      * If the callback returns non-null, the element is replaced with the returned value.
