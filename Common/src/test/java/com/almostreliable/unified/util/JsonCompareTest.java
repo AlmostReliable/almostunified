@@ -112,4 +112,95 @@ public class JsonCompareTest {
         boolean matches = JsonCompare.matches(first, second, List.of("experience"));
         assertTrue(matches);
     }
+
+    @Test
+    public void shapedNoMatch() {
+        String recipe1 = """
+                {
+                  "type": "minecraft:crafting_shaped",
+                  "pattern": [
+                    "iii",
+                    "ici",
+                    "iii"
+                  ],
+                  "key": {
+                    "i": {
+                      "tag": "forge:raw_materials/iron"
+                    },
+                    "k": {
+                      "item": "minecraft:carrot"
+                    }
+                  },
+                  "result": "minecraft:iron_ingot"
+                }
+                """;
+        String recipe2 = """
+                {
+                  "type": "minecraft:crafting_shaped",
+                  "pattern": [
+                    "iii",
+                    "ici",
+                    "iii"
+                  ],
+                  "key": {
+                    "i": {
+                      "tag": "forge:raw_materials/iron"
+                    },
+                    "k": {
+                      "item": "minecraft:pumpkin"
+                    }
+                  },
+                  "result": "minecraft:iron_ingot"
+                }
+                """;
+
+        JsonObject first = TestUtils.json(recipe1);
+        JsonObject second = TestUtils.json(recipe2);
+        JsonObject result = JsonCompare.compareShaped(first, second, List.of("pattern", "key"));
+        assertNull(result);
+    }
+
+    @Test
+    public void shapedMatch() {
+        String recipe1 = """
+                {
+                  "type": "minecraft:crafting_shaped",
+                  "pattern": [
+                    "iii",
+                    "iii",
+                    "iii"
+                  ],
+                  "key": {
+                    "i": {
+                      "tag": "forge:raw_materials/iron"
+                    }
+                  },
+                  "result": "minecraft:iron_ingot"
+                }
+                """;
+        String recipe2 = """
+                {
+                  "type": "minecraft:crafting_shaped",
+                  "pattern": [
+                    "iii",
+                    "iki",
+                    "iii"
+                  ],
+                  "key": {
+                    "i": {
+                      "tag": "forge:raw_materials/iron"
+                    },
+                    "k": {
+                      "tag": "forge:raw_materials/iron"
+                    }
+                  },
+                  "result": "minecraft:iron_ingot"
+                }
+                """;
+
+        JsonObject first = TestUtils.json(recipe1);
+        JsonObject second = TestUtils.json(recipe2);
+        JsonObject result = JsonCompare.compareShaped(first, second, List.of("pattern", "key"));
+        assertEquals(first, result);
+    }
 }
