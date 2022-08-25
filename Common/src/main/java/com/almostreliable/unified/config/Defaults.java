@@ -56,8 +56,8 @@ public final class Defaults {
             "tin",
             "uranium",
             "zinc"
-
     );
+    public static final List<String> IGNORED_RECIPE_TYPES = List.of("cucumber:shaped_tag");
 
     private Defaults() {}
 
