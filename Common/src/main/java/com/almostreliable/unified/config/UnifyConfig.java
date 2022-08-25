@@ -85,7 +85,6 @@ public class UnifyConfig extends Config {
         public static final String IGNORED_TAGS = "ignoredTags";
         public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
         public static final String IGNORED_RECIPES = "ignoredRecipes";
-
         public static final String HIDE_JEI_REI = "itemsHidingJeiRei";
 
         @Override
@@ -103,8 +102,10 @@ public class UnifyConfig extends Config {
                     .stream()
                     .map(s -> UnifyTag.item(new ResourceLocation(s)))
                     .collect(Collectors.toSet()), new HashSet<>());
-            Set<ResourceLocation> ignoredRecipeTypes = deserializeResourceLocations(json, IGNORED_RECIPE_TYPES);
-            Set<ResourceLocation> ignoredRecipes = deserializeResourceLocations(json, IGNORED_RECIPES);
+            Set<ResourceLocation> ignoredRecipeTypes = deserializeResourceLocations(json,
+                    IGNORED_RECIPE_TYPES,
+                    Defaults.IGNORED_RECIPE_TYPES);
+            Set<ResourceLocation> ignoredRecipes = deserializeResourceLocations(json, IGNORED_RECIPES, List.of());
             boolean hideJeiRei = safeGet(() -> json.getAsJsonPrimitive(HIDE_JEI_REI).getAsBoolean(), true);
 
             return new UnifyConfig(stoneStrata,

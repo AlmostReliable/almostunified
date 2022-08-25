@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,8 +48,10 @@ public class DuplicationConfig extends Config {
 
         @Override
         public DuplicationConfig deserialize(JsonObject json) {
-            Set<ResourceLocation> ignoreRecipeTypes = deserializeResourceLocations(json, IGNORED_RECIPE_TYPES);
-            Set<ResourceLocation> ignoreRecipes = deserializeResourceLocations(json, IGNORED_RECIPES);
+            Set<ResourceLocation> ignoreRecipeTypes = deserializeResourceLocations(json,
+                    IGNORED_RECIPE_TYPES,
+                    Defaults.IGNORED_RECIPE_TYPES);
+            Set<ResourceLocation> ignoreRecipes = deserializeResourceLocations(json, IGNORED_RECIPES, List.of());
 
             JsonCompare.CompareSettings defaultRules = safeGet(() -> createCompareSet(json.getAsJsonObject(
                             DEFAULT_DUPLICATE_RULES)),

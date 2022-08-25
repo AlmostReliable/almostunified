@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -88,12 +89,13 @@ public class Config {
             return defaultValue;
         }
 
-        protected Set<ResourceLocation> deserializeResourceLocations(JsonObject json, String configKey) {
+        protected Set<ResourceLocation> deserializeResourceLocations(JsonObject json, String configKey, List<String> defaultValue) {
             return safeGet(() -> JsonUtils
-                    .toList(json.getAsJsonArray(configKey))
-                    .stream()
-                    .map(ResourceLocation::new)
-                    .collect(Collectors.toSet()), new HashSet<>());
+                            .toList(json.getAsJsonArray(configKey))
+                            .stream()
+                            .map(ResourceLocation::new)
+                            .collect(Collectors.toSet()),
+                    new HashSet<>(defaultValue.stream().map(ResourceLocation::new).toList()));
         }
 
         protected void serializeResourceLocations(JsonObject json, String configKey, Set<ResourceLocation> resourceLocations) {
