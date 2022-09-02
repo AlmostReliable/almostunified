@@ -10,10 +10,12 @@ public class GenericRecipeUnifier implements RecipeUnifier {
     public static final GenericRecipeUnifier INSTANCE = new GenericRecipeUnifier();
     private final Set<String> inputKeys = Set.of(RecipeConstants.INPUT,
             RecipeConstants.INGREDIENT,
-            RecipeConstants.INGREDIENTS);
+            RecipeConstants.INGREDIENTS,
+            RecipeConstants.INPUT_ITEMS);
     private final Set<String> outputKeys = Set.of(RecipeConstants.OUTPUT,
             RecipeConstants.RESULT,
-            RecipeConstants.RESULTS);
+            RecipeConstants.RESULTS,
+            RecipeConstants.OUTPUT_ITEMS);
 
     @Override
     public void collectUnifier(RecipeUnifierBuilder builder) {
