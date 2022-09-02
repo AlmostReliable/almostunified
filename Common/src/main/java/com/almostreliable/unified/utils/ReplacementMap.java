@@ -33,7 +33,7 @@ public class ReplacementMap {
      */
     private String getStoneStrata(ResourceLocation item) {
         for (String stone : unifyConfig.getStoneStrata()) {
-            if (item.getPath().startsWith(stone + "_")) {
+            if (item.getPath().contains(stone + "_")) {
                 return stone;
             }
         }
