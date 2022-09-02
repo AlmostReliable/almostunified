@@ -5,14 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.0.6] - 2022-09-02
+
+### Added
+- more materials to defaults
+  - back up your `unify.json` config and let it regenerate to get the new default or add it yourself
+
+### Fixed
+- stone strata detection for mods not following convention
+
 ## [0.0.5] - 2022-09-02
 
 ### Added
 - `group` property to default ignored list
-    - this ensures that crafting recipes with specific recipe book categories are correctly unified
-    - back up your `duplicates.json` config and let it regenerate to get the new default or add it yourself
+  - this ensures that crafting recipes with specific recipe book categories are correctly unified
+  - back up your `duplicates.json` config and let it regenerate to get the new default or add it yourself
 - `inputItems` and `outputItems` property to top level property scanning
-    - allows unification for mods like `FTBIC`
+  - allows unification for mods like `FTBIC`
 
 ### Fixed
 - duplication matching for crafting recipes with a `group` property
@@ -21,13 +30,13 @@ and this project adheres to [Semantic Versioning].
 
 ### Added
 - Cucumber `shaped_tag` recipe type to default ignored types
-    - if you are using Mystical Agriculture or other mods that require Cucumber, make the config change described [here][cucumber-shapedtag]
+  - if you are using Mystical Agriculture or other mods that require Cucumber, make the config change described [here][cucumber-shapedtag]
 
 ### Fixed
 - shaped crafting recipe pattern matching ([#2])
-    - previously shaped recipes were checked for exact equality after the unification
-    - this caused issues with recipes using different definition keys for their patterns
-    - this change requires a config adjustment described [here][pattern-matching]
+  - previously shaped recipes were checked for exact equality after the unification
+  - this caused issues with recipes using different definition keys for their patterns
+  - this change requires a config adjustment described [here][pattern-matching]
 
 <!-- Links -->
 [#2]: https://github.com/AlmostReliable/almostunified/pull/2
@@ -38,8 +47,8 @@ and this project adheres to [Semantic Versioning].
 
 ### Changed
 - all unified recipes are now using the Almost Unified namespace ([#1])
-    - previously, only the duplicate recipes were modified to use the namespace
-    - this ensures that modified recipes are easily identified and not reported to other mod authors
+  - previously, only the duplicate recipes were modified to use the namespace
+  - this ensures that modified recipes are easily identified and not reported to other mod authors
 
 <!-- Links -->
 [#1]: https://github.com/AlmostReliable/almostunified/pull/1
@@ -61,6 +70,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.0.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.6-beta
 [0.0.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.5-beta
 [0.0.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.4-beta
 [0.0.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.3-beta
