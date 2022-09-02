@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.0.6] - 2022-09-02
+
+### Added
+- `group` property to default ignored list
+  - this ensures that crafting recipes with specific recipe book categories are correctly unified
+  - back up your `duplicates.json` config and let it regenerate to get the new default or add it yourself
+- `inputItems` and `outputItems` property to top level property scanning
+  - allows unification for mods like `FTBIC`
+
+### Fixed
+- duplication matching for crafting recipes with a `group` property
+
 ## [0.0.5] - 2022-08-25
 
 ### Added
@@ -54,6 +66,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.0.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.0.6-beta
 [0.0.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.0.5-beta
 [0.0.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.0.4-beta
 [0.0.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.0.3-beta
