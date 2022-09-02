@@ -72,6 +72,7 @@ public class DuplicationConfig extends Config {
         private JsonCompare.CompareSettings defaultSettings() {
             JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
             result.ignoreField("conditions");
+            result.ignoreField("group");
             result.addRule("cookingtime", new JsonCompare.HigherRule());
             result.addRule("energy", new JsonCompare.HigherRule());
             result.addRule("experience", new JsonCompare.HigherRule());
@@ -81,6 +82,7 @@ public class DuplicationConfig extends Config {
         private LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> defaultOverrides() {
             JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
             result.ignoreField("conditions");
+            result.ignoreField("group");
             result.ignoreField("pattern");
             result.ignoreField("key");
             LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> resultMap = new LinkedHashMap<>();
