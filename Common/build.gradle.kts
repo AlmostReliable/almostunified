@@ -5,9 +5,6 @@ plugins {
 }
 
 val minecraftVersion: String by project
-val commonRunsEnabled: String by project
-val commonClientRunName: String? by project
-val commonServerRunName: String? by project
 val modName: String by project
 val modId: String by project
 val fabricLoaderVersion: String by project
@@ -53,12 +50,25 @@ dependencies {
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 }
 
-tasks.processResources {
-    val buildProps = project.properties
-
-    filesMatching("pack.mcmeta") {
-        expand(buildProps)
+tasks {
+    withType<Test> {
+        useJUnitPlatform()
     }
+    processResources {
+        val buildProps = project.properties
+
+        filesMatching("pack.mcmeta") {
+            expand(buildProps)
+        }
+    }
+}
+
+buildConfig {
+    buildConfigField("String", "MOD_ID", "\"${modId}\"")
+    buildConfigField("String", "MOD_VERSION", "\"${project.version}\"")
+    buildConfigField("String", "MOD_NAME", "\"${modName}\"")
+
+    packageName(project.group as String)
 }
 
 publishing {
@@ -72,16 +82,4 @@ publishing {
     repositories {
         maven("file://${System.getenv("local_maven")}")
     }
-}
-
-buildConfig {
-    buildConfigField("String", "MOD_ID", "\"${modId}\"")
-    buildConfigField("String", "MOD_VERSION", "\"${project.version}\"")
-    buildConfigField("String", "MOD_NAME", "\"${modName}\"")
-
-    packageName(project.group as String)
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }

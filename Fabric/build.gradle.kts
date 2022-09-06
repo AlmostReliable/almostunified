@@ -73,22 +73,22 @@ loom {
     }
 }
 
-tasks.processResources {
-    from(project(":Common").sourceSets.main.get().resources)
-    inputs.property("version", project.version)
-
-    filesMatching("fabric.mod.json") {
-        expand("version" to project.version)
+tasks {
+    jar {
+        from("LICENSE") {
+            rename { "${it}_${modName}" }
+        }
     }
-}
+    withType<JavaCompile> {
+        source(project(":Common").sourceSets.main.get().allSource)
+    }
+    processResources {
+        from(project(":Common").sourceSets.main.get().resources)
+        inputs.property("version", project.version)
 
-tasks.withType<JavaCompile> {
-    source(project(":Common").sourceSets.main.get().allSource)
-}
-
-tasks.jar {
-    from("LICENSE") {
-        rename { "${it}_${modName}" }
+        filesMatching("fabric.mod.json") {
+            expand("version" to project.version)
+        }
     }
 }
 

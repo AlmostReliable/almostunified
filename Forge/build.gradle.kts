@@ -101,22 +101,19 @@ mixin {
     config("${modId}-common.mixins.json")
 }
 
-tasks.withType<JavaCompile> {
-    source(project(":Common").sourceSets.main.get().allSource)
-}
-
-tasks.processResources {
-    from(project(":Common").sourceSets.main.get().resources)
-}
-
 tasks {
     jar {
         finalizedBy("reobfJar")
     }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
+    withType<JavaCompile> {
+        source(project(":Common").sourceSets.main.get().allSource)
+    }
+    withType<Test> {
+        useJUnitPlatform()
+    }
+    processResources {
+        from(project(":Common").sourceSets.main.get().resources)
+    }
 }
 
 publishing {

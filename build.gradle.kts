@@ -67,32 +67,30 @@ subprojects {
                 )
             }
         }
-    }
+        withType<JavaCompile> {
+            options.encoding = "UTF-8"
+            options.release.set(17)
+        }
+        processResources {
+            val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
 
-    tasks.withType<JavaCompile> {
-        options.encoding = "UTF-8"
-        options.release.set(17)
-    }
+            val replaceProperties = mapOf(
+                "version" to project.version as String,
+                "license" to license,
+                "modId" to modId,
+                "modName" to modName,
+                "minecraftVersion" to minecraftVersion,
+                "modAuthor" to modAuthor,
+                "modDescription" to modDescription,
+                "forgeMinVersion" to forgeMinVersion,
+                "githubUser" to githubUser,
+                "githubRepo" to githubRepo
+            )
 
-    tasks.processResources {
-        val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
-
-        val replaceProperties = mapOf(
-            "version" to project.version as String,
-            "license" to license,
-            "modId" to modId,
-            "modName" to modName,
-            "minecraftVersion" to minecraftVersion,
-            "modAuthor" to modAuthor,
-            "modDescription" to modDescription,
-            "forgeMinVersion" to forgeMinVersion,
-            "githubUser" to githubUser,
-            "githubRepo" to githubRepo
-        )
-
-        inputs.properties(replaceProperties)
-        filesMatching(resourceTargets) {
-            expand(replaceProperties)
+            inputs.properties(replaceProperties)
+            filesMatching(resourceTargets) {
+                expand(replaceProperties)
+            }
         }
     }
 }
