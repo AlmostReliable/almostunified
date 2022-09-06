@@ -28,6 +28,7 @@ public final class Defaults {
             "brass",
             "bronze",
             "charcoal",
+            "chrome",
             "cinnabar",
             "coal",
             "coal_coke",
@@ -41,12 +42,14 @@ public final class Defaults {
             "enderium",
             "fluorite",
             "gold",
+            "graphite",
             "invar",
             "iridium",
             "iron",
             "lapis",
             "lead",
             "lumium",
+            "mithril",
             "netherite",
             "nickel",
             "obsidian",
@@ -61,6 +64,7 @@ public final class Defaults {
             "steel",
             "sulfur",
             "tin",
+            "tungsten",
             "uranium",
             "zinc"
     );
@@ -80,7 +84,8 @@ public final class Defaults {
                     "forge:ores/{material}",
                     "forge:plates/{material}",
                     "forge:rods/{material}",
-                    "forge:storage_blocks/{material}"
+                    "forge:storage_blocks/{material}",
+					"forge:storage_blocks/raw_{material}"
             );
             case FABRIC -> List.of(
                     "c:nuggets/{material}",
