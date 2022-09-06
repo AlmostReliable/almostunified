@@ -32,7 +32,8 @@ minecraft {
             taskName("Client")
             property("mixin.env.remapRefMap", "true")
             property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            jvmArg("-XX:+AllowEnhancedClassRedefinition -XX:+IgnoreUnrecognizedVMOptions")
+            jvmArg("-XX:+IgnoreUnrecognizedVMOptions")
+            jvmArg("-XX:+AllowEnhancedClassRedefinition")
             mods {
                 create(modId) {
                     source(sourceSets.main.get())
@@ -47,7 +48,8 @@ minecraft {
             taskName("Server")
             property("mixin.env.remapRefMap", "true")
             property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            jvmArg("-XX:+AllowEnhancedClassRedefinition -XX:+IgnoreUnrecognizedVMOptions")
+            jvmArg("-XX:+IgnoreUnrecognizedVMOptions")
+            jvmArg("-XX:+AllowEnhancedClassRedefinition")
             mods {
                 create(modId) {
                     source(sourceSets.main.get())
