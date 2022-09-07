@@ -3,6 +3,7 @@ package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.Platform;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
 import mezz.jei.api.IModPlugin;
@@ -24,7 +25,8 @@ public class AlmostJEI implements IModPlugin {
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime jei) {
-        if (AlmostUnifiedPlatform.INSTANCE.isModLoaded("rei")) {
+        var auPlatform = AlmostUnifiedPlatform.INSTANCE;
+        if (auPlatform.getPlatform() == Platform.FABRIC && auPlatform.isModLoaded("roughlyenoughitems")) {
             return;
         }
 
