@@ -23,8 +23,7 @@ base {
 }
 
 minecraft {
-    // TODO: change this when updating to 1.19.2
-    mappings(mappingsChannel, "1.18.2-${mappingsVersion}-${minecraftVersion}")
+    mappings(mappingsChannel, "${mappingsVersion}-${minecraftVersion}")
 
     runs {
         create("client") {
