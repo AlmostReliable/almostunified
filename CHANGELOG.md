@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Added
+- more materials and another tag to defaults
+  - back up your `unify.json` config and let it regenerate to get the new default or add it yourself
+
+### Changed
+- ignore lists in `unify.json` and `duplicates.json` now support regular expressions
+
+### Fixed
+- a compat issue on Fabric when REI is present
+
 ## [0.0.6] - 2022-09-02
 
 ### Added

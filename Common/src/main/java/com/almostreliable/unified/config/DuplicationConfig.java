@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DuplicationConfig extends Config {
@@ -15,11 +16,11 @@ public class DuplicationConfig extends Config {
 
     private final JsonCompare.CompareSettings defaultRules;
     private final LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules;
-    private final Set<ResourceLocation> ignoreRecipeTypes;
-    private final Set<ResourceLocation> ignoreRecipes;
+    private final Set<Pattern> ignoreRecipeTypes;
+    private final Set<Pattern> ignoreRecipes;
     private final boolean strictMode;
 
-    public DuplicationConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<ResourceLocation> ignoreRecipeTypes, Set<ResourceLocation> ignoreRecipes, boolean strictMode) {
+    public DuplicationConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipes, boolean strictMode) {
         this.defaultRules = defaultRules;
         this.overrideRules = overrideRules;
         this.ignoreRecipeTypes = ignoreRecipeTypes;
@@ -28,7 +29,8 @@ public class DuplicationConfig extends Config {
     }
 
     public boolean shouldIgnoreRecipe(RecipeLink recipe) {
-        return ignoreRecipeTypes.contains(recipe.getType()) || ignoreRecipes.contains(recipe.getId());
+        return ignoreRecipeTypes.stream().anyMatch(pattern -> pattern.matcher(recipe.getType().toString()).matches()) ||
+               ignoreRecipes.stream().anyMatch(pattern -> pattern.matcher(recipe.getId().toString()).matches());
     }
 
     public JsonCompare.CompareSettings getCompareSettings(ResourceLocation type) {
@@ -48,10 +50,10 @@ public class DuplicationConfig extends Config {
 
         @Override
         public DuplicationConfig deserialize(JsonObject json) {
-            Set<ResourceLocation> ignoreRecipeTypes = deserializeResourceLocations(json,
+            Set<Pattern> ignoreRecipeTypes = deserializePatterns(json,
                     IGNORED_RECIPE_TYPES,
                     Defaults.IGNORED_RECIPE_TYPES);
-            Set<ResourceLocation> ignoreRecipes = deserializeResourceLocations(json, IGNORED_RECIPES, List.of());
+            Set<Pattern> ignoreRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
 
             JsonCompare.CompareSettings defaultRules = safeGet(() -> createCompareSet(json.getAsJsonObject(
                             DEFAULT_DUPLICATE_RULES)),
@@ -100,8 +102,8 @@ public class DuplicationConfig extends Config {
         public JsonObject serialize(DuplicationConfig config) {
             JsonObject json = new JsonObject();
 
-            serializeResourceLocations(json, IGNORED_RECIPE_TYPES, config.ignoreRecipeTypes);
-            serializeResourceLocations(json, IGNORED_RECIPES, config.ignoreRecipes);
+            serializePatterns(json, IGNORED_RECIPE_TYPES, config.ignoreRecipeTypes);
+            serializePatterns(json, IGNORED_RECIPES, config.ignoreRecipes);
             json.add(DEFAULT_DUPLICATE_RULES, config.defaultRules.serialize());
             JsonObject overrides = new JsonObject();
             config.overrideRules.forEach((rl, compareSettings) -> {
