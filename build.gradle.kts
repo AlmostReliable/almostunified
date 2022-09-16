@@ -33,11 +33,7 @@ allprojects {
                 includeGroup("dev.latvian.mods")
             }
         }
-        maven("https://cursemaven.com") {
-            content {
-                includeGroup("curse.maven")
-            }
-        }
+        maven("https://maven.blamejared.com")
     }
 
     tasks.withType<GenerateModuleMetadata> {
