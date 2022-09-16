@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning].
 
 ### Fixed
 - a compat issue on Fabric when REI is present
+- items being hidden when they are the only entry in a tag
 
 ## [0.0.6] - 2022-09-02
 
