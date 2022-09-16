@@ -6,7 +6,6 @@ import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Config {
@@ -89,20 +89,20 @@ public class Config {
             return defaultValue;
         }
 
-        protected Set<ResourceLocation> deserializeResourceLocations(JsonObject json, String configKey, List<String> defaultValue) {
+        protected Set<Pattern> deserializePatterns(JsonObject json, String configKey, List<String> defaultValue) {
             return safeGet(() -> JsonUtils
                             .toList(json.getAsJsonArray(configKey))
                             .stream()
-                            .map(ResourceLocation::new)
+                            .map(Pattern::compile)
                             .collect(Collectors.toSet()),
-                    new HashSet<>(defaultValue.stream().map(ResourceLocation::new).toList()));
+                    new HashSet<>(defaultValue.stream().map(Pattern::compile).toList()));
         }
 
-        protected void serializeResourceLocations(JsonObject json, String configKey, Set<ResourceLocation> resourceLocations) {
+        protected void serializePatterns(JsonObject json, String configKey, Set<Pattern> patterns) {
             json.add(configKey,
-                    JsonUtils.toArray(resourceLocations
+                    JsonUtils.toArray(patterns
                             .stream()
-                            .map(ResourceLocation::toString)
+                            .map(Pattern::pattern)
                             .toList()));
         }
 

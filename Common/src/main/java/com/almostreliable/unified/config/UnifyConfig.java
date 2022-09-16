@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class UnifyConfig extends Config {
@@ -20,11 +21,11 @@ public class UnifyConfig extends Config {
     private final List<String> unbakedTags;
     private final List<String> modPriorities;
     private final Set<UnifyTag<Item>> ignoredTags;
-    private final Set<ResourceLocation> ignoredRecipeTypes;
-    private final Set<ResourceLocation> ignoredRecipes;
+    private final Set<Pattern> ignoredRecipeTypes;
+    private final Set<Pattern> ignoredRecipes;
     private final boolean hideJeiRei;
 
-    public UnifyConfig(List<String> stoneStrata, List<String> materials, List<String> unbakedTags, List<String> modPriorities, Set<UnifyTag<Item>> ignoredTags, Set<ResourceLocation> ignoredRecipeTypes, Set<ResourceLocation> ignoredRecipes, boolean hideJeiRei) {
+    public UnifyConfig(List<String> stoneStrata, List<String> materials, List<String> unbakedTags, List<String> modPriorities, Set<UnifyTag<Item>> ignoredTags, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean hideJeiRei) {
         this.stoneStrata = stoneStrata;
         this.materials = materials;
         this.unbakedTags = unbakedTags;
@@ -44,11 +45,11 @@ public class UnifyConfig extends Config {
     }
 
     public boolean includeRecipe(ResourceLocation recipe) {
-        return !ignoredRecipes.contains(recipe);
+        return ignoredRecipes.stream().noneMatch(pattern -> pattern.matcher(recipe.toString()).matches());
     }
 
     public boolean includeRecipeType(ResourceLocation type) {
-        return !ignoredRecipeTypes.contains(type);
+        return ignoredRecipeTypes.stream().noneMatch(pattern -> pattern.matcher(type.toString()).matches());
     }
 
     public List<UnifyTag<Item>> bakeTags() {
@@ -102,10 +103,10 @@ public class UnifyConfig extends Config {
                     .stream()
                     .map(s -> UnifyTag.item(new ResourceLocation(s)))
                     .collect(Collectors.toSet()), new HashSet<>());
-            Set<ResourceLocation> ignoredRecipeTypes = deserializeResourceLocations(json,
+            Set<Pattern> ignoredRecipeTypes = deserializePatterns(json,
                     IGNORED_RECIPE_TYPES,
-                    Defaults.IGNORED_RECIPE_TYPES);
-            Set<ResourceLocation> ignoredRecipes = deserializeResourceLocations(json, IGNORED_RECIPES, List.of());
+                    Defaults.getIgnoredRecipeTypes(AlmostUnifiedPlatform.INSTANCE.getPlatform()));
+            Set<Pattern> ignoredRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
             boolean hideJeiRei = safeGet(() -> json.getAsJsonPrimitive(HIDE_JEI_REI).getAsBoolean(), true);
 
             return new UnifyConfig(stoneStrata,
@@ -131,8 +132,8 @@ public class UnifyConfig extends Config {
                             .map(UnifyTag::location)
                             .map(ResourceLocation::toString)
                             .toList()));
-            serializeResourceLocations(json, IGNORED_RECIPE_TYPES, config.ignoredRecipeTypes);
-            serializeResourceLocations(json, IGNORED_RECIPES, config.ignoredRecipes);
+            serializePatterns(json, IGNORED_RECIPE_TYPES, config.ignoredRecipeTypes);
+            serializePatterns(json, IGNORED_RECIPES, config.ignoredRecipes);
             json.add(HIDE_JEI_REI, new JsonPrimitive(config.hideJeiRei));
             return json;
         }
