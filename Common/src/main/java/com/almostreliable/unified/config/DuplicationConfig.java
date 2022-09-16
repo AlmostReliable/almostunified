@@ -1,5 +1,6 @@
 package com.almostreliable.unified.config;
 
+import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.recipe.RecipeLink;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.google.gson.JsonObject;
@@ -50,14 +51,15 @@ public class DuplicationConfig extends Config {
 
         @Override
         public DuplicationConfig deserialize(JsonObject json) {
+            var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
             Set<Pattern> ignoreRecipeTypes = deserializePatterns(json,
                     IGNORED_RECIPE_TYPES,
-                    Defaults.IGNORED_RECIPE_TYPES);
+                    Defaults.getIgnoredRecipeTypes(platform));
             Set<Pattern> ignoreRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
 
             JsonCompare.CompareSettings defaultRules = safeGet(() -> createCompareSet(json.getAsJsonObject(
                             DEFAULT_DUPLICATE_RULES)),
-                    defaultSettings());
+                    Defaults.getDefaultDuplicateRules(platform));
             LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules = safeGet(() -> json
                     .getAsJsonObject(OVERRIDE_DUPLICATE_RULES)
                     .entrySet()
@@ -65,31 +67,10 @@ public class DuplicationConfig extends Config {
                     .collect(Collectors.toMap(entry -> new ResourceLocation(entry.getKey()),
                             entry -> createCompareSet(entry.getValue().getAsJsonObject()),
                             (a, b) -> b,
-                            LinkedHashMap::new)), defaultOverrides());
+                            LinkedHashMap::new)), Defaults.getDefaultDuplicateOverrides(platform));
             boolean strictMode = safeGet(() -> json.get(STRICT_MODE).getAsBoolean(), false);
 
             return new DuplicationConfig(defaultRules, overrideRules, ignoreRecipeTypes, ignoreRecipes, strictMode);
-        }
-
-        private JsonCompare.CompareSettings defaultSettings() {
-            JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
-            result.ignoreField("conditions");
-            result.ignoreField("group");
-            result.addRule("cookingtime", new JsonCompare.HigherRule());
-            result.addRule("energy", new JsonCompare.HigherRule());
-            result.addRule("experience", new JsonCompare.HigherRule());
-            return result;
-        }
-
-        private LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> defaultOverrides() {
-            JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
-            result.ignoreField("conditions");
-            result.ignoreField("group");
-            result.ignoreField("pattern");
-            result.ignoreField("key");
-            LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> resultMap = new LinkedHashMap<>();
-            resultMap.put(new ResourceLocation("minecraft", "crafting_shaped"), result);
-            return resultMap;
         }
 
         private JsonCompare.CompareSettings createCompareSet(JsonObject rules) {
