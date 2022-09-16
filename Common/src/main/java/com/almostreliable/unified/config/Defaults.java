@@ -100,6 +100,7 @@ public final class Defaults {
                     "c:plates/{material}",
                     "c:rods/{material}",
                     "c:storage_blocks/{material}",
+                    "c:storage_blocks/raw_{material}",
                     // Modders just can't decide
                     "c:{material}_nuggets",
                     "c:{material}_dusts",
@@ -110,7 +111,8 @@ public final class Defaults {
                     "c:{material}_ores",
                     "c:{material}_plates",
                     "c:{material}_rods",
-                    "c:{material}_storage_blocks"
+                    "c:{material}_storage_blocks",
+                    "c:raw_{material}_storage_blocks"
             );
         };
     }
