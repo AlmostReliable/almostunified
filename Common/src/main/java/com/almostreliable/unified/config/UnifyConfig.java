@@ -105,7 +105,7 @@ public class UnifyConfig extends Config {
                     .collect(Collectors.toSet()), new HashSet<>());
             Set<Pattern> ignoredRecipeTypes = deserializePatterns(json,
                     IGNORED_RECIPE_TYPES,
-                    Defaults.IGNORED_RECIPE_TYPES);
+                    Defaults.getIgnoredRecipeTypes(AlmostUnifiedPlatform.INSTANCE.getPlatform()));
             Set<Pattern> ignoredRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
             boolean hideJeiRei = safeGet(() -> json.getAsJsonPrimitive(HIDE_JEI_REI).getAsBoolean(), true);
 

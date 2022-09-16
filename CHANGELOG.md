@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning].
 ### Added
 - more materials and another tag to defaults
   - back up your `unify.json` config and let it regenerate to get the new default or add it yourself
+- `fabric:conditions` to default duplicate ignore list
 
 ### Changed
 - ignore lists in `unify.json` and `duplicates.json` now support regular expressions
+- default configs are now more platform specific
 
 ### Fixed
 - a compat issue on Fabric when REI is present

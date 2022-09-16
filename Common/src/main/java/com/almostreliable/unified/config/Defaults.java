@@ -1,7 +1,10 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.Platform;
+import com.almostreliable.unified.utils.JsonCompare;
+import net.minecraft.resources.ResourceLocation;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -68,7 +71,6 @@ public final class Defaults {
             "uranium",
             "zinc"
     );
-    public static final List<String> IGNORED_RECIPE_TYPES = List.of("cucumber:shaped_tag");
 
     private Defaults() {}
 
@@ -85,7 +87,7 @@ public final class Defaults {
                     "forge:plates/{material}",
                     "forge:rods/{material}",
                     "forge:storage_blocks/{material}",
-					"forge:storage_blocks/raw_{material}"
+                    "forge:storage_blocks/raw_{material}"
             );
             case FABRIC -> List.of(
                     "c:nuggets/{material}",
@@ -98,7 +100,7 @@ public final class Defaults {
                     "c:plates/{material}",
                     "c:rods/{material}",
                     "c:storage_blocks/{material}",
-                    // Modder's just can't decide
+                    // Modders just can't decide
                     "c:{material}_nuggets",
                     "c:{material}_dusts",
                     "c:{material}_gears",
@@ -111,5 +113,39 @@ public final class Defaults {
                     "c:{material}_storage_blocks"
             );
         };
+    }
+
+    public static List<String> getIgnoredRecipeTypes(Platform platform) {
+        return switch (platform) {
+            case FORGE -> List.of("cucumber:shaped_tag");
+            case FABRIC -> List.of();
+        };
+    }
+
+    public static JsonCompare.CompareSettings getDefaultDuplicateRules(Platform platform) {
+        JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
+        result.ignoreField(switch (platform) {
+            case FORGE -> "conditions";
+            case FABRIC -> "fabric:conditions";
+        });
+        result.ignoreField("group");
+        result.addRule("cookingtime", new JsonCompare.HigherRule());
+        result.addRule("energy", new JsonCompare.HigherRule());
+        result.addRule("experience", new JsonCompare.HigherRule());
+        return result;
+    }
+
+    public static LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> getDefaultDuplicateOverrides(Platform platform) {
+        JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
+        result.ignoreField(switch (platform) {
+            case FORGE -> "conditions";
+            case FABRIC -> "fabric:conditions";
+        });
+        result.ignoreField("group");
+        result.ignoreField("pattern");
+        result.ignoreField("key");
+        LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> resultMap = new LinkedHashMap<>();
+        resultMap.put(new ResourceLocation("minecraft", "crafting_shaped"), result);
+        return resultMap;
     }
 }
