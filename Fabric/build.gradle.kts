@@ -13,6 +13,7 @@ val mappingsChannel: String by project
 val mappingsVersion: String by project
 val extraModsDirectory: String by project
 val reiVersion: String by project
+val jeiVersion: String by project
 
 val baseArchiveName = "${modId}-fabric-${minecraftVersion}"
 
@@ -36,6 +37,11 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${reiVersion}")
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${reiVersion}")
 
+    // required to run the fabric client
+    modRuntimeOnly("teamreborn:energy:2.2.0")
+    modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
+    modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-fabric-api:${jeiVersion}")
+
     fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
         .forEach { f ->
             val sepIndex = f.nameWithoutExtension.lastIndexOf('-');
@@ -48,7 +54,7 @@ dependencies {
             modLocalRuntime("$extraModsDirectory:$mod:$version")
         }
 
-    implementation(project(":Common"))
+    implementation(project(":Common", "namedElements"))
 }
 
 loom {
