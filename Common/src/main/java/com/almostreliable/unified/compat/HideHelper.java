@@ -1,7 +1,6 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
@@ -11,10 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HideHelper {
@@ -26,6 +22,8 @@ public class HideHelper {
 
         return tagMap.getTags().stream().map(unifyTag -> {
             Collection<ResourceLocation> itemsByTag = tagMap.getItems(unifyTag);
+            if (itemsByTag.size() <= 1) return new ArrayList<ItemStack>();
+
             Set<ResourceLocation> replacements = itemsByTag
                     .stream()
                     .map(repMap::getReplacementForItem)
