@@ -62,6 +62,7 @@ public final class JsonCompare {
             for (int j = 0; j < firstPatternString.length(); j++) {
                 char firstChar = firstPatternString.charAt(j);
                 char secondChar = secondPatternString.charAt(j);
+                if (firstChar == ' ' && secondChar == ' ') continue;
                 if (!firstKeyMap.containsKey(firstChar) || !secondKeyMap.containsKey(secondChar)) {
                     return null;
                 }
@@ -78,7 +79,9 @@ public final class JsonCompare {
         JsonObject keys = JsonUtils.objectOrSelf(json.get("key"));
         Map<Character, JsonObject> keyMap = new HashMap<>();
         for (Map.Entry<String, JsonElement> patterKey : keys.entrySet()) {
-            keyMap.put(patterKey.getKey().charAt(0), JsonUtils.objectOrSelf(patterKey.getValue()));
+            char c = patterKey.getKey().charAt(0);
+            if (c == ' ') continue;
+            keyMap.put(c, JsonUtils.objectOrSelf(patterKey.getValue()));
         }
         return keyMap;
     }
