@@ -86,6 +86,7 @@ public final class Defaults {
                     "forge:ores/{material}",
                     "forge:plates/{material}",
                     "forge:rods/{material}",
+                    "forge:wires/{material}",
                     "forge:storage_blocks/{material}",
                     "forge:storage_blocks/raw_{material}"
             );
@@ -99,6 +100,7 @@ public final class Defaults {
                     "c:ores/{material}",
                     "c:plates/{material}",
                     "c:rods/{material}",
+                    "c:wires/{material}",
                     "c:storage_blocks/{material}",
                     "c:storage_blocks/raw_{material}",
                     // Modders just can't decide
@@ -111,6 +113,7 @@ public final class Defaults {
                     "c:{material}_ores",
                     "c:{material}_plates",
                     "c:{material}_rods",
+                    "c:{material}_wires",
                     "c:{material}_storage_blocks",
                     "c:raw_{material}_storage_blocks"
             );
