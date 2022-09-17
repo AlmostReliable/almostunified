@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.0.8] - 2022-09-17
+
+### Added
+- `wires/{material}` tag to defaults
+    - back up your `unify.json` config and let it regenerate to get the new defaults or add them yourself
+
+### Fixed
+- unnecessary handling of many duplicate links
+- a typo in the log messages
+- spaces in shaped recipe patterns not being handled correctly
+
 ## [0.0.7] - 2022-09-16
 
 ### Added
@@ -85,6 +96,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.0.8]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.8-beta
 [0.0.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.7-beta
 [0.0.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.6-beta
 [0.0.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.5-beta

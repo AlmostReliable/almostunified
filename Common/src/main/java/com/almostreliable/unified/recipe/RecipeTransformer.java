@@ -53,7 +53,7 @@ public class RecipeTransformer {
      * @return The result of the transformation.
      */
     public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes) {
-        AlmostUnified.LOG.warn("Recipe counts: " + recipes.size());
+        AlmostUnified.LOG.warn("Recipe count: " + recipes.size());
 
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
@@ -70,7 +70,7 @@ public class RecipeTransformer {
             result.addAll(recipeLinks);
         });
 
-        AlmostUnified.LOG.warn("Recipe counts afterwards: " + recipes.size());
+        AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size());
         return result;
     }
 
@@ -112,7 +112,7 @@ public class RecipeTransformer {
         }
 
         for (RecipeLink recipeLink : duplicationConfig.isStrictMode() ? recipeLinks : unified) {
-            if (handleDuplicate(recipeLink, recipeLinks)) {
+            if (handleDuplicate(recipeLink, recipeLinks) && recipeLink.getDuplicateLink() != null) {
                 duplicates.add(recipeLink.getDuplicateLink());
             }
         }
