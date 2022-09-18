@@ -74,7 +74,7 @@ public class RecipeDumper {
                 .stream()
                 .sorted(Comparator.comparing(r -> r.getId().toString()))
                 .map(r -> "\t\t- " + r.getId() + "\n")
-                .collect(Collectors.joining("", String.format("\t%s\n", link.getMaster().getDumpInfo()), "\n"));
+                .collect(Collectors.joining("", String.format("\t%s\n", link.getMaster().getId().toString()), "\n"));
     }
 
     private void dumpOverview(StringBuilder stringBuilder) {
@@ -139,7 +139,7 @@ public class RecipeDumper {
             getSortedUnifiedRecipes(type).forEach(recipe -> {
                 stringBuilder
                         .append("\t- ")
-                        .append(recipe.getDumpInfo())
+                        .append(recipe.getId().toString())
                         .append("\n")
                         .append("\t\t    Original: ")
                         .append(recipe.getOriginal().toString())
