@@ -30,6 +30,8 @@ public interface AlmostUnifiedPlatform {
      */
     boolean isDevelopmentEnvironment();
 
+    boolean isClient();
+
     Path getConfigPath();
 
     Path getLogPath();
