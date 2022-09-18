@@ -1,6 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;
@@ -20,6 +21,11 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
     @Override
     public boolean isDevelopmentEnvironment() {
         return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public boolean isClient() {
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     }
 
     @Override

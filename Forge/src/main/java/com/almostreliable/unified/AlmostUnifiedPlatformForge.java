@@ -3,6 +3,7 @@ package com.almostreliable.unified;
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.compat.IERecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -24,6 +25,11 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
     @Override
     public boolean isDevelopmentEnvironment() {
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public boolean isClient() {
+        return FMLLoader.getDist() == Dist.CLIENT;
     }
 
     @Override
