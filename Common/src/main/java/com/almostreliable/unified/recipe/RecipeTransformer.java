@@ -17,8 +17,6 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RecipeTransformer {
@@ -55,6 +53,7 @@ public class RecipeTransformer {
     public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes) {
         AlmostUnified.LOG.warn("Recipe count: " + recipes.size());
 
+        ClientRecipeTracker.RawBuilder tracker = new ClientRecipeTracker.RawBuilder();
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
 
@@ -65,11 +64,13 @@ public class RecipeTransformer {
                         recipeLink.getId(),
                         json)));
             } else {
-                transformRecipes(recipeLinks, recipes::put, recipes::remove);
+                transformRecipes(recipeLinks, recipes, tracker);
             }
             result.addAll(recipeLinks);
         });
 
+        Map<ResourceLocation, JsonObject> compute = tracker.compute();
+        recipes.putAll(compute);
         AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size());
         return result;
     }
@@ -100,13 +101,13 @@ public class RecipeTransformer {
         return Optional.empty();
     }
 
-    private void transformRecipes(List<RecipeLink> recipeLinks, BiConsumer<ResourceLocation, JsonElement> onAdd, Consumer<ResourceLocation> onRemove) {
+    private void transformRecipes(List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> recipes, ClientRecipeTracker.RawBuilder tracker) {
         Set<RecipeLink.DuplicateLink> duplicates = new HashSet<>(recipeLinks.size());
-        List<RecipeLink> unified = new ArrayList<>(recipeLinks.size());
+        Set<RecipeLink> unified = new HashSet<>(recipeLinks.size());
         for (RecipeLink curRecipe : recipeLinks) {
             unifyRecipe(curRecipe);
             if (curRecipe.isUnified()) {
-                onAdd.accept(curRecipe.getId(), curRecipe.getUnified());
+                recipes.put(curRecipe.getId(), curRecipe.getUnified());
                 unified.add(curRecipe);
             }
         }
@@ -119,15 +120,13 @@ public class RecipeTransformer {
 
         for (RecipeLink.DuplicateLink link : duplicates) {
             link.getRecipes().forEach(recipe -> {
-                onRemove.accept(recipe.getId());
+                recipes.remove(recipe.getId());
                 unified.remove(recipe);
             });
-            onAdd.accept(link.getMaster().createNewRecipeId(), link.getMaster().getActual());
+            recipes.put(link.getMaster().getId(), link.getMaster().getActual());
         }
-        for (RecipeLink link : unified) {
-            onRemove.accept(link.getId());
-            onAdd.accept(link.createNewRecipeId(), link.getActual());
-        }
+
+        unified.forEach(tracker::add);
     }
 
     public Map<ResourceLocation, List<RecipeLink>> groupRecipesByType(Map<ResourceLocation, JsonElement> recipes) {
