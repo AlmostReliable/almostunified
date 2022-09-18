@@ -139,6 +139,7 @@ public class ClientRecipeTracker implements Recipe<Container> {
          *      ]
          * }
          * }
+         * </pre>
          * @param recipeId The id of the recipe for the tracker.
          * @param json    The json object.
          * @return The recipe tracker.
@@ -179,6 +180,7 @@ public class ClientRecipeTracker implements Recipe<Container> {
          *     flag$recipe2Path
          *     ...
          *     flag$recipeNPath
+         * </pre>
          * @param buffer the buffer to write to
          * @param recipe the recipe to write
          */
