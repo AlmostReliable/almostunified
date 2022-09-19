@@ -7,6 +7,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.LoadingModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
 import java.nio.file.Path;
 
@@ -19,7 +21,8 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
 
     @Override
     public boolean isModLoaded(String modId) {
-        return ModList.get().isLoaded(modId);
+        return LoadingModList.get().getMods().stream().map(ModInfo::getModId).anyMatch(modId::equals) ||
+               ModList.get().isLoaded(modId);
     }
 
     @Override
