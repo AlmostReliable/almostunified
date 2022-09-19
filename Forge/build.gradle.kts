@@ -75,12 +75,12 @@ dependencies {
 
     fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
         .forEach { f ->
-            val sepIndex = f.nameWithoutExtension.lastIndexOf('-');
-            if(sepIndex == -1) {
+            val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
+            if (sepIndex == -1) {
                 throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
             }
-            val mod = f.nameWithoutExtension.substring(0, sepIndex);
-            val version = f.nameWithoutExtension.substring(sepIndex + 1);
+            val mod = f.nameWithoutExtension.substring(0, sepIndex)
+            val version = f.nameWithoutExtension.substring(sepIndex + 1)
             println("Extra mod $mod with version $version detected")
             runtimeOnly(fg.deobf("$extraModsDirectory:$mod:$version"))
         }

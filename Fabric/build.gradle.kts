@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     idea
     `maven-publish`
@@ -31,28 +33,26 @@ dependencies {
     implementation("com.google.code.findbugs:jsr305:3.0.2")
 
     modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
-    modApi("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${reiVersion}")
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${reiVersion}")
 
-    // required to run the fabric client
-    modRuntimeOnly("teamreborn:energy:2.2.0")
-    modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
-    modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-fabric-api:${jeiVersion}")
-
-    fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
-        .forEach { f ->
-            val sepIndex = f.nameWithoutExtension.lastIndexOf('-');
-            if(sepIndex == -1) {
-                throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
-            }
-            val mod = f.nameWithoutExtension.substring(0, sepIndex);
-            val version = f.nameWithoutExtension.substring(sepIndex + 1);
-            println("Extra mod $mod with version $version detected")
-            modLocalRuntime("$extraModsDirectory:$mod:$version")
+    val extraMods = fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
+    if (extraMods.files.isNotEmpty()) {
+        // required when running the fabric client with extra mods
+        modRuntimeOnly("teamreborn:energy:2.2.0")
+    }
+    extraMods.forEach { f ->
+        val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
+        if (sepIndex == -1) {
+            throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
         }
+        val mod = f.nameWithoutExtension.substring(0, sepIndex)
+        val version = f.nameWithoutExtension.substring(sepIndex + 1)
+        println("Extra mod $mod with version $version detected")
+        modLocalRuntime("$extraModsDirectory:$mod:$version")
+    }
 
     implementation(project(":Common", "namedElements"))
 }
