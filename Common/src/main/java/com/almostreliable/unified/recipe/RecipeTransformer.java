@@ -69,9 +69,9 @@ public class RecipeTransformer {
             result.addAll(recipeLinks);
         });
 
+        AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size());
         Map<ResourceLocation, JsonObject> compute = tracker.compute();
         recipes.putAll(compute);
-        AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size());
         return result;
     }
 
