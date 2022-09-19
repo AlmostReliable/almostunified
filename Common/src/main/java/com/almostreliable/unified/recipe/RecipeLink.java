@@ -1,6 +1,5 @@
 package com.almostreliable.unified.recipe;
 
-import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;

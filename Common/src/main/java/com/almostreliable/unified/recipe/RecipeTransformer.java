@@ -71,7 +71,7 @@ public class RecipeTransformer {
 
         Map<ResourceLocation, JsonObject> compute = tracker.compute();
         recipes.putAll(compute);
-        AlmostUnified.LOG.warn("Recipe counts afterwards: " + recipes.size());
+        AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size());
         return result;
     }
 

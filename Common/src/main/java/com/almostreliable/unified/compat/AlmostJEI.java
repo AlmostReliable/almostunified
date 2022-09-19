@@ -31,7 +31,7 @@ public class AlmostJEI implements IModPlugin {
         }
 
         UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-        if(config.reiOrJeiDisabled()) {
+        if (config.reiOrJeiDisabled()) {
             return;
         }
 

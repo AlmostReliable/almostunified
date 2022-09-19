@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * This recipe is used to track which recipes were unified. It is NOT used for crafting.
- * Each tracker will hold one namespace with a list of recipes that were unified for this namespace.
+ * Each tracker will hold one namespace with a list of recipes that were unified for it.
  */
 public class ClientRecipeTracker implements Recipe<Container> {
     public static final ResourceLocation ID = new ResourceLocation(BuildConfig.MOD_ID, "client_recipe_tracker");
@@ -27,8 +27,8 @@ public class ClientRecipeTracker implements Recipe<Container> {
     public static final String NAMESPACE = "namespace";
     public static final int UNIFIED_FLAG = 1;
     public static final int DUPLICATE_FLAG = 2;
-    public static RecipeSerializer<ClientRecipeTracker> SERIALIZER = new Serializer();
-    public static RecipeType<ClientRecipeTracker> TYPE = new RecipeType<>() {
+    public static final RecipeSerializer<ClientRecipeTracker> SERIALIZER = new Serializer();
+    public static final RecipeType<ClientRecipeTracker> TYPE = new RecipeType<>() {
         @Override
         public String toString() {
             return ID.getPath();
@@ -45,10 +45,10 @@ public class ClientRecipeTracker implements Recipe<Container> {
     }
 
     /**
-     * Create a raw string representation.
+     * Creates a raw string representation.
      *
-     * @param isUnified   If the recipe was unified.
-     * @param isDuplicate If the recipe was a duplicate.
+     * @param isUnified   Whether the recipe was unified.
+     * @param isDuplicate Whether the recipe had duplicates.
      * @param idPath      The path of the recipe.
      * @return String representation as: `flag$idPath`
      */
@@ -57,21 +57,6 @@ public class ClientRecipeTracker implements Recipe<Container> {
         if (isUnified) flag |= UNIFIED_FLAG;
         if (isDuplicate) flag |= DUPLICATE_FLAG;
         return flag + "$" + idPath;
-    }
-
-    /**
-     * Creates a {@link ClientRecipeLink} from a raw string for given namespace
-     *
-     * @param namespace The namespace to use.
-     * @param raw       The raw string.
-     * @return The client sided recipe link.
-     */
-    private static ClientRecipeLink parseRaw(String namespace, String raw) {
-        String[] split = raw.split("\\$", 2);
-        int flag = Integer.parseInt(split[0]);
-        boolean isUnified = (flag & UNIFIED_FLAG) != 0;
-        boolean isDuplicate = (flag & DUPLICATE_FLAG) != 0;
-        return new ClientRecipeLink(new ResourceLocation(namespace, split[1]), isUnified, isDuplicate);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Default recipe stuff. Ignore this. Forget this.">
@@ -125,7 +110,7 @@ public class ClientRecipeTracker implements Recipe<Container> {
     public static class Serializer implements RecipeSerializer<ClientRecipeTracker> {
 
         /**
-         * Read a recipe from a json file. Recipe will look like this:
+         * Reads a recipe from a json file. Recipe will look like this:
          * <pre>
          * {@code
          * {
@@ -140,8 +125,9 @@ public class ClientRecipeTracker implements Recipe<Container> {
          * }
          * }
          * </pre>
+         *
          * @param recipeId The id of the recipe for the tracker.
-         * @param json    The json object.
+         * @param json     The json object.
          * @return The recipe tracker.
          */
         @Override
@@ -171,7 +157,7 @@ public class ClientRecipeTracker implements Recipe<Container> {
         }
 
         /**
-         * Will write our tracker to the buffer. Namespace is written separately to save some bytes.
+         * Writes the tracker to the buffer. The namespace is written separately to save some bytes.
          * Buffer output will look like:
          * <pre>
          *     size
@@ -181,8 +167,9 @@ public class ClientRecipeTracker implements Recipe<Container> {
          *     ...
          *     flag$recipeNPath
          * </pre>
-         * @param buffer the buffer to write to
-         * @param recipe the recipe to write
+         *
+         * @param buffer The buffer to write to
+         * @param recipe The recipe to write
          */
         @Override
         public void toNetwork(FriendlyByteBuf buffer, ClientRecipeTracker recipe) {
@@ -194,6 +181,21 @@ public class ClientRecipeTracker implements Recipe<Container> {
                         clientRecipeLink.id().getPath());
                 buffer.writeUtf(raw);
             }
+        }
+
+        /**
+         * Creates a {@link ClientRecipeLink} from a raw string for the given namespace.
+         *
+         * @param namespace The namespace to use.
+         * @param raw       The raw string.
+         * @return The client sided recipe link.
+         */
+        private static ClientRecipeLink parseRaw(String namespace, String raw) {
+            String[] split = raw.split("\\$", 2);
+            int flag = Integer.parseInt(split[0]);
+            boolean isUnified = (flag & UNIFIED_FLAG) != 0;
+            boolean isDuplicate = (flag & DUPLICATE_FLAG) != 0;
+            return new ClientRecipeLink(new ResourceLocation(namespace, split[1]), isUnified, isDuplicate);
         }
     }
 
@@ -208,7 +210,8 @@ public class ClientRecipeTracker implements Recipe<Container> {
         }
 
         /**
-         * Creates a map with the namespace as key and the json recipe. These recipes are used later in {@link Serializer#fromJson(ResourceLocation, JsonObject)}
+         * Creates a map with the namespace as key and the json recipe.
+         * These recipes are used later in {@link Serializer#fromJson(ResourceLocation, JsonObject)}
          *
          * @return The map with the namespace as key and the json recipe.
          */
