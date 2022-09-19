@@ -14,6 +14,7 @@ val mappingsChannel: String by project
 val mappingsVersion: String by project
 val kubejsVersion: String by project
 val jeiVersion: String by project
+val reiVersion: String by project
 
 val baseArchiveName = "${modName}-common-${minecraftVersion}"
 
@@ -39,7 +40,11 @@ dependencies {
     implementation("com.google.code.findbugs:jsr305:3.0.2")
 
     modApi("dev.latvian.mods:kubejs-fabric:${kubejsVersion}")
+
+    // required for JEI compat plugin and mixin
     modCompileOnly("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}")
+    // required for REI compat plugin
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:${reiVersion}")
 
     /**
      * DON'T USE THIS! NEEDED TO COMPILE THIS PROJECT

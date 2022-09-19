@@ -14,6 +14,7 @@ val modId: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
 val extraModsDirectory: String by project
+val fabricRecipeViewer: String by project
 val reiVersion: String by project
 val jeiVersion: String by project
 
@@ -35,8 +36,25 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
 
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${reiVersion}")
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${reiVersion}")
+    when (fabricRecipeViewer) {
+        "jei" -> {
+            modCompileOnlyApi("me.shedaniel:RoughlyEnoughItems-api:${reiVersion}")
+
+            modCompileOnly("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}")
+            modImplementation("mezz.jei:jei-${minecraftVersion}-fabric:${jeiVersion}")
+        }
+
+        "rei" -> {
+            modCompileOnly("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}")
+            modCompileOnly("mezz.jei:jei-${minecraftVersion}-fabric:${jeiVersion}")
+
+            modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${reiVersion}")
+        }
+
+        else -> {
+            throw GradleException("Unknown recipe viewer: $fabricRecipeViewer")
+        }
+    }
 
     val extraMods = fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
     if (extraMods.files.isNotEmpty()) {

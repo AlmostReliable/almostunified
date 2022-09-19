@@ -15,10 +15,7 @@ import java.util.function.BooleanSupplier;
 public class AlmostMixinPlugin implements IMixinConfigPlugin {
 
     private static final BooleanSupplier TRUE = () -> true;
-    private static final Map<String, BooleanSupplier> CONDITIONS = ImmutableMap.of(
-            "Jei", modLoaded("jei"),
-            "Rei", modLoaded("roughlyenoughitems")
-    );
+    private static final Map<String, BooleanSupplier> CONDITIONS = ImmutableMap.of("Jei", modLoaded("jei"));
 
     private static BooleanSupplier modLoaded(String id) {
         return () -> AlmostUnifiedPlatform.INSTANCE.isModLoaded(id);

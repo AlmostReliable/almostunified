@@ -14,7 +14,9 @@ val modId: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
 val extraModsDirectory: String by project
+val forgeRecipeViewer: String by project
 val jeiVersion: String by project
+val reiVersion: String by project
 
 val baseArchiveName = "${modId}-forge-${minecraftVersion}"
 
@@ -70,8 +72,31 @@ dependencies {
     minecraft("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
     compileOnly(project(":Common"))
 
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}"))
-    implementation(fg.deobf("mezz.jei:jei-${minecraftVersion}-forge:${jeiVersion}"))
+    when (forgeRecipeViewer) {
+        "jei" -> {
+            // required in dev as well for math package
+            compileOnly(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${7.0}"))
+            // doesn't compile if we only use the api
+            compileOnly(fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${reiVersion}"))
+
+            compileOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}"))
+            implementation(fg.deobf("mezz.jei:jei-${minecraftVersion}-forge:${jeiVersion}"))
+        }
+
+        "rei" -> {
+            compileOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}"))
+            compileOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-forge:${jeiVersion}"))
+
+            runtimeOnly(fg.deobf("dev.architectury:architectury-forge:${5.7}"))
+            // required in dev as well for math package
+            implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${7.0}"))
+            implementation(fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${reiVersion}"))
+        }
+
+        else -> {
+            throw GradleException("Unknown recipe viewer: $forgeRecipeViewer")
+        }
+    }
 
     fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
         .forEach { f ->
