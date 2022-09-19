@@ -37,7 +37,7 @@ dependencies {
     implementation("com.google.code.findbugs:jsr305:3.0.2")
 
     modApi("dev.latvian.mods:kubejs-fabric:${kubejsVersion}")
-    modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
+    modCompileOnly("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}")
 
     /**
      * DON'T USE THIS! NEEDED TO COMPILE THIS PROJECT

@@ -4,11 +4,13 @@
   "package": "com.almostreliable.unified.mixin",
   "refmap": "almostunified.refmap.json",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "com.almostreliable.unified.mixin.AlmostMixinPlugin",
   "mixins": [
     "RecipeManagerMixin",
     "ReloadableServerResourcesMixin"
   ],
   "client": [
+    "JeiRecipeLayoutMixin"
   ],
   "injectors": {
     "defaultRequire": 1

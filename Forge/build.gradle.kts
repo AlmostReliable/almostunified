@@ -70,9 +70,8 @@ dependencies {
     minecraft("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
     compileOnly(project(":Common"))
 
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-forge-api:${jeiVersion}"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-forge:${jeiVersion}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}"))
+    implementation(fg.deobf("mezz.jei:jei-${minecraftVersion}-forge:${jeiVersion}"))
 
     fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
         .forEach { f ->

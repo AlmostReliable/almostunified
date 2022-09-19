@@ -24,4 +24,12 @@ public final class Utils {
 
         return UnifyTag.item(rl);
     }
+
+    public static ResourceLocation getRL(String path) {
+        return new ResourceLocation(BuildConfig.MOD_ID, path);
+    }
+
+    public static String prefix(String path) {
+        return BuildConfig.MOD_ID + "." + path;
+    }
 }
