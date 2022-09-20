@@ -124,6 +124,7 @@ public class RecipeTransformer {
                 unified.remove(recipe);
             });
             recipes.put(link.getMaster().getId(), link.getMaster().getActual());
+            tracker.add(link.getMaster());
         }
 
         unified.forEach(tracker::add);
