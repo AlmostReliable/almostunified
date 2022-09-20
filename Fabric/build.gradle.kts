@@ -1,59 +1,26 @@
-plugins {
-    idea
-    `maven-publish`
-    id("fabric-loom") version "0.12-SNAPSHOT"
-}
+@file:Suppress("UnstableApiUsage")
 
+val extraModsDirectory: String by project
+val fabricRecipeViewer: String by project
 val minecraftVersion: String by project
 val fabricVersion: String by project
 val fabricLoaderVersion: String by project
-val modName: String by project
-val modId: String by project
-val mappingsChannel: String by project
-val mappingsVersion: String by project
-val extraModsDirectory: String by project
 val reiVersion: String by project
 val jeiVersion: String by project
+val kubejsVersion: String by project
+val mappingsChannel: String by project
+val mappingsVersion: String by project
+val modId: String by project
+val modName: String by project
 
-val baseArchiveName = "${modId}-fabric-${minecraftVersion}"
+val baseArchiveName = "$modId-fabric-$minecraftVersion"
+
+plugins {
+    id("fabric-loom") version "0.12-SNAPSHOT"
+}
 
 base {
     archivesName.set(baseArchiveName)
-}
-
-dependencies {
-    minecraft("com.mojang:minecraft:${minecraftVersion}")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:${mappingsChannel}-${minecraftVersion}:${mappingsVersion}@zip")
-    })
-    implementation("com.google.code.findbugs:jsr305:3.0.2")
-
-    modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
-    modApi("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
-
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${reiVersion}")
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${reiVersion}")
-
-    // required to run the fabric client
-    modRuntimeOnly("teamreborn:energy:2.2.0")
-    modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
-    modCompileOnlyApi("mezz.jei:jei-${minecraftVersion}-fabric-api:${jeiVersion}")
-
-    fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
-        .forEach { f ->
-            val sepIndex = f.nameWithoutExtension.lastIndexOf('-');
-            if(sepIndex == -1) {
-                throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
-            }
-            val mod = f.nameWithoutExtension.substring(0, sepIndex);
-            val version = f.nameWithoutExtension.substring(sepIndex + 1);
-            println("Extra mod $mod with version $version detected")
-            modLocalRuntime("$extraModsDirectory:$mod:$version")
-        }
-
-    implementation(project(":Common", "namedElements"))
 }
 
 loom {
@@ -75,19 +42,58 @@ loom {
     }
 
     mixin {
-        defaultRefmapName.set("${modId}.refmap.json")
+        defaultRefmapName.set("$modId.refmap.json")
+    }
+}
+
+dependencies {
+    implementation(project(":Common", "namedElements"))
+
+    minecraft("com.mojang:minecraft:$minecraftVersion")
+    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
+    })
+
+    modCompileOnlyApi("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for fabric rei plugin
+    modCompileOnlyApi("mezz.jei:jei-$minecraftVersion-fabric-api:$jeiVersion") // required for common jei plugin
+    // runtime only
+    when (fabricRecipeViewer) {
+        "rei" -> modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
+        "jei" -> modRuntimeOnly("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion")
+        else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
+    }
+
+    // required for common kubejs plugin and fabric runtime
+    modCompileOnlyApi(modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion")!!)
+
+    val extraMods = fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
+    if (extraMods.files.isNotEmpty()) {
+        // required when running the fabric client with extra mods
+        modRuntimeOnly("teamreborn:energy:2.2.0")
+    }
+    extraMods.forEach { f ->
+        val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
+        if (sepIndex == -1) {
+            throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
+        }
+        val mod = f.nameWithoutExtension.substring(0, sepIndex)
+        val version = f.nameWithoutExtension.substring(sepIndex + 1)
+        println("Extra mod $mod with version $version detected")
+        modLocalRuntime("$extraModsDirectory:$mod:$version")
     }
 }
 
 tasks {
+    // TODO: test if this is necessary
     jar {
         from("LICENSE") {
             rename { "${it}_${modName}" }
         }
     }
-    withType<JavaCompile> {
-        source(project(":Common").sourceSets.main.get().allSource)
-    }
+    // TODO: test if this is necessary
     processResources {
         from(project(":Common").sourceSets.main.get().resources)
         inputs.property("version", project.version)
@@ -95,6 +101,9 @@ tasks {
         filesMatching("fabric.mod.json") {
             expand("version" to project.version)
         }
+    }
+    withType<JavaCompile> {
+        source(project(":Common").sourceSets.main.get().allSource)
     }
 }
 

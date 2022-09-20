@@ -1,6 +1,5 @@
 package com.almostreliable.unified.compat;
 
-
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.Platform;
