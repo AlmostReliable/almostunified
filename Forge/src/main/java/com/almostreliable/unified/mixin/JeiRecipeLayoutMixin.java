@@ -5,7 +5,7 @@ import com.almostreliable.unified.recipe.CRTLookup;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.common.gui.recipes.layout.RecipeLayout;
+import mezz.jei.gui.recipes.RecipeLayout;
 import net.minecraft.client.renderer.Rect2i;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

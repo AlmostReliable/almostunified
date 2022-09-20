@@ -46,7 +46,7 @@ loom {
     }
 
     forge {
-        mixinConfig("$modId-common.mixins.json")
+        mixinConfig("$modId-common.mixins.json", "$modId-forge.mixins.json")
     }
 
     mixin {
@@ -65,11 +65,11 @@ dependencies {
     })
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for forge rei plugin | api does not work here!
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") // required for common jei plugin and mixin
+    modCompileOnly("mezz.jei:jei-$minecraftVersion:$jeiVersion") // required for common jei plugin and mixin
     // runtime only
     when (forgeRecipeViewer) {
         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
-        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion")
+        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion:$jeiVersion")
         else -> throw GradleException("Invalid forgeRecipeViewer value: $forgeRecipeViewer")
     }
 

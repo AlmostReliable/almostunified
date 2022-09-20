@@ -3,8 +3,6 @@
 val junitVersion: String by project
 val minecraftVersion: String by project
 val fabricLoaderVersion: String by project
-val reiVersion: String by project
-val jeiVersion: String by project
 val kubejsVersion: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
@@ -41,8 +39,6 @@ dependencies {
         officialMojangMappings()
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
-
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-common:$jeiVersion")
 
     modCompileOnly("dev.latvian.mods:kubejs:$kubejsVersion")
 

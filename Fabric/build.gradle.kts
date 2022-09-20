@@ -1,12 +1,10 @@
 @file:Suppress("UnstableApiUsage")
 
 val extraModsDirectory: String by project
-val fabricRecipeViewer: String by project
 val minecraftVersion: String by project
 val fabricVersion: String by project
 val fabricLoaderVersion: String by project
 val reiVersion: String by project
-val jeiVersion: String by project
 val kubejsVersion: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
@@ -60,13 +58,7 @@ dependencies {
     })
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for fabric rei plugin
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion") // required for common jei plugin and mixin
-    // runtime only
-    when (fabricRecipeViewer) {
-        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
-        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion")
-        else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
-    }
+    modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
 
     // required for common kubejs plugin and fabric runtime
     modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion")!!)
