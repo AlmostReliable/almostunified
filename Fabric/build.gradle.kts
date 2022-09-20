@@ -47,7 +47,7 @@ loom {
 }
 
 dependencies {
-    implementation(project(":Common", "namedElements"))
+    implementation(project(":Common", "namedElements")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")

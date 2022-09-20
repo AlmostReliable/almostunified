@@ -54,7 +54,7 @@ loom {
 }
 
 dependencies {
-    implementation(project(":Common", "namedElements"))
+    implementation(project(":Common", "namedElements")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
     forge("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
@@ -63,7 +63,7 @@ dependencies {
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
-    modCompileOnlyApi("me.shedaniel:RoughlyEnoughItems-api-forge:$reiVersion") // required for forge rei plugin
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for forge rei plugin | api does not work here!
     modCompileOnlyApi("mezz.jei:jei-$minecraftVersion-forge-api:$jeiVersion") // required for common jei plugin
     // runtime only
     when (forgeRecipeViewer) {

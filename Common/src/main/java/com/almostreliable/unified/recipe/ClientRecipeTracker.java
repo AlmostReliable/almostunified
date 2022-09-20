@@ -1,6 +1,7 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,13 +23,13 @@ import java.util.Map;
  * Each tracker will hold one namespace with a list of recipes that were unified for this namespace.
  */
 public class ClientRecipeTracker implements Recipe<Container> {
-    public static final ResourceLocation ID = new ResourceLocation(BuildConfig.MOD_ID, "client_recipe_tracker");
+    public static final ResourceLocation ID = Utils.getRL("client_recipe_tracker");
     public static final String RECIPES = "recipes";
     public static final String NAMESPACE = "namespace";
     public static final int UNIFIED_FLAG = 1;
     public static final int DUPLICATE_FLAG = 2;
-    public static RecipeSerializer<ClientRecipeTracker> SERIALIZER = new Serializer();
-    public static RecipeType<ClientRecipeTracker> TYPE = new RecipeType<>() {
+    public static final RecipeSerializer<ClientRecipeTracker> SERIALIZER = new Serializer();
+    public static final RecipeType<ClientRecipeTracker> TYPE = new RecipeType<>() {
         @Override
         public String toString() {
             return ID.getPath();
@@ -195,6 +196,21 @@ public class ClientRecipeTracker implements Recipe<Container> {
                 buffer.writeUtf(raw);
             }
         }
+
+        // <editor-fold defaultstate="collapsed" desc="Forge Shit, please ignore.">
+        public Serializer setRegistryName(ResourceLocation recipeId) {
+            return this;
+        }
+
+        @Nullable
+        public ResourceLocation getRegistryName() {
+            return ID;
+        }
+
+        public Class<RecipeSerializer<?>> getRegistryType() {
+            return Utils.cast(this.getClass());
+        }
+        // </editor-fold>
     }
 
     public static class RawBuilder {
