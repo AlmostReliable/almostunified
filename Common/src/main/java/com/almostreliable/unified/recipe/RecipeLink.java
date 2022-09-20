@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RecipeLink {
     private final ResourceLocation id;
@@ -188,6 +189,10 @@ public class RecipeLink {
 
         public Set<RecipeLink> getRecipes() {
             return Collections.unmodifiableSet(recipes);
+        }
+
+        public Set<RecipeLink> getRecipesWithoutMaster() {
+            return recipes.stream().filter(recipe -> recipe != currentMaster).collect(Collectors.toSet());
         }
 
         @Override

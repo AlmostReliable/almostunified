@@ -17,6 +17,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RecipeTransformer {
@@ -35,7 +36,7 @@ public class RecipeTransformer {
         this.duplicationConfig = duplicationConfig;
     }
 
-    public boolean hasValidType(JsonObject json) {
+    public boolean hasValidRecipeType(JsonObject json) {
         if (json.get("type") instanceof JsonPrimitive primitive) {
             ResourceLocation type = ResourceLocation.tryParse(primitive.getAsString());
             return type != null && unifyConfig.includeRecipeType(type);
@@ -101,32 +102,25 @@ public class RecipeTransformer {
         return Optional.empty();
     }
 
-    private void transformRecipes(List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> recipes, ClientRecipeTracker.RawBuilder tracker) {
-        Set<RecipeLink.DuplicateLink> duplicates = new HashSet<>(recipeLinks.size());
-        Set<RecipeLink> unified = new HashSet<>(recipeLinks.size());
-        for (RecipeLink curRecipe : recipeLinks) {
-            unifyRecipe(curRecipe);
-            if (curRecipe.isUnified()) {
-                recipes.put(curRecipe.getId(), curRecipe.getUnified());
-                unified.add(curRecipe);
-            }
-        }
-
-        for (RecipeLink recipeLink : duplicationConfig.isStrictMode() ? recipeLinks : unified) {
-            if (handleDuplicate(recipeLink, recipeLinks) && recipeLink.getDuplicateLink() != null) {
-                duplicates.add(recipeLink.getDuplicateLink());
-            }
-        }
-
-        for (RecipeLink.DuplicateLink link : duplicates) {
-            link.getRecipes().forEach(recipe -> {
-                recipes.remove(recipe.getId());
-                unified.remove(recipe);
-            });
-            recipes.put(link.getMaster().getId(), link.getMaster().getActual());
-            tracker.add(link.getMaster());
-        }
-
+    /**
+     * Transforms a list of recipes. Part of the transformation is to unify recipes with the given {@link ReplacementMap}.
+     * After unification, recipes will be checked for duplicates.
+     * All duplicates will be removed from <b>{@code Map<ResourceLocation, JsonElement> allRecipes}</b>,
+     * while unified recipes will replace the original recipes in the map.
+     * <p>
+     * This method will also add the recipes to the given {@link ClientRecipeTracker.RawBuilder}
+     *
+     * @param recipeLinks The list of recipes to transform.
+     * @param allRecipes  The map of all existing recipes.
+     * @param tracker     The tracker to add the recipes to.
+     */
+    private void transformRecipes(List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> allRecipes, ClientRecipeTracker.RawBuilder tracker) {
+        var unified = unifyRecipes(recipeLinks, (r) -> allRecipes.put(r.getId(), r.getUnified()));
+        var duplicates = handleDuplicates(duplicationConfig.isStrictMode() ? recipeLinks : unified, recipeLinks);
+        duplicates
+                .stream()
+                .flatMap(d -> d.getRecipesWithoutMaster().stream())
+                .forEach(r -> allRecipes.remove(r.getId()));
         unified.forEach(tracker::add);
     }
 
@@ -139,8 +133,32 @@ public class RecipeTransformer {
                 .collect(Collectors.groupingByConcurrent(RecipeLink::getType));
     }
 
+    /**
+     * Checks if a recipe should be included in the transformation.
+     *
+     * @param recipe The recipe to check.
+     * @param json   The recipe's json. Will be used to check if the recipe has a valid type.
+     * @return True if the recipe should be included, false otherwise.
+     */
     private boolean includeRecipe(ResourceLocation recipe, JsonElement json) {
-        return unifyConfig.includeRecipe(recipe) && json.isJsonObject() && hasValidType(json.getAsJsonObject());
+        return unifyConfig.includeRecipe(recipe) && json.isJsonObject() && hasValidRecipeType(json.getAsJsonObject());
+    }
+
+    /**
+     * Compares a list of recipes against another list for duplicates.
+     *
+     * @param recipeLinks    The list of recipes
+     * @param linksToCompare The list of recipes to compare against
+     * @return A list of {@link RecipeLink.DuplicateLink}s containing all duplicates.
+     */
+    private Set<RecipeLink.DuplicateLink> handleDuplicates(Collection<RecipeLink> recipeLinks, List<RecipeLink> linksToCompare) {
+        Set<RecipeLink.DuplicateLink> duplicates = new HashSet<>(recipeLinks.size());
+        for (RecipeLink recipeLink : recipeLinks) {
+            if (handleDuplicate(recipeLink, linksToCompare) && recipeLink.getDuplicateLink() != null) {
+                duplicates.add(recipeLink.getDuplicateLink());
+            }
+        }
+        return duplicates;
     }
 
     private boolean handleDuplicate(RecipeLink curRecipe, List<RecipeLink> recipes) {
@@ -164,6 +182,25 @@ public class RecipeTransformer {
         }
 
         return foundDuplicate;
+    }
+
+    /**
+     * Unifies a list of recipes. On unification, {@code Consumer<RecipeLink>} will be called
+     *
+     * @param recipeLinks The list of recipes to unify.
+     * @param onUnified   A consumer that will be called on each unified recipe.
+     * @return A list of unified recipes.
+     */
+    private Set<RecipeLink> unifyRecipes(List<RecipeLink> recipeLinks, Consumer<RecipeLink> onUnified) {
+        Set<RecipeLink> unified = new HashSet<>(recipeLinks.size());
+        for (RecipeLink recipeLink : recipeLinks) {
+            unifyRecipe(recipeLink);
+            if (recipeLink.isUnified()) {
+                onUnified.accept(recipeLink);
+                unified.add(recipeLink);
+            }
+        }
+        return unified;
     }
 
     /**
