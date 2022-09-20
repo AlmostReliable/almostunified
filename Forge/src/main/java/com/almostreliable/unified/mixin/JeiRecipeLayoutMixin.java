@@ -18,14 +18,14 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(RecipeLayout.class)
 public abstract class JeiRecipeLayoutMixin<R> {
 
-    @Shadow @Final
+    @Shadow(remap = false) @Final
     private static int RECIPE_BORDER_PADDING;
-    @Shadow @Final
+    @Shadow(remap = false) @Final
     private IRecipeCategory<R> recipeCategory;
-    @Shadow @Final
+    @Shadow(remap = false) @Final
     private R recipe;
 
-    @Inject(method = "drawRecipe", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
+    @Inject(method = "drawRecipe", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD)
     private void unified$drawRecipe(PoseStack stack, int mouseX, int mouseY, CallbackInfo ci, IDrawable background, int mX, int mY, IDrawable categoryBackground, int x, int y) {
         var recipeId = recipeCategory.getRegistryName(recipe);
         if (recipeId == null) return;
