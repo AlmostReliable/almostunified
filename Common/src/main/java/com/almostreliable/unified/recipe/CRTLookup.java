@@ -8,7 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nullable;
 
 
-public class CRTLookup {
+public final class CRTLookup {
+
+    private CRTLookup() {}
+
     @Nullable
     public static ClientRecipeTracker.ClientRecipeLink getLink(ResourceLocation recipeId) {
         ResourceLocation linkRecipe = new ResourceLocation(BuildConfig.MOD_ID, recipeId.getNamespace());
