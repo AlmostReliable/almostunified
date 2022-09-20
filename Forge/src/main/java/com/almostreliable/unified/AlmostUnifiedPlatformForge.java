@@ -3,9 +3,12 @@ package com.almostreliable.unified;
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.compat.IERecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.LoadingModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
 import java.nio.file.Path;
 
@@ -18,12 +21,20 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
 
     @Override
     public boolean isModLoaded(String modId) {
+        if (ModList.get() == null) {
+            return LoadingModList.get().getMods().stream().map(ModInfo::getModId).anyMatch(modId::equals);
+        }
         return ModList.get().isLoaded(modId);
     }
 
     @Override
     public boolean isDevelopmentEnvironment() {
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public boolean isClient() {
+        return FMLLoader.getDist() == Dist.CLIENT;
     }
 
     @Override

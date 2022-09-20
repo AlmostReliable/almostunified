@@ -2,51 +2,39 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 val license: String by project
+val extraModsDirectory: String by project
 val minecraftVersion: String by project
+val forgeMinVersion: String by project
 val modId: String by project
 val modName: String by project
 val modAuthor: String by project
 val modDescription: String by project
-val forgeMinVersion: String by project
-val extraModsDirectory: String by project
 val githubUser: String by project
 val githubRepo: String by project
 
 plugins {
     java
-    idea
 }
 
-allprojects {
+subprojects {
+    apply(plugin = "maven-publish")
+    apply(plugin = "java")
+    apply(plugin = "eclipse")
+    apply(plugin = "idea")
+
     repositories {
+        maven("https://maven.parchmentmc.org/")
+        maven("https://maven.shedaniel.me")
+        maven("https://dvs1.progwml6.com/files/maven/")
+        maven("https://maven.saps.dev/minecraft")
         flatDir {
             name = extraModsDirectory
             dir(file("$extraModsDirectory-$minecraftVersion"))
         }
-        mavenLocal()
-        mavenCentral()
-        maven("https://repo.spongepowered.org/repository/maven-public/")
-        maven("https://maven.shedaniel.me")
-        maven("https://dvs1.progwml6.com/files/maven/")
-        maven("https://maven.saps.dev/minecraft") {
-            content {
-                includeGroup("dev.latvian.mods")
-            }
-        }
     }
-
-    tasks.withType<GenerateModuleMetadata> {
-        enabled = false
-    }
-}
-
-
-subprojects {
-    apply(plugin = "java")
 
     extensions.configure<JavaPluginExtension> {
         toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-        withJavadocJar()
         withSourcesJar()
     }
 
@@ -67,22 +55,18 @@ subprojects {
                 )
             }
         }
-        withType<JavaCompile> {
-            options.encoding = "UTF-8"
-            options.release.set(17)
-        }
         processResources {
             val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
 
             val replaceProperties = mapOf(
                 "version" to project.version as String,
                 "license" to license,
+                "minecraftVersion" to minecraftVersion,
+                "forgeMinVersion" to forgeMinVersion,
                 "modId" to modId,
                 "modName" to modName,
-                "minecraftVersion" to minecraftVersion,
                 "modAuthor" to modAuthor,
                 "modDescription" to modDescription,
-                "forgeMinVersion" to forgeMinVersion,
                 "githubUser" to githubUser,
                 "githubRepo" to githubRepo
             )
@@ -91,6 +75,13 @@ subprojects {
             filesMatching(resourceTargets) {
                 expand(replaceProperties)
             }
+        }
+        withType<JavaCompile> {
+            options.encoding = "UTF-8"
+            options.release.set(17)
+        }
+        withType<GenerateModuleMetadata> {
+            enabled = false
         }
     }
 }
