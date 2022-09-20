@@ -36,7 +36,7 @@ dependencies {
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
-    modCompileOnlyApi("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion")
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-common:$jeiVersion")
 
     modCompileOnlyApi("dev.latvian.mods:kubejs:$kubejsVersion")
 

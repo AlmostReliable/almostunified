@@ -1,22 +1,27 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.recipe.ClientRecipeTracker;
-import net.minecraft.core.Registry;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(BuildConfig.MOD_ID)
 public class AlmostUnifiedForge {
 
-    public AlmostUnifiedForge() {
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipe);
-    }
+//    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
+//            DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, BuildConfig.MOD_ID);
+//    private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(
+//            Registry.RECIPE_TYPE_REGISTRY,
+//            BuildConfig.MOD_ID
+//    );
+//
+//    public AlmostUnifiedForge() {
+//        RECIPE_SERIALIZERS.register(ClientRecipeTracker.ID.getPath(), () -> ClientRecipeTracker.SERIALIZER);
+//        RECIPE_TYPES.register(ClientRecipeTracker.ID.getPath(), () -> ClientRecipeTracker.TYPE);
+//        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+//        RECIPE_SERIALIZERS.register(modEventBus);
+//        RECIPE_TYPES.register(modEventBus);
+//    }
 
-    private void registerRecipe(RegistryEvent.Register<RecipeSerializer<?>> event) {
-        event.getRegistry().register(ClientRecipeTracker.SERIALIZER);
-        Registry.register(Registry.RECIPE_TYPE, ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
+    public AlmostUnifiedForge() {
+        var something = Items.DIAMOND_SWORD;
     }
 }

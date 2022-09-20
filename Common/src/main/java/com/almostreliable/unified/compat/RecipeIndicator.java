@@ -54,4 +54,13 @@ public final class RecipeIndicator {
         GuiComponent.blit(poseStack, 0, 0, 0, 0, SIZE, SIZE, SIZE, SIZE);
         poseStack.popPose();
     }
+
+    public static void renderTooltip(PoseStack poseStack, Rect2i area, int mX, int mY, ClientRecipeLink link) {
+        var screen = Minecraft.getInstance().screen;
+        if (screen == null) return;
+        if (mX >= area.getX() && mX <= area.getX() + area.getWidth() &&
+            mY >= area.getY() && mY <= area.getY() + area.getHeight()) {
+            screen.renderComponentTooltip(poseStack, constructTooltip(link), mX, mY);
+        }
+    }
 }

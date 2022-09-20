@@ -54,21 +54,21 @@ loom {
 }
 
 dependencies {
-    implementation(project(":Common", "namedElements")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    forge("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
     mappings(loom.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
+    forge("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
+    implementation(project(":Common", "namedElements")) { isTransitive = false }
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for forge rei plugin | api does not work here!
-    modCompileOnlyApi("mezz.jei:jei-$minecraftVersion-forge-api:$jeiVersion") // required for common jei plugin
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") // required for common jei plugin and mixin
     // runtime only
     when (forgeRecipeViewer) {
-        "rei" -> modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
-        "jei" -> modRuntimeOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion")
+        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
+        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion")
         else -> throw GradleException("Invalid forgeRecipeViewer value: $forgeRecipeViewer")
     }
 

@@ -58,11 +58,11 @@ dependencies {
     })
 
     modCompileOnlyApi("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for fabric rei plugin
-    modCompileOnlyApi("mezz.jei:jei-$minecraftVersion-fabric-api:$jeiVersion") // required for common jei plugin
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion") // required for common jei plugin and mixin
     // runtime only
     when (fabricRecipeViewer) {
-        "rei" -> modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
-        "jei" -> modRuntimeOnly("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion")
+        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
+        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion")
         else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
     }
 
@@ -72,7 +72,7 @@ dependencies {
     val extraMods = fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
     if (extraMods.files.isNotEmpty()) {
         // required when running the fabric client with extra mods
-        modRuntimeOnly("teamreborn:energy:2.2.0")
+        modLocalRuntime("teamreborn:energy:2.2.0")
     }
     extraMods.forEach { f ->
         val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
