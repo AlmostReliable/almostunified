@@ -24,6 +24,8 @@ base {
 }
 
 loom {
+    shareCaches()
+
     runs {
         named("client") {
             client()
@@ -57,7 +59,7 @@ dependencies {
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
-    modCompileOnlyApi("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for fabric rei plugin
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for fabric rei plugin
     modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion") // required for common jei plugin and mixin
     // runtime only
     when (fabricRecipeViewer) {
@@ -67,7 +69,7 @@ dependencies {
     }
 
     // required for common kubejs plugin and fabric runtime
-    modCompileOnlyApi(modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion")!!)
+    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion")!!)
 
     val extraMods = fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
     if (extraMods.files.isNotEmpty()) {

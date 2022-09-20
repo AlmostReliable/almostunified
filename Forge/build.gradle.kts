@@ -25,6 +25,7 @@ base {
 }
 
 loom {
+    shareCaches()
     silentMojangMappingsLicense()
 
     runs {
@@ -54,14 +55,14 @@ loom {
 }
 
 dependencies {
+    implementation(project(":Common", "namedElements")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
+    forge("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
     mappings(loom.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
-    forge("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
-    implementation(project(":Common", "namedElements")) { isTransitive = false }
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for forge rei plugin | api does not work here!
     modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") // required for common jei plugin and mixin
@@ -73,7 +74,7 @@ dependencies {
     }
 
     // required for common kubejs plugin and forge runtime
-    modCompileOnlyApi(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubejsVersion")!!)
+    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubejsVersion")!!)
 
     fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
         .forEach { f ->

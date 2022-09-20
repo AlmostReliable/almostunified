@@ -23,8 +23,14 @@ base {
 }
 
 loom {
+    shareCaches()
+    remapArchives.set(false)
+    setupRemappedVariants.set(false);
     runConfigs.configureEach {
         ideConfigGenerated(false)
+    }
+    mixin {
+        useLegacyMixinAp.set(false)
     }
 }
 
@@ -38,7 +44,7 @@ dependencies {
 
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common:$jeiVersion")
 
-    modCompileOnlyApi("dev.latvian.mods:kubejs:$kubejsVersion")
+    modCompileOnly("dev.latvian.mods:kubejs:$kubejsVersion")
 
     // JUnit Tests
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
