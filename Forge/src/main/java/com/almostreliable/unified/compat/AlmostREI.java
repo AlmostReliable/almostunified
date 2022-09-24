@@ -1,9 +1,7 @@
 package com.almostreliable.unified.compat;
 
-import com.almostreliable.unified.config.Config;
-import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.CRTLookup;
-import com.almostreliable.unified.recipe.ClientRecipeTracker.ClientRecipeLink;
+import com.almostreliable.unified.recipe.ClientRecipeTracker;
 import com.almostreliable.unified.utils.Utils;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.DisplayRenderer;
@@ -15,26 +13,21 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.category.extension.CategoryExtensionProvider;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategoryView;
-import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.plugins.PluginManager;
 import me.shedaniel.rei.api.common.registry.ReloadStage;
-import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.forge.REIPlugin;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
+@REIPlugin(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 @SuppressWarnings("UnstableApiUsage")
 public class AlmostREI implements REIClientPlugin {
-
-    @Override
-    public void registerEntries(EntryRegistry registry) {
-        UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-        if (config.reiOrJeiDisabled()) return;
-
-        HideHelper.createHidingList(config).stream().map(EntryStacks::of).forEach(registry::removeEntry);
-    }
 
     @Override
     public void postStage(PluginManager<REIClientPlugin> manager, ReloadStage stage) {
@@ -61,9 +54,9 @@ public class AlmostREI implements REIClientPlugin {
         private final class IndicatorView implements DisplayCategoryView<Display> {
 
             private final DisplayCategoryView<Display> lastView;
-            private final ClientRecipeLink link;
+            private final ClientRecipeTracker.ClientRecipeLink link;
 
-            private IndicatorView(DisplayCategoryView<Display> lastView, ClientRecipeLink link) {
+            private IndicatorView(DisplayCategoryView<Display> lastView, ClientRecipeTracker.ClientRecipeLink link) {
                 this.lastView = lastView;
                 this.link = link;
             }
