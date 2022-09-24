@@ -5,11 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.1.0] - 2022-09-24
+
+### WARNING
+This release removes the modification of recipe IDs! If you modify any recipes which were unified already and make use of the recipe ID that uses `almostunified` as the namespace, make sure to fix it.
+
+### Changed
+- recipe modifications are now visible in JEI/REI by a little icon ([#8])
+  - this was previously only visible via the recipe ID (now removed)
+  - ensures that modified recipes which cause issues are not reported to the original authors
+- recipe modifications now have less priority
+  - allows to cover more mods that directly inject recipes into the recipe manager
+  - still runs before the `recipes` event of KubeJS
+
+### Removed
+- recipe ID modifications ([#4], [#8])
+
+### Fixed
+- guide books showing errors because of modified recipe IDs ([#4], [#8])
+
+<!-- Links -->
+[#4]: https://github.com/AlmostReliable/almostunified/issues/4
+[#8]: https://github.com/AlmostReliable/almostunified/pull/8
+
 ## [0.0.9] - 2022-09-17
 
 ### Added
 - `wires/{material}` tag to defaults
-    - back up your `unify.json` config and let it regenerate to get the new defaults or add them yourself
+  - back up your `unify.json` config and let it regenerate to get the new defaults or add them yourself
 
 ### Fixed
 - unnecessary handling of many duplicate links
@@ -101,6 +124,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.1.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.1.0-beta
 [0.0.9]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.0.9-beta
 [0.0.8]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.0.8-beta
 [0.0.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.0.7-beta
