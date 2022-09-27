@@ -15,13 +15,12 @@ public final class AlmostUnified {
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
     @Nullable private static TagManager tagManager;
 
-    private static StartupConfig startupConfig;
-
-    static void initStartupConfig() {
-        startupConfig = Config.load(StartupConfig.NAME, new StartupConfig.Serializer());
-    }
+    @Nullable private static StartupConfig startupConfig;
 
     public static StartupConfig getStartupConfig() {
+        if (startupConfig == null) {
+            startupConfig = Config.load(StartupConfig.NAME, new StartupConfig.Serializer());
+        }
         return startupConfig;
     }
 
