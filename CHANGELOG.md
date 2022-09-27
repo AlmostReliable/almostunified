@@ -8,7 +8,12 @@ and this project adheres to [Semantic Versioning].
 ## [0.1.1] - 2022-09-27
 
 ### Added
-- Server only mode. After first run, there will be a `startup.json` config to activate it.
+- server only mode ([#9], [#11])
+  - on startup, there will be a `startup.json` config to activate it
+
+<!-- Links -->
+[#9]: https://github.com/AlmostReliable/almostunified/issues/9
+[#11]: https://github.com/AlmostReliable/almostunified/pull/11
 
 ## [0.1.0] - 2022-09-24
 
