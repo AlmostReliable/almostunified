@@ -5,6 +5,7 @@ import com.almostreliable.unified.recipe.CRTLookup;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.gui.TooltipRenderer;
 import mezz.jei.gui.recipes.RecipeLayout;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,6 +41,9 @@ public abstract class JeiRecipeLayoutMixin<R> {
         var posY = y - RecipeIndicator.SIZE / 2 - RECIPE_BORDER_PADDING + 1;
         var area = new Rect2i(posX, posY, 10, 10);
         RecipeIndicator.renderIndicator(stack, area);
-        RecipeIndicator.renderTooltip(stack, area, mX, mY, link);
+        if (mX >= area.getX() && mX <= area.getX() + area.getWidth() &&
+            mY >= area.getY() && mY <= area.getY() + area.getHeight()) {
+            TooltipRenderer.drawHoveringText(stack, RecipeIndicator.constructTooltip(link), mX, mY);
+        }
     }
 }

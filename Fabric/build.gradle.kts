@@ -22,8 +22,6 @@ base {
 }
 
 loom {
-    shareCaches()
-
     runs {
         named("client") {
             client()
@@ -47,7 +45,7 @@ loom {
 }
 
 dependencies {
-    implementation(project(":Common", "namedElements")) { isTransitive = false }
+    compileOnly(project(":Common", "namedElements")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
@@ -57,7 +55,7 @@ dependencies {
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for fabric rei plugin
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
     modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
 
     // required for common kubejs plugin and fabric runtime
@@ -81,20 +79,8 @@ dependencies {
 }
 
 tasks {
-    // TODO: test if this is necessary
-    jar {
-        from("LICENSE") {
-            rename { "${it}_${modName}" }
-        }
-    }
-    // TODO: test if this is necessary
     processResources {
         from(project(":Common").sourceSets.main.get().resources)
-        inputs.property("version", project.version)
-
-        filesMatching("fabric.mod.json") {
-            expand("version" to project.version)
-        }
     }
     withType<JavaCompile> {
         source(project(":Common").sourceSets.main.get().allSource)

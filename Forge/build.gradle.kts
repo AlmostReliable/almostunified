@@ -25,7 +25,6 @@ base {
 }
 
 loom {
-    shareCaches()
     silentMojangMappingsLicense()
 
     runs {
@@ -55,7 +54,7 @@ loom {
 }
 
 dependencies {
-    implementation(project(":Common", "namedElements")) { isTransitive = false }
+    compileOnly(project(":Common", "namedElements")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
     forge("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
@@ -64,8 +63,8 @@ dependencies {
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for forge rei plugin | api does not work here!
-    modCompileOnly("mezz.jei:jei-$minecraftVersion:$jeiVersion") // required for common jei plugin and mixin
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for common rei plugin | api does not work here!
+    modCompileOnly("mezz.jei:jei-$minecraftVersion:$jeiVersion") // required for forge jei plugin and mixin
     // runtime only
     when (forgeRecipeViewer) {
         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
@@ -96,20 +95,8 @@ dependencies {
 }
 
 tasks {
-    // TODO: test if this is necessary
-    jar {
-        from("LICENSE") {
-            rename { "${it}_${modName}" }
-        }
-    }
-    // TODO: test if this is necessary
     processResources {
         from(project(":Common").sourceSets.main.get().resources)
-        inputs.property("version", project.version)
-
-        filesMatching("META-INF/mods.toml") {
-            expand("version" to project.version)
-        }
     }
     withType<JavaCompile> {
         source(project(":Common").sourceSets.main.get().allSource)
