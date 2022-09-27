@@ -3,6 +3,7 @@
 val junitVersion: String by project
 val minecraftVersion: String by project
 val fabricLoaderVersion: String by project
+val reiVersion: String by project
 val jeiVersion: String by project
 val kubejsVersion: String by project
 val mappingsChannel: String by project
@@ -22,14 +23,10 @@ base {
 }
 
 loom {
-    shareCaches()
     remapArchives.set(false)
-    setupRemappedVariants.set(false);
+    setupRemappedVariants.set(false)
     runConfigs.configureEach {
         ideConfigGenerated(false)
-    }
-    mixin {
-        useLegacyMixinAp.set(false)
     }
 }
 
@@ -42,6 +39,7 @@ dependencies {
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion.2:$mappingsVersion@zip")
     })
 
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for common rei plugin
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common:$jeiVersion") // required for common jei plugin and mixin
     modCompileOnly("dev.latvian.mods:kubejs:$kubejsVersion") // required for common kubejs plugin
 
@@ -51,14 +49,6 @@ dependencies {
 }
 
 tasks {
-    // TODO: test if this is necessary
-    processResources {
-        val buildProps = project.properties
-
-        filesMatching("pack.mcmeta") {
-            expand(buildProps)
-        }
-    }
     withType<Test> {
         useJUnitPlatform()
     }

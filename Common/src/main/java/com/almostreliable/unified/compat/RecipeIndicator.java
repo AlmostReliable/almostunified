@@ -5,7 +5,6 @@ import com.almostreliable.unified.utils.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
@@ -51,14 +50,5 @@ public final class RecipeIndicator {
         RenderSystem.setShaderTexture(0, TEXTURE);
         GuiComponent.blit(poseStack, 0, 0, 0, 0, SIZE, SIZE, SIZE, SIZE);
         poseStack.popPose();
-    }
-
-    public static void renderTooltip(PoseStack poseStack, Rect2i area, int mX, int mY, ClientRecipeLink link) {
-        var screen = Minecraft.getInstance().screen;
-        if (screen == null) return;
-        if (mX >= area.getX() && mX <= area.getX() + area.getWidth() &&
-            mY >= area.getY() && mY <= area.getY() + area.getHeight()) {
-            screen.renderComponentTooltip(poseStack, constructTooltip(link), mX, mY);
-        }
     }
 }
