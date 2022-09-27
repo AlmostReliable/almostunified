@@ -8,7 +8,10 @@ public class AlmostUnifiedFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(Registry.RECIPE_SERIALIZER, ClientRecipeTracker.ID, ClientRecipeTracker.SERIALIZER);
-        Registry.register(Registry.RECIPE_TYPE, ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
+        AlmostUnified.initStartupConfig();
+        if (!AlmostUnified.getStartupConfig().isServerOnly()) {
+            Registry.register(Registry.RECIPE_SERIALIZER, ClientRecipeTracker.ID, ClientRecipeTracker.SERIALIZER);
+            Registry.register(Registry.RECIPE_TYPE, ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
+        }
     }
 }

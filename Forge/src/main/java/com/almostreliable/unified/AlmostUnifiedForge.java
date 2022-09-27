@@ -11,8 +11,11 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class AlmostUnifiedForge {
 
     public AlmostUnifiedForge() {
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipe);
+        AlmostUnified.initStartupConfig();
+        if (!AlmostUnified.getStartupConfig().isServerOnly()) {
+            var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+            modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipe);
+        }
     }
 
     private void registerRecipe(RegistryEvent.Register<RecipeSerializer<?>> event) {

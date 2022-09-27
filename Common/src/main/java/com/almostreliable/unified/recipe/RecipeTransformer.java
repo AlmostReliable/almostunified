@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -48,13 +49,14 @@ public class RecipeTransformer {
      * Transforms a map of recipes. This method will modify the map in-place. Part of the transformation is to unify recipes with the given {@link ReplacementMap}.
      * After unification, recipes will be checked for duplicates. All duplicates will be removed from the map.
      *
-     * @param recipes The map of recipes to transform.
+     * @param recipes            The map of recipes to transform.
+     * @param skipClientTracking Whether to skip client tracking for the recipes.
      * @return The result of the transformation.
      */
-    public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes) {
+    public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
         AlmostUnified.LOG.warn("Recipe count: " + recipes.size());
 
-        ClientRecipeTracker.RawBuilder tracker = new ClientRecipeTracker.RawBuilder();
+        ClientRecipeTracker.RawBuilder tracker = skipClientTracking ? null : new ClientRecipeTracker.RawBuilder();
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
 
@@ -71,8 +73,7 @@ public class RecipeTransformer {
         });
 
         AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size());
-        Map<ResourceLocation, JsonObject> compute = tracker.compute();
-        recipes.putAll(compute);
+        if (tracker != null) recipes.putAll(tracker.compute());
         return result;
     }
 
@@ -112,16 +113,16 @@ public class RecipeTransformer {
      *
      * @param recipeLinks The list of recipes to transform.
      * @param allRecipes  The map of all existing recipes.
-     * @param tracker     The tracker to add the recipes to.
+     * @param tracker     The tracker to add the recipes to. Can be null in a server only environment.
      */
-    private void transformRecipes(List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> allRecipes, ClientRecipeTracker.RawBuilder tracker) {
+    private void transformRecipes(List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> allRecipes, @Nullable ClientRecipeTracker.RawBuilder tracker) {
         var unified = unifyRecipes(recipeLinks, (r) -> allRecipes.put(r.getId(), r.getUnified()));
         var duplicates = handleDuplicates(duplicationConfig.isStrictMode() ? recipeLinks : unified, recipeLinks);
         duplicates
                 .stream()
                 .flatMap(d -> d.getRecipesWithoutMaster().stream())
                 .forEach(r -> allRecipes.remove(r.getId()));
-        unified.forEach(tracker::add);
+        if (tracker != null) unified.forEach(tracker::add);
     }
 
     public Map<ResourceLocation, List<RecipeLink>> groupRecipesByType(Map<ResourceLocation, JsonElement> recipes) {
