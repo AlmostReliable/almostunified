@@ -13,15 +13,14 @@ public final class AlmostUnified {
 
     public static final Logger LOG = LogManager.getLogger(BuildConfig.MOD_NAME);
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
-    @Nullable private static TagManager tagManager;
-
-    @Nullable private static StartupConfig startupConfig;
+    @Nullable private static TagManager TAG_MANGER;
+    @Nullable private static StartupConfig STARTUP_CONFIG;
 
     public static StartupConfig getStartupConfig() {
-        if (startupConfig == null) {
-            startupConfig = Config.load(StartupConfig.NAME, new StartupConfig.Serializer());
+        if (STARTUP_CONFIG == null) {
+            STARTUP_CONFIG = Config.load(StartupConfig.NAME, new StartupConfig.Serializer());
         }
-        return startupConfig;
+        return STARTUP_CONFIG;
     }
 
     public static AlmostUnifiedRuntime getRuntime() {
@@ -32,14 +31,14 @@ public final class AlmostUnified {
     }
 
     public static void reloadRuntime() {
-        if (tagManager == null) {
+        if (TAG_MANGER == null) {
             throw new IllegalStateException("Internal error. TagManager was not updated correctly");
         }
 
-        RUNTIME = AlmostUnifiedRuntime.create(tagManager);
+        RUNTIME = AlmostUnifiedRuntime.create(TAG_MANGER);
     }
 
     public static void updateTagManager(TagManager tm) {
-        tagManager = tm;
+        TAG_MANGER = tm;
     }
 }
