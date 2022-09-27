@@ -56,7 +56,7 @@ public final class AlmostUnifiedRuntime {
         return new AlmostUnifiedRuntime(factory, tagMap, dupConfig, unifyConfig, debugConfig);
     }
 
-    public void run(Map<ResourceLocation, JsonElement> recipes) {
+    public void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
         debugConfig.logRecipes(recipes, "recipes_before_unification.txt");
         debugConfig.logUnifyTagDump(tagMap);
 
@@ -64,7 +64,7 @@ public final class AlmostUnifiedRuntime {
         RecipeTransformer.Result result = new RecipeTransformer(recipeHandlerFactory,
                 replacementMap,
                 unifyConfig,
-                dupConfig).transformRecipes(recipes);
+                dupConfig).transformRecipes(recipes, skipClientTracking);
         RecipeDumper dumper = new RecipeDumper(result, startTime, System.currentTimeMillis());
         dumper.dump(debugConfig.dumpOverview, debugConfig.dumpUnification, debugConfig.dumpDuplicates);
 

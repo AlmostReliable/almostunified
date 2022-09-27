@@ -11,14 +11,16 @@ import net.minecraftforge.registries.RegisterEvent;
 public class AlmostUnifiedForge {
 
     public AlmostUnifiedForge() {
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener((RegisterEvent event) -> {
-            if (event.getRegistryKey().equals(Registry.RECIPE_SERIALIZER_REGISTRY)) {
-                ForgeRegistries.RECIPE_SERIALIZERS.register(ClientRecipeTracker.ID, ClientRecipeTracker.SERIALIZER);
-            }
-            if (event.getRegistryKey().equals(Registry.RECIPE_TYPE_REGISTRY)) {
-                ForgeRegistries.RECIPE_TYPES.register(ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
-            }
-        });
+        if (!AlmostUnified.getStartupConfig().isServerOnly()) {
+            var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+            modEventBus.addListener((RegisterEvent event) -> {
+                if (event.getRegistryKey().equals(Registry.RECIPE_SERIALIZER_REGISTRY)) {
+                    ForgeRegistries.RECIPE_SERIALIZERS.register(ClientRecipeTracker.ID, ClientRecipeTracker.SERIALIZER);
+                }
+                if (event.getRegistryKey().equals(Registry.RECIPE_TYPE_REGISTRY)) {
+                    ForgeRegistries.RECIPE_TYPES.register(ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
+                }
+            });
+        }
     }
 }

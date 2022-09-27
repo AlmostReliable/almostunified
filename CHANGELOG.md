@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.1.1] - 2022-09-27
+
+### Added
+- Server only mode. After first run, there will be a `startup.json` config to activate it.
+
 ## [0.1.0] - 2022-09-24
 
 ### WARNING
@@ -119,6 +124,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.1.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.1.1-beta
 [0.1.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.1.0-beta
 [0.0.8]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.8-beta
 [0.0.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.0.7-beta
