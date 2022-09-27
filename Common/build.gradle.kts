@@ -35,12 +35,12 @@ dependencies {
     modCompileOnly("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:${mappingsChannel}-${minecraftVersion}:${mappingsVersion}@zip")
+        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for common rei plugin
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common:$jeiVersion") // required for common jei plugin and mixin
-    modCompileOnly("dev.latvian.mods:kubejs:$kubejsVersion") // required for common kubejs plugin
+    modCompileOnly("dev.latvian.mods:kubejs-fabric:$kubejsVersion") // required for common kubejs plugin | common has remapping issues
 
     // JUnit Tests
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")

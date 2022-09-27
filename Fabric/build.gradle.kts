@@ -54,8 +54,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     mappings(loom.layered {
         officialMojangMappings()
-        // TODO: change this when updating to 1.19.2
-        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion.2:$mappingsVersion@zip")
+        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
