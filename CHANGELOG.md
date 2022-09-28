@@ -137,7 +137,6 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-
 [0.1.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.1.2-beta
 [0.1.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.1.1-beta
 [0.1.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.1.0-beta
