@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.1.2] - 2022-09-28
+
+### Added
+- Amethyst Imbuement recipe compat ([#13])
+
+<!-- Links -->
+[#13]: https://github.com/AlmostReliable/almostunified/issues/13
+
 ## [0.1.1] - 2022-09-27
 
 ### Added
@@ -134,6 +142,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.1.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.1.2-beta
 [0.1.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.1.1-beta
 [0.1.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.1.0-beta
 [0.0.9]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.0.9-beta
