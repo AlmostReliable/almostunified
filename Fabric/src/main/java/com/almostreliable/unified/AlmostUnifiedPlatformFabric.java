@@ -1,5 +1,7 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.ModConstants;
+import com.almostreliable.unified.compat.AmethystImbuementRecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -40,6 +42,6 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
 
     @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
-
+        factory.registerForMod(ModConstants.AMETHYST_IMBUEMENT, new AmethystImbuementRecipeUnifier());
     }
 }
