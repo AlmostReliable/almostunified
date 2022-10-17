@@ -1,9 +1,8 @@
 package com.almostreliable.unified.compat;
 
-import me.shedaniel.rei.forge.REIPlugin;
-import net.minecraftforge.api.distmarker.Dist;
+import me.shedaniel.rei.forge.REIPluginClient;
 
-@REIPlugin(Dist.CLIENT)
+@REIPluginClient
 public class AlmostREIForge extends AlmostREI {
     // dummy class to activate the plugin on Forge
 }
