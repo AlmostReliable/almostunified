@@ -1,6 +1,7 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.utils.UnifyTag;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.item.ItemStackJS;
@@ -17,7 +18,7 @@ public class AlmostKube extends KubeJSPlugin {
     @Override
     public void addBindings(BindingsEvent event) {
         if (event.type == ScriptType.SERVER) {
-            event.add("AlmostUnified", UnifyWrapper.class);
+            event.add(BuildConfig.MOD_NAME, UnifyWrapper.class);
         }
     }
 
