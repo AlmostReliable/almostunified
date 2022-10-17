@@ -47,6 +47,9 @@ loom {
 dependencies {
     compileOnly(project(":Common", "namedElements")) { isTransitive = false }
 
+    compileOnly("com.google.auto.service:auto-service:1.0.1")
+    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
+
     minecraft("com.mojang:minecraft:$minecraftVersion")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
