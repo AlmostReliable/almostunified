@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+val modId: String by project
+val modName: String by project
 val junitVersion: String by project
 val extraModsDirectory: String by project
 val forgeRecipeViewer: String by project
@@ -10,10 +12,8 @@ val jeiVersion: String by project
 val kubejsVersion: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
-val modId: String by project
-val modName: String by project
 
-val baseArchiveName = "$modId-forge-$minecraftVersion"
+val baseArchiveName = "$modId-forge"
 val commonTests: SourceSetOutput = project(":Common").sourceSets["test"].output
 
 plugins {

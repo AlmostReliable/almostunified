@@ -11,7 +11,7 @@ val mappingsVersion: String by project
 val modId: String by project
 val modName: String by project
 
-val baseArchiveName = "$modId-common-$minecraftVersion"
+val baseArchiveName = "$modId-common"
 
 plugins {
     id("fabric-loom") version "0.12-SNAPSHOT"
