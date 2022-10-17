@@ -30,6 +30,7 @@ subprojects {
         maven("https://maven.shedaniel.me")
         maven("https://dvs1.progwml6.com/files/maven/")
         maven("https://maven.saps.dev/minecraft")
+        maven("https://maven.blamejared.com/")
         flatDir {
             name = extraModsDirectory
             dir(file("$extraModsDirectory-$minecraftVersion"))
