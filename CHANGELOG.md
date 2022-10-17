@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## [0.1.2] - 2022-09-28
+## [0.1.2] - 2022-10-17
+
+### Info
+This is the initial port for 1.19.2 and KubeJS v6. Older versions are not supported anymore.
 
 ### Added
 - Amethyst Imbuement recipe compat ([#13])
