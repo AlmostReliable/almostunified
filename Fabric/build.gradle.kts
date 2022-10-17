@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+val modId: String by project
+val modName: String by project
 val extraModsDirectory: String by project
 val minecraftVersion: String by project
 val fabricVersion: String by project
@@ -8,10 +10,8 @@ val reiVersion: String by project
 val kubejsVersion: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
-val modId: String by project
-val modName: String by project
 
-val baseArchiveName = "$modId-fabric-$minecraftVersion"
+val baseArchiveName = "$modId-fabric"
 
 plugins {
     id("fabric-loom") version "0.12-SNAPSHOT"
