@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+val modId: String by project
+val modName: String by project
 val extraModsDirectory: String by project
 val fabricRecipeViewer: String by project
 val minecraftVersion: String by project
@@ -10,10 +12,8 @@ val jeiVersion: String by project
 val kubejsVersion: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
-val modId: String by project
-val modName: String by project
 
-val baseArchiveName = "$modId-fabric-$minecraftVersion"
+val baseArchiveName = "$modId-fabric"
 
 plugins {
     id("fabric-loom") version "0.12-SNAPSHOT"
@@ -49,17 +49,20 @@ loom {
 dependencies {
     compileOnly(project(":Common", "namedElements")) { isTransitive = false }
 
+    compileOnly("com.google.auto.service:auto-service:1.0.1")
+    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
+
     minecraft("com.mojang:minecraft:$minecraftVersion")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     mappings(loom.layered {
         officialMojangMappings()
-        // TODO: change this when updating to 1.19.2
-        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion.2:$mappingsVersion@zip")
+        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
     modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion") // required for common jei plugin and mixin
+
     // runtime only
     when (fabricRecipeViewer) {
         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")

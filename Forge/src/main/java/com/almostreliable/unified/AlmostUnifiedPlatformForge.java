@@ -3,6 +3,7 @@ package com.almostreliable.unified;
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.compat.IERecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import com.google.auto.service.AutoService;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
 import java.nio.file.Path;
 
+@AutoService(AlmostUnifiedPlatform.class)
 public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
 
     @Override

@@ -11,7 +11,7 @@ val mappingsVersion: String by project
 val modId: String by project
 val modName: String by project
 
-val baseArchiveName = "$modId-common-$minecraftVersion"
+val baseArchiveName = "$modId-common"
 
 plugins {
     id("fabric-loom") version "0.12-SNAPSHOT"
@@ -35,13 +35,12 @@ dependencies {
     modCompileOnly("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     mappings(loom.layered {
         officialMojangMappings()
-        // TODO: change this when updating to 1.19.2
-        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion.2:$mappingsVersion@zip")
+        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for common rei plugin
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common:$jeiVersion") // required for common jei plugin and mixin
-    modCompileOnly("dev.latvian.mods:kubejs:$kubejsVersion") // required for common kubejs plugin
+    modCompileOnly("dev.latvian.mods:kubejs-fabric:$kubejsVersion") // required for common kubejs plugin | common has remapping issues
 
     // JUnit Tests
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")

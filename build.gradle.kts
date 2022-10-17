@@ -1,14 +1,15 @@
 import java.text.SimpleDateFormat
 import java.util.*
 
+val modId: String by project
+val modName: String by project
+val modVersion: String by project
+val modAuthor: String by project
+val modDescription: String by project
 val license: String by project
 val extraModsDirectory: String by project
 val minecraftVersion: String by project
 val forgeMinVersion: String by project
-val modId: String by project
-val modName: String by project
-val modAuthor: String by project
-val modDescription: String by project
 val githubUser: String by project
 val githubRepo: String by project
 
@@ -22,11 +23,14 @@ subprojects {
     apply(plugin = "eclipse")
     apply(plugin = "idea")
 
+    version = "$minecraftVersion-$modVersion"
+
     repositories {
         maven("https://maven.parchmentmc.org/")
         maven("https://maven.shedaniel.me")
         maven("https://dvs1.progwml6.com/files/maven/")
         maven("https://maven.saps.dev/minecraft")
+        maven("https://maven.blamejared.com/")
         flatDir {
             name = extraModsDirectory
             dir(file("$extraModsDirectory-$minecraftVersion"))
@@ -60,13 +64,13 @@ subprojects {
 
             val replaceProperties = mapOf(
                 "version" to project.version as String,
-                "license" to license,
-                "minecraftVersion" to minecraftVersion,
-                "forgeMinVersion" to forgeMinVersion,
                 "modId" to modId,
                 "modName" to modName,
                 "modAuthor" to modAuthor,
                 "modDescription" to modDescription,
+                "license" to license,
+                "minecraftVersion" to minecraftVersion,
+                "forgeMinVersion" to forgeMinVersion,
                 "githubUser" to githubUser,
                 "githubRepo" to githubRepo
             )

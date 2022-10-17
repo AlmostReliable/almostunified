@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+val modId: String by project
+val modName: String by project
 val junitVersion: String by project
 val extraModsDirectory: String by project
 val forgeRecipeViewer: String by project
@@ -10,10 +12,8 @@ val jeiVersion: String by project
 val kubejsVersion: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
-val modId: String by project
-val modName: String by project
 
-val baseArchiveName = "$modId-forge-$minecraftVersion"
+val baseArchiveName = "$modId-forge"
 val commonTests: SourceSetOutput = project(":Common").sourceSets["test"].output
 
 plugins {
@@ -56,20 +56,25 @@ loom {
 dependencies {
     compileOnly(project(":Common", "namedElements")) { isTransitive = false }
 
+    compileOnly("com.google.auto.service:auto-service:1.0.1")
+    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
+
     minecraft("com.mojang:minecraft:$minecraftVersion")
     forge("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
     mappings(loom.layered {
         officialMojangMappings()
-        // TODO: change this when updating to 1.19.2
-        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion.2:$mappingsVersion@zip")
+        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for common rei plugin | api does not work here!
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") // required for common jei plugin and mixin
+    // required for common rei plugin | api does not work here
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
+    // required for common jei plugin and mixin, transitivity is off because it breaks the forge runtime
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
+
     // runtime only
     when (forgeRecipeViewer) {
         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
-        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion")
+        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
         else -> throw GradleException("Invalid forgeRecipeViewer value: $forgeRecipeViewer")
     }
 

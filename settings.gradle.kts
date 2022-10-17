@@ -5,8 +5,6 @@ pluginManagement {
         maven("https://maven.architectury.dev/")
         maven("https://repo.spongepowered.org/repository/maven-public/")
         gradlePluginPortal()
-        mavenCentral()
-        mavenLocal()
     }
     resolutionStrategy {
         eachPlugin {
