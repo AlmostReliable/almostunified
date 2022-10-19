@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Added
+- priority overrides
+  - allows to define a priority mod for a specific tag
+  - the new option is automatically added to the `unify.json` config on the next run and is empty by default
+
+### Fixed
+- recipe indicator tooltip on lower resolutions exceeding the screen
+
 ## [0.1.2] - 2022-10-17
 
 ### Info

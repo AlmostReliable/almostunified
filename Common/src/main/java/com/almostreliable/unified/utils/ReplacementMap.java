@@ -92,14 +92,40 @@ public class ReplacementMap {
                 .sorted(Comparator.comparingInt(value -> value.toString().length()))
                 .toList();
 
-        for (String modPriority : unifyConfig.getModPriorities()) {
-            for (ResourceLocation item : items) {
-                if (item.getNamespace().equals(modPriority)) {
-                    return item;
-                }
-            }
+        ResourceLocation overrideItem = getOverrideForTag(tag, items);
+        if (overrideItem != null) {
+            return overrideItem;
         }
 
+        for (String modPriority : unifyConfig.getModPriorities()) {
+            ResourceLocation item = findItemByNamespace(items, modPriority);
+            if (item != null) return item;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private ResourceLocation getOverrideForTag(UnifyTag<Item> tag, List<ResourceLocation> items) {
+        String priorityOverride = unifyConfig.getPriorityOverrides().get(tag.location().toString());
+        if (priorityOverride != null) {
+            ResourceLocation item = findItemByNamespace(items, priorityOverride);
+            if (item != null) return item;
+            AlmostUnified.LOG.warn(
+                    "Priority override mod '{}' for tag '{}' does not contain a valid item. Falling back to default priority.",
+                    priorityOverride,
+                    tag.location());
+        }
+        return null;
+    }
+
+    @Nullable
+    private ResourceLocation findItemByNamespace(List<ResourceLocation> items, String namespace) {
+        for (ResourceLocation item : items) {
+            if (item.getNamespace().equals(namespace)) {
+                return item;
+            }
+        }
         return null;
     }
 }

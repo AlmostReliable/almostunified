@@ -2,10 +2,10 @@ package com.almostreliable.unified.mixin;
 
 import com.almostreliable.unified.compat.RecipeIndicator;
 import com.almostreliable.unified.recipe.CRTLookup;
+import com.almostreliable.unified.utils.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.common.gui.TooltipRenderer;
 import mezz.jei.common.gui.recipes.layout.RecipeLayout;
 import net.minecraft.client.renderer.Rect2i;
 import org.spongepowered.asm.mixin.Final;
@@ -40,7 +40,7 @@ public abstract class JeiRecipeLayoutMixin<R> {
         RecipeIndicator.renderIndicator(stack, area);
         if (mX >= area.getX() && mX <= area.getX() + area.getWidth() &&
             mY >= area.getY() && mY <= area.getY() + area.getHeight()) {
-            TooltipRenderer.drawHoveringText(stack, RecipeIndicator.constructTooltip(link), mX, mY);
+            Utils.renderTooltip(stack, mX, mY, RecipeIndicator.constructTooltip(link));
         }
     }
 }
