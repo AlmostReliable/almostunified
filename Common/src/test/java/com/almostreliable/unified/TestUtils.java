@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
@@ -33,6 +34,7 @@ public class TestUtils {
             Defaults.MATERIALS,
             Defaults.getTags(Platform.FORGE),
             TestUtils.TEST_MOD_PRIORITIES,
+            new HashMap<>(),
             new HashSet<>(),
             new HashSet<>(),
             new HashSet<>(),
