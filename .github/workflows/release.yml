@@ -20,6 +20,25 @@ jobs:
       - name: Clone Repository
         uses: actions/checkout@v3
 
+      - name: Check Secrets
+        run: |
+          if [ -z "${{ secrets.MODRINTH_TOKEN }}" ]; then
+            echo "MODRINTH_TOKEN is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.CURSEFORGE_TOKEN }}" ]; then
+            echo "CURSEFORGE_TOKEN is not set"
+            exit 1
+          fi
+
+      - name: Validate Modrinth Token
+        run: |
+          curl -s -H "Authorization: ${{ secrets.MODRINTH_TOKEN }}" https://api.modrinth.com/v2/user | grep -q "unauthorized"
+          if [ $? -eq 0 ]; then
+            echo "MODRINTH_TOKEN is not valid"
+            exit 1
+          fi
+
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v3
         with:
