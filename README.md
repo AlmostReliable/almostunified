@@ -27,7 +27,8 @@ For an in-depth explanation of the mod, its functionality, config descriptions, 
 3. Run
    - `gradle -> common -> Tasks -> fabric -> genSources`
    - `gradle -> fabric -> Tasks -> fabric -> genSources`
-   - `gradle -> forge -> Tasks -> forgegradle runs -> genIntellijRuns`
+   - `gradle -> forge -> Tasks -> loom -> genSources`
+   - `gradle -> Tasks -> buildconfig -> generateBuildConfig`
 4. restart the IDE
 
 The `common` module uses [fabric-loom]. This makes it possible to use [ParchmentMC][parchment].<br>
