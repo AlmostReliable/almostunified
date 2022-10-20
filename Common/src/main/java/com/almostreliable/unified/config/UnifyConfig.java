@@ -20,13 +20,13 @@ public class UnifyConfig extends Config {
     private final List<String> stoneStrata;
     private final List<String> unbakedTags;
     private final List<String> materials;
-    private final Map<String, String> priorityOverrides;
+    private final Map<ResourceLocation, String> priorityOverrides;
     private final Set<UnifyTag<Item>> ignoredTags;
     private final Set<Pattern> ignoredRecipeTypes;
     private final Set<Pattern> ignoredRecipes;
     private final boolean hideJeiRei;
 
-    public UnifyConfig(List<String> modPriorities, List<String> stoneStrata, List<String> unbakedTags, List<String> materials, Map<String, String> priorityOverrides, Set<UnifyTag<Item>> ignoredTags, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean hideJeiRei) {
+    public UnifyConfig(List<String> modPriorities, List<String> stoneStrata, List<String> unbakedTags, List<String> materials, Map<ResourceLocation, String> priorityOverrides, Set<UnifyTag<Item>> ignoredTags, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean hideJeiRei) {
         this.modPriorities = modPriorities;
         this.stoneStrata = stoneStrata;
         this.unbakedTags = unbakedTags;
@@ -67,7 +67,7 @@ public class UnifyConfig extends Config {
         return result;
     }
 
-    public Map<String, String> getPriorityOverrides() {
+    public Map<ResourceLocation, String> getPriorityOverrides() {
         return Collections.unmodifiableMap(priorityOverrides);
     }
 
@@ -105,13 +105,14 @@ public class UnifyConfig extends Config {
                     Defaults.getTags(AlmostUnifiedPlatform.INSTANCE.getPlatform()));
             List<String> materials = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MATERIALS)),
                     Defaults.MATERIALS);
-            LinkedHashMap<String, String> priorityOverrides = safeGet(() -> json.getAsJsonObject(PRIORITY_OVERRIDES)
+            Map<ResourceLocation, String> priorityOverrides = safeGet(() -> json.getAsJsonObject(PRIORITY_OVERRIDES)
                     .entrySet()
                     .stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey,
-                            e -> e.getValue().getAsString(),
+                    .collect(Collectors.toMap(
+                            entry -> new ResourceLocation(entry.getKey()),
+                            entry -> entry.getValue().getAsString(),
                             (a, b) -> b,
-                            LinkedHashMap::new)), new LinkedHashMap<>());
+                            HashMap::new)), new HashMap<>());
             Set<UnifyTag<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
                     .stream()
@@ -145,7 +146,7 @@ public class UnifyConfig extends Config {
             json.add(MATERIALS, JsonUtils.toArray(config.materials));
             JsonObject priorityOverrides = new JsonObject();
             config.priorityOverrides.forEach((tag, mod) -> {
-                priorityOverrides.add(tag, new JsonPrimitive(mod));
+                priorityOverrides.add(tag.toString(), new JsonPrimitive(mod));
             });
             json.add(PRIORITY_OVERRIDES, priorityOverrides);
             json.add(IGNORED_TAGS,
