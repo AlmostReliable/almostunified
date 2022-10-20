@@ -107,7 +107,7 @@ public class ReplacementMap {
 
     @Nullable
     private ResourceLocation getOverrideForTag(UnifyTag<Item> tag, List<ResourceLocation> items) {
-        String priorityOverride = unifyConfig.getPriorityOverrides().get(tag.location().toString());
+        String priorityOverride = unifyConfig.getPriorityOverrides().get(tag.location());
         if (priorityOverride != null) {
             ResourceLocation item = findItemByNamespace(items, priorityOverride);
             if (item != null) return item;
