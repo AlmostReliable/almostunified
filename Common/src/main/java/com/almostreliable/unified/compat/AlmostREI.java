@@ -8,6 +8,7 @@ import com.almostreliable.unified.recipe.CRTLookup;
 import com.almostreliable.unified.recipe.ClientRecipeTracker.ClientRecipeLink;
 import com.almostreliable.unified.utils.Utils;
 import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.entry.filtering.base.BasicFilteringRule;
 import me.shedaniel.rei.api.client.gui.DisplayRenderer;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
@@ -17,7 +18,6 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.category.extension.CategoryExtensionProvider;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategoryView;
-import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.plugins.PluginManager;
 import me.shedaniel.rei.api.common.registry.ReloadStage;
@@ -31,14 +31,14 @@ import java.util.List;
 public class AlmostREI implements REIClientPlugin {
 
     @Override
-    public void registerEntries(EntryRegistry registry) {
+    public void registerBasicEntryFiltering(BasicFilteringRule<?> rule) {
         // REI compat layer will automatically hide entries for Forge through JEI
         if (AlmostUnifiedPlatform.INSTANCE.getPlatform() == Platform.FORGE) return;
 
         UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
         if (config.reiOrJeiDisabled()) return;
 
-        HideHelper.createHidingList(config).stream().map(EntryStacks::of).forEach(registry::removeEntry);
+        HideHelper.createHidingList(config).stream().map(EntryStacks::of).forEach(rule::hide);
     }
 
     @Override
