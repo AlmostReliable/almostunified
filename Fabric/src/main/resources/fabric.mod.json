@@ -29,5 +29,8 @@
     "fabric": "*",
     "minecraft": ">=${minecraftVersion}",
     "java": ">=17"
+  },
+  "suggests": {
+    "roughlyenoughitems": ">=${reiMinVersion}"
   }
 }

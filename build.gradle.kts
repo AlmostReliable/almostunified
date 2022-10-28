@@ -10,6 +10,7 @@ val license: String by project
 val extraModsDirectory: String by project
 val minecraftVersion: String by project
 val forgeMinVersion: String by project
+val reiMinVersion: String by project
 val githubUser: String by project
 val githubRepo: String by project
 
@@ -70,6 +71,7 @@ subprojects {
                 "license" to license,
                 "minecraftVersion" to minecraftVersion,
                 "forgeMinVersion" to forgeMinVersion,
+                "reiMinVersion" to reiMinVersion,
                 "githubUser" to githubUser,
                 "githubRepo" to githubRepo
             )

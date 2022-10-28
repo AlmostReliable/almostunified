@@ -24,3 +24,10 @@ mandatory = true
 versionRange = "[1.18,1.19)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.${modId}]]
+modId = "roughlyenoughitems"
+mandatory = false
+versionRange = "[${reiMinVersion},)"
+ordering = "BEFORE"
+side = "BOTH"
