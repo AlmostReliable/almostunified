@@ -33,9 +33,8 @@ jobs:
 
       - name: Validate Modrinth Token
         run: |
-          curl -s -H "Authorization: ${{ secrets.MODRINTH_TOKEN }}" https://api.modrinth.com/v2/user | grep -q "unauthorized"
-          if [ $? -eq 0 ]; then
-            echo "MODRINTH_TOKEN is not valid"
+          if [ -n "$(curl -s -H "Authorization: ${{ secrets.MODRINTH_TOKEN }}" https://api.modrinth.com/v2/user | grep "unauthorized")" ]; then
+            echo "Modrinth Token is invalid!"
             exit 1
           fi
 

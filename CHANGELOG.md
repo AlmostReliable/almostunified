@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.2.1] - 2022-10-28
+
+### Added
+- config backup system
+  - when your config has invalid entries, it will be backed up and a new config will be generated
+  - the new config will try to apply as many of the old settings as possible
+  - new backups will overwrite old backups
+- proper ingredient hiding for REI
+  - hidden ingredients will no longer show up in recipes
+  - this bumps the minimum REI version to 8.3.557
+
+### Changed
+- tag priority overrides now use `ResourceLocation`s internally to automatically validate config entries
+
 ## [0.2.0] - 2022-10-19
 
 ### Added
@@ -152,6 +166,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.2.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.1-beta
 [0.2.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.0-beta
 [0.1.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.1.2-beta
 [0.1.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.1.1-beta
