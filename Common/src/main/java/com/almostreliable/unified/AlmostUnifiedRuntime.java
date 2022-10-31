@@ -51,9 +51,9 @@ public final class AlmostUnifiedRuntime {
         AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
 
         List<UnifyTag<Item>> allowedTags = unifyConfig.bakeTags();
-        TagMap tagMap = TagMap.create(tagManager, allowedTags::contains);
+        TagMap filteredTagMap = TagMap.create(tagManager, allowedTags::contains, unifyConfig::includeItem);
 
-        return new AlmostUnifiedRuntime(factory, tagMap, dupConfig, unifyConfig, debugConfig);
+        return new AlmostUnifiedRuntime(factory, filteredTagMap, dupConfig, unifyConfig, debugConfig);
     }
 
     public void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {

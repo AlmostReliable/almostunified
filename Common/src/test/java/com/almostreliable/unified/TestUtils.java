@@ -38,6 +38,7 @@ public class TestUtils {
             new HashSet<>(),
             new HashSet<>(),
             new HashSet<>(),
+            new HashSet<>(),
             true);
     public static final ResourceKey<Registry<Item>> FAKE_ITEM_REGISTRY = FakeResourceKeyRegistry.create("item");
     public static final UnifyTag<Item> BRONZE_ORES_TAG = tag("forge:ores/bronze");

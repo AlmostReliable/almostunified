@@ -32,7 +32,15 @@ public class TagMap {
         return tagMap;
     }
 
-    public static TagMap create(TagManager tagManager, Predicate<UnifyTag<Item>> filter) {
+    /**
+     * Creates a {@link TagMap} from a vanilla {@link TagManager}.
+     *
+     * @param tagManager The vanilla tag manager.
+     * @param tagFilter  A filter to determine which tags to include.
+     * @param itemFilter A filter to determine which items to include.
+     * @return A new {@link TagMap}.
+     */
+    public static TagMap create(TagManager tagManager, Predicate<UnifyTag<Item>> tagFilter, Predicate<ResourceLocation> itemFilter) {
         Objects.requireNonNull(tagManager, "Requires a non-null tag manager");
 
         var tags = tagManager
@@ -47,7 +55,7 @@ public class TagMap {
 
         for (var entry : tags.entrySet()) {
             UnifyTag<Item> tag = UnifyTag.item(entry.getKey());
-            if (!filter.test(tag)) {
+            if (!tagFilter.test(tag)) {
                 continue;
             }
 
@@ -58,6 +66,7 @@ public class TagMap {
                         .unwrapKey()
                         .map(ResourceKey::location)
                         .filter(Registry.ITEM::containsKey)
+                        .filter(itemFilter)
                         .ifPresent(itemId -> tagMap.put(tag, itemId));
             }
         }
