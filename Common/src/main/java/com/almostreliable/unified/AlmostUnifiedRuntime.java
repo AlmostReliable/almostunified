@@ -1,5 +1,6 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.config.DuplicationConfig;
@@ -24,7 +25,7 @@ import java.util.Objects;
 
 public final class AlmostUnifiedRuntime {
     private final RecipeHandlerFactory recipeHandlerFactory;
-    private final TagMap tagMap;
+    private final TagMap filteredTagMap;
     private final DuplicationConfig dupConfig;
     private final UnifyConfig unifyConfig;
     private final DebugConfig debugConfig;
@@ -32,11 +33,15 @@ public final class AlmostUnifiedRuntime {
 
     private AlmostUnifiedRuntime(RecipeHandlerFactory recipeHandlerFactory, TagMap tagMap, DuplicationConfig dupConfig, UnifyConfig unifyConfig, DebugConfig debugConfig) {
         this.recipeHandlerFactory = recipeHandlerFactory;
-        this.tagMap = tagMap;
         this.dupConfig = dupConfig;
         this.unifyConfig = unifyConfig;
         this.debugConfig = debugConfig;
-        this.replacementMap = new ReplacementMap(this.tagMap, this.unifyConfig);
+        List<UnifyTag<Item>> allowedTags = unifyConfig.bakeTags();
+        this.filteredTagMap = tagMap.filtered(allowedTags::contains, unifyConfig::includeItem);
+        StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(unifyConfig.getStoneStrata(),
+                AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
+                tagMap);
+        this.replacementMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, unifyConfig);
     }
 
     public static AlmostUnifiedRuntime create(TagManager tagManager) {
@@ -50,15 +55,22 @@ public final class AlmostUnifiedRuntime {
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
 
-        List<UnifyTag<Item>> allowedTags = unifyConfig.bakeTags();
-        TagMap tagMap = TagMap.create(tagManager, allowedTags::contains);
-
+        TagMap tagMap = TagMap.create(tagManager);
         return new AlmostUnifiedRuntime(factory, tagMap, dupConfig, unifyConfig, debugConfig);
+    }
+
+    private static void createGitIgnoreIfNotExists() {
+        Path path = AlmostUnifiedPlatform.INSTANCE.getConfigPath();
+        if (!(Files.exists(path) && Files.isDirectory(path))) {
+            FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getConfigPath(),
+                    ".gitignore",
+                    sb -> sb.append(DebugConfig.NAME).append(".json").append("\n"));
+        }
     }
 
     public void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
         debugConfig.logRecipes(recipes, "recipes_before_unification.txt");
-        debugConfig.logUnifyTagDump(tagMap);
+        debugConfig.logUnifyTagDump(filteredTagMap);
 
         long startTime = System.currentTimeMillis();
         RecipeTransformer.Result result = new RecipeTransformer(recipeHandlerFactory,
@@ -71,20 +83,11 @@ public final class AlmostUnifiedRuntime {
         debugConfig.logRecipes(recipes, "recipes_after_unification.txt");
     }
 
-    public TagMap getTagMap() {
-        return tagMap;
+    public TagMap getFilteredTagMap() {
+        return filteredTagMap;
     }
 
     public ReplacementMap getReplacementMap() {
         return replacementMap;
-    }
-
-    private static void createGitIgnoreIfNotExists() {
-        Path path = AlmostUnifiedPlatform.INSTANCE.getConfigPath();
-        if (!(Files.exists(path) && Files.isDirectory(path))) {
-            FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getConfigPath(),
-                    ".gitignore",
-                    sb -> sb.append(DebugConfig.NAME).append(".json").append("\n"));
-        }
     }
 }

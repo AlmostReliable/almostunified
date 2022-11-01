@@ -1,6 +1,8 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
@@ -17,11 +19,12 @@ public class HideHelper {
 
     public static Collection<ItemStack> createHidingList(UnifyConfig config) {
         List<UnifyTag<Item>> unifyTags = config.bakeTags();
-        TagMap tagMap = TagMap.create(unifyTags);
-        ReplacementMap repMap = new ReplacementMap(tagMap, config);
+        TagMap filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, config::includeItem);
+        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(config);
+        ReplacementMap repMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, config);
 
-        return tagMap.getTags().stream().map(unifyTag -> {
-            Collection<ResourceLocation> itemsByTag = tagMap.getItems(unifyTag);
+        return filteredTagMap.getTags().stream().map(unifyTag -> {
+            Collection<ResourceLocation> itemsByTag = filteredTagMap.getItems(unifyTag);
             if (itemsByTag.size() <= 1) return new ArrayList<ItemStack>();
 
             Set<ResourceLocation> replacements = itemsByTag
@@ -41,5 +44,11 @@ public class HideHelper {
 
             return toHide.stream().flatMap(rl -> Registry.ITEM.getOptional(rl).stream()).map(ItemStack::new).toList();
         }).flatMap(Collection::stream).toList();
+    }
+
+    private static StoneStrataHandler getStoneStrataHandler(UnifyConfig config) {
+        Set<UnifyTag<Item>> stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(config.getStoneStrata());
+        TagMap stoneStrataTagMap = TagMap.create(stoneStrataTags);
+        return StoneStrataHandler.create(config.getStoneStrata(), stoneStrataTags, stoneStrataTagMap);
     }
 }

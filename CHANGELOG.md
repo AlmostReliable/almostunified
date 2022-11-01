@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+- updated to JEI 10 as it's no longer alpha
+  - minimum version 10.2.1.278
+  - JEI 9 is not supported anymore since it's not possible with some internals we use
+- added config option to completely ignore items from unification and hiding
+- improved stone strata detection by making use of `forge:ores_in_ground` tag
+
 ## [0.2.1] - 2022-10-28
 
 ### Added

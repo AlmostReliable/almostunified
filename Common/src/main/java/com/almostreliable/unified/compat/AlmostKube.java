@@ -56,7 +56,7 @@ public class AlmostKube extends KubeJSPlugin {
         public static Set<String> getTags() {
             return AlmostUnified
                     .getRuntime()
-                    .getTagMap()
+                    .getFilteredTagMap()
                     .getTags()
                     .stream()
                     .map(tag -> tag.location().toString())
@@ -67,7 +67,7 @@ public class AlmostKube extends KubeJSPlugin {
             UnifyTag<Item> asUnifyTag = UnifyTag.item(tag);
             return AlmostUnified
                     .getRuntime()
-                    .getTagMap()
+                    .getFilteredTagMap()
                     .getItems(asUnifyTag)
                     .stream()
                     .map(ResourceLocation::toString)
