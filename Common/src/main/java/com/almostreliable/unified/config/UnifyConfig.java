@@ -22,17 +22,19 @@ public class UnifyConfig extends Config {
     private final List<String> materials;
     private final Map<ResourceLocation, String> priorityOverrides;
     private final Set<UnifyTag<Item>> ignoredTags;
+    private final Set<Pattern> ignoredItems;
     private final Set<Pattern> ignoredRecipeTypes;
     private final Set<Pattern> ignoredRecipes;
     private final boolean hideJeiRei;
 
-    public UnifyConfig(List<String> modPriorities, List<String> stoneStrata, List<String> unbakedTags, List<String> materials, Map<ResourceLocation, String> priorityOverrides, Set<UnifyTag<Item>> ignoredTags, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean hideJeiRei) {
+    public UnifyConfig(List<String> modPriorities, List<String> stoneStrata, List<String> unbakedTags, List<String> materials, Map<ResourceLocation, String> priorityOverrides, Set<UnifyTag<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean hideJeiRei) {
         this.modPriorities = modPriorities;
         this.stoneStrata = stoneStrata;
         this.unbakedTags = unbakedTags;
         this.materials = materials;
         this.priorityOverrides = priorityOverrides;
         this.ignoredTags = ignoredTags;
+        this.ignoredItems = ignoredItems;
         this.ignoredRecipeTypes = ignoredRecipeTypes;
         this.ignoredRecipes = ignoredRecipes;
         this.hideJeiRei = hideJeiRei;
@@ -71,6 +73,10 @@ public class UnifyConfig extends Config {
         return Collections.unmodifiableMap(priorityOverrides);
     }
 
+    public boolean includeItem(ResourceLocation item) {
+        return ignoredItems.stream().noneMatch(pattern -> pattern.matcher(item.toString()).matches());
+    }
+
     public boolean includeRecipe(ResourceLocation recipe) {
         return ignoredRecipes.stream().noneMatch(pattern -> pattern.matcher(recipe.toString()).matches());
     }
@@ -91,6 +97,7 @@ public class UnifyConfig extends Config {
         public static final String MATERIALS = "materials";
         public static final String PRIORITY_OVERRIDES = "priorityOverrides";
         public static final String IGNORED_TAGS = "ignoredTags";
+        public static final String IGNORED_ITEMS = "ignoredItems";
         public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
         public static final String IGNORED_RECIPES = "ignoredRecipes";
         public static final String HIDE_JEI_REI = "itemsHidingJeiRei";
@@ -118,6 +125,7 @@ public class UnifyConfig extends Config {
                     .stream()
                     .map(s -> UnifyTag.item(new ResourceLocation(s)))
                     .collect(Collectors.toSet()), new HashSet<>());
+            Set<Pattern> ignoredItems = deserializePatterns(json, IGNORED_ITEMS, List.of());
             Set<Pattern> ignoredRecipeTypes = deserializePatterns(json,
                     IGNORED_RECIPE_TYPES,
                     Defaults.getIgnoredRecipeTypes(AlmostUnifiedPlatform.INSTANCE.getPlatform()));
@@ -131,6 +139,7 @@ public class UnifyConfig extends Config {
                     materials,
                     priorityOverrides,
                     ignoredTags,
+                    ignoredItems,
                     ignoredRecipeTypes,
                     ignoredRecipes,
                     hideJeiRei
@@ -155,6 +164,7 @@ public class UnifyConfig extends Config {
                             .map(UnifyTag::location)
                             .map(ResourceLocation::toString)
                             .toList()));
+            serializePatterns(json, IGNORED_ITEMS, config.ignoredItems);
             serializePatterns(json, IGNORED_RECIPE_TYPES, config.ignoredRecipeTypes);
             serializePatterns(json, IGNORED_RECIPES, config.ignoredRecipes);
             json.add(HIDE_JEI_REI, new JsonPrimitive(config.hideJeiRei));

@@ -1,7 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.UnifyConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -11,42 +11,17 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 
 public class ReplacementMap {
-    private static final Pattern FABRIC_STRATA_PATTERN = Pattern.compile("(c:ores/.+|c:.+_ore)");
 
     private final TagMap tagMap;
     private final UnifyConfig unifyConfig;
+    private final StoneStrataHandler stoneStrataHandler;
 
-    public ReplacementMap(TagMap tagMap, UnifyConfig unifyConfig) {
+    public ReplacementMap(TagMap tagMap, StoneStrataHandler stoneStrataHandler, UnifyConfig unifyConfig) {
         this.tagMap = tagMap;
         this.unifyConfig = unifyConfig;
-    }
-
-    /**
-     * Returns the stone strata from given item. Method works on the requirement that it's an item which has a stone strata.
-     * Use {@link #isStoneStrataTag(UnifyTag)} to fill this requirement.
-     *
-     * @param item The item to get the stone strata from.
-     * @return The stone strata of the item. Returning empty string means clean-stone strata.
-     */
-    private String getStoneStrata(ResourceLocation item) {
-        for (String stone : unifyConfig.getStoneStrata()) {
-            if (item.getPath().contains(stone + "_")) {
-                return stone;
-            }
-        }
-
-        return "";
-    }
-
-    private boolean isStoneStrataTag(UnifyTag<Item> tag) {
-        String tagString = tag.location().toString();
-        return switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
-            case FORGE -> tagString.startsWith("forge:ores/");
-            case FABRIC -> FABRIC_STRATA_PATTERN.matcher(tagString).matches();
-        };
+        this.stoneStrataHandler = stoneStrataHandler;
     }
 
     @Nullable
@@ -74,9 +49,9 @@ public class ReplacementMap {
             return null;
         }
 
-        if (isStoneStrataTag(t)) {
-            String stone = getStoneStrata(item);
-            return getPreferredItemForTag(t, i -> stone.equals(getStoneStrata(i)));
+        if (stoneStrataHandler.isStoneStrataTag(t)) {
+            String stone = stoneStrataHandler.getStoneStrata(item);
+            return getPreferredItemForTag(t, i -> stone.equals(stoneStrataHandler.getStoneStrata(i)));
         }
 
         return getPreferredItemForTag(t, i -> true);
