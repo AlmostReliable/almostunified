@@ -26,6 +26,13 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${modId}]]
+modId = "jei"
+mandatory = false
+versionRange = "[${jeiMinVersion},)"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.${modId}]]
 modId = "roughlyenoughitems"
 mandatory = false
 versionRange = "[${reiMinVersion},)"

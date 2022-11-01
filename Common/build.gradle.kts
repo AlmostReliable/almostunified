@@ -3,6 +3,7 @@
 val junitVersion: String by project
 val minecraftVersion: String by project
 val fabricLoaderVersion: String by project
+val jeiVersion: String by project
 val reiVersion: String by project
 val kubejsVersion: String by project
 val mappingsChannel: String by project
@@ -38,6 +39,7 @@ dependencies {
     })
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for common rei plugin
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-common:$jeiVersion") // required for common jei plugin and mixin
     modCompileOnly("dev.latvian.mods:kubejs:$kubejsVersion") // required for common kubejs plugin
 
     // JUnit Tests

@@ -45,7 +45,7 @@ loom {
     }
 
     forge {
-        mixinConfig("$modId-common.mixins.json", "$modId-forge.mixins.json")
+        mixinConfig("$modId-common.mixins.json")
     }
 
     mixin {
@@ -66,15 +66,15 @@ dependencies {
         parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
     })
 
-    // required for common rei plugin | api does not work here!
+    // required for common rei plugin | api does not work here
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
-    // required for forge jei plugin and mixin, transitivity is off because it breaks the forge runtime
-    modCompileOnly("mezz.jei:jei-$minecraftVersion:$jeiVersion") { isTransitive = false }
+    // required for common jei plugin and mixin, transitivity is off because it breaks the forge runtime
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
 
     // runtime only
     when (forgeRecipeViewer) {
         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
-        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion:$jeiVersion") { isTransitive = false }
+        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
         else -> throw GradleException("Invalid forgeRecipeViewer value: $forgeRecipeViewer")
     }
 
