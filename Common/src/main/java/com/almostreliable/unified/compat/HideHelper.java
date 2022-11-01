@@ -19,7 +19,7 @@ public class HideHelper {
 
     public static Collection<ItemStack> createHidingList(UnifyConfig config) {
         List<UnifyTag<Item>> unifyTags = config.bakeTags();
-        TagMap filteredTagMap = TagMap.create(unifyTags);
+        TagMap filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, config::includeItem);
         StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(config);
         ReplacementMap repMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, config);
 
