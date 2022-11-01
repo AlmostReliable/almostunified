@@ -41,9 +41,7 @@ public final class AlmostUnifiedRuntime {
         StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(unifyConfig.getStoneStrata(),
                 AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
                 tagMap);
-        this.replacementMap = new ReplacementMap(this.filteredTagMap,
-                stoneStrataHandler,
-                this.unifyConfig);
+        this.replacementMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, unifyConfig);
     }
 
     public static AlmostUnifiedRuntime create(TagManager tagManager) {

@@ -46,7 +46,7 @@ public class StoneStrataHandler {
                 .map(UnifyTag::location)
                 .map(ResourceLocation::toString)
                 .map(s -> {
-                    int i = s.lastIndexOf("/");
+                    int i = s.lastIndexOf('/');
                     return i == -1 ? null : s.substring(i + 1);
                 })
                 .orElse(null);
