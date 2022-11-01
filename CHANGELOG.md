@@ -5,12 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## Unreleased
+## [0.2.2] - 2022-11-01
+
+### Added
+- config option to completely ignore items from unification and hiding
+
+### Changed
 - updated to JEI 10 as it's no longer alpha
-  - minimum version 10.2.1.278
+  - minimum version is 10.2.1.278
   - JEI 9 is not supported anymore since it's not possible with some internals we use
-- added config option to completely ignore items from unification and hiding
 - improved stone strata detection by making use of `forge:ores_in_ground` tag
+  - this also allows pack devs to fix stone stratas for mods that don't support it yet
 
 ## [0.2.1] - 2022-10-28
 
@@ -173,6 +178,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.2-beta
 [0.2.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.1-beta
 [0.2.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.0-beta
 [0.1.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.1.2-beta
