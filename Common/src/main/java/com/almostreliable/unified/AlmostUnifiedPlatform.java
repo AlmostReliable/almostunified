@@ -1,8 +1,12 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import com.almostreliable.unified.utils.UnifyTag;
+import net.minecraft.world.item.Item;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
 
 public interface AlmostUnifiedPlatform {
 
@@ -37,4 +41,6 @@ public interface AlmostUnifiedPlatform {
     Path getLogPath();
 
     void bindRecipeHandlers(RecipeHandlerFactory factory);
+
+    Set<UnifyTag<Item>> getStoneStrataTags(List<String> stoneStrataIds);
 }

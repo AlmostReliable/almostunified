@@ -36,13 +36,10 @@ public class TagMap {
      * Creates a {@link TagMap} from a vanilla {@link TagManager}.
      *
      * @param tagManager The vanilla tag manager.
-     * @param tagFilter  A filter to determine which tags to include.
-     * @param itemFilter A filter to determine which items to include.
      * @return A new {@link TagMap}.
      */
-    public static TagMap create(TagManager tagManager, Predicate<UnifyTag<Item>> tagFilter, Predicate<ResourceLocation> itemFilter) {
+    public static TagMap create(TagManager tagManager) {
         Objects.requireNonNull(tagManager, "Requires a non-null tag manager");
-
         var tags = tagManager
                 .getResult()
                 .stream()
@@ -55,24 +52,79 @@ public class TagMap {
 
         for (var entry : tags.entrySet()) {
             UnifyTag<Item> tag = UnifyTag.item(entry.getKey());
-            if (!tagFilter.test(tag)) {
-                continue;
-            }
-
             Tag<? extends Holder<?>> holderTag = entry.getValue();
-
             for (Holder<?> holder : holderTag.getValues()) {
                 holder
                         .unwrapKey()
                         .map(ResourceKey::location)
                         .filter(Registry.ITEM::containsKey)
-                        .filter(itemFilter)
                         .ifPresent(itemId -> tagMap.put(tag, itemId));
             }
         }
+        return tagMap;
+    }
+
+    /**
+     * Creates a filtered {@link TagMap}.
+     *
+     * @param tagFilter  A filter to determine which tags to include.
+     * @param itemFilter A filter to determine which items to include.
+     * @return A new {@link TagMap}.
+     */
+    public TagMap filtered(Predicate<UnifyTag<Item>> tagFilter, Predicate<ResourceLocation> itemFilter) {
+        TagMap tagMap = new TagMap();
+
+        tagsToItems.forEach((tag, items) -> {
+            if (!tagFilter.test(tag)) {
+                return;
+            }
+            items.stream().filter(itemFilter).forEach(item -> tagMap.put(tag, item));
+        });
 
         return tagMap;
     }
+
+//    /**
+//     * Creates a {@link TagMap} from a vanilla {@link TagManager}.
+//     *
+//     * @param tagManager The vanilla tag manager.
+//     * @param tagFilter  A filter to determine which tags to include.
+//     * @param itemFilter A filter to determine which items to include.
+//     * @return A new {@link TagMap}.
+//     */
+//    public static TagMap create(TagManager tagManager, Predicate<UnifyTag<Item>> tagFilter, Predicate<ResourceLocation> itemFilter) {
+//        Objects.requireNonNull(tagManager, "Requires a non-null tag manager");
+//
+//        var tags = tagManager
+//                .getResult()
+//                .stream()
+//                .filter(result -> result.key().equals(Registry.ITEM_REGISTRY))
+//                .findFirst()
+//                .map(TagManager.LoadResult::tags)
+//                .orElseThrow(() -> new IllegalStateException("No item tag result found"));
+//
+//        TagMap tagMap = new TagMap();
+//
+//        for (var entry : tags.entrySet()) {
+//            UnifyTag<Item> tag = UnifyTag.item(entry.getKey());
+//            if (!tagFilter.test(tag)) {
+//                continue;
+//            }
+//
+//            Tag<? extends Holder<?>> holderTag = entry.getValue();
+//
+//            for (Holder<?> holder : holderTag.getValues()) {
+//                holder
+//                        .unwrapKey()
+//                        .map(ResourceKey::location)
+//                        .filter(Registry.ITEM::containsKey)
+//                        .filter(itemFilter)
+//                        .ifPresent(itemId -> tagMap.put(tag, itemId));
+//            }
+//        }
+//
+//        return tagMap;
+//    }
 
     protected void put(UnifyTag<Item> tag, ResourceLocation item) {
         tagsToItems.computeIfAbsent(tag, k -> new HashSet<>()).add(item);

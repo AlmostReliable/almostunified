@@ -1,10 +1,12 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Defaults;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
+import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.TagMapTests;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.Gson;
@@ -17,6 +19,7 @@ import net.minecraft.world.item.Item;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class TestUtils {
@@ -80,8 +83,14 @@ public class TestUtils {
         return new ResourceLocation(TEST_MOD_5, name);
     }
 
+    public static StoneStrataHandler createTestStrataHandler() {
+        return StoneStrataHandler.create(List.of(), Set.of(), TagMap.create(List.of()));
+    }
+
     public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {
-        ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(), DEFAULT_UNIFY_CONFIG);
+        ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(),
+                createTestStrataHandler(),
+                DEFAULT_UNIFY_CONFIG);
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         consumer.accept(factory);
         return new RecipeTransformer(factory, map, DEFAULT_UNIFY_CONFIG, null);
