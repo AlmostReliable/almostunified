@@ -11,9 +11,6 @@ and this project adheres to [Semantic Versioning].
 - config option to completely ignore items from unification and hiding
 
 ### Changed
-- updated to JEI 10 as it's no longer alpha
-  - minimum version is 10.2.1.278
-  - JEI 9 is not supported anymore since it's not possible with some internals we use
 - improved stone strata detection by making use of `forge:ores_in_ground` tag
   - this also allows pack devs to fix stone stratas for mods that don't support it yet
 
@@ -26,7 +23,7 @@ and this project adheres to [Semantic Versioning].
   - new backups will overwrite old backups
 - proper ingredient hiding for REI
   - hidden ingredients will no longer show up in recipes
-  - this bumps the minimum REI version to 8.3.557
+  - this bumps the minimum REI version to 9.1.558
 
 ### Changed
 - tag priority overrides now use `ResourceLocation`s internally to automatically validate config entries
