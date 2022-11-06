@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Changed
+- JEI 9, JEI 10 and REI are now supported
+
+### Fixed
+- REI incompatibility when compat layer is running
+
 ## [0.2.2] - 2022-11-01
 
 ### Added

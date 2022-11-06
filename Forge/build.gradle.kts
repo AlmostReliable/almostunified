@@ -45,7 +45,7 @@ loom {
     }
 
     forge {
-        mixinConfig("$modId-common.mixins.json")
+        mixinConfig("$modId-common.mixins.json", "$modId-forge.mixins.json")
     }
 
     mixin {
@@ -68,8 +68,10 @@ dependencies {
 
     // required for common rei plugin | api does not work here
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
-    // required for common jei plugin and mixin, transitivity is off because it breaks the forge runtime
+    // required for common jei 10 plugin and mixin, transitivity is off because it breaks the forge runtime
     modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
+    // required for common jei 9 mixin, transitivity is off because it breaks the forge runtime
+    modCompileOnly("mezz.jei:jei-$minecraftVersion:9+") { isTransitive = false }
 
     // runtime only
     when (forgeRecipeViewer) {

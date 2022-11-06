@@ -16,7 +16,8 @@ public class AlmostMixinPlugin implements IMixinConfigPlugin {
 
     private static final BooleanSupplier TRUE = () -> true;
     private static final Map<String, BooleanSupplier> CONDITIONS = ImmutableMap.of(
-            "com.almostreliable.unified.mixin.JeiRecipeLayoutMixin", modLoaded("jei")
+            "com.almostreliable.unified.mixin.Jei10RecipeLayoutMixin", modLoaded("jei"),
+            "com.almostreliable.unified.mixin.Jei9RecipeLayoutMixin", modLoaded("jei")
     );
 
     private static BooleanSupplier modLoaded(String id) {
