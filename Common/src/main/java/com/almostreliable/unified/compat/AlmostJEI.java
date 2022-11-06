@@ -38,7 +38,7 @@ public class AlmostJEI implements IModPlugin {
         }
     }
 
-    public static <R> void recipeViewerIndicator(PoseStack stack, int mX, int mY, int x, int y, IRecipeCategory<R> recipeCategory, R recipe, int recipeBorderPadding) {
+    public static <R> void handleIndicator(PoseStack stack, int mX, int mY, int x, int y, IRecipeCategory<R> recipeCategory, R recipe, int recipeBorderPadding) {
         var recipeId = recipeCategory.getRegistryName(recipe);
         if (recipeId == null) return;
 

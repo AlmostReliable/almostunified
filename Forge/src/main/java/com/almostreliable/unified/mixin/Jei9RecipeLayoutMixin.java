@@ -27,6 +27,6 @@ public abstract class Jei9RecipeLayoutMixin<R> {
 
     @Inject(method = "drawRecipe", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD)
     private void unified$drawRecipe(PoseStack stack, int mouseX, int mouseY, CallbackInfo ci, IDrawable background, int mX, int mY, IDrawable categoryBackground, int x, int y) {
-        AlmostJEI.recipeViewerIndicator(stack, mX, mY, x, y, recipeCategory, recipe, RECIPE_BORDER_PADDING);
+        AlmostJEI.handleIndicator(stack, mX, mY, x, y, recipeCategory, recipe, RECIPE_BORDER_PADDING);
     }
 }
