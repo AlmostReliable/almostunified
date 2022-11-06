@@ -31,7 +31,6 @@
     "java": ">=17"
   },
   "suggests": {
-    "jei": ">=${jeiMinVersion}",
     "roughlyenoughitems": ">=${reiMinVersion}"
   }
 }
