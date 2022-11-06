@@ -5,12 +5,9 @@
   "refmap": "almostunified.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "plugin": "com.almostreliable.unified.mixin.AlmostMixinPlugin",
-  "mixins": [
-    "RecipeManagerMixin",
-    "ReloadableServerResourcesMixin"
-  ],
+  "mixins": [],
   "client": [
-    "Jei10RecipeLayoutMixin"
+    "Jei9RecipeLayoutMixin"
   ],
   "injectors": {
     "defaultRequire": 1
