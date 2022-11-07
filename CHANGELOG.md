@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning].
 
 ### Changed
 - JEI 9, JEI 10 and REI are now supported
+- improved the placement for the recipe indicator icon in JEI
 
 ### Fixed
 - REI incompatibility when compat layer is running
+- misaligned tooltips in JEI
 
 ## [0.2.2] - 2022-11-01
 

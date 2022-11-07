@@ -38,16 +38,14 @@ public class AlmostJEI implements IModPlugin {
         }
     }
 
-    public static <R> void handleIndicator(PoseStack stack, int mX, int mY, int x, int y, IRecipeCategory<R> recipeCategory, R recipe, int recipeBorderPadding) {
+    public static <R> void handleIndicator(PoseStack stack, int mX, int mY, int posX, int posY, IRecipeCategory<R> recipeCategory, R recipe) {
         var recipeId = recipeCategory.getRegistryName(recipe);
         if (recipeId == null) return;
 
         var link = CRTLookup.getLink(recipeId);
         if (link == null) return;
 
-        var posX = x - RecipeIndicator.SIZE / 2 - recipeBorderPadding + 1;
-        var posY = y - RecipeIndicator.SIZE / 2 - recipeBorderPadding + 1;
-        var area = new Rect2i(posX, posY, 10, 10);
+        var area = new Rect2i(posX, posY, RecipeIndicator.RENDER_SIZE, RecipeIndicator.RENDER_SIZE);
         RecipeIndicator.renderIndicator(stack, area);
         if (mX >= area.getX() && mX <= area.getX() + area.getWidth() &&
             mY >= area.getY() && mY <= area.getY() + area.getHeight()) {
