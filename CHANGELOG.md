@@ -5,13 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## Unreleased
+## [0.2.3] - 2022-11-07
+
+### Info
+This update brings back compatibility for JEI 9 and therefor fixes incompatibility with REI on Minecraft Forge.
+
+### Added
+- portuguese translation ([#18])
 
 ### Changed
 - improved the placement for the recipe indicator icon in JEI
 
 ### Fixed
 - misaligned tooltips in JEI
+
+<!-- Links -->
+[#18]: https://github.com/AlmostReliable/almostunified/pull/18
 
 ## [0.2.2] - 2022-11-01
 
@@ -181,6 +190,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.2.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.3-beta
 [0.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.2-beta
 [0.2.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.1-beta
 [0.2.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.0-beta
