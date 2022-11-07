@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## Unreleased
+## [0.2.3] - 2022-11-07
+
+### Info
+This update brings back compatibility for JEI 9 and therefor fixes incompatibility with REI on Minecraft Forge.
 
 ### Changed
 - JEI 9, JEI 10 and REI are now supported
@@ -188,6 +191,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.2.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.3-beta
 [0.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.2-beta
 [0.2.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.1-beta
 [0.2.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.0-beta
