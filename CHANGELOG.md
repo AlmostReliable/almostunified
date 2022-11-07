@@ -10,13 +10,20 @@ and this project adheres to [Semantic Versioning].
 ### Info
 This update brings back compatibility for JEI 9 and therefor fixes incompatibility with REI on Minecraft Forge.
 
+### Added
+- portuguese translation ([#18])
+
 ### Changed
-- JEI 9, JEI 10 and REI are now supported
+- JEI 9, JEI 10 and REI are now supported ([#19])
 - improved the placement for the recipe indicator icon in JEI
 
 ### Fixed
 - REI incompatibility when compat layer is running
 - misaligned tooltips in JEI
+
+<!-- Links -->
+[#18]: https://github.com/AlmostReliable/almostunified/pull/18
+[#19]: https://github.com/AlmostReliable/almostunified/pull/19
 
 ## [0.2.2] - 2022-11-01
 
