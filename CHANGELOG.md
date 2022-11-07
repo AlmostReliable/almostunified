@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Changed
+- improved the placement for the recipe indicator icon in JEI
+
+### Fixed
+- misaligned tooltips in JEI
+
 ## [0.2.2] - 2022-11-01
 
 ### Added
