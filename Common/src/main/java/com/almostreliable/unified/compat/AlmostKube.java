@@ -21,7 +21,7 @@ public class AlmostKube extends KubeJSPlugin {
 
     @Override
     public void registerBindings(BindingsEvent event) {
-        if (event.type == ScriptType.SERVER) {
+        if (event.getType().isServer()) {
             event.add(BuildConfig.MOD_NAME, UnifyWrapper.class);
         }
     }

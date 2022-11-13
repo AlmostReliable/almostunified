@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.2.4] - 2022-11-13
+
+### Fixed
+ - Crash on startup with new Rhino version ([#20](https://github.com/AlmostReliable/almostunified/issues/20))
+
 ## [0.2.3] - 2022-11-07
 
 ### Info
@@ -190,6 +195,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.2.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.4-beta
 [0.2.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.3-beta
 [0.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.2-beta
 [0.2.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.1-beta
