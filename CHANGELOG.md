@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Fixed
+ - crash on startup with new Rhino version ([#20])
+
+<!-- Links -->
+[#20]: https://github.com/AlmostReliable/almostunified/issues/20
+
 ## [0.2.3] - 2022-11-07
 
 ### Info

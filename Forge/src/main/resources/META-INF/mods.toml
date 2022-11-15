@@ -31,3 +31,10 @@ mandatory = false
 versionRange = "[${reiMinVersion},)"
 ordering = "BEFORE"
 side = "BOTH"
+
+[[dependencies.${modId}]]
+modId = "kubejs"
+mandatory = false
+versionRange = "[${kubejsMinVersion},)"
+ordering = "BEFORE"
+side = "BOTH"

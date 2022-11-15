@@ -11,6 +11,7 @@ val extraModsDirectory: String by project
 val minecraftVersion: String by project
 val forgeMinVersion: String by project
 val reiMinVersion: String by project
+val kubejsMinVersion: String by project
 val githubUser: String by project
 val githubRepo: String by project
 
@@ -73,6 +74,7 @@ subprojects {
                 "minecraftVersion" to minecraftVersion,
                 "forgeMinVersion" to forgeMinVersion,
                 "reiMinVersion" to reiMinVersion,
+                "kubejsMinVersion" to kubejsMinVersion,
                 "githubUser" to githubUser,
                 "githubRepo" to githubRepo
             )
