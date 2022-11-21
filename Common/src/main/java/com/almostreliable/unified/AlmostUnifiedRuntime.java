@@ -90,4 +90,8 @@ public final class AlmostUnifiedRuntime {
     public ReplacementMap getReplacementMap() {
         return replacementMap;
     }
+
+    public UnifyConfig getUnifyConfig() {
+        return unifyConfig;
+    }
 }

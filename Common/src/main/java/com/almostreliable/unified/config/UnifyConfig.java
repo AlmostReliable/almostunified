@@ -69,6 +69,12 @@ public class UnifyConfig extends Config {
         return result;
     }
 
+    // exposed for KubeJS binding
+    @SuppressWarnings("unused")
+    public List<String> getMaterials() {
+        return Collections.unmodifiableList(materials);
+    }
+
     public Map<ResourceLocation, String> getPriorityOverrides() {
         return Collections.unmodifiableMap(priorityOverrides);
     }
