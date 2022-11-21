@@ -83,7 +83,11 @@ public class RecipeContextImpl implements RecipeContext {
             if (object.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {
                 ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
                 UnifyTag<Item> tag = getPreferredTagForItem(item);
+
                 if (tag != null) {
+                    // avoid replacing input items with tags in case the stone strata matters
+                    if (replacementMap.getStoneStrataHandler().isStoneStrataTag(tag)) return;
+
                     object.remove(RecipeConstants.ITEM);
                     object.add(RecipeConstants.TAG, new JsonPrimitive(tag.location().toString()));
                 }

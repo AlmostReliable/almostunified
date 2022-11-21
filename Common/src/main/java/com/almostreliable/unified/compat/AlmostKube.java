@@ -2,6 +2,7 @@ package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.UnifyTag;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.item.ItemStackJS;
@@ -67,6 +68,10 @@ public class AlmostKube extends KubeJSPlugin {
                     .stream()
                     .map(ResourceLocation::toString)
                     .collect(Collectors.toSet());
+        }
+
+        public static UnifyConfig getUnifyConfig() {
+            return AlmostUnified.getRuntime().getUnifyConfig();
         }
     }
 }

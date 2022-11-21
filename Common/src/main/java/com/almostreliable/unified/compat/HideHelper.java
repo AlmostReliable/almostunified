@@ -25,7 +25,10 @@ public class HideHelper {
 
         return filteredTagMap.getTags().stream().map(unifyTag -> {
             Collection<ResourceLocation> itemsByTag = filteredTagMap.getItems(unifyTag);
-            if (itemsByTag.size() <= 1) return new ArrayList<ItemStack>();
+
+            // avoid hiding single entries and tags that only contain the same namespace for all items
+            long namespaces = itemsByTag.stream().map(ResourceLocation::getNamespace).distinct().count();
+            if (namespaces <= 1) return new ArrayList<ItemStack>();
 
             Set<ResourceLocation> replacements = itemsByTag
                     .stream()
