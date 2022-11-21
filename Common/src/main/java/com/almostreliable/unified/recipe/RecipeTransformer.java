@@ -116,7 +116,7 @@ public class RecipeTransformer {
      * @param tracker     The tracker to add the recipes to. Can be null in a server only environment.
      */
     private void transformRecipes(List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> allRecipes, @Nullable ClientRecipeTracker.RawBuilder tracker) {
-        var unified = unifyRecipes(recipeLinks, (r) -> allRecipes.put(r.getId(), r.getUnified()));
+        var unified = unifyRecipes(recipeLinks, r -> allRecipes.put(r.getId(), r.getUnified()));
         var duplicates = handleDuplicates(duplicationConfig.isStrictMode() ? recipeLinks : unified, recipeLinks);
         duplicates
                 .stream()
@@ -131,6 +131,7 @@ public class RecipeTransformer {
                 .stream()
                 .filter(entry -> includeRecipe(entry.getKey(), entry.getValue()))
                 .map(entry -> new RecipeLink(entry.getKey(), entry.getValue().getAsJsonObject()))
+                .sorted(Comparator.comparing(entry -> entry.getId().toString()))
                 .collect(Collectors.groupingByConcurrent(RecipeLink::getType));
     }
 
@@ -192,8 +193,8 @@ public class RecipeTransformer {
      * @param onUnified   A consumer that will be called on each unified recipe.
      * @return A list of unified recipes.
      */
-    private Set<RecipeLink> unifyRecipes(List<RecipeLink> recipeLinks, Consumer<RecipeLink> onUnified) {
-        Set<RecipeLink> unified = new HashSet<>(recipeLinks.size());
+    private LinkedHashSet<RecipeLink> unifyRecipes(List<RecipeLink> recipeLinks, Consumer<RecipeLink> onUnified) {
+        LinkedHashSet<RecipeLink> unified = new LinkedHashSet<>(recipeLinks.size());
         for (RecipeLink recipeLink : recipeLinks) {
             unifyRecipe(recipeLink);
             if (recipeLink.isUnified()) {
