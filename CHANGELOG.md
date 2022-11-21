@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.2.6] - 2022-11-21
+
+### Removed
+- stone strata exclusions for recipe ingredients introduced in [#22]
+  - it introduced some unwanted edge cases
+  - this won't break any previous recipes
+
+<!-- Links -->
+[#22]: https://github.com/AlmostReliable/almostunified/issues/22
+
 ## [0.2.5] - 2022-11-21
 
 ### Added
@@ -213,6 +223,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.2.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.6-beta
 [0.2.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.5-beta
 [0.2.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.3-beta
 [0.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.2-beta
