@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning].
 - stone strata detection not being applied to ingredients ([#22])
 - inconsistency in recipe duplication removal and dumps ([#23])
 
+<!-- Links -->
+[#21]: https://github.com/AlmostReliable/almostunified/issues/21
+[#22]: https://github.com/AlmostReliable/almostunified/issues/22
+[#23]: https://github.com/AlmostReliable/almostunified/issues/23
+
 ## [0.2.3] - 2022-11-07
 
 ### Info
