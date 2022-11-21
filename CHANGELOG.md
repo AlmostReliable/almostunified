@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.2.5] - 2022-11-21
+
+### Added
+- a way to obtain the `unify.json` config and the material list from the KubeJS binding
+
+### Fixed
+- hiding of tags that only consisted of items with the same namespace ([#21])
+- stone strata detection not being applied to ingredients ([#22])
+- inconsistency in recipe duplication removal and dumps ([#23])
+
 ## [0.2.4] - 2022-11-13
 
 ### Fixed
@@ -198,6 +208,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.2.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.5-beta
 [0.2.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.4-beta
 [0.2.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.3-beta
 [0.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.2-beta
