@@ -94,16 +94,22 @@ public class RecipeContextImpl implements RecipeContext {
     @Override
     @Nullable
     public JsonElement createResultReplacement(@Nullable JsonElement element) {
+        return createResultReplacement(element, true, RecipeConstants.ITEM);
+    }
+
+    @Override
+    @Nullable
+    public JsonElement createResultReplacement(@Nullable JsonElement element, boolean includeTagCheck, String... lookupKeys) {
         if (element == null) {
             return null;
         }
         JsonElement copy = element.deepCopy();
-        JsonElement result = tryCreateResultReplacement(copy);
+        JsonElement result = tryCreateResultReplacement(copy, includeTagCheck, lookupKeys);
         return element.equals(result) ? null : result;
     }
 
     @Nullable
-    private JsonElement tryCreateResultReplacement(JsonElement element) {
+    public JsonElement tryCreateResultReplacement(JsonElement element, boolean lookupForTag, String... keys) {
         if (element instanceof JsonPrimitive primitive) {
             ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
             ResourceLocation replacement = getReplacementForItem(item);
@@ -113,17 +119,20 @@ public class RecipeContextImpl implements RecipeContext {
             return null;
         }
 
-        if (element instanceof JsonArray array && JsonUtils.replaceOn(array, this::tryCreateResultReplacement)) {
+        if (element instanceof JsonArray array &&
+            JsonUtils.replaceOn(array, j -> tryCreateResultReplacement(j, lookupForTag, keys))) {
             return element;
         }
 
         if (element instanceof JsonObject object) {
-            if (JsonUtils.replaceOn(object, RecipeConstants.ITEM, this::tryCreateResultReplacement)) {
-                return element;
+            for (String key : keys) {
+                if (JsonUtils.replaceOn(object, key, j -> tryCreateResultReplacement(j, lookupForTag, keys))) {
+                    return element;
+                }
             }
 
             // Some mods have tags for results instead of items. We replace those with the preferred item.
-            if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
+            if (lookupForTag && object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
                 ResourceLocation item = getPreferredItemForTag(Utils.toItemTag(primitive.getAsString()), $ -> true);
                 if (item != null) {
                     object.remove(RecipeConstants.TAG);
