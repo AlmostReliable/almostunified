@@ -1,6 +1,5 @@
 package com.almostreliable.unified.compat;
 
-import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.ClientTagUpdateEvent;
 import com.almostreliable.unified.Platform;
@@ -10,24 +9,20 @@ import com.almostreliable.unified.recipe.CRTLookup;
 import com.almostreliable.unified.recipe.ClientRecipeTracker.ClientRecipeLink;
 import com.almostreliable.unified.utils.Utils;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.REIRuntime;
-import me.shedaniel.rei.api.client.entry.filtering.FilteringRuleTypeRegistry;
 import me.shedaniel.rei.api.client.entry.filtering.base.BasicFilteringRule;
 import me.shedaniel.rei.api.client.gui.DisplayRenderer;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
-import me.shedaniel.rei.api.client.overlay.ScreenOverlay;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.ButtonArea;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.category.extension.CategoryExtensionProvider;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategoryView;
-import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.plugins.PluginManager;
 import me.shedaniel.rei.api.common.registry.ReloadStage;
-import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.api.common.util.EntryIngredients;
 import net.minecraft.client.renderer.Rect2i;
 
 import javax.annotation.Nullable;
@@ -36,34 +31,24 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public class AlmostREI implements REIClientPlugin {
 
+    @Nullable private BasicFilteringRule.MarkDirty filterUpdate;
 
     public AlmostREI() {
         ClientTagUpdateEvent.register(() -> {
-            AlmostUnified.LOG.info("MARTIN: ClientTagUpdateEvent");
-            // REI compat layer will automatically hide entries for Forge through JEI
-            if (AlmostUnifiedPlatform.INSTANCE.getPlatform() == Platform.FORGE) return;
-
-            UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-            if (config.reiOrJeiDisabled()) return;
-
-            BasicFilteringRule<?> basic = FilteringRuleTypeRegistry.getInstance().basic();
-            HideHelper.createHidingList(config).stream().map(EntryStacks::of).forEach(basic::hide);
-            if (!EntryRegistry.getInstance().isReloading()) {
-                EntryRegistry.getInstance().refilter();
-                REIRuntime.getInstance().getOverlay().ifPresent(ScreenOverlay::queueReloadSearch);
-            }
+            if (filterUpdate != null) filterUpdate.markDirty();
         });
     }
 
     @Override
     public void registerBasicEntryFiltering(BasicFilteringRule<?> rule) {
-//        // REI compat layer will automatically hide entries for Forge through JEI
-//        if (AlmostUnifiedPlatform.INSTANCE.getPlatform() == Platform.FORGE) return;
-//
-//        UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-//        if (config.reiOrJeiDisabled()) return;
-//
-//        HideHelper.createHidingList(config).stream().map(EntryStacks::of).forEach(rule::hide);
+        // REI compat layer will automatically hide entries for Forge through JEI
+        if (AlmostUnifiedPlatform.INSTANCE.getPlatform() == Platform.FORGE) return;
+
+        filterUpdate = rule.hide(() -> {
+            UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
+            if (config.reiOrJeiDisabled()) return List.of();
+            return EntryIngredients.ofItemStacks(HideHelper.createHidingList(config));
+        });
     }
 
     @Override
