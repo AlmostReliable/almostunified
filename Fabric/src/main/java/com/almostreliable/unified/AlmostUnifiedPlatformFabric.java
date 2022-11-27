@@ -1,6 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
+import com.almostreliable.unified.compat.AdAstraRecipeUnifier;
 import com.almostreliable.unified.compat.AmethystImbuementRecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.UnifyTag;
@@ -48,6 +49,7 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
 
     @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
+        factory.registerForMod(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
         factory.registerForMod(ModConstants.AMETHYST_IMBUEMENT, new AmethystImbuementRecipeUnifier());
     }
 

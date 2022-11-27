@@ -24,6 +24,9 @@ public interface RecipeContext {
     @Nullable
     JsonElement createResultReplacement(@Nullable JsonElement element);
 
+    @Nullable
+    JsonElement createResultReplacement(@Nullable JsonElement element, boolean includeTagCheck, String... lookupKeys);
+
     ResourceLocation getType();
 
     boolean hasProperty(String property);
