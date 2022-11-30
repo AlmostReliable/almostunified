@@ -68,6 +68,10 @@ dependencies {
 
     // required for common rei plugin | api does not work here
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
+    // required to disable rei compat layer on jei plugin
+    compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:8.+")
+    // don't question this, it's required for compiling
+    testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:8.+")
     // required for common jei 10 plugin and mixin, transitivity is off because it breaks the forge runtime
     modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
     // required for common jei 9 mixin, transitivity is off because it breaks the forge runtime

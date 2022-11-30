@@ -39,6 +39,8 @@ dependencies {
     })
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for common rei plugin
+    compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:8.+") // required to disable rei compat layer on jei plugin
+    testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:8.+") // don't question this, it's required for compiling
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common:$jeiVersion") // required for common jei plugin and mixin
     modCompileOnly("dev.latvian.mods:kubejs:$kubejsVersion") // required for common kubejs plugin
 
