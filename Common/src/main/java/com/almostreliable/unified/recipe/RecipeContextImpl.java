@@ -22,7 +22,6 @@ public class RecipeContextImpl implements RecipeContext {
     private final ReplacementMap replacementMap;
     private final JsonObject originalRecipe;
 
-
     public RecipeContextImpl(JsonObject json, ReplacementMap replacementMap) {
         this.originalRecipe = json;
         this.replacementMap = replacementMap;

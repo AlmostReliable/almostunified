@@ -2,7 +2,7 @@ package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.compat.AdAstraRecipeUnifier;
-import com.almostreliable.unified.compat.IERecipeUnifier;
+import com.almostreliable.unified.compat.ImmersiveEngineeringRecipeUnifier;
 import com.almostreliable.unified.compat.MekanismRecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.UnifyTag;
@@ -60,8 +60,8 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
     @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
         factory.registerForMod(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
+        factory.registerForMod(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         factory.registerForMod(ModConstants.MEKANISM, new MekanismRecipeUnifier());
-        factory.registerForMod(ModConstants.IE, new IERecipeUnifier());
     }
 
     @Override
