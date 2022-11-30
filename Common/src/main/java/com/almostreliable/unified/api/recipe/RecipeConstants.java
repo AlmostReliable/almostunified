@@ -21,6 +21,8 @@ public final class RecipeConstants {
     public static final String MAIN_INPUT = "mainInput";
     public static final String MAIN_OUTPUT = "mainOutput";
     public static final String SECONDARY_OUTPUT = "secondaryOutput";
+	public static final String ITEM_INPUTS = "item_inputs";
+	public static final String ITEM_OUTPUTS = "item_outputs";
 
-    private RecipeConstants() {}
+	private RecipeConstants() {}
 }
