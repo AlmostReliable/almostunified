@@ -1,6 +1,7 @@
 package com.almostreliable.unified.mixin;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.api.ModConstants;
 import com.google.common.collect.ImmutableMap;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -16,7 +17,7 @@ public class AlmostMixinPlugin implements IMixinConfigPlugin {
 
     private static final BooleanSupplier TRUE = () -> true;
     private static final Map<String, BooleanSupplier> CONDITIONS = ImmutableMap.of(
-            "com.almostreliable.unified.mixin.JeiRecipeLayoutMixin", modLoaded("jei")
+            "com.almostreliable.unified.mixin.JeiRecipeLayoutMixin", modLoaded(ModConstants.JEI)
     );
 
     private static BooleanSupplier modLoaded(String id) {
