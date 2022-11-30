@@ -18,6 +18,9 @@ public final class RecipeConstants {
 	public static final String ADDITIVES = "additives";
 	public static final String SECONDARIES = "secondaries";
 	public static final String SLAG = "slag";
+    public static final String MAIN_INPUT = "mainInput";
+    public static final String MAIN_OUTPUT = "mainOutput";
+    public static final String SECONDARY_OUTPUT = "secondaryOutput";
 
-	private RecipeConstants() {}
+    private RecipeConstants() {}
 }
