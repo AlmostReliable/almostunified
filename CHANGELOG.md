@@ -5,13 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## Unreleased
+## [0.3.0] - 2022-11-30
+
+### Added
+- support for Ad Astra! ([#24])
 
 ### Changed
-- REI on Forge now uses a native plugin instead of the compat layer
+- REI on Forge now uses a native plugin instead of the compat layer ([#26])
 
 ### Fixed
-- automatic item hiding with REI
+- automatic item hiding with REI ([#26])
+  - this bumps the minimum REI version to 9.1.574
+- Immersive Engineering Arc Furnace Slag not being unified ([#25])
+- some Mekanism recipes not being completely unified
+
+<!-- Links -->
+[#24]: https://github.com/AlmostReliable/almostunified/pull/24
+[#25]: https://github.com/AlmostReliable/almostunified/issues/25
+[#26]: https://github.com/AlmostReliable/almostunified/pull/26
 
 ## [0.2.6] - 2022-11-21
 
@@ -223,6 +234,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.3.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.3.0-beta
 [0.2.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.6-beta
 [0.2.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.5-beta
 [0.2.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19-0.2.4-beta
