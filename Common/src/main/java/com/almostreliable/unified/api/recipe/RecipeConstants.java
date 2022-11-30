@@ -13,6 +13,11 @@ public final class RecipeConstants {
     public static final String RESULTS = "results";
     public static final String OUTPUT_ITEMS = "outputItems";
     public static final String VALUE = "value";
+	public static final String INPUT_0 = "input0";
+	public static final String INPUT_1 = "input1";
+	public static final String ADDITIVES = "additives";
+	public static final String SECONDARIES = "secondaries";
+	public static final String SLAG = "slag";
 
-    private RecipeConstants() {}
+	private RecipeConstants() {}
 }

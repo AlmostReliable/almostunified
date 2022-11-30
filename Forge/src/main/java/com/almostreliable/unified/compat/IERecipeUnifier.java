@@ -17,23 +17,23 @@ public class IERecipeUnifier implements RecipeUnifier {
 
     // From IE
     protected static final String BASE_KEY = "base_ingredient";
-
-    // TODO make it cleaner
+    
     @Override
     public void collectUnifier(RecipeUnifierBuilder builder) {
-        builder.put("input0", this::replaceIEIngredient); // alloy recipes, refinery
-        builder.put("input1", this::replaceIEIngredient); // alloy recipes, refinery
+        builder.put(RecipeConstants.INPUT_0, this::replaceIEIngredient); // alloy recipes, refinery
+        builder.put(RecipeConstants.INPUT_1, this::replaceIEIngredient); // alloy recipes, refinery
         builder.put(RecipeConstants.INPUT,
                 this::replaceIEIngredient); // arc furnace, squeezer, cloche, coke oven, fermenter, fertilizer, metal_press
-        builder.put("additives", this::replaceIEIngredient); // arc furnace
+        builder.put(RecipeConstants.ADDITIVES, this::replaceIEIngredient); // arc furnace
         builder.put(RecipeConstants.INPUTS, this::replaceIEIngredient); // blueprint, mixer
         // alloy recipes, crusher
-        builder.forEachObject("secondaries",
+        builder.forEachObject(RecipeConstants.SECONDARIES,
                 (jsonObject, context) ->
                         replaceIEResult(jsonObject.get(RecipeConstants.OUTPUT), context) instanceof JsonObject
                         ? jsonObject : null);
         builder.put(RecipeConstants.RESULT, this::replaceIEResult);
         builder.put(RecipeConstants.RESULTS, this::replaceIEResult);
+        builder.put(RecipeConstants.SLAG, this::replaceIEResult); // arc furnace
     }
 
     @Nullable
