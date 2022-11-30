@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Changed
+- REI on Forge now uses a native plugin instead of the compat layer
+
+### Fixed
+- automatic item hiding with REI
+
 ## [0.2.6] - 2022-11-21
 
 ### Removed
