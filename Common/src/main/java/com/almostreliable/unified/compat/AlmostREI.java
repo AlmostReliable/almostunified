@@ -1,8 +1,7 @@
 package com.almostreliable.unified.compat;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.ClientTagUpdateEvent;
-import com.almostreliable.unified.Platform;
+import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.CRTLookup;
@@ -40,10 +39,12 @@ public class AlmostREI implements REIClientPlugin {
     }
 
     @Override
-    public void registerBasicEntryFiltering(BasicFilteringRule<?> rule) {
-        // REI compat layer will automatically hide entries for Forge through JEI
-        if (AlmostUnifiedPlatform.INSTANCE.getPlatform() == Platform.FORGE) return;
+    public String getPluginProviderName() {
+        return Utils.prefix(ModConstants.REI);
+    }
 
+    @Override
+    public void registerBasicEntryFiltering(BasicFilteringRule<?> rule) {
         filterUpdate = rule.hide(() -> {
             UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
             if (config.reiOrJeiDisabled()) return List.of();
