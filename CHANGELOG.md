@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.3.1] - 2022-12-01
+
+### Fixed
+- incorrect minimal version for REI plugin compatibilities
+
 ## [0.3.0] - 2022-11-30
 
 ### Added
@@ -242,6 +247,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.3.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.1-beta
 [0.3.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.0-beta
 [0.2.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.6-beta
 [0.2.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.2.5-beta

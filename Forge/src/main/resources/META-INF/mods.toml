@@ -35,6 +35,6 @@ side = "BOTH"
 [[dependencies.${modId}]]
 modId = "rei_plugin_compatibilities"
 mandatory = false
-versionRange = "[9.0.43,)"
+versionRange = "[8.0.42,)"
 ordering = "BEFORE"
 side = "BOTH"
