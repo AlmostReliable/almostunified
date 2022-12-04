@@ -10,6 +10,8 @@ import java.util.*;
 
 public final class JsonCompare {
 
+    private static final Set<String> SANITIZE_KEYS = Set.of("item", "tag", "id");
+
     private JsonCompare() {}
 
     public static int compare(JsonObject first, JsonObject second, Map<String, Rule> rules) {
@@ -101,12 +103,93 @@ public final class JsonCompare {
         if (firstValidKeys.size() != secondValidKeys.size()) return false;
 
         for (String firstKey : firstValidKeys) {
-            if (!first.get(firstKey).equals(second.get(firstKey))) {
+            JsonElement firstElem = first.get(firstKey);
+            JsonElement secondElem = second.get(firstKey);
+
+            // sanitize elements for implicit 1 count
+            firstElem = sanitize(firstElem);
+            secondElem = sanitize(secondElem);
+
+            if (!firstElem.equals(secondElem)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Creates a sanitized object from the given element with a count of 1 and the
+     * value from the original object under a dummy key called "au_sanitized".
+     * <p>
+     * If the element is not a string primitive, the default object is returned.
+     * @param value The value to sanitize
+     * @param defaultValue The default value to return if the element is not a string primitive
+     * @return The sanitized object or the default value
+     */
+    private static JsonElement createSanitizedObjectOrDefault(JsonElement value, JsonElement defaultValue) {
+        if (value instanceof JsonPrimitive primitive && primitive.isString()) {
+            var newObject = new JsonObject();
+            newObject.addProperty("au_sanitized", primitive.getAsString());
+            newObject.addProperty("count", 1);
+            return newObject;
+        }
+        return defaultValue;
+    }
+
+    /**
+     * Used to sanitize root level JSON elements to make them comparable when the count of 1 is implicit.
+     * <p>
+     * This transforms string primitives, JSON objects and JSON arrays to JSON objects where the
+     * count of 1 is explicitly set. The transformation is only applied to a dummy object and not to
+     * the original recipe, so it can be safely used for comparison.
+     * <p>
+     * If the object doesn't support this transformation, the original object is returned.
+     * @param element The element to sanitize
+     * @return The sanitized element or the original element if it can't be sanitized
+     */
+    @SuppressWarnings("ChainOfInstanceofChecks")
+    private static JsonElement sanitize(JsonElement element) {
+        if (element instanceof JsonArray jsonArray) {
+            JsonArray newArray = new JsonArray();
+            for (JsonElement arrayElement : jsonArray) {
+                newArray.add(sanitize(arrayElement));
+            }
+            return newArray;
+        }
+
+        if (element instanceof JsonObject jsonObject) {
+            var keySet = jsonObject.keySet();
+
+            if (keySet.stream().filter(SANITIZE_KEYS::contains).count() != 1) {
+                return element;
+            }
+
+            // if it has a count property, it needs to be 1, otherwise it's implicit 1 as well and needs sanitizing
+            if (keySet.contains("count") && JsonQuery.of(jsonObject, "count").asInt().filter(i -> i == 1).isEmpty()) {
+                return element;
+            }
+
+            var key = keySet.stream().filter(SANITIZE_KEYS::contains).findFirst().orElseThrow();
+            var sanitized = createSanitizedObjectOrDefault(jsonObject.get(key), jsonObject);
+
+            // ensure the object changed (was sanitized) and that we got a JsonObject
+            //noinspection ObjectEquality
+            if (sanitized == jsonObject || !(sanitized instanceof JsonObject sanitizedObject)) {
+                return jsonObject;
+            }
+
+            // add all other properties from the original object
+            for (var entry : jsonObject.entrySet()) {
+                if (!SANITIZE_KEYS.contains(entry.getKey()) && !entry.getKey().equals("count")) {
+                    sanitizedObject.add(entry.getKey(), entry.getValue());
+                }
+            }
+
+            return sanitizedObject;
+        }
+
+        return createSanitizedObjectOrDefault(element, element);
     }
 
     public interface Rule {

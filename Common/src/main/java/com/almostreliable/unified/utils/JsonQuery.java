@@ -3,6 +3,7 @@ package com.almostreliable.unified.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
@@ -78,5 +79,26 @@ public class JsonQuery {
 
     public Optional<String> asString() {
         return asElement().filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsString);
+    }
+
+    public Optional<Integer> asInt() {
+        return asElement().filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
+                .filter(JsonPrimitive::isNumber).map(JsonElement::getAsInt);
+    }
+
+    public JsonQuery shallowCopy() {
+        if (element == null) {
+            return new JsonQuery();
+        }
+
+        if (element instanceof JsonObject jsonObject) {
+            var copyObject = new JsonObject();
+            for (var entry : jsonObject.entrySet()) {
+                copyObject.add(entry.getKey(), entry.getValue());
+            }
+            return new JsonQuery(copyObject);
+        }
+
+        throw new UnsupportedOperationException();
     }
 }
