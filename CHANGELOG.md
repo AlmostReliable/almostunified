@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Changed
+- improved duplicate checks for recipes with implicit counts of 1
+
 ## [0.3.1] - 2022-12-01
 
 ### Fixed
