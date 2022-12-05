@@ -106,9 +106,18 @@ public final class JsonCompare {
             JsonElement firstElem = first.get(firstKey);
             JsonElement secondElem = second.get(firstKey);
 
-            // sanitize elements for implicit 1 count
-            firstElem = sanitize(firstElem);
-            secondElem = sanitize(secondElem);
+            // the second element can still be null although the valid keys have the same size
+            if (secondElem == null) return false;
+
+            // sanitize elements for implicit counts of 1
+            if ((firstElem instanceof JsonArray firstArray && secondElem instanceof JsonArray secondArray &&
+                 firstArray.size() == secondArray.size()) ||
+                (firstElem instanceof JsonObject && secondElem instanceof JsonObject) ||
+                (firstElem instanceof JsonPrimitive && secondElem instanceof JsonObject) ||
+                (firstElem instanceof JsonObject && secondElem instanceof JsonPrimitive)) {
+                firstElem = sanitize(firstElem);
+                secondElem = sanitize(secondElem);
+            }
 
             if (!firstElem.equals(secondElem)) {
                 return false;
