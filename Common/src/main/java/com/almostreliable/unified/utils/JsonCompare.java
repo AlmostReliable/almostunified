@@ -203,17 +203,24 @@ public final class JsonCompare {
                 return jsonObject;
             }
 
-            // add all other properties from the original object
-            for (var entry : jsonObject.entrySet()) {
-                if (!SANITIZE_KEYS.contains(entry.getKey()) && !entry.getKey().equals("count")) {
-                    sanitizedObject.add(entry.getKey(), entry.getValue());
-                }
-            }
-
+            mergeRemainingProperties(jsonObject, sanitizedObject);
             return sanitizedObject;
         }
 
         return createSanitizedObjectOrDefault(element, element);
+    }
+
+    /**
+     * Merges remaining properties from the original object to the sanitized object.
+     * @param jsonObject The original object
+     * @param sanitizedObject The sanitized object
+     */
+    private static void mergeRemainingProperties(JsonObject jsonObject, JsonObject sanitizedObject) {
+        for (var entry : jsonObject.entrySet()) {
+            if (!SANITIZE_KEYS.contains(entry.getKey()) && !entry.getKey().equals("count")) {
+                sanitizedObject.add(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     public interface Rule {
