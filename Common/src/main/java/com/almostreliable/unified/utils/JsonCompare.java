@@ -110,11 +110,7 @@ public final class JsonCompare {
             if (secondElem == null) return false;
 
             // sanitize elements for implicit counts of 1
-            if ((firstElem instanceof JsonArray firstArray && secondElem instanceof JsonArray secondArray &&
-                 firstArray.size() == secondArray.size()) ||
-                (firstElem instanceof JsonObject && secondElem instanceof JsonObject) ||
-                (firstElem instanceof JsonPrimitive && secondElem instanceof JsonObject) ||
-                (firstElem instanceof JsonObject && secondElem instanceof JsonPrimitive)) {
+            if (needsSanitizing(firstElem, secondElem)) {
                 firstElem = sanitize(firstElem);
                 secondElem = sanitize(secondElem);
             }
@@ -125,6 +121,24 @@ public final class JsonCompare {
         }
 
         return true;
+    }
+
+    /**
+     * A check whether the given elements need to be sanitized. The purpose of this check is
+     * to save performance by skipping pairs that are not affected by sanitizing.
+     * <p>
+     * Conditions are both elements being a JSON array with the same size, both elements being
+     * a JSON object, one element being a JSON object and the other being a JSON primitive.
+     * @param firstElem the first element
+     * @param secondElem the second element
+     * @return true if the elements need to be sanitized, false otherwise
+     */
+    private static boolean needsSanitizing(JsonElement firstElem, JsonElement secondElem) {
+        return (firstElem instanceof JsonArray firstArray && secondElem instanceof JsonArray secondArray &&
+                firstArray.size() == secondArray.size()) ||
+               (firstElem instanceof JsonObject && secondElem instanceof JsonObject) ||
+               (firstElem instanceof JsonPrimitive && secondElem instanceof JsonObject) ||
+               (firstElem instanceof JsonObject && secondElem instanceof JsonPrimitive);
     }
 
     /**
