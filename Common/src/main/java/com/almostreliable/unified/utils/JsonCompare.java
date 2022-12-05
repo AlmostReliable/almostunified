@@ -38,8 +38,8 @@ public final class JsonCompare {
     }
 
     @Nullable
-    public static JsonObject compareShaped(JsonObject first, JsonObject second, Collection<String> ignoredFields) {
-        if (!matches(first, second, ignoredFields)) return null;
+    public static JsonObject compareShaped(JsonObject first, JsonObject second, CompareSettings compareSettings) {
+        if (!matches(first, second, compareSettings)) return null;
 
         JsonArray firstPattern = JsonUtils.arrayOrSelf(first.get("pattern"));
         JsonArray secondPattern = JsonUtils.arrayOrSelf(second.get("pattern"));
@@ -88,16 +88,17 @@ public final class JsonCompare {
         return keyMap;
     }
 
-    public static boolean matches(JsonObject first, JsonObject second, Collection<String> ignoredProperties) {
+    public static boolean matches(JsonObject first, JsonObject second, CompareSettings compareSettings) {
+        Collection<String> ignoredFields = compareSettings.getIgnoredFields();
         List<String> firstValidKeys = first
                 .keySet()
                 .stream()
-                .filter(key -> !ignoredProperties.contains(key))
+                .filter(key -> !ignoredFields.contains(key))
                 .toList();
         List<String> secondValidKeys = second
                 .keySet()
                 .stream()
-                .filter(key -> !ignoredProperties.contains(key))
+                .filter(key -> !ignoredFields.contains(key))
                 .toList();
 
         if (firstValidKeys.size() != secondValidKeys.size()) return false;
@@ -110,7 +111,7 @@ public final class JsonCompare {
             if (secondElem == null) return false;
 
             // sanitize elements for implicit counts of 1
-            if (needsSanitizing(firstElem, secondElem)) {
+            if (compareSettings.shouldSanitize && needsSanitizing(firstElem, secondElem)) {
                 firstElem = sanitize(firstElem);
                 secondElem = sanitize(secondElem);
             }
@@ -260,9 +261,11 @@ public final class JsonCompare {
     public static class CompareSettings {
         public static final String IGNORED_FIELDS = "ignoredFields";
         public static final String RULES = "rules";
+        public static final String SHOULD_SANITIZE = "shouldSanitize";
 
         private final LinkedHashMap<String, Rule> rules = new LinkedHashMap<>();
         private final Set<String> ignoredFields = new HashSet<>();
+        private boolean shouldSanitize;
 
         public void ignoreField(String property) {
             ignoredFields.add(property);
@@ -274,6 +277,10 @@ public final class JsonCompare {
             if (old != null) {
                 throw new IllegalStateException("Multiple rule for key <" + key + "> found");
             }
+        }
+
+        public void setShouldSanitize(boolean shouldSanitize) {
+            this.shouldSanitize = shouldSanitize;
         }
 
         public Set<String> getIgnoredFields() {
@@ -293,6 +300,8 @@ public final class JsonCompare {
             });
             result.add(RULES, rulesJson);
 
+            result.addProperty(SHOULD_SANITIZE, shouldSanitize);
+
             return result;
         }
 
@@ -309,6 +318,8 @@ public final class JsonCompare {
                 };
                 addRule(e.getKey(), r);
             });
+
+            shouldSanitize = json.getAsJsonPrimitive(SHOULD_SANITIZE).getAsBoolean();
         }
 
         public Map<String, Rule> getRules() {

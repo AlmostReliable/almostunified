@@ -1,8 +1,11 @@
 package com.almostreliable.unified.util;
 
+import com.almostreliable.unified.Platform;
 import com.almostreliable.unified.TestUtils;
+import com.almostreliable.unified.config.Defaults;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.google.gson.JsonObject;
+import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -12,6 +15,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonCompareTest {
+
+    private static final JsonCompare.CompareSettings DEFAULT_COMPARE_SETTINGS = getDefaultCompareSettings();
+    private static final JsonCompare.CompareSettings DEFAULT_SHAPED_COMPARE_SETTINGS = getDefaultShapedCompareSettings();
     private static final String RECIPE = """
             {
               "type": "minecraft:smelting",
@@ -24,6 +30,14 @@ public class JsonCompareTest {
               "cookingtime": 200
             }
             """;
+
+    private static JsonCompare.CompareSettings getDefaultCompareSettings() {
+        return Defaults.getDefaultDuplicateRules(Platform.FORGE);
+    }
+
+    private static JsonCompare.CompareSettings getDefaultShapedCompareSettings() {
+        return Defaults.getDefaultDuplicateOverrides(Platform.FORGE).get(new ResourceLocation("crafting_shaped"));
+    }
 
     @Test
     public void simpleCompareFirst() {
@@ -93,7 +107,7 @@ public class JsonCompareTest {
     public void simpleMatch() {
         JsonObject first = TestUtils.json(RECIPE);
         JsonObject second = TestUtils.json(RECIPE);
-        boolean matches = JsonCompare.matches(first, second, List.of());
+        boolean matches = JsonCompare.matches(first, second, DEFAULT_COMPARE_SETTINGS);
         assertTrue(matches);
     }
 
@@ -101,7 +115,7 @@ public class JsonCompareTest {
     public void noMatch() {
         JsonObject first = TestUtils.json(RECIPE, j -> j.addProperty("experience", 100));
         JsonObject second = TestUtils.json(RECIPE);
-        boolean matches = JsonCompare.matches(first, second, List.of());
+        boolean matches = JsonCompare.matches(first, second, new JsonCompare.CompareSettings());
         assertFalse(matches);
     }
 
@@ -109,7 +123,9 @@ public class JsonCompareTest {
     public void matchBecauseIgnore() {
         JsonObject first = TestUtils.json(RECIPE, j -> j.addProperty("experience", 100));
         JsonObject second = TestUtils.json(RECIPE);
-        boolean matches = JsonCompare.matches(first, second, List.of("experience"));
+        var compareSettings = getDefaultCompareSettings();
+        compareSettings.ignoreField("experience");
+        boolean matches = JsonCompare.matches(first, second, compareSettings);
         assertTrue(matches);
     }
 
@@ -156,7 +172,7 @@ public class JsonCompareTest {
 
         JsonObject first = TestUtils.json(recipe1);
         JsonObject second = TestUtils.json(recipe2);
-        JsonObject result = JsonCompare.compareShaped(first, second, List.of("pattern", "key"));
+        JsonObject result = JsonCompare.compareShaped(first, second, DEFAULT_SHAPED_COMPARE_SETTINGS);
         assertNull(result);
     }
 
@@ -200,7 +216,7 @@ public class JsonCompareTest {
 
         JsonObject first = TestUtils.json(recipe1);
         JsonObject second = TestUtils.json(recipe2);
-        JsonObject result = JsonCompare.compareShaped(first, second, List.of("pattern", "key"));
+        JsonObject result = JsonCompare.compareShaped(first, second, DEFAULT_SHAPED_COMPARE_SETTINGS);
         assertEquals(first, result);
     }
 
@@ -244,7 +260,9 @@ public class JsonCompareTest {
 
         JsonObject first = TestUtils.json(recipe1);
         JsonObject second = TestUtils.json(recipe2);
-        JsonObject result = JsonCompare.compareShaped(first, second, List.of("pattern", "key"));
+        var compareSettings = getDefaultShapedCompareSettings();
+        compareSettings.setShouldSanitize(true);
+        JsonObject result = JsonCompare.compareShaped(first, second, compareSettings);
         assertEquals(first, result);
     }
 
@@ -275,7 +293,9 @@ public class JsonCompareTest {
 
         JsonObject first = TestUtils.json(recipe1);
         JsonObject second = TestUtils.json(recipe2);
-        boolean result = JsonCompare.matches(first, second, List.of());
+        var compareSettings = getDefaultCompareSettings();
+        compareSettings.setShouldSanitize(true);
+        boolean result = JsonCompare.matches(first, second, compareSettings);
         assertTrue(result);
     }
 }
