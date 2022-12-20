@@ -110,12 +110,12 @@ public class UnifyConfig extends Config {
 
         @Override
         public UnifyConfig deserialize(JsonObject json) {
+            var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
             List<String> modPriorities = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MOD_PRIORITIES)),
-                    Defaults.MOD_PRIORITIES);
+                    Defaults.getModPriorities(platform));
             List<String> stoneStrata = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(STONE_STRATA)),
                     Defaults.STONE_STRATA);
-            List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)),
-                    Defaults.getTags(AlmostUnifiedPlatform.INSTANCE.getPlatform()));
+            List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.getTags(platform));
             List<String> materials = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MATERIALS)),
                     Defaults.MATERIALS);
             Map<ResourceLocation, String> priorityOverrides = safeGet(() -> json.getAsJsonObject(PRIORITY_OVERRIDES)
@@ -132,9 +132,8 @@ public class UnifyConfig extends Config {
                     .map(s -> UnifyTag.item(new ResourceLocation(s)))
                     .collect(Collectors.toSet()), new HashSet<>());
             Set<Pattern> ignoredItems = deserializePatterns(json, IGNORED_ITEMS, List.of());
-            Set<Pattern> ignoredRecipeTypes = deserializePatterns(json,
-                    IGNORED_RECIPE_TYPES,
-                    Defaults.getIgnoredRecipeTypes(AlmostUnifiedPlatform.INSTANCE.getPlatform()));
+            Set<Pattern> ignoredRecipeTypes = deserializePatterns(json, IGNORED_RECIPE_TYPES,
+                    Defaults.getIgnoredRecipeTypes(platform));
             Set<Pattern> ignoredRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
             boolean hideJeiRei = safeGet(() -> json.getAsJsonPrimitive(HIDE_JEI_REI).getAsBoolean(), true);
 

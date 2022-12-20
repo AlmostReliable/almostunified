@@ -9,14 +9,7 @@ import java.util.List;
 
 @SuppressWarnings("SpellCheckingInspection")
 public final class Defaults {
-    public static final List<String> MOD_PRIORITIES = List.of(
-            "minecraft",
-            "kubejs",
-            "crafttweaker",
-            "create",
-            "thermal",
-            "immersiveengineering",
-            "mekanism");
+
     public static final List<String> STONE_STRATA = List.of("stone",
             "nether",
             "deepslate",
@@ -73,6 +66,29 @@ public final class Defaults {
     );
 
     private Defaults() {}
+
+    public static List<String> getModPriorities(Platform platform) {
+        return switch (platform) {
+            case FORGE -> List.of(
+                    "minecraft",
+                    "kubejs",
+                    "crafttweaker",
+                    "create",
+                    "thermal",
+                    "immersiveengineering",
+                    "mekanism"
+            );
+            case FABRIC -> List.of(
+                    "minecraft",
+                    "kubejs",
+                    "crafttweaker",
+                    "create",
+                    "techreborn",
+                    "modern_industrialization",
+                    "indrev"
+            );
+        };
+    }
 
     public static List<String> getTags(Platform platform) {
         return switch (platform) {
