@@ -10,13 +10,16 @@ import java.util.List;
 @SuppressWarnings("SpellCheckingInspection")
 public final class Defaults {
 
-    public static final List<String> STONE_STRATA = List.of("stone",
+    public static final List<String> STONE_STRATA = List.of(
+            "stone",
             "nether",
             "deepslate",
             "granite",
             "diorite",
-            "andesite");
-    public static final List<String> MATERIALS = List.of("aeternium",
+            "andesite"
+    );
+    public static final List<String> MATERIALS = List.of(
+            "aeternium",
             "aluminum",
             "amber",
             "apatite",
@@ -107,19 +110,6 @@ public final class Defaults {
                     "forge:storage_blocks/raw_{material}"
             );
             case FABRIC -> List.of(
-                    "c:nuggets/{material}",
-                    "c:dusts/{material}",
-                    "c:gears/{material}",
-                    "c:gems/{material}",
-                    "c:ingots/{material}",
-                    "c:raw_materials/{material}",
-                    "c:ores/{material}",
-                    "c:plates/{material}",
-                    "c:rods/{material}",
-                    "c:wires/{material}",
-                    "c:storage_blocks/{material}",
-                    "c:storage_blocks/raw_{material}",
-                    // Modders just can't decide
                     "c:{material}_nuggets",
                     "c:{material}_dusts",
                     "c:{material}_gears",
