@@ -119,8 +119,11 @@ public final class Defaults {
                     "c:{material}_ores",
                     "c:{material}_plates",
                     "c:{material}_rods",
+                    "c:{material}_blocks",
                     "c:{material}_wires",
                     "c:{material}_storage_blocks",
+                    "c:raw_{material}_ores",
+                    "c:raw_{material}_blocks",
                     "c:raw_{material}_storage_blocks"
             );
         };
