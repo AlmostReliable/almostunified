@@ -15,47 +15,56 @@ public interface AlmostUnifiedLookup {
     boolean isLoaded();
 
     /**
-     * Returns replacement item for given {@link ItemLike}. If no configured tag exists which includes the item it will return null. <p>
-     * If the item is part of some stone strata, it will only check items within the same stone strata. <br>
+     * Returns the replacement item for a given {@link ItemLike}. Will return null if no configured
+     * tag exists that includes the item.
+     * <p>
+     * If the item is part of some stone strata, it will only check items within the same stone strata.<br>
      * => e.g. "modid:deepslate_foo_ore" would not return "prio_modid:foo_ore".
      *
-     * @param itemLike The item like to find the replacement for
-     * @return replacement item or null if there is no replacement
+     * @param itemLike The item-like to find the replacement for
+     * @return The replacement item or null if there is no replacement
      */
     @Nullable
     Item getReplacementForItem(ItemLike itemLike);
 
     /**
-     * Returns the preferred item for given {@link TagKey}. If no configured tag exists which includes the item it will return null. <p>
-     * The preferred item is mainly chose by mod priorities, but it's possible to provide a fixed override through the config.
+     * Returns the preferred item for a given {@link TagKey}. Will return null if no configured
+     * tag exists that includes the item.
+     * <p>
+     * The preferred item is selected according to mod priorities, but it's possible to set a
+     * fixed override in the config.
      *
      * @param tag The tag to find the preferred item for
-     * @return preferred item or null if there is no preferred item
+     * @return The preferred item or null if there is no preferred item
      */
     @Nullable
     Item getPreferredItemForTag(TagKey<Item> tag);
 
     /**
-     * Returns the preferred tag for given {@link ItemLike}. If no configured tag exists which includes the item it will return null. <p>
+     * Returns the preferred tag for a given {@link ItemLike} Will return null if no configured
+     * tag exists that includes the item.
      *
-     * @param itemLike The item like to find the preferred tag for
-     * @return preferred tag or null if there is no preferred tag
+     * @param itemLike The item-like to find the preferred tag for
+     * @return The preferred tag or null if there is no preferred tag
      */
     @Nullable
     TagKey<Item> getPreferredTagForItem(ItemLike itemLike);
 
     /**
-     * Returns all potential items which are part of the given tag. Tags are only considered if they are part of the config, otherwise they will always return an empty set.
+     * Returns all potential items which are part of a given tag.
+     * <p>
+     * Tags are only considered if they are part of the config,
+     * otherwise, an empty set is always returned.
      *
      * @param tag The tag to find the potential items for
-     * @return potential items or empty set if there are no potential items
+     * @return The potential items or an empty set if there are no potential items
      */
     Set<Item> getPotentialItems(TagKey<Item> tag);
 
     /**
      * Returns all configured tags.
      *
-     * @return configured tags
+     * @return The configured tags
      */
     Set<TagKey<Item>> getConfiguredTags();
 
