@@ -25,6 +25,44 @@ For an in-depth explanation of the mod, its functionality, config descriptions, 
 2. Install Minecraft [Forge] or [Fabric].
 3. Drop the **jar file** into your mods folder.
 
+## **🔗 Depending on the Mod**
+
+### Maven
+Every release of this project is built and published to the [BlameJared] maven.
+
+```groovy
+repositories {
+    maven { 
+        url = 'https://maven.blamejared.com'
+        name = 'BlameJared Maven'
+    }
+}
+```
+
+### Common [![Maven][maven_common_badge]][maven_common_link]
+```groovy
+dependencies {
+    modApi("com.almostunified.mods:almostunified-common:<version>")
+}
+```
+
+### Fabric [![Maven][maven_fabric_badge]][maven_fabric_link]
+```groovy
+dependencies {
+    modApi("com.almostunified.mods:almostunified-fabric:<version>")
+}
+```
+
+### Forge [![Maven][maven_forge_badge]][maven_forge_link]
+```groovy
+dependencies {
+    modApi(fg.deobf("com.almostunified.mods:almostunified-forge:<version>"))
+}
+```
+
+### Examples
+For code examples on how to use the API, check out the [wiki][api-wiki].
+
 ## **🖥️ Dev Environment Setup**
 1. Clone the repository
 2. Import into IntelliJ (VSCode and Eclipse are not tested)
@@ -53,6 +91,12 @@ This project is licensed under the [GNU Lesser General Public License v3.0][lice
 [workflow_status_badge]: https://img.shields.io/github/actions/workflow/status/AlmostReliable/almostunified/build.yml?branch=1.19&style=flat-square
 [workflow_status_link]: https://github.com/AlmostReliable/almostunified/actions
 [license_badge]: https://img.shields.io/github/license/AlmostReliable/almostunified?style=flat-square
+[maven_common_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-common%2Fmaven-metadata.xml&style=flat-square
+[maven_common_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-common/
+[maven_fabric_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-fabric%2Fmaven-metadata.xml&style=flat-square
+[maven_fabric_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-fabric/
+[maven_forge_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-forge%2Fmaven-metadata.xml&style=flat-square
+[maven_forge_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-forge/
 
 <!-- Links -->
 [minecraft]: https://www.minecraft.net/
@@ -63,6 +107,8 @@ This project is licensed under the [GNU Lesser General Public License v3.0][lice
 [releases]: https://github.com/AlmostReliable/almostunified/releases
 [forge]: http://files.minecraftforge.net/
 [fabric]: https://fabricmc.net/
+[blamejared]: https://maven.blamejared.com
+[api-wiki]: https://github.com/AlmostReliable/almostunified/wiki/API
 [fabric-loom]: https://github.com/FabricMC/fabric-loom
 [parchment]: https://parchmentmc.org/
 [multiLoader template]: https://github.com/jaredlll08/MultiLoader-Template
