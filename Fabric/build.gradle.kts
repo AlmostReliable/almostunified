@@ -1,119 +1,44 @@
-@file:Suppress("UnstableApiUsage")
-
-val modId: String by project
-val modName: String by project
-val extraModsDirectory: String by project
-val fabricRecipeViewer: String by project
 val minecraftVersion: String by project
-val fabricVersion: String by project
 val fabricLoaderVersion: String by project
+val fabricApiVersion: String by project
+val fabricRecipeViewer: String by project
 val reiVersion: String by project
 val jeiVersion: String by project
 val kubejsVersion: String by project
-val mappingsChannel: String by project
-val mappingsVersion: String by project
-
-val baseArchiveName = "$modId-fabric"
 
 plugins {
-    id("fabric-loom") version "1.0-SNAPSHOT"
+    id("com.github.johnrengelman.shadow") version ("7.1.2")
 }
 
-base {
-    archivesName.set(baseArchiveName)
+architectury {
+    platformSetupLoomIde()
+    fabric()
 }
 
 loom {
-    runs {
-        named("client") {
-            client()
-            configName = "Fabric Client"
-            ideConfigGenerated(true)
-            runDir("run")
-            vmArgs("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
-        }
-        named("server") {
-            server()
-            configName = "Fabric Server"
-            ideConfigGenerated(true)
-            runDir("run")
-            vmArgs("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
-        }
-    }
-
-    mixin {
-        defaultRefmapName.set("$modId.refmap.json")
+    if (project.findProperty("enableAccessWidener") == "true") { // Optional property for `gradle.properties` to enable access wideners.
+        accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
+        println("Access widener enabled for project ${project.name}. Access widener path: ${loom.accessWidenerPath.get()}")
     }
 }
 
+val common by configurations
+val shadowCommon by configurations
 dependencies {
-    compileOnly(project(":Common", "namedElements")) { isTransitive = false }
-
-    compileOnly("com.google.auto.service:auto-service:1.0.1")
-    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
-
-    minecraft("com.mojang:minecraft:$minecraftVersion")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
-    })
+    modApi("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion+$minecraftVersion")
 
+    common(project(":Common", "namedElements")) { isTransitive = false }
+    shadowCommon(project(":Common", "transformProductionFabric")) { isTransitive = false }
+
+    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion")!!)
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
     testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling
     modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion") // required for common jei plugin and mixin
-
-    // runtime only
-    when (fabricRecipeViewer) {
+    when (fabricRecipeViewer) { // runtime only
         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
         "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion")
         else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
-    }
-
-    // required for common kubejs plugin and fabric runtime
-    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion")!!)
-
-    val extraMods = fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
-    if (extraMods.files.isNotEmpty()) {
-        // required when running the fabric client with extra mods
-        modLocalRuntime("teamreborn:energy:2.2.0")
-    }
-    extraMods.forEach { f ->
-        val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
-        if (sepIndex == -1) {
-            throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
-        }
-        val mod = f.nameWithoutExtension.substring(0, sepIndex)
-        val version = f.nameWithoutExtension.substring(sepIndex + 1)
-        println("Extra mod $mod with version $version detected")
-        modLocalRuntime("$extraModsDirectory:$mod:$version")
-    }
-
-    compileOnly("com.google.auto.service:auto-service:1.0.1")
-    testCompileOnly("com.google.auto.service:auto-service:1.0.1")
-    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
-}
-
-tasks {
-    processResources {
-        from(project(":Common").sourceSets.main.get().resources)
-    }
-    withType<JavaCompile> {
-        source(project(":Common").sourceSets.main.get().allSource)
-    }
-}
-
-publishing {
-    publications {
-        register("mavenJava", MavenPublication::class) {
-            artifactId = baseArchiveName
-            from(components["java"])
-        }
-    }
-
-    repositories {
-        maven("file://${System.getenv("local_maven")}")
     }
 }

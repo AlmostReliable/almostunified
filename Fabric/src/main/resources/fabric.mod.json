@@ -29,12 +29,12 @@
     "almostunified-common.mixins.json"
   ],
   "depends": {
-    "fabric": "*",
+    "fabric": ">=${fabricApiVersion}",
     "minecraft": ">=${minecraftVersion}",
     "java": ">=17"
   },
   "suggests": {
-    "roughlyenoughitems": ">=${reiMinVersion}",
-    "kubejs": ">=${kubejsMinVersion}"
+    "roughlyenoughitems": ">=${reiVersion}",
+    "kubejs": ">=${kubejsVersion}"
   }
 }

@@ -1,131 +1,61 @@
-@file:Suppress("UnstableApiUsage")
-
-val modId: String by project
-val modName: String by project
-val junitVersion: String by project
-val extraModsDirectory: String by project
-val forgeRecipeViewer: String by project
 val minecraftVersion: String by project
 val forgeVersion: String by project
+val junitVersion: String by project
+val modId: String by project
+val forgeRecipeViewer: String by project
 val reiVersion: String by project
 val jeiVersion: String by project
 val kubejsVersion: String by project
-val mappingsChannel: String by project
-val mappingsVersion: String by project
 
-val baseArchiveName = "$modId-forge"
-val commonTests: SourceSetOutput = project(":Common").sourceSets["test"].output
 
 plugins {
-    id("dev.architectury.loom") version "0.12.0-SNAPSHOT"
+    id("com.github.johnrengelman.shadow") version ("7.1.2")
 }
 
-base {
-    archivesName.set(baseArchiveName)
+architectury {
+    platformSetupLoomIde()
+    forge()
 }
 
 loom {
-    silentMojangMappingsLicense()
-
-    runs {
-        named("client") {
-            client()
-            configName = "Forge Client"
-            ideConfigGenerated(true)
-            runDir("run")
-            vmArgs("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
+    if (project.findProperty("enableAccessWidener") == "true") { // Optional property for `gradle.properties` to enable access wideners.
+        accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
+        forge {
+            convertAccessWideners.set(true)
+            extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
         }
-        named("server") {
-            server()
-            configName = "Forge Server"
-            ideConfigGenerated(true)
-            runDir("run")
-            vmArgs("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
-        }
+        println("Access widener enabled for project ${project.name}. Access widener path: ${loom.accessWidenerPath.get()}")
     }
 
     forge {
-        mixinConfig("$modId-common.mixins.json")
-    }
-
-    mixin {
-        defaultRefmapName.set("$modId.refmap.json")
+        mixinConfigs("$modId-common.mixins.json" /*, "$modId-forge.mixins.json"*/)
     }
 }
 
+val common by configurations
+val shadowCommon by configurations
+val commonTests: SourceSetOutput = project(":Common").sourceSets["test"].output
 dependencies {
-    compileOnly(project(":Common", "namedElements")) { isTransitive = false }
-
-    compileOnly("com.google.auto.service:auto-service:1.0.1")
-    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
-
-    minecraft("com.mojang:minecraft:$minecraftVersion")
     forge("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:$mappingsChannel-$minecraftVersion:$mappingsVersion@zip")
-    })
 
-    // required for common rei plugin | api does not work here
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
-    // required to disable rei compat layer on jei plugin
-    compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+")
-    // don't question this, it's required for compiling
-    testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+")
-    // required for common jei plugin and mixin, transitivity is off because it breaks the forge runtime
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
+    common(project(":Common", "namedElements")) { isTransitive = false }
+    shadowCommon(project(":Common", "transformProductionForge")) { isTransitive = false }
 
-    // runtime only
-    when (forgeRecipeViewer) {
+    // Mod dependencies
+    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubejsVersion")!!)
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for common rei plugin | api does not work here
+    compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
+    testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false } // required for common jei plugin and mixin, transitivity is off because it breaks the forge runtime
+    when (forgeRecipeViewer) { // runtime only
         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
         "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
         else -> throw GradleException("Invalid forgeRecipeViewer value: $forgeRecipeViewer")
     }
-
-    // required for common kubejs plugin and forge runtime
-    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubejsVersion")!!)
-
-    fileTree("$extraModsDirectory-$minecraftVersion") { include("**/*.jar") }
-        .forEach { f ->
-            val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
-            if (sepIndex == -1) {
-                throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
-            }
-            val mod = f.nameWithoutExtension.substring(0, sepIndex)
-            val version = f.nameWithoutExtension.substring(sepIndex + 1)
-            println("Extra mod $mod with version $version detected")
-            modLocalRuntime("$extraModsDirectory:$mod:$version")
-        }
-
-    compileOnly("com.google.auto.service:auto-service:1.0.1")
-    testCompileOnly("com.google.auto.service:auto-service:1.0.1")
-    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
 
     // JUnit Tests
     testImplementation(project(":Common"))
     testImplementation(commonTests)
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-}
-
-tasks {
-    processResources {
-        from(project(":Common").sourceSets.main.get().resources)
-    }
-    withType<JavaCompile> {
-        source(project(":Common").sourceSets.main.get().allSource)
-    }
-}
-
-publishing {
-    publications {
-        register("mavenJava", MavenPublication::class) {
-            artifactId = baseArchiveName
-            from(components["java"])
-        }
-    }
-
-    repositories {
-        maven("file://${System.getenv("local_maven")}")
-    }
 }

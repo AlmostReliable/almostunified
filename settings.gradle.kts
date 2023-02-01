@@ -1,17 +1,9 @@
 pluginManagement {
     repositories {
         maven("https://maven.fabricmc.net/")
-        maven("https://maven.minecraftforge.net/")
         maven("https://maven.architectury.dev/")
-        maven("https://repo.spongepowered.org/repository/maven-public/")
+        maven("https://maven.minecraftforge.net/")
         gradlePluginPortal()
-    }
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "org.spongepowered.mixin") {
-                useModule("org.spongepowered:mixingradle:${requested.version}")
-            }
-        }
     }
 }
 
