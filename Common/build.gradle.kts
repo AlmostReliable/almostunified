@@ -10,6 +10,7 @@ val mappingsChannel: String by project
 val mappingsVersion: String by project
 val modId: String by project
 val modName: String by project
+val modPackage: String by project
 
 val baseArchiveName = "$modId-common"
 
@@ -62,7 +63,7 @@ buildConfig {
     buildConfigField("String", "MOD_ID", "\"${modId}\"")
     buildConfigField("String", "MOD_VERSION", "\"${project.version}\"")
     buildConfigField("String", "MOD_NAME", "\"${modName}\"")
-    packageName(project.group as String)
+    packageName(modPackage)
 }
 
 publishing {
