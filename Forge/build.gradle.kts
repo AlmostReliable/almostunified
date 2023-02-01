@@ -97,6 +97,9 @@ dependencies {
             modLocalRuntime("$extraModsDirectory:$mod:$version")
         }
 
+    compileOnly("com.google.auto.service:auto-service:1.0.1")
+    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
+
     // JUnit Tests
     testImplementation(project(":Common"))
     testImplementation(commonTests)

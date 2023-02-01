@@ -23,6 +23,10 @@ public final class AlmostUnified {
         return STARTUP_CONFIG;
     }
 
+    public static boolean isRuntimeLoaded() {
+        return RUNTIME != null;
+    }
+
     public static AlmostUnifiedRuntime getRuntime() {
         if (RUNTIME == null) {
             throw new IllegalStateException("AlmostUnifiedRuntime not initialized");

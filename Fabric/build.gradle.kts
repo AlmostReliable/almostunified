@@ -90,6 +90,9 @@ dependencies {
         println("Extra mod $mod with version $version detected")
         modLocalRuntime("$extraModsDirectory:$mod:$version")
     }
+
+    compileOnly("com.google.auto.service:auto-service:1.0.1")
+    annotationProcessor("com.google.auto.service:auto-service:1.0.1")
 }
 
 tasks {
