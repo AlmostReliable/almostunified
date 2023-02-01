@@ -126,7 +126,7 @@ subprojects {
 
         // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
         repositories {
-            // Add repositories to publish here.
+            maven("file://${System.getenv("local_maven")}")
         }
     }
 
