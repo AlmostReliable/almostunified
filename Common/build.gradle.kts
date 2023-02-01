@@ -15,7 +15,7 @@ val modPackage: String by project
 val baseArchiveName = "$modId-common"
 
 plugins {
-    id("fabric-loom") version "0.12-SNAPSHOT"
+    id("fabric-loom") version "1.0-SNAPSHOT"
     id("com.github.gmazzo.buildconfig") version "3.0.3"
 }
 
@@ -24,8 +24,6 @@ base {
 }
 
 loom {
-    remapArchives.set(false)
-    setupRemappedVariants.set(false)
     runConfigs.configureEach {
         ideConfigGenerated(false)
     }

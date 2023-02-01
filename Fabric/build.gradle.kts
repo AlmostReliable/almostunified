@@ -16,7 +16,7 @@ val mappingsVersion: String by project
 val baseArchiveName = "$modId-fabric"
 
 plugins {
-    id("fabric-loom") version "0.12-SNAPSHOT"
+    id("fabric-loom") version "1.0-SNAPSHOT"
 }
 
 base {
