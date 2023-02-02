@@ -42,21 +42,21 @@ repositories {
 ### Common [![Maven][maven_common_badge]][maven_common_link]
 ```groovy
 dependencies {
-    modApi("com.almostunified.mods:almostunified-common:<version>")
+    modApi("com.almostreliable.mods:almostunified-common:<version>")
 }
 ```
 
 ### Fabric [![Maven][maven_fabric_badge]][maven_fabric_link]
 ```groovy
 dependencies {
-    modApi("com.almostunified.mods:almostunified-fabric:<version>")
+    modApi("com.almostreliable.mods:almostunified-fabric:<version>")
 }
 ```
 
 ### Forge [![Maven][maven_forge_badge]][maven_forge_link]
 ```groovy
 dependencies {
-    modApi(fg.deobf("com.almostunified.mods:almostunified-forge:<version>"))
+    modApi(fg.deobf("com.almostreliable.mods:almostunified-forge:<version>"))
 }
 ```
 
