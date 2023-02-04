@@ -88,7 +88,7 @@ This project is licensed under the [GNU Lesser General Public License v3.0][lice
 [version_link]: https://github.com/AlmostReliable/almostunified/releases/latest
 [total_downloads_cf_badge]: http://cf.way2muchnoise.eu/full_633823.svg?badge_style=flat
 [total_downloads_mr_badge]: https://img.shields.io/modrinth/dt/sdaSaQEz?color=5da545&label=Modrinth&style=flat-square
-[workflow_status_badge]: https://img.shields.io/github/actions/workflow/status/AlmostReliable/almostunified/build.yml?branch=1.19&style=flat-square
+[workflow_status_badge]: https://img.shields.io/github/actions/workflow/status/AlmostReliable/almostunified/build.yml?branch=1.19.2&style=flat-square
 [workflow_status_link]: https://github.com/AlmostReliable/almostunified/actions
 [license_badge]: https://img.shields.io/github/license/AlmostReliable/almostunified?style=flat-square
 [maven_common_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-common%2Fmaven-metadata.xml&style=flat-square
