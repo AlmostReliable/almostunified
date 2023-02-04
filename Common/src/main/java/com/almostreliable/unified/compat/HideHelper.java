@@ -7,7 +7,7 @@ import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.UnifyTag;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +45,7 @@ public class HideHelper {
                         toHide);
             }
 
-            return toHide.stream().flatMap(rl -> Registry.ITEM.getOptional(rl).stream()).map(ItemStack::new).toList();
+            return toHide.stream().flatMap(rl -> BuiltInRegistries.ITEM.getOptional(rl).stream()).map(ItemStack::new).toList();
         }).flatMap(Collection::stream).toList();
     }
 

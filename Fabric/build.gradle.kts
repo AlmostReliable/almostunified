@@ -4,7 +4,6 @@ val fabricApiVersion: String by project
 val fabricRecipeViewer: String by project
 val reiVersion: String by project
 val jeiVersion: String by project
-val kubejsVersion: String by project
 
 plugins {
     id("com.github.johnrengelman.shadow") version ("7.1.2")
@@ -31,7 +30,6 @@ dependencies {
     common(project(":Common", "namedElements")) { isTransitive = false }
     shadowCommon(project(":Common", "transformProductionFabric")) { isTransitive = false }
 
-    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion")!!)
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
     testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling

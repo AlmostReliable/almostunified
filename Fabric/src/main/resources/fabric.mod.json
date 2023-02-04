@@ -34,7 +34,6 @@
     "java": ">=17"
   },
   "suggests": {
-    "roughlyenoughitems": ">=${reiVersion}",
-    "kubejs": ">=${kubejsVersion}"
+    "roughlyenoughitems": ">=${reiVersion}"
   }
 }

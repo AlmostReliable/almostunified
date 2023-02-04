@@ -5,6 +5,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.tags.TagManager;
+import net.minecraft.world.flag.FeatureFlagSet;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,7 +19,7 @@ public class ReloadableServerResourcesMixin {
     @Shadow @Final private TagManager tagManager;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void yoinkServerResources(RegistryAccess.Frozen frozen, Commands.CommandSelection commandSelection, int i, CallbackInfo ci) {
+    private void yoinkServerResources(RegistryAccess.Frozen frozen, FeatureFlagSet featureFlagSet, Commands.CommandSelection commandSelection, int i, CallbackInfo ci) {
         AlmostUnified.updateTagManager(tagManager);
     }
 }

@@ -19,7 +19,6 @@ val githubRepo: String by project
 val githubUser: String by project
 val sharedRunDir: String by project
 val reiVersion: String by project
-val kubejsVersion: String by project
 
 plugins {
     java
@@ -45,8 +44,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         maven("https://maven.shedaniel.me")
-        maven("https://dvs1.progwml6.com/files/maven/")
-        maven("https://maven.saps.dev/minecraft")
         maven("https://maven.blamejared.com/")
         flatDir {
             name = extraModsPrefix
@@ -160,7 +157,6 @@ subprojects {
             "forgeVersion" to forgeVersion,
             "forgeFMLVersion" to forgeVersion.substringBefore("."), // Only use major version as FML error message sucks. The error message for wrong Forge version is way better.
             "reiVersion" to reiVersion,
-            "kubejsVersion" to kubejsVersion,
             "githubUser" to githubUser,
             "githubRepo" to githubRepo
         )

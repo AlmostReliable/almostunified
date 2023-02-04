@@ -52,7 +52,7 @@ public final class Utils {
 
         List<FormattedCharSequence> formattedTooltip = new ArrayList<>(tooltip.size());
         for (Component line : tooltip) {
-            formattedTooltip.addAll(ComponentRenderUtils.wrapComponents(line, 150, mc.font));
+            formattedTooltip.addAll(ComponentRenderUtils.wrapComponents(line, 300, mc.font));
         }
         screen.renderTooltip(stack, formattedTooltip, mX, mY);
     }

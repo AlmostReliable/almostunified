@@ -1,7 +1,8 @@
 package com.almostreliable.unified.utils;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -21,9 +22,9 @@ public class TagMap {
         TagMap tagMap = new TagMap();
 
         unifyTags.forEach(ut -> {
-            TagKey<Item> asTagKey = TagKey.create(Registry.ITEM_REGISTRY, ut.location());
-            Registry.ITEM.getTagOrEmpty(asTagKey).forEach(holder -> {
-                ResourceLocation key = Registry.ITEM.getKey(holder.value());
+            TagKey<Item> asTagKey = TagKey.create(Registries.ITEM, ut.location());
+            BuiltInRegistries.ITEM.getTagOrEmpty(asTagKey).forEach(holder -> {
+                ResourceLocation key = BuiltInRegistries.ITEM.getKey(holder.value());
                 tagMap.put(ut, key);
             });
         });
@@ -42,7 +43,7 @@ public class TagMap {
         var tags = tagManager
                 .getResult()
                 .stream()
-                .filter(result -> result.key() == Registry.ITEM_REGISTRY)
+                .filter(result -> result.key() == Registries.ITEM)
                 .findFirst()
                 .map(TagManager.LoadResult::tags)
                 .orElseThrow(() -> new IllegalStateException("No item tag result found"));
@@ -56,7 +57,7 @@ public class TagMap {
                 holder
                         .unwrapKey()
                         .map(ResourceKey::location)
-                        .filter(Registry.ITEM::containsKey)
+                        .filter(BuiltInRegistries.ITEM::containsKey)
                         .ifPresent(itemId -> tagMap.put(tag, itemId));
             }
         }

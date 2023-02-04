@@ -5,7 +5,6 @@ val modName: String by project
 val modPackage: String by project
 val reiVersion: String by project
 val jeiVersion: String by project
-val kubejsVersion: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
 val junitVersion: String by project
@@ -27,11 +26,11 @@ loom {
 }
 
 dependencies {
-    modCompileOnly("dev.latvian.mods:kubejs:$kubejsVersion") // required for common kubejs plugin | common has remapping issues
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for common rei plugin
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
     testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-common:$jeiVersion") // required for common jei plugin and mixin
+    modCompileOnlyApi("mezz.jei:jei-$minecraftVersion-common:$jeiVersion") // required for common jei plugin
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-gui:$jeiVersion") // required for jei mixin
 
     // The Fabric loader is required here to use the @Environment annotations and to get the mixin dependencies.
     // Do NOT use other classes from the Fabric loader!

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'v1.19.2-*.*.*'
+      - 'v1.19.3-*.*.*'
 
 env:
   JAVA_DIST: 'zulu'
@@ -107,10 +107,8 @@ jobs:
           curseforge-dependencies: |
             jei | suggests | *
             roughly-enough-items | suggests | *
-            kubejs | suggests | *
           modrinth-dependencies: |
             roughly-enough-items | suggests | *
-            kubejs | suggests | *
 
           retry-attempts: 2
           retry-delay: 10000
@@ -137,10 +135,8 @@ jobs:
           curseforge-dependencies: |
             jei | suggests | *
             roughly-enough-items | suggests | *
-            kubejs | suggests | *
           modrinth-dependencies: |
             roughly-enough-items | suggests | *
-            kubejs | suggests | *
 
           retry-attempts: 2
           retry-delay: 10000

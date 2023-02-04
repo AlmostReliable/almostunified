@@ -5,7 +5,6 @@ val modId: String by project
 val forgeRecipeViewer: String by project
 val reiVersion: String by project
 val jeiVersion: String by project
-val kubejsVersion: String by project
 
 
 plugins {
@@ -42,7 +41,6 @@ dependencies {
     shadowCommon(project(":Common", "transformProductionForge")) { isTransitive = false }
 
     // Mod dependencies
-    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubejsVersion")!!)
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for common rei plugin | api does not work here
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
     testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling
