@@ -68,7 +68,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
                         .stream()
                         .flatMap(rl -> Registry.ITEM.getOptional(rl).stream())
                         .collect(Collectors.toSet()))
-                .orElse(Set.of());
+                .orElseGet(Set::of);
     }
 
     @Override
@@ -81,6 +81,6 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
                         .stream()
                         .map(ut -> TagKey.create(Registry.ITEM_REGISTRY, ut.location()))
                         .collect(Collectors.toSet()))
-                .orElse(Set.of());
+                .orElseGet(Set::of);
     }
 }
