@@ -1,5 +1,7 @@
 package com.almostreliable.unified.compat;
 
+import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
@@ -29,10 +31,11 @@ public class AlmostJEI implements IModPlugin {
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime jei) {
-        UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-        if (config.reiOrJeiDisabled()) return;
+        Boolean jeiDisabled = AlmostUnified.getRuntime().getUnifyConfig().map(UnifyConfig::reiOrJeiDisabled).orElse(false);
 
-        Collection<ItemStack> items = HideHelper.createHidingList(config);
+        if (jeiDisabled) return;
+
+        Collection<ItemStack> items = HideHelper.createHidingList(AlmostUnified.getRuntime());
         if (!items.isEmpty()) {
             jei.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, items);
         }

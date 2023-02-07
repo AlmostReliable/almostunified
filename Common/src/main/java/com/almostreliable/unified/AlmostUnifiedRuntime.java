@@ -11,28 +11,6 @@ import java.util.Optional;
 
 public interface AlmostUnifiedRuntime {
 
-    AlmostUnifiedRuntime EMPTY = new AlmostUnifiedRuntime() {
-        @Override
-        public void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
-            // no-op
-        }
-
-        @Override
-        public Optional<TagMap> getFilteredTagMap() {
-            return Optional.empty();
-        }
-
-        @Override
-        public Optional<ReplacementMap> getReplacementMap() {
-            return Optional.empty();
-        }
-
-        @Override
-        public Optional<UnifyConfig> getUnifyConfig() {
-            return Optional.empty();
-        }
-    };
-
     void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking);
 
     Optional<TagMap> getFilteredTagMap();
