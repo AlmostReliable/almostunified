@@ -3,7 +3,6 @@ package com.almostreliable.unified.compat;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.CRTLookup;
 import com.almostreliable.unified.utils.Utils;
@@ -31,8 +30,12 @@ public class AlmostJEI implements IModPlugin {
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime jei) {
-        Boolean jeiDisabled = AlmostUnified.getRuntime().getUnifyConfig().map(UnifyConfig::reiOrJeiDisabled).orElse(false);
+        AlmostUnifiedFallbackRuntime.getInstance().reload();
 
+        Boolean jeiDisabled = AlmostUnified.getRuntime()
+                .getUnifyConfig()
+                .map(UnifyConfig::reiOrJeiDisabled)
+                .orElse(false);
         if (jeiDisabled) return;
 
         Collection<ItemStack> items = HideHelper.createHidingList(AlmostUnified.getRuntime());

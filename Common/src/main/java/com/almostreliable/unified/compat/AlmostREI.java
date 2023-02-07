@@ -1,6 +1,7 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.ClientTagUpdateEvent;
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.config.UnifyConfig;
@@ -46,12 +47,15 @@ public class AlmostREI implements REIClientPlugin {
     @Override
     public void registerBasicEntryFiltering(BasicFilteringRule<?> rule) {
         filterUpdate = rule.hide(() -> {
+            AlmostUnifiedFallbackRuntime.getInstance().reload();
+
             var reiDisabled = AlmostUnified
                     .getRuntime()
                     .getUnifyConfig()
                     .map(UnifyConfig::reiOrJeiDisabled)
                     .orElse(false);
             if (reiDisabled) return List.of();
+
             return EntryIngredients.ofItemStacks(HideHelper.createHidingList(AlmostUnified.getRuntime()));
         });
     }
