@@ -92,7 +92,7 @@ public class AlmostKube extends KubeJSPlugin {
 
         private static IllegalStateException notLoadedException() {
             return new IllegalStateException(
-                    "AlmostUnified runtime is not loaded in kubejs. Possible reason: Calling runtime to early or not in a server environment.");
+                    "AlmostUnified runtime is not available in KubeJS! Possible reasons: calling runtime too early, not in a server environment");
         }
     }
 }
