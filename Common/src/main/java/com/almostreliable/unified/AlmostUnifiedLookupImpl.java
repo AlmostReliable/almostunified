@@ -26,30 +26,36 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     @Override
     public Item getReplacementForItem(ItemLike itemLike) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
-        ResourceLocation result = AlmostUnified.getRuntime().getReplacementMap().getReplacementForItem(id);
-        return BuiltInRegistries.ITEM.getOptional(result).orElse(null);
+        return AlmostUnified
+                .getRuntime()
+                .getReplacementMap()
+                .map(rm -> rm.getReplacementForItem(id))
+                .flatMap(BuiltInRegistries.ITEM::getOptional)
+                .orElse(null);
     }
 
     @Nullable
     @Override
     public Item getPreferredItemForTag(TagKey<Item> tag) {
         UnifyTag<Item> asUnifyTag = UnifyTag.item(tag.location());
-        ResourceLocation result = AlmostUnified
+        return AlmostUnified
                 .getRuntime()
                 .getReplacementMap()
-                .getPreferredItemForTag(asUnifyTag, $ -> true);
-        return BuiltInRegistries.ITEM.getOptional(result).orElse(null);
+                .map(rm -> rm.getPreferredItemForTag(asUnifyTag, $ -> true))
+                .flatMap(BuiltInRegistries.ITEM::getOptional)
+                .orElse(null);
     }
 
     @Nullable
     @Override
     public TagKey<Item> getPreferredTagForItem(ItemLike itemLike) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
-        UnifyTag<Item> unifyTag = AlmostUnified.getRuntime().getReplacementMap().getPreferredTagForItem(id);
-        if (unifyTag == null) {
-            return null;
-        }
-        return TagKey.create(Registries.ITEM, unifyTag.location());
+        return AlmostUnified
+                .getRuntime()
+                .getReplacementMap()
+                .map(rm -> rm.getPreferredTagForItem(id))
+                .map(ut -> TagKey.create(Registries.ITEM, ut.location()))
+                .orElse(null);
     }
 
     @Override
@@ -58,10 +64,12 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
         return AlmostUnified
                 .getRuntime()
                 .getFilteredTagMap()
-                .getItems(asUnifyTag)
-                .stream()
-                .flatMap(rl -> BuiltInRegistries.ITEM.getOptional(rl).stream())
-                .collect(Collectors.toSet());
+                .map(tagMap -> tagMap
+                        .getItems(asUnifyTag)
+                        .stream()
+                        .flatMap(rl -> BuiltInRegistries.ITEM.getOptional(rl).stream())
+                        .collect(Collectors.toSet()))
+                .orElseGet(Set::of);
     }
 
     @Override
@@ -69,9 +77,11 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
         return AlmostUnified
                 .getRuntime()
                 .getFilteredTagMap()
-                .getTags()
-                .stream()
-                .map(ut -> TagKey.create(Registries.ITEM, ut.location()))
-                .collect(Collectors.toSet());
+                .map(tagMap -> tagMap
+                        .getTags()
+                        .stream()
+                        .map(ut -> TagKey.create(Registries.ITEM, ut.location()))
+                        .collect(Collectors.toSet()))
+                .orElseGet(Set::of);
     }
 }

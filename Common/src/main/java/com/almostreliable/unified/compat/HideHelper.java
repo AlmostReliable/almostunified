@@ -2,6 +2,7 @@ package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.AlmostUnifiedRuntime;
 import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMap;
@@ -17,11 +18,11 @@ import java.util.stream.Collectors;
 
 public class HideHelper {
 
-    public static Collection<ItemStack> createHidingList(UnifyConfig config) {
-        List<UnifyTag<Item>> unifyTags = config.bakeTags();
-        TagMap filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, config::includeItem);
-        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(config);
-        ReplacementMap repMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, config);
+    public static Collection<ItemStack> createHidingList(AlmostUnifiedRuntime runtime) {
+        ReplacementMap repMap = runtime.getReplacementMap().orElse(null);
+        TagMap filteredTagMap = runtime.getFilteredTagMap().orElse(null);
+
+        if (repMap == null || filteredTagMap == null) return new ArrayList<>();
 
         return filteredTagMap.getTags().stream().map(unifyTag -> {
             Collection<ResourceLocation> itemsByTag = filteredTagMap.getItems(unifyTag);

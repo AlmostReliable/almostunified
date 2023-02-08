@@ -29,7 +29,7 @@ public final class AlmostUnified {
 
     public static AlmostUnifiedRuntime getRuntime() {
         if (RUNTIME == null) {
-            throw new IllegalStateException("AlmostUnifiedRuntime not initialized");
+            return AlmostUnifiedFallbackRuntime.getInstance();
         }
         return RUNTIME;
     }
@@ -39,7 +39,7 @@ public final class AlmostUnified {
             throw new IllegalStateException("Internal error. TagManager was not updated correctly");
         }
 
-        RUNTIME = AlmostUnifiedRuntime.create(TAG_MANGER);
+        RUNTIME = AlmostUnifiedRuntimeImpl.create(TAG_MANGER);
     }
 
     public static void updateTagManager(TagManager tm) {

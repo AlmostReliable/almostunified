@@ -1,8 +1,9 @@
 package com.almostreliable.unified.compat;
 
+import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.ClientTagUpdateEvent;
 import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.CRTLookup;
 import com.almostreliable.unified.recipe.ClientRecipeTracker.ClientRecipeLink;
@@ -46,9 +47,16 @@ public class AlmostREI implements REIClientPlugin {
     @Override
     public void registerBasicEntryFiltering(BasicFilteringRule<?> rule) {
         filterUpdate = rule.hide(() -> {
-            UnifyConfig config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-            if (config.reiOrJeiDisabled()) return List.of();
-            return EntryIngredients.ofItemStacks(HideHelper.createHidingList(config));
+            AlmostUnifiedFallbackRuntime.getInstance().reload();
+
+            var reiDisabled = AlmostUnified
+                    .getRuntime()
+                    .getUnifyConfig()
+                    .map(UnifyConfig::reiOrJeiDisabled)
+                    .orElse(false);
+            if (reiDisabled) return List.of();
+
+            return EntryIngredients.ofItemStacks(HideHelper.createHidingList(AlmostUnified.getRuntime()));
         });
     }
 
