@@ -32,6 +32,7 @@ public class AlmostKube extends KubeJSPlugin {
             UnifyTag<Item> tag = AlmostUnified
                     .getRuntime()
                     .getReplacementMap()
+                    .orElseThrow(UnifyWrapper::notLoadedException)
                     .getPreferredTagForItem(getId(stack));
             return tag == null ? null : tag.location().toString();
         }
@@ -40,6 +41,7 @@ public class AlmostKube extends KubeJSPlugin {
             ResourceLocation replacement = AlmostUnified
                     .getRuntime()
                     .getReplacementMap()
+                    .orElseThrow(UnifyWrapper::notLoadedException)
                     .getReplacementForItem(getId(stack));
             return ItemStackJS.of(replacement);
         }
@@ -49,6 +51,7 @@ public class AlmostKube extends KubeJSPlugin {
             ResourceLocation item = AlmostUnified
                     .getRuntime()
                     .getReplacementMap()
+                    .orElseThrow(UnifyWrapper::notLoadedException)
                     .getPreferredItemForTag(asUnifyTag, $ -> true);
             return ItemStackJS.of(item);
         }
@@ -57,6 +60,7 @@ public class AlmostKube extends KubeJSPlugin {
             return AlmostUnified
                     .getRuntime()
                     .getFilteredTagMap()
+                    .orElseThrow(UnifyWrapper::notLoadedException)
                     .getTags()
                     .stream()
                     .map(tag -> tag.location().toString())
@@ -68,6 +72,7 @@ public class AlmostKube extends KubeJSPlugin {
             return AlmostUnified
                     .getRuntime()
                     .getFilteredTagMap()
+                    .orElseThrow(UnifyWrapper::notLoadedException)
                     .getItems(asUnifyTag)
                     .stream()
                     .map(ResourceLocation::toString)
@@ -75,7 +80,7 @@ public class AlmostKube extends KubeJSPlugin {
         }
 
         public static UnifyConfig getUnifyConfig() {
-            return AlmostUnified.getRuntime().getUnifyConfig();
+            return AlmostUnified.getRuntime().getUnifyConfig().orElseThrow(UnifyWrapper::notLoadedException);
         }
 
         private static ResourceLocation getId(ItemStack stack) {
@@ -83,6 +88,11 @@ public class AlmostKube extends KubeJSPlugin {
                     .getResourceKey(stack.getItem())
                     .map(ResourceKey::location)
                     .orElseThrow(() -> new IllegalArgumentException("Item not found in registry"));
+        }
+
+        private static IllegalStateException notLoadedException() {
+            return new IllegalStateException(
+                    "AlmostUnified runtime is not available in KubeJS! Possible reasons: calling runtime too early, not in a server environment");
         }
     }
 }
