@@ -90,24 +90,16 @@ public final class JsonCompare {
 
     public static boolean matches(JsonObject first, JsonObject second, CompareSettings compareSettings) {
         Collection<String> ignoredFields = compareSettings.getIgnoredFields();
-        List<String> firstValidKeys = first
-                .keySet()
-                .stream()
-                .filter(key -> !ignoredFields.contains(key))
-                .toList();
-        List<String> secondValidKeys = second
-                .keySet()
-                .stream()
-                .filter(key -> !ignoredFields.contains(key))
-                .toList();
+        if (ignoredFields.isEmpty() && first.size() != second.size()) {
+            return false;
+        }
 
-        if (firstValidKeys.size() != secondValidKeys.size()) return false;
+        for (Map.Entry<String, JsonElement> firstEntry : first.entrySet()) {
+            if (ignoredFields.contains(firstEntry.getKey())) continue;
 
-        for (String firstKey : firstValidKeys) {
-            JsonElement firstElem = first.get(firstKey);
-            JsonElement secondElem = second.get(firstKey);
+            JsonElement firstElem = firstEntry.getValue();
+            JsonElement secondElem = second.get(firstEntry.getKey());
 
-            // the second element can still be null although the valid keys have the same size
             if (secondElem == null) return false;
 
             // sanitize elements for implicit counts of 1
