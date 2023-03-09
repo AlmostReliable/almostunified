@@ -6,6 +6,7 @@ import com.almostreliable.unified.utils.JsonCompare;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ public class DuplicationConfig extends Config {
     private final Set<Pattern> ignoreRecipeTypes;
     private final Set<Pattern> ignoreRecipes;
     private final boolean strictMode;
+    private final HashMap<ResourceLocation, Boolean> recipeTypeIgnoredCache;
 
     public DuplicationConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipes, boolean strictMode) {
         this.defaultRules = defaultRules;
@@ -27,10 +29,17 @@ public class DuplicationConfig extends Config {
         this.ignoreRecipeTypes = ignoreRecipeTypes;
         this.ignoreRecipes = ignoreRecipes;
         this.strictMode = strictMode;
+        this.recipeTypeIgnoredCache = new HashMap<>();
     }
 
     public boolean shouldIgnoreRecipe(RecipeLink recipe) {
-        return ignoreRecipeTypes.stream().anyMatch(pattern -> pattern.matcher(recipe.getType().toString()).matches()) ||
+        /*
+         * Avoid needlessly computing a regex match on every recipe by caching whether the type should be ignored or not.
+         */
+        boolean isTypeIgnored = recipeTypeIgnoredCache.computeIfAbsent(recipe.getType(), type -> {
+            return ignoreRecipeTypes.stream().anyMatch(pattern -> pattern.matcher(type.toString()).matches());
+        });
+        return isTypeIgnored ||
                ignoreRecipes.stream().anyMatch(pattern -> pattern.matcher(recipe.getId().toString()).matches());
     }
 
