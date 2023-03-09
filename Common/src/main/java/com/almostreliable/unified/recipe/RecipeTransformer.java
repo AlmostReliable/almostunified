@@ -8,6 +8,7 @@ import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.JsonQuery;
 import com.almostreliable.unified.utils.RecipeTypePropertiesLogger;
 import com.almostreliable.unified.utils.ReplacementMap;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
@@ -54,6 +55,7 @@ public class RecipeTransformer {
      * @return The result of the transformation.
      */
     public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
+        Stopwatch transformationTimer = Stopwatch.createStarted();
         AlmostUnified.LOG.warn("Recipe count: " + recipes.size());
 
         ClientRecipeTracker.RawBuilder tracker = skipClientTracking ? null : new ClientRecipeTracker.RawBuilder();
@@ -72,7 +74,8 @@ public class RecipeTransformer {
             result.addAll(recipeLinks);
         });
 
-        AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size());
+        AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size() + " (done in " + transformationTimer.stop() + ")");
+        duplicationConfig.clearCache();
         if (tracker != null) recipes.putAll(tracker.compute());
         return result;
     }
