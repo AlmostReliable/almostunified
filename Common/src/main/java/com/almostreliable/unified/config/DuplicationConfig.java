@@ -37,10 +37,19 @@ public class DuplicationConfig extends Config {
          * Avoid needlessly computing a regex match on every recipe by caching whether the type should be ignored or not.
          */
         boolean isTypeIgnored = recipeTypeIgnoredCache.computeIfAbsent(recipe.getType(), type -> {
-            return ignoreRecipeTypes.stream().anyMatch(pattern -> pattern.matcher(type.toString()).matches());
+            for(Pattern ignorePattern : ignoreRecipeTypes) {
+                if(ignorePattern.matcher(type.toString()).matches())
+                    return true;
+            }
+            return false;
         });
-        return isTypeIgnored ||
-               ignoreRecipes.stream().anyMatch(pattern -> pattern.matcher(recipe.getId().toString()).matches());
+        if(isTypeIgnored)
+            return true;
+        for(Pattern ignoreRecipePattern : ignoreRecipes) {
+            if(ignoreRecipePattern.matcher(recipe.getId().toString()).matches())
+                return true;
+        }
+        return false;
     }
 
     public JsonCompare.CompareSettings getCompareSettings(ResourceLocation type) {
