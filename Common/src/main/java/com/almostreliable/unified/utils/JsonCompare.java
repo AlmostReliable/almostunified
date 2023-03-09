@@ -90,21 +90,16 @@ public final class JsonCompare {
 
     public static boolean matches(JsonObject first, JsonObject second, CompareSettings compareSettings) {
         Collection<String> ignoredFields = compareSettings.getIgnoredFields();
-        if(ignoredFields.isEmpty()) {
-            // optimization: check if the objects have the same number of keys, since we won't be filtering any
-            if(first.size() != second.size())
-                return false;
+        if (ignoredFields.isEmpty() && first.size() != second.size()) {
+            return false;
         }
 
-        // iterate using entrySet to avoid needing to call get() on JsonObject (it is an O(log(n)) operation)
-        for(Map.Entry<String, JsonElement> firstEntry : first.entrySet()) {
-            if(ignoredFields.contains(firstEntry.getKey()))
-                continue;
+        for (Map.Entry<String, JsonElement> firstEntry : first.entrySet()) {
+            if (ignoredFields.contains(firstEntry.getKey())) continue;
 
             JsonElement firstElem = firstEntry.getValue();
             JsonElement secondElem = second.get(firstEntry.getKey());
 
-            // if the key doesn't exist on the second element, they are clearly not equal
             if (secondElem == null) return false;
 
             // sanitize elements for implicit counts of 1

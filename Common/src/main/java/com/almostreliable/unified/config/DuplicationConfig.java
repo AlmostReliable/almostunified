@@ -33,23 +33,34 @@ public class DuplicationConfig extends Config {
     }
 
     public boolean shouldIgnoreRecipe(RecipeLink recipe) {
-        /*
-         * Avoid needlessly computing a regex match on every recipe by caching whether the type should be ignored or not.
-         */
-        boolean isTypeIgnored = recipeTypeIgnoredCache.computeIfAbsent(recipe.getType(), type -> {
-            for(Pattern ignorePattern : ignoreRecipeTypes) {
-                if(ignorePattern.matcher(type.toString()).matches())
+        if (isRecipeTypeIgnored(recipe)) {
+            return true;
+        }
+
+        for (Pattern ignoreRecipePattern : ignoreRecipes) {
+            if (ignoreRecipePattern.matcher(recipe.getId().toString()).matches()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if the recipe type is ignored. This is cached to avoid having to recompute the regex for every recipe.
+     *
+     * @param recipe The recipe to check
+     * @return True if the recipe type is ignored, false otherwise
+     */
+    private boolean isRecipeTypeIgnored(RecipeLink recipe) {
+        return recipeTypeIgnoredCache.computeIfAbsent(recipe.getType(), type -> {
+            for (Pattern ignorePattern : ignoreRecipeTypes) {
+                if (ignorePattern.matcher(type.toString()).matches()) {
                     return true;
+                }
             }
             return false;
         });
-        if(isTypeIgnored)
-            return true;
-        for(Pattern ignoreRecipePattern : ignoreRecipes) {
-            if(ignoreRecipePattern.matcher(recipe.getId().toString()).matches())
-                return true;
-        }
-        return false;
     }
 
     public JsonCompare.CompareSettings getCompareSettings(ResourceLocation type) {
