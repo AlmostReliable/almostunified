@@ -21,7 +21,7 @@ public class DuplicationConfig extends Config {
     private final Set<Pattern> ignoreRecipeTypes;
     private final Set<Pattern> ignoreRecipes;
     private final boolean strictMode;
-    private final HashMap<ResourceLocation, Boolean> recipeTypeIgnoredCache;
+    private final HashMap<ResourceLocation, Boolean> ignoredRecipeTypesCache;
 
     public DuplicationConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipes, boolean strictMode) {
         this.defaultRules = defaultRules;
@@ -29,7 +29,7 @@ public class DuplicationConfig extends Config {
         this.ignoreRecipeTypes = ignoreRecipeTypes;
         this.ignoreRecipes = ignoreRecipes;
         this.strictMode = strictMode;
-        this.recipeTypeIgnoredCache = new HashMap<>();
+        this.ignoredRecipeTypesCache = new HashMap<>();
     }
 
     public boolean shouldIgnoreRecipe(RecipeLink recipe) {
@@ -53,7 +53,7 @@ public class DuplicationConfig extends Config {
      * @return True if the recipe type is ignored, false otherwise
      */
     private boolean isRecipeTypeIgnored(RecipeLink recipe) {
-        return recipeTypeIgnoredCache.computeIfAbsent(recipe.getType(), type -> {
+        return ignoredRecipeTypesCache.computeIfAbsent(recipe.getType(), type -> {
             for (Pattern ignorePattern : ignoreRecipeTypes) {
                 if (ignorePattern.matcher(type.toString()).matches()) {
                     return true;
@@ -69,6 +69,10 @@ public class DuplicationConfig extends Config {
 
     public boolean isStrictMode() {
         return strictMode;
+    }
+
+    public void clearCache() {
+        ignoredRecipeTypesCache.clear();
     }
 
     public static class Serializer extends Config.Serializer<DuplicationConfig> {
