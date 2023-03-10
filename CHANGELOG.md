@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.3.6] - 2023-03-10
+
+### Changed
+- decent performance improvements ([#35])
+ - depending on the amount of recipes, this can improve the load times by around 50-70%
+
+<!-- Links -->
+[#35]: https://github.com/AlmostReliable/almostunified/pull/35
+
 ## [0.3.3] - 2022-12-20
 
 ### Added
@@ -272,6 +281,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.3.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.6-beta
 [0.3.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.3-beta
 [0.3.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.2-beta
 [0.3.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.1-beta
