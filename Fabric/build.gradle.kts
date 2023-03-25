@@ -33,7 +33,7 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
     testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion") // required for common jei plugin and mixin
+//    modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion") // required for common jei plugin and mixin
     when (fabricRecipeViewer) { // runtime only
         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
         "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion")
