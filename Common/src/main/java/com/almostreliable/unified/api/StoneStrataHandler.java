@@ -6,7 +6,9 @@ import com.almostreliable.unified.utils.UnifyTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -15,11 +17,13 @@ public class StoneStrataHandler {
     private final List<String> stoneStrata;
     private final Pattern tagMatcher;
     private final TagMap stoneStrataTagMap;
+    private final Map<UnifyTag<?>, Boolean> stoneStrataTagCache;
 
     private StoneStrataHandler(List<String> stoneStrata, Pattern tagMatcher, TagMap stoneStrataTagMap) {
         this.stoneStrata = stoneStrata;
         this.tagMatcher = tagMatcher;
         this.stoneStrataTagMap = stoneStrataTagMap;
+        this.stoneStrataTagCache = new HashMap<>();
     }
 
     public static StoneStrataHandler create(List<String> stoneStrataIds, Set<UnifyTag<Item>> stoneStrataTags, TagMap tagMap) {
@@ -64,6 +68,10 @@ public class StoneStrataHandler {
     }
 
     public boolean isStoneStrataTag(UnifyTag<Item> tag) {
-        return tagMatcher.matcher(tag.location().toString()).matches();
+        return stoneStrataTagCache.computeIfAbsent(tag, t -> tagMatcher.matcher(t.location().toString()).matches());
+    }
+
+    public void clearCache() {
+        stoneStrataTagCache.clear();
     }
 }

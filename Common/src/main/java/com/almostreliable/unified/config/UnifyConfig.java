@@ -26,6 +26,7 @@ public class UnifyConfig extends Config {
     private final Set<Pattern> ignoredRecipeTypes;
     private final Set<Pattern> ignoredRecipes;
     private final boolean hideJeiRei;
+    private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
 
     public UnifyConfig(List<String> modPriorities, List<String> stoneStrata, List<String> unbakedTags, List<String> materials, Map<ResourceLocation, String> priorityOverrides, Set<UnifyTag<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean hideJeiRei) {
         this.modPriorities = modPriorities;
@@ -38,6 +39,7 @@ public class UnifyConfig extends Config {
         this.ignoredRecipeTypes = ignoredRecipeTypes;
         this.ignoredRecipes = ignoredRecipes;
         this.hideJeiRei = hideJeiRei;
+        this.ignoredRecipeTypesCache = new HashMap<>();
     }
 
     public List<String> getModPriorities() {
@@ -80,19 +82,40 @@ public class UnifyConfig extends Config {
     }
 
     public boolean includeItem(ResourceLocation item) {
-        return ignoredItems.stream().noneMatch(pattern -> pattern.matcher(item.toString()).matches());
+        for (Pattern pattern : ignoredItems) {
+            if (pattern.matcher(item.toString()).matches()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean includeRecipe(ResourceLocation recipe) {
-        return ignoredRecipes.stream().noneMatch(pattern -> pattern.matcher(recipe.toString()).matches());
+        for (Pattern pattern : ignoredRecipes) {
+            if (pattern.matcher(recipe.toString()).matches()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean includeRecipeType(ResourceLocation type) {
-        return ignoredRecipeTypes.stream().noneMatch(pattern -> pattern.matcher(type.toString()).matches());
+        return ignoredRecipeTypesCache.computeIfAbsent(type, t -> {
+            for (Pattern pattern : ignoredRecipeTypes) {
+                if (pattern.matcher(t.toString()).matches()) {
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 
     public boolean reiOrJeiDisabled() {
         return !hideJeiRei;
+    }
+
+    public void clearCache() {
+        ignoredRecipeTypesCache.clear();
     }
 
     public static class Serializer extends Config.Serializer<UnifyConfig> {

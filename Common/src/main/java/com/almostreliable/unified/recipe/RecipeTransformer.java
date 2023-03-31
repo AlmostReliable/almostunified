@@ -75,7 +75,11 @@ public class RecipeTransformer {
         });
 
         AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size() + " (done in " + transformationTimer.stop() + ")");
+
+        unifyConfig.clearCache();
         duplicationConfig.clearCache();
+        replacementMap.getStoneStrataHandler().clearCache();
+
         if (tracker != null) recipes.putAll(tracker.compute());
         return result;
     }
