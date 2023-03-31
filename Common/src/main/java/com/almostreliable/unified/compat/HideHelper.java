@@ -1,16 +1,11 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.StoneStrataHandler;
-import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
-import com.almostreliable.unified.utils.UnifyTag;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
@@ -48,11 +43,5 @@ public class HideHelper {
 
             return toHide.stream().flatMap(rl -> Registry.ITEM.getOptional(rl).stream()).map(ItemStack::new).toList();
         }).flatMap(Collection::stream).toList();
-    }
-
-    private static StoneStrataHandler getStoneStrataHandler(UnifyConfig config) {
-        Set<UnifyTag<Item>> stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(config.getStoneStrata());
-        TagMap stoneStrataTagMap = TagMap.create(stoneStrataTags);
-        return StoneStrataHandler.create(config.getStoneStrata(), stoneStrataTags, stoneStrataTagMap);
     }
 }

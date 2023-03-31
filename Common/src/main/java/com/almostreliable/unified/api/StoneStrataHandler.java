@@ -24,10 +24,10 @@ public class StoneStrataHandler {
 
     public static StoneStrataHandler create(List<String> stoneStrataIds, Set<UnifyTag<Item>> stoneStrataTags, TagMap tagMap) {
         TagMap stoneStrataTagMap = tagMap.filtered(stoneStrataTags::contains, item -> true);
-        Pattern tagMatcher = switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
-            case FORGE -> Pattern.compile("forge:ores/.+");
-            case FABRIC -> Pattern.compile("(c:ores/.+|c:.+_ore)");
-        };
+        Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
+            case FORGE -> "forge:ores/.+";
+            case FABRIC -> "(c:ores/.+|c:.+_ore)";
+        });
         return new StoneStrataHandler(stoneStrataIds, tagMatcher, stoneStrataTagMap);
     }
 
