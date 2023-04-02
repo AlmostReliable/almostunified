@@ -6,8 +6,7 @@ import com.almostreliable.unified.utils.UnifyTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class StoneStrataHandler {
@@ -15,19 +14,34 @@ public class StoneStrataHandler {
     private final List<String> stoneStrata;
     private final Pattern tagMatcher;
     private final TagMap stoneStrataTagMap;
+    private final Map<UnifyTag<?>, Boolean> stoneStrataTagCache;
 
     private StoneStrataHandler(List<String> stoneStrata, Pattern tagMatcher, TagMap stoneStrataTagMap) {
-        this.stoneStrata = stoneStrata;
+        this.stoneStrata = createSortedStoneStrata(stoneStrata);
         this.tagMatcher = tagMatcher;
         this.stoneStrataTagMap = stoneStrataTagMap;
+        this.stoneStrataTagCache = new HashMap<>();
+    }
+
+    /**
+     * Returns the stone strata list sorted from longest to shortest.
+     * <p>
+     * This is required to ensure that the longest strata is returned and no sub-matches happen.<br>
+     * Example: "nether" and "blue_nether" would both match "nether" if the list is not sorted.
+     *
+     * @param stoneStrata The stone strata list to sort.
+     * @return The sorted stone strata list.
+     */
+    private static List<String> createSortedStoneStrata(List<String> stoneStrata) {
+        return stoneStrata.stream().sorted(Comparator.comparingInt(String::length).reversed()).toList();
     }
 
     public static StoneStrataHandler create(List<String> stoneStrataIds, Set<UnifyTag<Item>> stoneStrataTags, TagMap tagMap) {
         TagMap stoneStrataTagMap = tagMap.filtered(stoneStrataTags::contains, item -> true);
-        Pattern tagMatcher = switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
-            case FORGE -> Pattern.compile("forge:ores/.+");
-            case FABRIC -> Pattern.compile("(c:ores/.+|c:.+_ore)");
-        };
+        Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
+            case FORGE -> "forge:ores/.+";
+            case FABRIC -> "(c:ores/.+|c:.+_ores)";
+        });
         return new StoneStrataHandler(stoneStrataIds, tagMatcher, stoneStrataTagMap);
     }
 
@@ -64,6 +78,10 @@ public class StoneStrataHandler {
     }
 
     public boolean isStoneStrataTag(UnifyTag<Item> tag) {
-        return tagMatcher.matcher(tag.location().toString()).matches();
+        return stoneStrataTagCache.computeIfAbsent(tag, t -> tagMatcher.matcher(t.location().toString()).matches());
+    }
+
+    public void clearCache() {
+        stoneStrataTagCache.clear();
     }
 }
