@@ -3,14 +3,12 @@
   "minVersion": "0.8.5",
   "package": "com.almostreliable.unified.mixin",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "com.almostreliable.unified.mixin.AlmostMixinPlugin",
   "mixins": [
     "RecipeManagerMixin",
     "ReloadableServerResourcesMixin"
   ],
   "client": [
-    "ClientPacketListenerMixin",
-    "JeiRecipesGuiMixin"
+    "ClientPacketListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

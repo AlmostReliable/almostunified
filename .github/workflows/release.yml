@@ -105,8 +105,8 @@ jobs:
           java: ${{ env.JAVA_VERSION }}
 
           dependencies: |
-            jei | suggests | *
             roughly-enough-items | suggests | *
+          #            jei | suggests | *
 
           retry-attempts: 2
           retry-delay: 10000
@@ -131,8 +131,8 @@ jobs:
           java: ${{ env.JAVA_VERSION }}
 
           dependencies: |
-            jei | suggests | *
             roughly-enough-items | suggests | *
+          #            jei | suggests | *
 
           retry-attempts: 2
           retry-delay: 10000
