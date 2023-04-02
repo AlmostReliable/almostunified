@@ -104,10 +104,8 @@ jobs:
           version-resolver: exact
           java: ${{ env.JAVA_VERSION }}
 
-          curseforge-dependencies: |
+          dependencies: |
             jei | suggests | *
-            roughly-enough-items | suggests | *
-          modrinth-dependencies: |
             roughly-enough-items | suggests | *
 
           retry-attempts: 2
@@ -132,10 +130,8 @@ jobs:
           version-resolver: exact
           java: ${{ env.JAVA_VERSION }}
 
-          curseforge-dependencies: |
+          dependencies: |
             jei | suggests | *
-            roughly-enough-items | suggests | *
-          modrinth-dependencies: |
             roughly-enough-items | suggests | *
 
           retry-attempts: 2

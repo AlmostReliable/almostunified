@@ -5,7 +5,6 @@ import com.almostreliable.unified.utils.FileUtils;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 
-import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -139,7 +138,7 @@ public class RecipeDumper {
             getSortedUnifiedRecipes(type).forEach(recipe -> {
                 stringBuilder
                         .append("\t- ")
-                        .append(recipe.getId().toString())
+                        .append(recipe.getId())
                         .append("\n")
                         .append("\t\t    Original: ")
                         .append(recipe.getOriginal().toString())
