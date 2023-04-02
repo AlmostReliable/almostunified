@@ -18,7 +18,7 @@ import java.util.Map;
 public class RecipeManagerMixin {
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
-    public void runTransformation(Map<ResourceLocation, JsonElement> recipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
+    private void runTransformation(Map<ResourceLocation, JsonElement> recipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         try {
             AlmostUnified.reloadRuntime();
             AlmostUnified.getRuntime().run(recipes, AlmostUnified.getStartupConfig().isServerOnly());

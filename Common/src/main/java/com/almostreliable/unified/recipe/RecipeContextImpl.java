@@ -57,8 +57,8 @@ public class RecipeContextImpl implements RecipeContext {
         return replacementMap.getPreferredTagForItem(item);
     }
 
-    @Override
     @Nullable
+    @Override
     public JsonElement createIngredientReplacement(@Nullable JsonElement element) {
         if (element == null) {
             return null;

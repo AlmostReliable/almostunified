@@ -104,11 +104,8 @@ jobs:
           version-resolver: exact
           java: ${{ env.JAVA_VERSION }}
 
-          curseforge-dependencies: |
+          dependencies: |
             jei | suggests | *
-            roughly-enough-items | suggests | *
-            kubejs | suggests | *
-          modrinth-dependencies: |
             roughly-enough-items | suggests | *
             kubejs | suggests | *
 
@@ -134,11 +131,8 @@ jobs:
           version-resolver: exact
           java: ${{ env.JAVA_VERSION }}
 
-          curseforge-dependencies: |
+          dependencies: |
             jei | suggests | *
-            roughly-enough-items | suggests | *
-            kubejs | suggests | *
-          modrinth-dependencies: |
             roughly-enough-items | suggests | *
             kubejs | suggests | *
 

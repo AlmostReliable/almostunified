@@ -28,7 +28,7 @@ public class AlmostMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {}
 
-    @SuppressWarnings("ReturnOfNull")
+    @SuppressWarnings({ "ReturnOfNull", "DataFlowIssue" })
     @Override
     public String getRefMapperConfig() {
         return null;
@@ -42,7 +42,7 @@ public class AlmostMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {}
 
-    @SuppressWarnings("ReturnOfNull")
+    @SuppressWarnings({ "ReturnOfNull", "DataFlowIssue" })
     @Override
     public List<String> getMixins() {
         return null;

@@ -6,10 +6,7 @@ import com.almostreliable.unified.utils.JsonCompare;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -21,7 +18,7 @@ public class DuplicationConfig extends Config {
     private final Set<Pattern> ignoreRecipeTypes;
     private final Set<Pattern> ignoreRecipes;
     private final boolean strictMode;
-    private final HashMap<ResourceLocation, Boolean> ignoredRecipeTypesCache;
+    private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
 
     public DuplicationConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipes, boolean strictMode) {
         this.defaultRules = defaultRules;
