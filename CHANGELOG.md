@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning].
 
 ## [0.3.8] - 2023-04-06
 
+### Added
+- JEI support since it was updated to 1.19.4
+
 ### Fixed
 - stone strata fallback variant for clean stone
 
@@ -19,4 +22,5 @@ Initial 1.19.4 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.3.8]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.3.8-beta
 [0.3.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.3.7-beta
