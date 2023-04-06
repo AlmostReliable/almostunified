@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.3.8] - 2023-04-06
+
+### Fixed
+- stone strata fallback variant for clean stone
+
 ## [0.3.7] - 2023-04-02
 
 ### Changed
