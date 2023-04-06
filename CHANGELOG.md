@@ -298,6 +298,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.3.8]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.8-beta
 [0.3.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.7-beta
 [0.3.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.6-beta
 [0.3.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.3-beta
