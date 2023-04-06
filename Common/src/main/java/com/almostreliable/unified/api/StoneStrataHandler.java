@@ -50,7 +50,8 @@ public class StoneStrataHandler {
      * Use {@link #isStoneStrataTag(UnifyTag)} to fill this requirement.
      *
      * @param item The item to get the stone strata from.
-     * @return The stone strata of the item. Returning empty string means clean-stone strata.
+     * @return The stone strata of the item. Clean stone strata returns an empty string for later sorting as a
+     * fallback variant.
      */
     public String getStoneStrata(ResourceLocation item) {
         String strata = stoneStrataTagMap
@@ -64,12 +65,19 @@ public class StoneStrataHandler {
                     return i == -1 ? null : s.substring(i + 1);
                 })
                 .orElse(null);
+
         if (strata != null) {
+            if (strata.equals("stone")) {
+                return "";
+            }
             return strata;
         }
 
         for (String stone : stoneStrata) {
             if (item.getPath().contains(stone + "_")) {
+                if (stone.equals("stone")) {
+                    return "";
+                }
                 return stone;
             }
         }
