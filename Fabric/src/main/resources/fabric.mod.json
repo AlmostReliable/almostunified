@@ -18,6 +18,9 @@
     "main": [
       "com.almostreliable.unified.AlmostUnifiedFabric"
     ],
+    "jei_mod_plugin": [
+      "com.almostreliable.unified.compat.AlmostJEI"
+    ],
     "rei_client": [
       "com.almostreliable.unified.compat.AlmostREI"
     ]

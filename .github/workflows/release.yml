@@ -106,7 +106,7 @@ jobs:
 
           dependencies: |
             roughly-enough-items | suggests | *
-          #            jei | suggests | *
+            jei | suggests | *
 
           retry-attempts: 2
           retry-delay: 10000
@@ -132,7 +132,7 @@ jobs:
 
           dependencies: |
             roughly-enough-items | suggests | *
-          #            jei | suggests | *
+            jei | suggests | *
 
           retry-attempts: 2
           retry-delay: 10000
