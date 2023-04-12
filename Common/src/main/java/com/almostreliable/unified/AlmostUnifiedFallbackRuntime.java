@@ -4,6 +4,7 @@ import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMap;
+import com.almostreliable.unified.utils.TagDelegateHelper;
 import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonElement;
@@ -18,8 +19,9 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
 
     @Nullable private static AlmostUnifiedFallbackRuntime INSTANCE;
     @Nullable private UnifyConfig config;
-    @Nullable private ReplacementMap replacementMap;
     @Nullable private TagMap filteredTagMap;
+    @Nullable private ReplacementMap replacementMap;
+    @Nullable private TagDelegateHelper tagDelegateHelper;
 
     public static AlmostUnifiedFallbackRuntime getInstance() {
         if (INSTANCE == null) {
@@ -32,8 +34,9 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
 
     public void reload() {
         config = null;
-        replacementMap = null;
         filteredTagMap = null;
+        replacementMap = null;
+        tagDelegateHelper = null;
         build();
     }
 
@@ -46,11 +49,12 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     }
 
     public void build() {
-        var config = getConfig();
-        List<UnifyTag<Item>> unifyTags = config.bakeTags();
-        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, config::includeItem);
-        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(config);
-        replacementMap = new ReplacementMap(Objects.requireNonNull(filteredTagMap), stoneStrataHandler, config);
+        var unifyConfig = getConfig();
+        List<UnifyTag<Item>> unifyTags = unifyConfig.bakeTags();
+        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
+        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(unifyConfig);
+        replacementMap = new ReplacementMap(Objects.requireNonNull(filteredTagMap), stoneStrataHandler, unifyConfig);
+        tagDelegateHelper = new TagDelegateHelper(unifyConfig.getTagDelegates());
     }
 
     private static StoneStrataHandler getStoneStrataHandler(UnifyConfig config) {
@@ -77,5 +81,10 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     @Override
     public Optional<UnifyConfig> getUnifyConfig() {
         return Optional.ofNullable(config);
+    }
+
+    @Override
+    public Optional<TagDelegateHelper> getTagDelegateHelper() {
+        return Optional.ofNullable(tagDelegateHelper);
     }
 }

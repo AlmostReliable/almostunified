@@ -59,11 +59,12 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
 
     @Nullable
     @Override
-    public UnifyTag<Item> getParentTagForDelegate(ResourceLocation delegate) {
+    public UnifyTag<Item> getDelegateForRef(ResourceLocation ref) {
+        UnifyTag<Item> rafUnifyTag = UnifyTag.item(ref);
         return AlmostUnified
                 .getRuntime()
-                .getFilteredTagMap()
-                .map(tagMap -> tagMap.getDelegates().get(delegate))
+                .getTagDelegateHelper()
+                .map(helper -> helper.getDelegateForRef(rafUnifyTag))
                 .orElse(null);
     }
 

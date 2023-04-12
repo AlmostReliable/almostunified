@@ -3,9 +3,11 @@ package com.almostreliable.unified.utils;
 import com.almostreliable.unified.AlmostUnified;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class TagDelegateHelper {
@@ -61,5 +63,40 @@ public class TagDelegateHelper {
                 // TODO: is it safe to not remove the ref from the maps?
             }
         }
+    }
+
+    /**
+     * Gets holders of all refs of the provided delegate tag.
+     * <p>
+     * Ensures every ref is an actual tag.
+     *
+     * @param tags     The global tag map.
+     * @param delegate The delegate tag to get all ref holders for.
+     * @param <T>      The type of the tag.
+     * @return A list of holders for all refs of the delegate tag.
+     */
+    public <T> List<Holder<T>> getHoldersForDelegate(Map<ResourceLocation, Collection<Holder<T>>> tags, UnifyTag<Item> delegate) {
+        var refs = delegateToRefs.get(delegate);
+        List<Holder<T>> holders = new ArrayList<>();
+        for (var ref : refs) {
+            var refHolders = tags.get(ref.location());
+            if (refHolders == null) {
+                AlmostUnified.LOG.warn("Tag delegate ref '{}' for tag '{}' does not exist", ref, delegate);
+            } else {
+                holders.addAll(refHolders);
+            }
+        }
+        return holders;
+    }
+
+    /**
+     * Gets the delegate tag for the provided ref tag.
+     *
+     * @param ref The ref tag to get the delegate for.
+     * @return The delegate tag.
+     */
+    @Nullable
+    public UnifyTag<Item> getDelegateForRef(UnifyTag<Item> ref) {
+        return refToDelegate.get(ref);
     }
 }

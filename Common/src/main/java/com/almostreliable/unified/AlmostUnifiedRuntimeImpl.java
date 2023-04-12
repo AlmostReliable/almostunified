@@ -21,21 +21,30 @@ import java.util.Map;
 import java.util.Optional;
 
 public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
+
     private final RecipeHandlerFactory recipeHandlerFactory;
     private final TagMap filteredTagMap;
     private final DuplicationConfig dupConfig;
     private final UnifyConfig unifyConfig;
     private final DebugConfig debugConfig;
-    private final TagDelegateHelper tagDelegates;
+    private final TagDelegateHelper tagDelegateHelper;
     private final ReplacementMap replacementMap;
 
-    private AlmostUnifiedRuntimeImpl(RecipeHandlerFactory recipeHandlerFactory, TagMap tagMap, DuplicationConfig dupConfig, UnifyConfig unifyConfig, DebugConfig debugConfig, TagDelegateHelper tagDelegates) {
+    private AlmostUnifiedRuntimeImpl(
+            RecipeHandlerFactory recipeHandlerFactory,
+            TagMap tagMap,
+            DuplicationConfig dupConfig,
+            UnifyConfig unifyConfig,
+            DebugConfig debugConfig,
+            TagDelegateHelper tagDelegateHelper
+    ) {
         this.recipeHandlerFactory = recipeHandlerFactory;
         this.dupConfig = dupConfig;
         this.unifyConfig = unifyConfig;
         this.debugConfig = debugConfig;
         List<UnifyTag<Item>> allowedTags = unifyConfig.bakeTags();
-        tagDelegates.validate(allowedTags);
+        tagDelegateHelper.validate(allowedTags);
+        this.tagDelegateHelper = tagDelegateHelper;
         this.filteredTagMap = tagMap.filtered(allowedTags::contains, unifyConfig::includeItem);
         StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(unifyConfig.getStoneStrata(),
                 AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
@@ -95,5 +104,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     @Override
     public Optional<UnifyConfig> getUnifyConfig() {
         return Optional.of(unifyConfig);
+    }
+
+    @Override
+    public Optional<TagDelegateHelper> getTagDelegateHelper() {
+        return Optional.of(tagDelegateHelper);
     }
 }

@@ -1,5 +1,6 @@
 package com.almostreliable.unified.recipe;
 
+import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.utils.JsonUtils;
@@ -59,12 +60,17 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
-    public UnifyTag<Item> getParentTagForDelegate(@Nullable ResourceLocation delegate) {
-        if (delegate == null) {
+    public UnifyTag<Item> getDelegateForRef(@Nullable ResourceLocation ref) {
+        if (ref == null) {
             return null;
         }
 
-        return replacementMap.getParentTagForDelegate(delegate);
+        UnifyTag<Item> rafUnifyTag = UnifyTag.item(ref);
+        return AlmostUnified
+                .getRuntime()
+                .getTagDelegateHelper()
+                .map(helper -> helper.getDelegateForRef(rafUnifyTag))
+                .orElse(null);
     }
 
     @Nullable
@@ -91,7 +97,7 @@ public class RecipeContextImpl implements RecipeContext {
 
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
                 ResourceLocation tag = ResourceLocation.tryParse(primitive.getAsString());
-                UnifyTag<Item> parentTag = getParentTagForDelegate(tag);
+                UnifyTag<Item> parentTag = getDelegateForRef(tag);
                 if (parentTag != null) {
                     object.add(RecipeConstants.TAG, new JsonPrimitive(parentTag.location().toString()));
                 }

@@ -53,14 +53,13 @@ public interface AlmostUnifiedLookup {
     TagKey<Item> getPreferredTagForItem(ItemLike itemLike);
 
     /**
-     * Returns the parent tag for a given delegate tag. Will return null if none is configured or
-     * not found.
+     * Gets the delegate tag for the provided ref tag.
      *
-     * @param delegate The delegate tag to find the parent tag for
-     * @return The parent tag or null if there is no parent tag
+     * @param ref The ref tag to get the delegate for.
+     * @return The delegate tag.
      */
     @Nullable
-    UnifyTag<Item> getParentTagForDelegate(ResourceLocation delegate);
+    UnifyTag<Item> getDelegateForRef(ResourceLocation ref);
 
     /**
      * Returns all potential items which are part of a given tag.
@@ -107,7 +106,7 @@ public interface AlmostUnifiedLookup {
 
         @Nullable
         @Override
-        public UnifyTag<Item> getParentTagForDelegate(ResourceLocation delegate) {
+        public UnifyTag<Item> getDelegateForRef(ResourceLocation ref) {
             return null;
         }
 
