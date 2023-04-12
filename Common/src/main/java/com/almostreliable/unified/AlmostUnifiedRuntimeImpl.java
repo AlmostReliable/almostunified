@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
@@ -46,8 +45,6 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     }
 
     public static AlmostUnifiedRuntimeImpl create(TagManager tagManager) {
-        Objects.requireNonNull(tagManager);
-
         createGitIgnoreIfNotExists();
         DuplicationConfig dupConfig = Config.load(DuplicationConfig.NAME, new DuplicationConfig.Serializer());
         UnifyConfig unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
