@@ -20,6 +20,9 @@ public interface RecipeContext {
     UnifyTag<Item> getPreferredTagForItem(@Nullable ResourceLocation item);
 
     @Nullable
+    UnifyTag<Item> getParentTagForDelegate(@Nullable ResourceLocation delegate);
+
+    @Nullable
     JsonElement createIngredientReplacement(@Nullable JsonElement element);
 
     @Nullable

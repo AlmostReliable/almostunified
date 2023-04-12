@@ -82,6 +82,16 @@ public class ReplacementMap {
     }
 
     @Nullable
+    public UnifyTag<Item> getParentTagForDelegate(ResourceLocation delegate) {
+        for (var entry : tagMap.getDelegates().entrySet()) {
+            if (entry.getValue().contains(delegate)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Nullable
     private ResourceLocation getOverrideForTag(UnifyTag<Item> tag, List<ResourceLocation> items) {
         String priorityOverride = unifyConfig.getPriorityOverrides().get(tag.location());
         if (priorityOverride != null) {

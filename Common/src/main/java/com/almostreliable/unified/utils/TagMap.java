@@ -122,6 +122,10 @@ public class TagMap {
         return Collections.unmodifiableSet(itemsToTags.getOrDefault(items, Collections.emptySet()));
     }
 
+    public Map<UnifyTag<Item>, Set<ResourceLocation>> getDelegates() {
+        return Collections.unmodifiableMap(tagsToDelegates);
+    }
+
     public int tagSize() {
         return tagsToItems.size();
     }

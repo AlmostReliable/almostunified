@@ -59,25 +59,43 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
+    public UnifyTag<Item> getParentTagForDelegate(@Nullable ResourceLocation delegate) {
+        if (delegate == null) {
+            return null;
+        }
+
+        return replacementMap.getParentTagForDelegate(delegate);
+    }
+
+    @Nullable
+    @Override
     public JsonElement createIngredientReplacement(@Nullable JsonElement element) {
         if (element == null) {
             return null;
         }
         JsonElement copy = element.deepCopy();
-        tryReplacingItemInIngredient(copy);
+        tryCreateIngredientReplacement(copy);
         return element.equals(copy) ? null : copy;
     }
 
-    private void tryReplacingItemInIngredient(@Nullable JsonElement element) {
+    private void tryCreateIngredientReplacement(@Nullable JsonElement element) {
         if (element instanceof JsonArray array) {
             for (JsonElement e : array) {
-                tryReplacingItemInIngredient(e);
+                tryCreateIngredientReplacement(e);
             }
         }
 
         if (element instanceof JsonObject object) {
-            tryReplacingItemInIngredient(object.get(RecipeConstants.VALUE));
-            tryReplacingItemInIngredient(object.get(RecipeConstants.INGREDIENT));
+            tryCreateIngredientReplacement(object.get(RecipeConstants.VALUE));
+            tryCreateIngredientReplacement(object.get(RecipeConstants.INGREDIENT));
+
+            if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
+                ResourceLocation tag = ResourceLocation.tryParse(primitive.getAsString());
+                UnifyTag<Item> parentTag = getParentTagForDelegate(tag);
+                if (parentTag != null) {
+                    object.add(RecipeConstants.TAG, new JsonPrimitive(parentTag.location().toString()));
+                }
+            }
 
             if (object.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {
                 ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
