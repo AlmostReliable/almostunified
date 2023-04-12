@@ -1,5 +1,7 @@
 package com.almostreliable.unified.api;
 
+import com.almostreliable.unified.utils.UnifyTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -51,6 +53,16 @@ public interface AlmostUnifiedLookup {
     TagKey<Item> getPreferredTagForItem(ItemLike itemLike);
 
     /**
+     * Returns the parent tag for a given delegate tag. Will return null if none is configured or
+     * not found.
+     *
+     * @param delegate The delegate tag to find the parent tag for
+     * @return The parent tag or null if there is no parent tag
+     */
+    @Nullable
+    UnifyTag<Item> getParentTagForDelegate(ResourceLocation delegate);
+
+    /**
      * Returns all potential items which are part of a given tag.
      * <p>
      * Tags are only considered if they are part of the config,
@@ -90,6 +102,12 @@ public interface AlmostUnifiedLookup {
         @Nullable
         @Override
         public TagKey<Item> getPreferredTagForItem(ItemLike itemLike) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public UnifyTag<Item> getParentTagForDelegate(ResourceLocation delegate) {
             return null;
         }
 

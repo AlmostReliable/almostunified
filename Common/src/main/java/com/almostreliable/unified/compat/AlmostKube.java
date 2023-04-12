@@ -56,6 +56,16 @@ public class AlmostKube extends KubeJSPlugin {
             return ItemStackJS.of(item);
         }
 
+        @Nullable
+        public static UnifyTag<Item> getParentTagForDelegate(ResourceLocation delegate) {
+            return AlmostUnified
+                    .getRuntime()
+                    .getFilteredTagMap()
+                    .orElseThrow(UnifyWrapper::notLoadedException)
+                    .getDelegates()
+                    .get(delegate);
+        }
+
         public static Set<String> getTags() {
             return AlmostUnified
                     .getRuntime()
