@@ -6,65 +6,60 @@ import com.google.common.collect.Multimap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class TagDelegateHelper {
 
     /**
-     * A map of tags to their delegate tags.
+     * A map of reference tags to their delegate tags.
      * <p>
-     * For example, if the map contains the entry {@code minecraft:logs -> minecraft:planks},
-     * then any recipes that use the tag {@code minecraft:logs} will be replaced with the tag
-     * {@code minecraft:planks}.
+     * Example:<br>
+     * If the map contains the entry {@code minecraft:logs -> minecraft:planks},
+     * any recipes where the tag {@code minecraft:logs} is being used, it will
+     * replace the tag with {@code minecraft:planks}.
      * <p>
      * Map Key = Tag to replace<br>
      * Map Value = Tag to delegate to
      */
-    Map<UnifyTag<Item>, UnifyTag<Item>> delegates = new HashMap<>();
-    Multimap<UnifyTag<Item>, UnifyTag<Item>> parentsToChildren = HashMultimap.create();
+    private final Map<UnifyTag<Item>, UnifyTag<Item>> refToDelegate = new HashMap<>();
+    private final Multimap<UnifyTag<Item>, UnifyTag<Item>> delegateToRefs = HashMultimap.create();
 
     public TagDelegateHelper(Map<ResourceLocation, Set<ResourceLocation>> tagDelegates) {
-        tagDelegates.forEach((rawDelegate, rawTags) -> {
-            rawTags.forEach(rawTag -> {
+        tagDelegates.forEach((rawDelegate, rawRefs) -> {
+            rawRefs.forEach(rawRef -> {
                 UnifyTag<Item> delegate = UnifyTag.item(rawDelegate);
-                UnifyTag<Item> tag = UnifyTag.item(rawTag);
-                parentsToChildren.put(delegate, tag);
-                delegates.put(tag, delegate);
+                UnifyTag<Item> ref = UnifyTag.item(rawRef);
+                refToDelegate.put(ref, delegate);
+                delegateToRefs.put(delegate, ref);
             });
         });
     }
 
-    public void validate(List<UnifyTag<Item>> tags) {
-        Set<UnifyTag<Item>> asSet = new HashSet<>(tags);
-
-        for (UnifyTag<Item> parent : parentsToChildren.keySet()) {
-            if (!asSet.contains(parent)) {
-                AlmostUnified.LOG.warn("Tag delegate {} is not present in the tag list.", parent.location());
-            }
-        }
-
-        for (UnifyTag<Item> tag : getTagsToDelegate()) {
-            if (asSet.contains(tag)) {
-                //noinspection ConstantConditions
-                AlmostUnified.LOG.warn("Tag {} is present in the tag list, but is also marked to be delegate to tag {}.",
-                        tag.location(),
-                        getDelegate(tag).location());
-            }
-        }
-    }
-
     /**
-     * @return A collection of tags that are marked to be delegated to another tag.
+     * Ensures that all tag delegates are also unify tags and that all delegate refs are no unify tags.
+     *
+     * @param unifyTags The list of unify tags.
      */
-    public Collection<UnifyTag<Item>> getTagsToDelegate() {
-        return delegates.keySet();
+    public void validate(List<UnifyTag<Item>> unifyTags) {
+        Set<UnifyTag<Item>> tags = new HashSet<>(unifyTags);
+
+        for (UnifyTag<Item> delegate : delegateToRefs.keySet()) {
+            if (!tags.contains(delegate)) {
+                AlmostUnified.LOG.warn("Tag delegate {} is not present in the unify tag list.", delegate.location());
+            }
+        }
+
+        for (var entry : refToDelegate.entrySet()) {
+            UnifyTag<Item> ref = entry.getKey();
+            UnifyTag<Item> delegate = entry.getValue();
+            if (tags.contains(ref)) {
+                AlmostUnified.LOG.warn(
+                        "Tag {} is present in the unify tag list, but is also marked as ref for delegate {}.",
+                        ref.location(),
+                        delegate.location()
+                );
+                // TODO: is it safe to not remove the ref from the maps?
+            }
+        }
     }
-
-    @Nullable
-    public UnifyTag<Item> getDelegate(UnifyTag<Item> tag) {
-        return delegates.get(tag);
-    }
-
-
 }
