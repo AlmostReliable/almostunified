@@ -1,5 +1,6 @@
 package com.almostreliable.unified.utils;
 
+import com.almostreliable.unified.AlmostUnified;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -13,6 +14,7 @@ import java.util.function.Predicate;
 
 public class TagMap {
     private final Map<UnifyTag<Item>, Set<ResourceLocation>> tagsToItems = new HashMap<>();
+    private final Map<UnifyTag<Item>, Set<ResourceLocation>> tagsToDelegates = new HashMap<>();
     private final Map<ResourceLocation, Set<UnifyTag<Item>>> itemsToTags = new HashMap<>();
 
     protected TagMap() {}
@@ -32,12 +34,13 @@ public class TagMap {
     }
 
     /**
-     * Creates a {@link TagMap} from a vanilla {@link TagManager}.
+     * Creates a TagMap from a vanilla {@link TagManager}.
      *
-     * @param tagManager The vanilla tag manager.
-     * @return A new {@link TagMap}.
+     * @param tagManager   The vanilla tag manager.
+     * @param tagDelegates A map holding delegates for tags.
+     * @return A new TagMap.
      */
-    public static TagMap create(TagManager tagManager) {
+    public static TagMap create(TagManager tagManager, Map<ResourceLocation, Set<ResourceLocation>> tagDelegates) {
         var tags = tagManager
                 .getResult()
                 .stream()
@@ -49,14 +52,27 @@ public class TagMap {
         TagMap tagMap = new TagMap();
 
         for (var entry : tags.entrySet()) {
-            UnifyTag<Item> tag = UnifyTag.item(entry.getKey());
-            var holderTag = entry.getValue();
-            for (Holder<?> holder : holderTag) {
+            ResourceLocation tag = entry.getKey();
+            var delegatesForTag = tagDelegates.getOrDefault(tag, Set.of());
+            UnifyTag<Item> unifyTag = UnifyTag.item(entry.getKey(), delegatesForTag);
+
+            List<Holder<?>> holders = new ArrayList<>(entry.getValue());
+            for (ResourceLocation delegate : delegatesForTag) {
+                var delegateHolders = tags.get(delegate);
+                if (delegateHolders == null) {
+                    AlmostUnified.LOG.warn("Tag delegate '{}' for tag '{}' does not exist", delegate, tag);
+                } else {
+                    holders.addAll(delegateHolders);
+                    tagMap.putDelegate(unifyTag, delegate);
+                }
+            }
+
+            for (Holder<?> holder : holders) {
                 holder
                         .unwrapKey()
                         .map(ResourceKey::location)
                         .filter(Registry.ITEM::containsKey)
-                        .ifPresent(itemId -> tagMap.put(tag, itemId));
+                        .ifPresent(itemId -> tagMap.put(unifyTag, itemId));
             }
         }
         return tagMap;
@@ -79,12 +95,23 @@ public class TagMap {
             items.stream().filter(itemFilter).forEach(item -> tagMap.put(tag, item));
         });
 
+        tagsToDelegates.forEach((tag, delegates) -> {
+            if (!tagFilter.test(tag)) {
+                return;
+            }
+            delegates.forEach(delegate -> tagMap.putDelegate(tag, delegate));
+        });
+
         return tagMap;
     }
 
     protected void put(UnifyTag<Item> tag, ResourceLocation item) {
         tagsToItems.computeIfAbsent(tag, k -> new HashSet<>()).add(item);
         itemsToTags.computeIfAbsent(item, k -> new HashSet<>()).add(tag);
+    }
+
+    private void putDelegate(UnifyTag<Item> tag, ResourceLocation delegate) {
+        tagsToDelegates.computeIfAbsent(tag, k -> new HashSet<>()).add(delegate);
     }
 
     public Collection<ResourceLocation> getItems(UnifyTag<Item> tag) {

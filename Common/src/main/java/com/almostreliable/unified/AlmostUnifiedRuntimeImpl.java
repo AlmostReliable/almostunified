@@ -53,7 +53,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
 
-        TagMap tagMap = TagMap.create(tagManager);
+        TagMap tagMap = TagMap.create(tagManager, unifyConfig.getTagDelegates());
         return new AlmostUnifiedRuntimeImpl(factory, tagMap, dupConfig, unifyConfig, debugConfig);
     }
 
