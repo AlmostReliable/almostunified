@@ -40,7 +40,7 @@ public class TagMap {
      * @param tagDelegateHelper A map holding delegates for tags.
      * @return A new TagMap.
      */
-    public static TagMap create(TagManager tagManager, TagDelegateHelper tagDelegateHelper) {
+    public static TagMap create(TagManager tagManager, TagDelegateHelper tagDelegates) {
         var tags = tagManager
                 .getResult()
                 .stream()

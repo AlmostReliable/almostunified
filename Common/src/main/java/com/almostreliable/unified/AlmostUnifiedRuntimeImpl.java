@@ -29,20 +29,13 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final TagDelegateHelper tagDelegates;
     private final ReplacementMap replacementMap;
 
-    private AlmostUnifiedRuntimeImpl(
-            RecipeHandlerFactory recipeHandlerFactory,
-            TagMap tagMap, DuplicationConfig dupConfig,
-            UnifyConfig unifyConfig,
-            DebugConfig debugConfig,
-            TagDelegateHelper tagDelegates
-    ) {
+    private AlmostUnifiedRuntimeImpl(RecipeHandlerFactory recipeHandlerFactory, TagMap tagMap, DuplicationConfig dupConfig, UnifyConfig unifyConfig, DebugConfig debugConfig, TagDelegateHelper tagDelegates) {
         this.recipeHandlerFactory = recipeHandlerFactory;
         this.dupConfig = dupConfig;
         this.unifyConfig = unifyConfig;
         this.debugConfig = debugConfig;
         List<UnifyTag<Item>> allowedTags = unifyConfig.bakeTags();
         tagDelegates.validate(allowedTags);
-        this.tagDelegates = tagDelegates;
         this.filteredTagMap = tagMap.filtered(allowedTags::contains, unifyConfig::includeItem);
         StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(unifyConfig.getStoneStrata(),
                 AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
