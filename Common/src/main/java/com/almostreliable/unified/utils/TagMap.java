@@ -36,11 +36,11 @@ public class TagMap {
     /**
      * Creates a TagMap from a vanilla {@link TagManager}.
      *
-     * @param tagManager   The vanilla tag manager.
-     * @param tagDelegates A map holding delegates for tags.
+     * @param tagManager        The vanilla tag manager.
+     * @param tagDelegateHelper A map holding delegates for tags.
      * @return A new TagMap.
      */
-    public static TagMap create(TagManager tagManager, Map<ResourceLocation, Set<ResourceLocation>> tagDelegates) {
+    public static TagMap create(TagManager tagManager, TagDelegateHelper tagDelegateHelper) {
         var tags = tagManager
                 .getResult()
                 .stream()
@@ -53,10 +53,10 @@ public class TagMap {
 
         for (var entry : tags.entrySet()) {
             ResourceLocation tag = entry.getKey();
-            var delegatesForTag = tagDelegates.getOrDefault(tag, Set.of());
             UnifyTag<Item> unifyTag = UnifyTag.item(entry.getKey());
-
             List<Holder<?>> holders = new ArrayList<>(entry.getValue());
+
+            var delegatesForTag = tagDelegateHelper.getOrDefault(tag, Set.of());
             for (ResourceLocation delegate : delegatesForTag) {
                 var delegateHolders = tags.get(delegate);
                 if (delegateHolders == null) {
