@@ -76,9 +76,7 @@ public class UnifyConfig extends Config {
                     continue;
                 }
 
-                var delegates = tagDelegates.getOrDefault(asRL, Set.of());
-                UnifyTag<Item> t = UnifyTag.item(asRL, delegates);
-
+                UnifyTag<Item> t = UnifyTag.item(asRL);
                 if (!ignoredTags.contains(t)) {
                     result.add(t);
                 }
