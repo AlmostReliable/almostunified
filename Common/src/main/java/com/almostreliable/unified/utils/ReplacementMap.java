@@ -103,8 +103,4 @@ public class ReplacementMap {
         }
         return null;
     }
-
-    public StoneStrataHandler getStoneStrataHandler() {
-        return stoneStrataHandler;
-    }
 }
