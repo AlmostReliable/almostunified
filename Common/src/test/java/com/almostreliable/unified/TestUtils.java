@@ -41,6 +41,7 @@ public final class TestUtils {
             Defaults.getTags(Platform.FORGE),
             TEST_MOD_PRIORITIES,
             new HashMap<>(),
+            new HashMap<>(),
             new HashSet<>(),
             new HashSet<>(),
             new HashSet<>(),
