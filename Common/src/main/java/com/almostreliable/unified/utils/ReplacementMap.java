@@ -83,12 +83,7 @@ public class ReplacementMap {
 
     @Nullable
     public UnifyTag<Item> getParentTagForDelegate(ResourceLocation delegate) {
-        for (var entry : tagMap.getDelegates().entrySet()) {
-            if (entry.getValue().contains(delegate)) {
-                return entry.getKey();
-            }
-        }
-        return null;
+        return tagMap.getDelegates().getOrDefault(delegate, null);
     }
 
     @Nullable

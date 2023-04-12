@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 public class TagMap {
     private final Map<UnifyTag<Item>, Set<ResourceLocation>> tagsToItems = new HashMap<>();
-    private final Map<UnifyTag<Item>, Set<ResourceLocation>> tagsToDelegates = new HashMap<>();
+    private final Map<ResourceLocation, UnifyTag<Item>> delegatesToTags = new HashMap<>();
     private final Map<ResourceLocation, Set<UnifyTag<Item>>> itemsToTags = new HashMap<>();
 
     protected TagMap() {}
@@ -54,7 +54,7 @@ public class TagMap {
         for (var entry : tags.entrySet()) {
             ResourceLocation tag = entry.getKey();
             var delegatesForTag = tagDelegates.getOrDefault(tag, Set.of());
-            UnifyTag<Item> unifyTag = UnifyTag.item(entry.getKey(), delegatesForTag);
+            UnifyTag<Item> unifyTag = UnifyTag.item(entry.getKey());
 
             List<Holder<?>> holders = new ArrayList<>(entry.getValue());
             for (ResourceLocation delegate : delegatesForTag) {
@@ -63,7 +63,7 @@ public class TagMap {
                     AlmostUnified.LOG.warn("Tag delegate '{}' for tag '{}' does not exist", delegate, tag);
                 } else {
                     holders.addAll(delegateHolders);
-                    tagMap.putDelegate(unifyTag, delegate);
+                    tagMap.putDelegate(delegate, unifyTag);
                 }
             }
 
@@ -95,11 +95,11 @@ public class TagMap {
             items.stream().filter(itemFilter).forEach(item -> tagMap.put(tag, item));
         });
 
-        tagsToDelegates.forEach((tag, delegates) -> {
+        delegatesToTags.forEach((delegate, tag) -> {
             if (!tagFilter.test(tag)) {
                 return;
             }
-            delegates.forEach(delegate -> tagMap.putDelegate(tag, delegate));
+            tagMap.putDelegate(delegate, tag);
         });
 
         return tagMap;
@@ -110,8 +110,8 @@ public class TagMap {
         itemsToTags.computeIfAbsent(item, k -> new HashSet<>()).add(tag);
     }
 
-    private void putDelegate(UnifyTag<Item> tag, ResourceLocation delegate) {
-        tagsToDelegates.computeIfAbsent(tag, k -> new HashSet<>()).add(delegate);
+    private void putDelegate(ResourceLocation delegate, UnifyTag<Item> tag) {
+        delegatesToTags.put(delegate, tag);
     }
 
     public Collection<ResourceLocation> getItems(UnifyTag<Item> tag) {
@@ -122,8 +122,8 @@ public class TagMap {
         return Collections.unmodifiableSet(itemsToTags.getOrDefault(items, Collections.emptySet()));
     }
 
-    public Map<UnifyTag<Item>, Set<ResourceLocation>> getDelegates() {
-        return Collections.unmodifiableMap(tagsToDelegates);
+    public Map<ResourceLocation, UnifyTag<Item>> getDelegates() {
+        return Collections.unmodifiableMap(delegatesToTags);
     }
 
     public int tagSize() {
