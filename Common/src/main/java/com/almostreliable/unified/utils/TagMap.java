@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class TagMap {
 
@@ -41,7 +42,25 @@ public class TagMap {
      * @param tagDelegateHelper The tag delegate helper.
      * @return A new TagMap.
      */
-    public static TagMap create(TagManager tagManager, TagDelegateHelper tagDelegates) {
+    public static TagMap create(TagManager tagManager, TagDelegateHelper tagDelegateHelper) {
+        var tags = unpackTagManager(tagManager);
+        TagMap tagMap = new TagMap();
+
+        for (var entry : tags.entrySet()) {
+            UnifyTag<Item> unifyTag = UnifyTag.item(entry.getKey());
+            for (Holder<?> holder : entry.getValue()) {
+                fill(tagMap, unifyTag, holder);
+            }
+
+            for (Holder<?> holder : tagDelegateHelper.getHoldersForDelegate(tags, unifyTag)) {
+                fill(tagMap, unifyTag, holder);
+            }
+        }
+
+        return tagMap;
+    }
+
+    private static Map<ResourceLocation, Collection<Holder<Item>>> unpackTagManager(TagManager tagManager) {
         var tags = tagManager
                 .getResult()
                 .stream()
@@ -50,23 +69,15 @@ public class TagMap {
                 .map(TagManager.LoadResult::tags)
                 .orElseThrow(() -> new IllegalStateException("No item tag result found"));
 
-        TagMap tagMap = new TagMap();
+        return Utils.cast(tags);
+    }
 
-        for (var entry : tags.entrySet()) {
-            UnifyTag<Item> unifyTag = UnifyTag.item(entry.getKey());
-            List<Holder<?>> tagHolders = new ArrayList<>(entry.getValue());
-
-            tagHolders.addAll(tagDelegateHelper.getHoldersForDelegate(tags, unifyTag));
-
-            for (Holder<?> tagHolder : tagHolders) {
-                tagHolder
-                        .unwrapKey()
-                        .map(ResourceKey::location)
-                        .filter(Registry.ITEM::containsKey)
-                        .ifPresent(itemId -> tagMap.put(unifyTag, itemId));
-            }
-        }
-        return tagMap;
+    private static void fill(TagMap tagMap, UnifyTag<Item> unifyTag, Holder<?> holder) {
+        holder
+                .unwrapKey()
+                .map(ResourceKey::location)
+                .filter(Registry.ITEM::containsKey)
+                .ifPresent(itemId -> tagMap.put(unifyTag, itemId));
     }
 
     /**
