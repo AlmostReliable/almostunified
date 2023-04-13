@@ -60,16 +60,15 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
-    public UnifyTag<Item> getDelegateForRef(@Nullable ResourceLocation ref) {
-        if (ref == null) {
+    public UnifyTag<Item> getOwnershipTag(@Nullable UnifyTag<Item> tag) {
+        if (tag == null) {
             return null;
         }
 
-        UnifyTag<Item> rafUnifyTag = UnifyTag.item(ref);
         return AlmostUnified
                 .getRuntime()
                 .getTagDelegateHelper()
-                .map(helper -> helper.getDelegateForRef(rafUnifyTag))
+                .map(helper -> helper.getOwnershipTag(tag))
                 .orElse(null);
     }
 
@@ -96,10 +95,10 @@ public class RecipeContextImpl implements RecipeContext {
             tryCreateIngredientReplacement(object.get(RecipeConstants.INGREDIENT));
 
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
-                ResourceLocation tag = ResourceLocation.tryParse(primitive.getAsString());
-                UnifyTag<Item> parentTag = getDelegateForRef(tag);
-                if (parentTag != null) {
-                    object.add(RecipeConstants.TAG, new JsonPrimitive(parentTag.location().toString()));
+                UnifyTag<Item> tag = Utils.toItemTag(primitive.getAsString());
+                UnifyTag<Item> ownershipTag = getOwnershipTag(tag);
+                if (ownershipTag != null) {
+                    object.add(RecipeConstants.TAG, new JsonPrimitive(ownershipTag.location().toString()));
                 }
             }
 

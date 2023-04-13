@@ -8,15 +8,16 @@ import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.*;
+import com.almostreliable.unified.utils.FileUtils;
+import com.almostreliable.unified.utils.ReplacementMap;
+import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.TagOwnerships;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagManager;
-import net.minecraft.world.item.Item;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,29 +28,25 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final DuplicationConfig dupConfig;
     private final UnifyConfig unifyConfig;
     private final DebugConfig debugConfig;
-    private final TagDelegateHelper tagDelegateHelper;
+    private final TagOwnerships tagOwnerships;
     private final ReplacementMap replacementMap;
 
     private AlmostUnifiedRuntimeImpl(
             RecipeHandlerFactory recipeHandlerFactory,
-            TagMap tagMap,
+            TagMap filteredTagMap,
+            ReplacementMap replacementMap,
+            TagOwnerships tagOwnerships,
             DuplicationConfig dupConfig,
             UnifyConfig unifyConfig,
-            DebugConfig debugConfig,
-            TagDelegateHelper tagDelegateHelper
+            DebugConfig debugConfig
     ) {
         this.recipeHandlerFactory = recipeHandlerFactory;
+        this.filteredTagMap = filteredTagMap;
+        this.replacementMap = replacementMap;
+        this.tagOwnerships = tagOwnerships;
         this.dupConfig = dupConfig;
         this.unifyConfig = unifyConfig;
         this.debugConfig = debugConfig;
-        List<UnifyTag<Item>> allowedTags = unifyConfig.bakeTags();
-        tagDelegateHelper.validate(allowedTags);
-        this.tagDelegateHelper = tagDelegateHelper;
-        this.filteredTagMap = tagMap.filtered(allowedTags::contains, unifyConfig::includeItem);
-        StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(unifyConfig.getStoneStrata(),
-                AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
-                tagMap);
-        this.replacementMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, unifyConfig);
     }
 
     public static AlmostUnifiedRuntimeImpl create(TagManager tagManager) {
@@ -61,9 +58,26 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
 
-        TagDelegateHelper tagDelegates = new TagDelegateHelper(unifyConfig.getTagDelegates());
-        TagMap tagMap = TagMap.create(tagManager, tagDelegates);
-        return new AlmostUnifiedRuntimeImpl(factory, tagMap, dupConfig, unifyConfig, debugConfig, tagDelegates);
+        var allowedTags = unifyConfig.bakeTags();
+
+        TagOwnerships tagOwnerships = new TagOwnerships(allowedTags, unifyConfig.getTagOwnerships());
+        TagMap globalTagMap = TagMap.create(tagManager, tagOwnerships);
+        TagMap filteredTagMap = globalTagMap.filtered(allowedTags::contains, unifyConfig::includeItem);
+
+        StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(unifyConfig.getStoneStrata(),
+                AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()), globalTagMap);
+
+        var replacementMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, unifyConfig);
+
+        return new AlmostUnifiedRuntimeImpl(
+                factory,
+                filteredTagMap,
+                replacementMap,
+                tagOwnerships,
+                dupConfig,
+                unifyConfig,
+                debugConfig
+        );
     }
 
     private static void createGitIgnoreIfNotExists() {
@@ -107,7 +121,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     }
 
     @Override
-    public Optional<TagDelegateHelper> getTagDelegateHelper() {
-        return Optional.of(tagDelegateHelper);
+    public Optional<TagOwnerships> getTagDelegateHelper() {
+        return Optional.of(tagOwnerships);
     }
 }

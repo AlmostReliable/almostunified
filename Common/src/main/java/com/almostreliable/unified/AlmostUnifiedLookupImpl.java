@@ -57,14 +57,14 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
                 .orElse(null);
     }
 
-    @Nullable
     @Override
-    public UnifyTag<Item> getDelegateForRef(ResourceLocation ref) {
-        UnifyTag<Item> rafUnifyTag = UnifyTag.item(ref);
+    public TagKey<Item> getTagOwnership(TagKey<Item> tag) {
+        UnifyTag<Item> asUnifyTag = UnifyTag.item(tag.location());
         return AlmostUnified
                 .getRuntime()
                 .getTagDelegateHelper()
-                .map(helper -> helper.getDelegateForRef(rafUnifyTag))
+                .map(helper -> helper.getOwnershipTag(asUnifyTag))
+                .map(ut -> TagKey.create(Registry.ITEM_REGISTRY, ut.location()))
                 .orElse(null);
     }
 

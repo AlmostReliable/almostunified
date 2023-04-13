@@ -57,13 +57,14 @@ public class AlmostKube extends KubeJSPlugin {
         }
 
         @Nullable
-        public static UnifyTag<Item> getDelegateForRef(ResourceLocation ref) {
-            UnifyTag<Item> rafUnifyTag = UnifyTag.item(ref);
-            return AlmostUnified
+        public static String getOwnershipTag(ResourceLocation tag) {
+            UnifyTag<Item> asUnifyTag = UnifyTag.item(tag);
+            UnifyTag<Item> ownershipTag = AlmostUnified
                     .getRuntime()
                     .getTagDelegateHelper()
                     .orElseThrow(UnifyWrapper::notLoadedException)
-                    .getDelegateForRef(rafUnifyTag);
+                    .getOwnershipTag(asUnifyTag);
+            return ownershipTag == null ? null : ownershipTag.location().toString();
         }
 
         public static Set<String> getTags() {

@@ -13,10 +13,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class TestUtils {
@@ -105,7 +102,11 @@ public final class TestUtils {
     }
 
     public static StoneStrataHandler createTestStrataHandler() {
-        return StoneStrataHandler.create(List.of(), Set.of(), TagMap.create(List.of()));
+        return StoneStrataHandler.create(
+                List.of(),
+                Set.of(),
+                TagMap.create(List.of(), new TagOwnerships(Set.of(), Map.of()))
+        );
     }
 
     public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {

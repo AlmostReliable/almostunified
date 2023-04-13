@@ -1,7 +1,5 @@
 package com.almostreliable.unified.api;
 
-import com.almostreliable.unified.utils.UnifyTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -53,13 +51,13 @@ public interface AlmostUnifiedLookup {
     TagKey<Item> getPreferredTagForItem(ItemLike itemLike);
 
     /**
-     * Gets the delegate tag for the provided ref tag.
+     * Gets the ownership tag for the provided tag.
      *
-     * @param ref The ref tag to get the delegate for.
+     * @param tag The ref tag to get the delegate for.
      * @return The delegate tag.
      */
     @Nullable
-    UnifyTag<Item> getDelegateForRef(ResourceLocation ref);
+    TagKey<Item> getTagOwnership(TagKey<Item> tag);
 
     /**
      * Returns all potential items which are part of a given tag.
@@ -106,7 +104,7 @@ public interface AlmostUnifiedLookup {
 
         @Nullable
         @Override
-        public UnifyTag<Item> getDelegateForRef(ResourceLocation ref) {
+        public TagKey<Item> getTagOwnership(TagKey<Item> tag) {
             return null;
         }
 
