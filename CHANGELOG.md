@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.4.0] - 2023-04-XX
+
+### Changed
+- improved stone strata lookup speed
+
+### Fixed
+- some Mekanism recipes not being unified
+- log spam on multiple preferred tags
+- JEI indicator not showing anymore with new JEI versions
+
 ## [0.3.8] - 2023-04-06
 
 ### Fixed
