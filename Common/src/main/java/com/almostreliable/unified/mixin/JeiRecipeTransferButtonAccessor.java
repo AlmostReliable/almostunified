@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(RecipeTransferButton.class)
 public interface JeiRecipeTransferButtonAccessor {
 
-    @Accessor("recipeLayout")
+    @Accessor(value = "recipeLayout", remap = false)
     IRecipeLayoutDrawable<?> getRecipeLayout();
 }
