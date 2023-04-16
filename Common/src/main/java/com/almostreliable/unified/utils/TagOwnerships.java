@@ -1,18 +1,18 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.BuildConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import com.google.common.collect.Multimaps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.TagEntry;
+import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TagOwnerships {
 
@@ -66,27 +66,28 @@ public class TagOwnerships {
         this.ownerTagToTags = tempOwnerTagToTags.build();
     }
 
-    /**
-     * Gets holders of all refs of the provided delegate tag.
-     * <p>
-     * Ensures every ref is an actual tag.
-     *
-     * @param globalTags The global tag map.
-     * @param ownerTag   The delegate tag to get all ref holders for.
-     * @return A list of holders for all refs of the delegate tag.
-     */
-    public List<Holder<Item>> getHoldersForOwnerTag(Map<ResourceLocation, Collection<Holder<Item>>> globalTags, UnifyTag<Item> ownerTag) {
-        var tags = ownerTagToTags.get(ownerTag);
-        List<Holder<Item>> holders = new ArrayList<>();
-        for (var tag : tags) {
-            var tagHolders = globalTags.get(tag.location());
-            if (tagHolders == null) {
-                AlmostUnified.LOG.warn("Tag delegate ref '{}' for tag '{}' does not exist", tag, ownerTag);
-                continue;
+    public static void updateRawTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> rawTags, TagOwnerships ownerships) {
+        ownerships.getOwnerTagToTags().asMap().forEach((owner, refs) -> {
+            ResourceLocation ownerLocation = owner.location();
+            var entries = rawTags.get(ownerLocation);
+            if (entries == null) {
+                AlmostUnified.LOG.warn("Tag {} is not present in the tag list.", ownerLocation);
+                return;
             }
-            holders.addAll(tagHolders);
-        }
-        return holders;
+
+            for (UnifyTag<Item> ref : refs) {
+                ResourceLocation refLocation = ref.location();
+                var refEntries = rawTags.get(refLocation);
+                if (refEntries == null) {
+                    AlmostUnified.LOG.warn("Tag {} is not present in the tag list.", refLocation);
+                    continue;
+                }
+
+                TagEntry entry = TagEntry.tag(refLocation);
+                var ews = new TagLoader.EntryWithSource(entry, BuildConfig.MOD_ID);
+                entries.add(ews);
+            }
+        });
     }
 
     /**
@@ -100,15 +101,7 @@ public class TagOwnerships {
         return tagToOwnerTag.get(tag);
     }
 
-    @Nullable
-    public Set<TagKey<Item>> getSubTags(UnifyTag<Item> tag) {
-        if (!ownerTagToTags.containsKey(tag)) {
-            return null;
-        }
-        return ownerTagToTags
-                .get(tag)
-                .stream()
-                .map(t -> TagKey.create(Registry.ITEM_REGISTRY, t.location()))
-                .collect(Collectors.toSet());
+    public Multimap<UnifyTag<Item>, UnifyTag<Item>> getOwnerTagToTags() {
+        return Multimaps.unmodifiableMultimap(ownerTagToTags);
     }
 }

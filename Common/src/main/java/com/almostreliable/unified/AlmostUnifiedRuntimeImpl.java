@@ -1,10 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.StoneStrataHandler;
-import com.almostreliable.unified.config.Config;
-import com.almostreliable.unified.config.DebugConfig;
-import com.almostreliable.unified.config.DuplicationConfig;
-import com.almostreliable.unified.config.UnifyConfig;
+import com.almostreliable.unified.config.*;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
@@ -49,19 +46,17 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         this.debugConfig = debugConfig;
     }
 
-    public static AlmostUnifiedRuntimeImpl create(TagManager tagManager) {
+    public static AlmostUnifiedRuntimeImpl create(TagManager tagManager, ServerConfigs serverConfigs, TagOwnerships tagOwnerships) {
         createGitIgnoreIfNotExists();
-        DuplicationConfig dupConfig = Config.load(DuplicationConfig.NAME, new DuplicationConfig.Serializer());
-        UnifyConfig unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-        DebugConfig debugConfig = Config.load(DebugConfig.NAME, new DebugConfig.Serializer());
+        DuplicationConfig dupConfig = serverConfigs.getDupConfig();
+        UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
+        DebugConfig debugConfig = serverConfigs.getDebugConfig();
 
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
 
         var allowedTags = unifyConfig.bakeTags();
-
-        TagOwnerships tagOwnerships = new TagOwnerships(allowedTags, unifyConfig.getTagOwnerships());
-        TagMap globalTagMap = TagMap.create(tagManager, tagOwnerships);
+        TagMap globalTagMap = TagMap.create(tagManager);
         TagMap filteredTagMap = globalTagMap.filtered(allowedTags::contains, unifyConfig::includeItem);
 
         StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(unifyConfig.getStoneStrata(),

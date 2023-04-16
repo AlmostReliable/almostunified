@@ -6,7 +6,8 @@
   "plugin": "com.almostreliable.unified.mixin.AlmostMixinPlugin",
   "mixins": [
     "RecipeManagerMixin",
-    "ReloadableServerResourcesMixin"
+    "TagLoaderMixin",
+    "TagManagerMixin"
   ],
   "client": [
     "ClientPacketListenerMixin",

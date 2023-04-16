@@ -18,16 +18,12 @@ public class TagMap {
 
     protected TagMap() {}
 
-    public static TagMap create(Collection<UnifyTag<Item>> unifyTags, TagOwnerships tagOwnerships) {
+    public static TagMap create(Collection<UnifyTag<Item>> unifyTags) {
         TagMap tagMap = new TagMap();
 
         unifyTags.forEach(ut -> {
             TagKey<Item> asTagKey = TagKey.create(Registry.ITEM_REGISTRY, ut.location());
             fill(tagMap, ut, asTagKey);
-
-            var subTags = tagOwnerships.getSubTags(ut);
-            if (subTags == null) return;
-            subTags.forEach(subTag -> fill(tagMap, ut, subTag));
         });
 
         return tagMap;
@@ -42,17 +38,13 @@ public class TagMap {
      * @param tagOwnerships The tag delegate helper.
      * @return A new TagMap.
      */
-    public static TagMap create(TagManager tagManager, TagOwnerships tagOwnerships) {
+    public static TagMap create(TagManager tagManager) {
         var tags = unpackTagManager(tagManager);
         TagMap tagMap = new TagMap();
 
         for (var entry : tags.entrySet()) {
             UnifyTag<Item> unifyTag = UnifyTag.item(entry.getKey());
             for (Holder<?> holder : entry.getValue()) {
-                fill(tagMap, unifyTag, holder);
-            }
-
-            for (Holder<?> holder : tagOwnerships.getHoldersForOwnerTag(tags, unifyTag)) {
                 fill(tagMap, unifyTag, holder);
             }
         }

@@ -105,7 +105,7 @@ public final class TestUtils {
         return StoneStrataHandler.create(
                 List.of(),
                 Set.of(),
-                TagMap.create(List.of(), new TagOwnerships(Set.of(), Map.of()))
+                TagMap.create(List.of())
         );
     }
 

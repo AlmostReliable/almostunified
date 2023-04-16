@@ -9,6 +9,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ public class UnifyConfig extends Config {
     private final Set<Pattern> ignoredRecipes;
     private final boolean hideJeiRei;
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
+    @Nullable private Set<UnifyTag<Item>> bakedTagsCache;
 
     public UnifyConfig(
             List<String> modPriorities,
@@ -65,6 +67,10 @@ public class UnifyConfig extends Config {
     }
 
     public Set<UnifyTag<Item>> bakeTags() {
+        if (bakedTagsCache != null) {
+            return bakedTagsCache;
+        }
+
         Set<UnifyTag<Item>> result = new HashSet<>();
 
         for (String tag : unbakedTags) {
@@ -83,6 +89,7 @@ public class UnifyConfig extends Config {
             }
         }
 
+        bakedTagsCache = result;
         return result;
     }
 

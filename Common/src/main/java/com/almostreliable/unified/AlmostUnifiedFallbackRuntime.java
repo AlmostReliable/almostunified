@@ -55,14 +55,14 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
         var unifyConfig = getConfig();
         Set<UnifyTag<Item>> unifyTags = unifyConfig.bakeTags();
         tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
-        filteredTagMap = TagMap.create(unifyTags, tagOwnerships).filtered($ -> true, unifyConfig::includeItem);
-        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(unifyConfig, tagOwnerships);
+        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
+        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(unifyConfig);
         replacementMap = new ReplacementMap(Objects.requireNonNull(filteredTagMap), stoneStrataHandler, unifyConfig);
     }
 
-    private static StoneStrataHandler getStoneStrataHandler(UnifyConfig config, TagOwnerships tagOwnerships) {
+    private static StoneStrataHandler getStoneStrataHandler(UnifyConfig config) {
         Set<UnifyTag<Item>> stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(config.getStoneStrata());
-        TagMap stoneStrataTagMap = TagMap.create(stoneStrataTags, tagOwnerships);
+        TagMap stoneStrataTagMap = TagMap.create(stoneStrataTags);
         return StoneStrataHandler.create(config.getStoneStrata(), stoneStrataTags, stoneStrataTagMap);
     }
 
