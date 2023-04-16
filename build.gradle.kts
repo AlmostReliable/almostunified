@@ -18,6 +18,7 @@ val modAuthor: String by project
 val githubRepo: String by project
 val githubUser: String by project
 val sharedRunDir: String by project
+val jeiVersion: String by project
 val reiVersion: String by project
 val kubejsVersion: String by project
 
@@ -159,6 +160,7 @@ subprojects {
             "fabricApiVersion" to fabricApiVersion,
             "forgeVersion" to forgeVersion,
             "forgeFMLVersion" to forgeVersion.substringBefore("."), // Only use major version as FML error message sucks. The error message for wrong Forge version is way better.
+            "jeiVersion" to jeiVersion,
             "reiVersion" to reiVersion,
             "kubejsVersion" to kubejsVersion,
             "githubUser" to githubUser,

@@ -11,7 +11,6 @@ import me.shedaniel.rei.plugincompatibilities.api.REIPluginCompatIgnore;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
@@ -44,10 +43,7 @@ public class AlmostJEI implements IModPlugin {
         }
     }
 
-    public static <R> void handleIndicator(PoseStack stack, int mX, int mY, int posX, int posY, IRecipeCategory<R> recipeCategory, R recipe) {
-        var recipeId = recipeCategory.getRegistryName(recipe);
-        if (recipeId == null) return;
-
+    public static void handleIndicator(PoseStack stack, int mX, int mY, int posX, int posY, ResourceLocation recipeId) {
         var link = CRTLookup.getLink(recipeId);
         if (link == null) return;
 
