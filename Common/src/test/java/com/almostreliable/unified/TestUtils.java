@@ -13,7 +13,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public final class TestUtils {
@@ -105,7 +108,7 @@ public final class TestUtils {
         return StoneStrataHandler.create(
                 List.of(),
                 Set.of(),
-                TagMap.create(List.of())
+                TagMap.create(Set.of())
         );
     }
 

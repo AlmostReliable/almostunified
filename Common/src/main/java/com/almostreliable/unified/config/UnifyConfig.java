@@ -28,6 +28,7 @@ public class UnifyConfig extends Config {
     private final Set<Pattern> ignoredRecipeTypes;
     private final Set<Pattern> ignoredRecipes;
     private final boolean hideJeiRei;
+
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
     @Nullable private Set<UnifyTag<Item>> bakedTagsCache;
 

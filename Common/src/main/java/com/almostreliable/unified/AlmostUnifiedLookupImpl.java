@@ -58,24 +58,13 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     }
 
     @Override
-    public TagKey<Item> getTagOwnership(TagKey<Item> tag) {
-        UnifyTag<Item> asUnifyTag = UnifyTag.item(tag.location());
-        return AlmostUnified
-                .getRuntime()
-                .getTagDelegateHelper()
-                .map(helper -> helper.getOwnershipTag(asUnifyTag))
-                .map(ut -> TagKey.create(Registry.ITEM_REGISTRY, ut.location()))
-                .orElse(null);
-    }
-
-    @Override
     public Set<Item> getPotentialItems(TagKey<Item> tag) {
         UnifyTag<Item> asUnifyTag = UnifyTag.item(tag.location());
         return AlmostUnified
                 .getRuntime()
                 .getFilteredTagMap()
                 .map(tagMap -> tagMap
-                        .getItems(asUnifyTag)
+                        .getItemsByTag(asUnifyTag)
                         .stream()
                         .flatMap(rl -> Registry.ITEM.getOptional(rl).stream())
                         .collect(Collectors.toSet()))

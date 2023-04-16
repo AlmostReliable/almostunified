@@ -1,7 +1,6 @@
 package com.almostreliable.unified.mixin;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.utils.TagOwnerships;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagLoader;
 import org.spongepowered.asm.mixin.Final;
@@ -22,8 +21,8 @@ public class TagLoaderMixin {
 
     @Inject(method = "build(Ljava/util/Map;)Ljava/util/Map;", at = @At("HEAD"))
     private <T> void onCreateLoadResult(Map<ResourceLocation, List<TagLoader.EntryWithSource>> map, CallbackInfoReturnable<Map<ResourceLocation, Collection<T>>> cir) {
-        if(directory.equals("tags/items")) {
-            TagOwnerships.updateRawTags(map, AlmostUnified.getTagOwnerships());
+        if (directory.equals("tags/items")) {
+            AlmostUnified.getTagOwnerships().updateRawTags(map);
         }
     }
 }

@@ -1,14 +1,16 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.StoneStrataHandler;
-import com.almostreliable.unified.config.*;
+import com.almostreliable.unified.config.DebugConfig;
+import com.almostreliable.unified.config.DuplicationConfig;
+import com.almostreliable.unified.config.ServerConfigs;
+import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.FileUtils;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
-import com.almostreliable.unified.utils.TagOwnerships;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagManager;
@@ -25,14 +27,12 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final DuplicationConfig dupConfig;
     private final UnifyConfig unifyConfig;
     private final DebugConfig debugConfig;
-    private final TagOwnerships tagOwnerships;
     private final ReplacementMap replacementMap;
 
     private AlmostUnifiedRuntimeImpl(
             RecipeHandlerFactory recipeHandlerFactory,
             TagMap filteredTagMap,
             ReplacementMap replacementMap,
-            TagOwnerships tagOwnerships,
             DuplicationConfig dupConfig,
             UnifyConfig unifyConfig,
             DebugConfig debugConfig
@@ -40,13 +40,12 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         this.recipeHandlerFactory = recipeHandlerFactory;
         this.filteredTagMap = filteredTagMap;
         this.replacementMap = replacementMap;
-        this.tagOwnerships = tagOwnerships;
         this.dupConfig = dupConfig;
         this.unifyConfig = unifyConfig;
         this.debugConfig = debugConfig;
     }
 
-    public static AlmostUnifiedRuntimeImpl create(TagManager tagManager, ServerConfigs serverConfigs, TagOwnerships tagOwnerships) {
+    public static AlmostUnifiedRuntimeImpl create(TagManager tagManager, ServerConfigs serverConfigs) {
         createGitIgnoreIfNotExists();
         DuplicationConfig dupConfig = serverConfigs.getDupConfig();
         UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
@@ -68,7 +67,6 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
                 factory,
                 filteredTagMap,
                 replacementMap,
-                tagOwnerships,
                 dupConfig,
                 unifyConfig,
                 debugConfig
@@ -113,10 +111,5 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     @Override
     public Optional<UnifyConfig> getUnifyConfig() {
         return Optional.of(unifyConfig);
-    }
-
-    @Override
-    public Optional<TagOwnerships> getTagDelegateHelper() {
-        return Optional.of(tagOwnerships);
     }
 }

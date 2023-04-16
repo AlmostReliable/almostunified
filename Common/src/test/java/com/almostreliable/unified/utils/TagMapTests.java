@@ -44,12 +44,12 @@ public class TagMapTests {
         tagMap.put(bronzeOreTag, TestUtils.mod4RL("bronze_ore"));
         tagMap.put(bronzeOreTag, TestUtils.mod5RL("bronze_ore"));
 
-        assertEquals(tagMap.getItems(bronzeOreTag).size(), 5);
-        assertEquals(tagMap.getTags(TestUtils.mod1RL("bronze_ore")).size(), 1);
-        assertEquals(tagMap.getTags(TestUtils.mod2RL("bronze_ore")).size(), 1);
-        assertEquals(tagMap.getTags(TestUtils.mod3RL("bronze_ore")).size(), 1);
-        assertEquals(tagMap.getTags(TestUtils.mod4RL("bronze_ore")).size(), 1);
-        assertEquals(tagMap.getTags(TestUtils.mod5RL("bronze_ore")).size(), 1);
+        assertEquals(tagMap.getItemsByTag(bronzeOreTag).size(), 5);
+        assertEquals(tagMap.getTagsByItem(TestUtils.mod1RL("bronze_ore")).size(), 1);
+        assertEquals(tagMap.getTagsByItem(TestUtils.mod2RL("bronze_ore")).size(), 1);
+        assertEquals(tagMap.getTagsByItem(TestUtils.mod3RL("bronze_ore")).size(), 1);
+        assertEquals(tagMap.getTagsByItem(TestUtils.mod4RL("bronze_ore")).size(), 1);
+        assertEquals(tagMap.getTagsByItem(TestUtils.mod5RL("bronze_ore")).size(), 1);
 
         tagMap.put(UnifyTag.item(new ResourceLocation("forge:ores/invar")), TestUtils.mod1RL("invar_ore"));
 

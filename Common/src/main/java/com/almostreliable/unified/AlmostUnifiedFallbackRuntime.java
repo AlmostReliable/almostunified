@@ -13,7 +13,6 @@ import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,12 +51,12 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     }
 
     public void build() {
-        var unifyConfig = getConfig();
-        Set<UnifyTag<Item>> unifyTags = unifyConfig.bakeTags();
-        tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
-        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
-        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(unifyConfig);
-        replacementMap = new ReplacementMap(Objects.requireNonNull(filteredTagMap), stoneStrataHandler, unifyConfig);
+        var uc = getConfig();
+        Set<UnifyTag<Item>> unifyTags = uc.bakeTags();
+        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, uc::includeItem);
+        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(uc);
+        replacementMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, uc);
+        tagOwnerships = new TagOwnerships(unifyTags, uc.getTagOwnerships());
     }
 
     private static StoneStrataHandler getStoneStrataHandler(UnifyConfig config) {
@@ -84,10 +83,5 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     @Override
     public Optional<UnifyConfig> getUnifyConfig() {
         return Optional.ofNullable(config);
-    }
-
-    @Override
-    public Optional<TagOwnerships> getTagDelegateHelper() {
-        return Optional.ofNullable(tagOwnerships);
     }
 }

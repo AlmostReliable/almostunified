@@ -51,15 +51,6 @@ public interface AlmostUnifiedLookup {
     TagKey<Item> getPreferredTagForItem(ItemLike itemLike);
 
     /**
-     * Gets the ownership tag for the provided tag.
-     *
-     * @param tag The ref tag to get the delegate for.
-     * @return The delegate tag.
-     */
-    @Nullable
-    TagKey<Item> getTagOwnership(TagKey<Item> tag);
-
-    /**
      * Returns all potential items which are part of a given tag.
      * <p>
      * Tags are only considered if they are part of the config,
@@ -99,12 +90,6 @@ public interface AlmostUnifiedLookup {
         @Nullable
         @Override
         public TagKey<Item> getPreferredTagForItem(ItemLike itemLike) {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public TagKey<Item> getTagOwnership(TagKey<Item> tag) {
             return null;
         }
 

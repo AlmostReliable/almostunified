@@ -5,19 +5,20 @@ import com.almostreliable.unified.BuildConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class TagOwnerships {
 
     /**
-     * A map of reference tags to their delegate tags.
+     * A map holding relationships between reference tags and their owner tags.
      * <p>
      * Example:<br>
      * If the map contains the entry {@code minecraft:logs -> minecraft:planks},
@@ -25,53 +26,61 @@ public class TagOwnerships {
      * replace the tag with {@code minecraft:planks}.
      * <p>
      * Map Key = Tag to replace<br>
-     * Map Value = Tag to delegate to
+     * Map Value = Tag to replace with
      */
-    private final Map<UnifyTag<Item>, UnifyTag<Item>> tagToOwnerTag;
-    private final Multimap<UnifyTag<Item>, UnifyTag<Item>> ownerTagToTags;
+    private final Map<UnifyTag<Item>, UnifyTag<Item>> refsToOwner;
+    private final Multimap<UnifyTag<Item>, UnifyTag<Item>> ownerToRefs;
 
     /**
-     * Ensures that all tag delegates are also unify tags and that all delegate refs are no unify tags.
+     * Creates a new TagOwnerships instance that contains immutable maps of all tag ownership relationships.
+     * <p>
+     * It is ensured that all owner tags are present in the {@code unifyTags} set, and that all reference tags
+     * are not present in the {@code unifyTags} set.
+     *
+     * @param unifyTags          The set of all unify tags from the config.
+     * @param tagOwnershipConfig The map of all tag ownership relationships from the config.
      */
-    public TagOwnerships(Set<UnifyTag<Item>> usedTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships) {
-        ImmutableMap.Builder<UnifyTag<Item>, UnifyTag<Item>> tempTagToOwnerTag = ImmutableMap.builder();
-        ImmutableMultimap.Builder<UnifyTag<Item>, UnifyTag<Item>> tempOwnerTagToTags = ImmutableMultimap.builder();
+    public TagOwnerships(Set<UnifyTag<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnershipConfig) {
+        ImmutableMap.Builder<UnifyTag<Item>, UnifyTag<Item>> refsToOwnerBuilder = ImmutableMap.builder();
+        ImmutableMultimap.Builder<UnifyTag<Item>, UnifyTag<Item>> ownerToRefsBuilder = ImmutableMultimap.builder();
 
-        tagOwnerships.forEach((rawOwnerTag, rawTags) -> {
-            rawTags.forEach(rawTag -> {
-                UnifyTag<Item> ownerTag = UnifyTag.item(rawOwnerTag);
-                UnifyTag<Item> tag = UnifyTag.item(rawTag);
+        tagOwnershipConfig.forEach((rawOwner, rawRefs) -> {
+            for (ResourceLocation rawRef : rawRefs) {
+                UnifyTag<Item> ownerTag = UnifyTag.item(rawOwner);
+                UnifyTag<Item> ref = UnifyTag.item(rawRef);
 
-                if (!usedTags.contains(ownerTag)) {
-                    AlmostUnified.LOG.warn("Tag delegate {} is not present in the unify tag list.",
-                            ownerTag.location());
-                    return;
-                }
-
-                if (usedTags.contains(tag)) {
+                if (!unifyTags.contains(ownerTag)) {
                     AlmostUnified.LOG.warn(
-                            "Tag {} is present in the unify tag list, but is also marked as ref for delegate {}.",
-                            tag.location(),
+                            "Ownership tag {} is not present in the unify tag list.",
                             ownerTag.location()
                     );
-                    return;
+                    continue;
                 }
 
-                tempTagToOwnerTag.put(tag, ownerTag);
-                tempOwnerTagToTags.put(ownerTag, tag);
-            });
+                if (unifyTags.contains(ref)) {
+                    AlmostUnified.LOG.warn(
+                            "Tag {} is present in the unify tag list, but is also marked as ownership reference for the owner tag {}.",
+                            ref.location(),
+                            ownerTag.location()
+                    );
+                    continue;
+                }
+
+                refsToOwnerBuilder.put(ref, ownerTag);
+                ownerToRefsBuilder.put(ownerTag, ref);
+            }
         });
 
-        this.tagToOwnerTag = tempTagToOwnerTag.build();
-        this.ownerTagToTags = tempOwnerTagToTags.build();
+        this.refsToOwner = refsToOwnerBuilder.build();
+        this.ownerToRefs = ownerToRefsBuilder.build();
     }
 
-    public static void updateRawTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> rawTags, TagOwnerships ownerships) {
-        ownerships.getOwnerTagToTags().asMap().forEach((owner, refs) -> {
+    public void updateRawTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> rawTags) {
+        ownerToRefs.asMap().forEach((owner, refs) -> {
             ResourceLocation ownerLocation = owner.location();
             var entries = rawTags.get(ownerLocation);
             if (entries == null) {
-                AlmostUnified.LOG.warn("Tag {} is not present in the tag list.", ownerLocation);
+                AlmostUnified.LOG.warn("Ownership tag {} does not exist.", ownerLocation);
                 return;
             }
 
@@ -79,7 +88,11 @@ public class TagOwnerships {
                 ResourceLocation refLocation = ref.location();
                 var refEntries = rawTags.get(refLocation);
                 if (refEntries == null) {
-                    AlmostUnified.LOG.warn("Tag {} is not present in the tag list.", refLocation);
+                    AlmostUnified.LOG.warn(
+                            "Reference tag {} for ownership tag {} does not exist.",
+                            refLocation,
+                            ownerLocation
+                    );
                     continue;
                 }
 
@@ -91,17 +104,13 @@ public class TagOwnerships {
     }
 
     /**
-     * Gets the delegate tag for the provided ref tag.
+     * Gets the owner tag for the provided reference tag.
      *
-     * @param tag The ref tag to get the delegate for.
-     * @return The delegate tag.
+     * @param tag The reference tag to get the owner for.
+     * @return The owner tag, or null if the provided tag is not a reference tag.
      */
     @Nullable
-    public UnifyTag<Item> getOwnershipTag(UnifyTag<Item> tag) {
-        return tagToOwnerTag.get(tag);
-    }
-
-    public Multimap<UnifyTag<Item>, UnifyTag<Item>> getOwnerTagToTags() {
-        return Multimaps.unmodifiableMultimap(ownerTagToTags);
+    public UnifyTag<Item> getOwnerByTag(UnifyTag<Item> tag) {
+        return refsToOwner.get(tag);
     }
 }

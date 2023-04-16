@@ -40,7 +40,7 @@ public class DebugConfig extends Config {
                     .stream()
                     .sorted(Comparator.comparing(t -> t.location().toString()))
                     .map(t -> StringUtils.rightPad(t.location().toString(), 40) + " => " + tagMap
-                            .getItems(t)
+                            .getItemsByTag(t)
                             .stream()
                             .map(ResourceLocation::toString)
                             .sorted()

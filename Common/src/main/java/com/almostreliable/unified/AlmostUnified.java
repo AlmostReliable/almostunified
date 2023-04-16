@@ -48,14 +48,13 @@ public final class AlmostUnified {
 
     public static void onReloadRecipeManager() {
         Preconditions.checkNotNull(TAG_MANGER, "TagManager was not loaded correctly");
-        Preconditions.checkNotNull(SERVER_CONFIGS, "ServerConfigs was not loaded correctly");
-        Preconditions.checkNotNull(TAG_OWNERSHIPS, "TagOwnerships was not loaded correctly");
+        Preconditions.checkNotNull(SERVER_CONFIGS, "ServerConfigs were not loaded correctly");
 
-        RUNTIME = AlmostUnifiedRuntimeImpl.create(TAG_MANGER, SERVER_CONFIGS, TAG_OWNERSHIPS);
+        RUNTIME = AlmostUnifiedRuntimeImpl.create(TAG_MANGER, SERVER_CONFIGS);
     }
 
     public static TagOwnerships getTagOwnerships() {
-        Preconditions.checkNotNull(TAG_OWNERSHIPS, "TagOwnerships was not loaded correctly");
+        Preconditions.checkNotNull(TAG_OWNERSHIPS, "TagOwnerships were not loaded correctly");
         return TAG_OWNERSHIPS;
     }
 }

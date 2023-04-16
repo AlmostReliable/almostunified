@@ -56,17 +56,6 @@ public class AlmostKube extends KubeJSPlugin {
             return ItemStackJS.of(item);
         }
 
-        @Nullable
-        public static String getOwnershipTag(ResourceLocation tag) {
-            UnifyTag<Item> asUnifyTag = UnifyTag.item(tag);
-            UnifyTag<Item> ownershipTag = AlmostUnified
-                    .getRuntime()
-                    .getTagDelegateHelper()
-                    .orElseThrow(UnifyWrapper::notLoadedException)
-                    .getOwnershipTag(asUnifyTag);
-            return ownershipTag == null ? null : ownershipTag.location().toString();
-        }
-
         public static Set<String> getTags() {
             return AlmostUnified
                     .getRuntime()
@@ -84,7 +73,7 @@ public class AlmostKube extends KubeJSPlugin {
                     .getRuntime()
                     .getFilteredTagMap()
                     .orElseThrow(UnifyWrapper::notLoadedException)
-                    .getItems(asUnifyTag)
+                    .getItemsByTag(asUnifyTag)
                     .stream()
                     .map(ResourceLocation::toString)
                     .collect(Collectors.toSet());
