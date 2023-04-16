@@ -113,4 +113,8 @@ public class TagOwnerships {
     public UnifyTag<Item> getOwnerByTag(UnifyTag<Item> tag) {
         return refsToOwner.get(tag);
     }
+
+    public Set<UnifyTag<Item>> getRefs() {
+        return refsToOwner.keySet();
+    }
 }

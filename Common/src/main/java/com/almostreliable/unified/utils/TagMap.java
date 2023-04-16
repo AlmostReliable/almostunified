@@ -102,15 +102,15 @@ public class TagMap {
         return itemsToTags.size();
     }
 
-    public Collection<ResourceLocation> getItemsByTag(UnifyTag<Item> tag) {
+    public Set<ResourceLocation> getItemsByTag(UnifyTag<Item> tag) {
         return Collections.unmodifiableSet(tagsToItems.getOrDefault(tag, Collections.emptySet()));
     }
 
-    public Collection<UnifyTag<Item>> getTagsByItem(ResourceLocation items) {
+    public Set<UnifyTag<Item>> getTagsByItem(ResourceLocation items) {
         return Collections.unmodifiableSet(itemsToTags.getOrDefault(items, Collections.emptySet()));
     }
 
-    public Collection<UnifyTag<Item>> getTags() {
+    public Set<UnifyTag<Item>> getTags() {
         return Collections.unmodifiableSet(tagsToItems.keySet());
     }
 
