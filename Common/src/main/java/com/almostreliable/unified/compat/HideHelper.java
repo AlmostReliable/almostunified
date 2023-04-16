@@ -58,7 +58,7 @@ public class HideHelper {
             hidingList.addAll(toHide);
         }
 
-        hidingList.addAll(getRefItems());
+        hidingList.addAll(getRefItems(repMap));
 
         return hidingList
                 .stream()
@@ -87,26 +87,30 @@ public class HideHelper {
      *
      * @return A set of all items that are contained in the reference tags.
      */
-    private static Set<ResourceLocation> getRefItems() {
+    private static Set<ResourceLocation> getRefItems(ReplacementMap repMap) {
         Set<ResourceLocation> hidingList = new HashSet<>();
 
         for (var ref : AlmostUnified.getTagOwnerships().getRefs()) {
+            var owner = AlmostUnified.getTagOwnerships().getOwnerByTag(ref);
+            assert owner != null;
+
+            var dominantItem = repMap.getPreferredItemForTag(owner, $ -> true);
+
             TagKey<Item> asTagKey = TagKey.create(Registry.ITEM_REGISTRY, ref.location());
             Set<ResourceLocation> refItems = new HashSet<>();
             Registry.ITEM.getTagOrEmpty(asTagKey).forEach(holder -> {
                 ResourceLocation item = Registry.ITEM.getKey(holder.value());
+                if (item.equals(dominantItem)) return; // don't hide if the item is a dominant one
                 refItems.add(item);
             });
 
             if (refItems.isEmpty()) continue;
 
-            var owner = AlmostUnified.getTagOwnerships().getOwnerByTag(ref);
-            assert owner != null;
-
             AlmostUnified.LOG.info(
-                    "Hiding reference tag #{} of owner tag #{}.",
+                    "Hiding reference tag #{} of owner tag #{} -> {}",
                     ref.location(),
-                    owner.location()
+                    owner.location(),
+                    refItems
             );
 
             hidingList.addAll(refItems);
