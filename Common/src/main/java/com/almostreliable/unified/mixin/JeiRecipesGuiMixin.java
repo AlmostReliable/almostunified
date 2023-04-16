@@ -30,7 +30,7 @@ public abstract class JeiRecipesGuiMixin {
 
     @Inject(method = "drawLayouts", at = @At(value = "INVOKE", target = "Lmezz/jei/gui/recipes/RecipeTransferButton;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void unified$setupIndicators(PoseStack stack, int mX, int mY, CallbackInfoReturnable<Optional<IRecipeLayoutDrawable<?>>> cir, IRecipeLayoutDrawable<?> hoveredLayout, Minecraft mc, float partial, Iterator<?> iterator, RecipeTransferButton button) {
-        var recipeLayout = ((JEIRecipeTransferButtonAccessor) button).getRecipeLayout();
+        var recipeLayout = ((JeiRecipeTransferButtonAccessor) button).getRecipeLayout();
         var recipeId = recipeLayout.getRecipeCategory().getRegistryName(Utils.cast(recipeLayout.getRecipe()));
         if (recipeId == null) return;
 
