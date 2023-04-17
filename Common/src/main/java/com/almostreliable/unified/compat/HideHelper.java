@@ -48,7 +48,7 @@ public class HideHelper {
             if (toHide.isEmpty()) continue;
 
             AlmostUnified.LOG.info(
-                    "Hiding {}/{} items for tag {} -> {}",
+                    "[AutoHiding] Hiding {}/{} items for tag '#{}' -> {}",
                     toHide.size(),
                     itemsByTag.size(),
                     unifyTag.location(),
@@ -107,7 +107,7 @@ public class HideHelper {
             if (refItems.isEmpty()) continue;
 
             AlmostUnified.LOG.info(
-                    "Hiding reference tag #{} of owner tag #{} -> {}",
+                    "[AutoHiding] Hiding reference tag '#{}' of owner tag '#{}' -> {}",
                     ref.location(),
                     owner.location(),
                     refItems

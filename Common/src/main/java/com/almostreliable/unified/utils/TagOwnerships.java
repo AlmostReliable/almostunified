@@ -31,10 +31,10 @@ public class TagOwnerships {
      * Creates a new TagOwnerships instance that contains immutable maps of all tag ownership relationships.
      * <p>
      * It is ensured that all owner tags are present in the {@code unifyTags} set, and that all reference tags
-     * are not present in the {@code unifyTags} set.
+     * aren't present in the {@code unifyTags} set.
      *
-     * @param unifyTags          The set of all unify tags from the config.
-     * @param tagOwnershipConfig The map of all tag ownership relationships from the config.
+     * @param unifyTags          The set of all unify tags in use.
+     * @param tagOwnershipConfig The map of all tag ownership relationships.
      */
     public TagOwnerships(Set<UnifyTag<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnershipConfig) {
         ImmutableMap.Builder<UnifyTag<Item>, UnifyTag<Item>> refsToOwnerBuilder = ImmutableMap.builder();
@@ -42,28 +42,28 @@ public class TagOwnerships {
 
         tagOwnershipConfig.forEach((rawOwner, rawRefs) -> {
             for (ResourceLocation rawRef : rawRefs) {
-                UnifyTag<Item> ownerTag = UnifyTag.item(rawOwner);
+                UnifyTag<Item> owner = UnifyTag.item(rawOwner);
                 UnifyTag<Item> ref = UnifyTag.item(rawRef);
 
-                if (!unifyTags.contains(ownerTag)) {
+                if (!unifyTags.contains(owner)) {
                     AlmostUnified.LOG.warn(
-                            "Ownership tag {} is not present in the unify tag list.",
-                            ownerTag.location()
+                            "[TagOwnerships] Owner tag '#{}' is not present in the unify tag list!",
+                            owner.location()
                     );
                     continue;
                 }
 
                 if (unifyTags.contains(ref)) {
                     AlmostUnified.LOG.warn(
-                            "Tag {} is present in the unify tag list, but is also marked as ownership reference for the owner tag {}.",
+                            "[TagOwnerships] Reference tag '#{}' of owner tag '#{}' is present in the unify tag list!",
                             ref.location(),
-                            ownerTag.location()
+                            owner.location()
                     );
                     continue;
                 }
 
-                refsToOwnerBuilder.put(ref, ownerTag);
-                ownerToRefsBuilder.put(ownerTag, ref);
+                refsToOwnerBuilder.put(ref, owner);
+                ownerToRefsBuilder.put(owner, ref);
             }
         });
 
@@ -71,46 +71,53 @@ public class TagOwnerships {
         this.ownerToRefs = ownerToRefsBuilder.build();
     }
 
+    /**
+     * Applies tag ownerships to the provided raw tags.
+     * <p>
+     * The raw tags are then processed by the game and actual tags are created.
+     *
+     * @param rawTags The raw tags to apply ownerships to.
+     */
     public void applyOwnershipToRawTags(Map<ResourceLocation, Collection<Holder<Item>>> rawTags) {
         Multimap<ResourceLocation, ResourceLocation> changedTags = HashMultimap.create();
+
         ownerToRefs.asMap().forEach((owner, refs) -> {
-            ResourceLocation ownerLocation = owner.location();
-            var entries = rawTags.get(ownerLocation);
-            if (entries == null) {
-                AlmostUnified.LOG.warn("Ownership tag {} does not exist.", ownerLocation);
+            var rawHolders = rawTags.get(owner.location());
+            if (rawHolders == null) {
+                AlmostUnified.LOG.warn("[TagOwnerships] Owner tag '#{}' does not exist!", owner.location());
                 return;
             }
 
-            ImmutableSet.Builder<Holder<Item>> builder = ImmutableSet.builder();
-            builder.addAll(entries);
+            ImmutableSet.Builder<Holder<Item>> holders = ImmutableSet.builder();
+            holders.addAll(rawHolders);
             boolean changed = false;
 
             for (UnifyTag<Item> ref : refs) {
-                var refEntries = rawTags.get(ref.location());
-                if (refEntries == null) {
+                var refHolders = rawTags.get(ref.location());
+                if (refHolders == null) {
                     AlmostUnified.LOG.warn(
-                            "Reference tag {} for ownership tag {} does not exist.",
+                            "[TagOwnerships] Reference tag '#{}' of owner tag '#{}' does not exist!",
                             ref.location(),
-                            ownerLocation
+                            owner.location()
                     );
                     continue;
                 }
 
-                for (Holder<Item> holder : refEntries) {
-                    builder.add(holder);
+                for (Holder<Item> holder : refHolders) {
+                    holders.add(holder);
                     holder.unwrapKey().ifPresent(key -> changedTags.put(ref.location(), key.location()));
                     changed = true;
                 }
             }
 
             if (changed) {
-                rawTags.put(ownerLocation, builder.build());
+                rawTags.put(owner.location(), holders.build());
             }
         });
 
         if (!changedTags.isEmpty()) {
             changedTags.asMap().forEach((tag, items) -> {
-                AlmostUnified.LOG.info("[TagOwnerships] Modified Tag '#{}' and added {}.", tag, items);
+                AlmostUnified.LOG.info("[TagOwnerships] Modified tag '#{}', added {}", tag, items);
             });
         }
     }
@@ -126,6 +133,11 @@ public class TagOwnerships {
         return refsToOwner.get(tag);
     }
 
+    /**
+     * Gets all reference tags for all owner tags.
+     *
+     * @return A set of all reference tags.
+     */
     public Set<UnifyTag<Item>> getRefs() {
         return refsToOwner.keySet();
     }
