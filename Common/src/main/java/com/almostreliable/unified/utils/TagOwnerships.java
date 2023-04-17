@@ -1,17 +1,13 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.BuildConfig;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagEntry;
-import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,7 +71,8 @@ public class TagOwnerships {
         this.ownerToRefs = ownerToRefsBuilder.build();
     }
 
-    public void updateRawTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> rawTags) {
+    public void applyOwnershipToRawTags(Map<ResourceLocation, Collection<Holder<Item>>> rawTags) {
+        Multimap<ResourceLocation, ResourceLocation> changedTags = HashMultimap.create();
         ownerToRefs.asMap().forEach((owner, refs) -> {
             ResourceLocation ownerLocation = owner.location();
             var entries = rawTags.get(ownerLocation);
@@ -84,23 +81,38 @@ public class TagOwnerships {
                 return;
             }
 
+            ImmutableSet.Builder<Holder<Item>> builder = ImmutableSet.builder();
+            builder.addAll(entries);
+            boolean changed = false;
+
             for (UnifyTag<Item> ref : refs) {
-                ResourceLocation refLocation = ref.location();
-                var refEntries = rawTags.get(refLocation);
+                var refEntries = rawTags.get(ref.location());
                 if (refEntries == null) {
                     AlmostUnified.LOG.warn(
                             "Reference tag {} for ownership tag {} does not exist.",
-                            refLocation,
+                            ref.location(),
                             ownerLocation
                     );
                     continue;
                 }
 
-                TagEntry entry = TagEntry.tag(refLocation);
-                var ews = new TagLoader.EntryWithSource(entry, BuildConfig.MOD_ID);
-                entries.add(ews);
+                for (Holder<Item> holder : refEntries) {
+                    builder.add(holder);
+                    holder.unwrapKey().ifPresent(key -> changedTags.put(ref.location(), key.location()));
+                    changed = true;
+                }
+            }
+
+            if (changed) {
+                rawTags.put(ownerLocation, builder.build());
             }
         });
+
+        if (!changedTags.isEmpty()) {
+            changedTags.asMap().forEach((tag, items) -> {
+                AlmostUnified.LOG.info("[TagOwnerships] Modified Tag '#{}' and added {}.", tag, items);
+            });
+        }
     }
 
     /**
