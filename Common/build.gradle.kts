@@ -31,7 +31,7 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for common rei plugin
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
     testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-gui:$jeiVersion") // required for common jei plugin and mixin
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-lib:$jeiVersion") // required for common jei plugin and mixin
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion") // required for common jei plugin and mixin
 
     // The Fabric loader is required here to use the @Environment annotations and to get the mixin dependencies.

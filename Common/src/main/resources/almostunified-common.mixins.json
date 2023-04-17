@@ -10,8 +10,7 @@
   ],
   "client": [
     "ClientPacketListenerMixin",
-    "JeiRecipesGuiMixin",
-    "JeiRecipeTransferButtonAccessor"
+    "JeiRecipeLayoutMixin"
   ],
   "injectors": {
     "defaultRequire": 1
