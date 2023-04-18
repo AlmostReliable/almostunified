@@ -24,3 +24,24 @@ mandatory = true
 versionRange = "[${minecraftVersion},)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.${modId}]]
+modId = "jei"
+mandatory = false
+versionRange = "[${jeiVersion},)"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.${modId}]]
+modId = "roughlyenoughitems"
+mandatory = false
+versionRange = "[${reiVersion},)"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.${modId}]]
+modId = "rei_plugin_compatibilities"
+mandatory = false
+versionRange = "[9.0.43,)"
+ordering = "BEFORE"
+side = "BOTH"

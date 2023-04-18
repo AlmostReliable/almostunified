@@ -7,9 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class ReplacementMap {
@@ -17,26 +15,29 @@ public class ReplacementMap {
     private final TagMap tagMap;
     private final UnifyConfig unifyConfig;
     private final StoneStrataHandler stoneStrataHandler;
+    private final Set<ResourceLocation> warnings;
 
     public ReplacementMap(TagMap tagMap, StoneStrataHandler stoneStrataHandler, UnifyConfig unifyConfig) {
         this.tagMap = tagMap;
         this.unifyConfig = unifyConfig;
         this.stoneStrataHandler = stoneStrataHandler;
+        this.warnings = new HashSet<>();
     }
 
     @Nullable
     public UnifyTag<Item> getPreferredTagForItem(ResourceLocation item) {
-        Collection<UnifyTag<Item>> tags = tagMap.getTags(item);
+        Collection<UnifyTag<Item>> tags = tagMap.getTagsByItem(item);
 
         if (tags.isEmpty()) {
             return null;
         }
 
-        if (tags.size() > 1) {
+        if (tags.size() > 1 && !warnings.contains(item)) {
             AlmostUnified.LOG.warn(
                     "Item '{}' has multiple preferred tags '{}' for recipe replacement. This needs to be manually fixed by the user.",
                     item,
                     tags.stream().map(UnifyTag::location).toList());
+            warnings.add(item);
         }
 
         return tags.iterator().next();
@@ -60,7 +61,7 @@ public class ReplacementMap {
     @Nullable
     public ResourceLocation getPreferredItemForTag(UnifyTag<Item> tag, Predicate<ResourceLocation> itemFilter) {
         List<ResourceLocation> items = tagMap
-                .getItems(tag)
+                .getItemsByTag(tag)
                 .stream()
                 .filter(itemFilter)
                 // Helps us to get the clean stone variant first in case of a stone strata tag
@@ -102,9 +103,5 @@ public class ReplacementMap {
             }
         }
         return null;
-    }
-
-    public StoneStrataHandler getStoneStrataHandler() {
-        return stoneStrataHandler;
     }
 }

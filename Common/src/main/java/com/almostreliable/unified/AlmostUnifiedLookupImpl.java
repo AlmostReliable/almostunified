@@ -65,7 +65,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
                 .getRuntime()
                 .getFilteredTagMap()
                 .map(tagMap -> tagMap
-                        .getItems(asUnifyTag)
+                        .getItemsByTag(asUnifyTag)
                         .stream()
                         .flatMap(rl -> BuiltInRegistries.ITEM.getOptional(rl).stream())
                         .collect(Collectors.toSet()))

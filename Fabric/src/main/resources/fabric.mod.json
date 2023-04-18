@@ -32,5 +32,9 @@
     "fabric": ">=${fabricApiVersion}",
     "minecraft": ">=${minecraftVersion}",
     "java": ">=17"
+  },
+  "suggests": {
+    "jei": ">=${jeiVersion}",
+    "roughlyenoughitems": ">=${reiVersion}"
   }
 }
