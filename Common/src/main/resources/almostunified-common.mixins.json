@@ -6,11 +6,12 @@
   "plugin": "com.almostreliable.unified.mixin.AlmostMixinPlugin",
   "mixins": [
     "RecipeManagerMixin",
-    "ReloadableServerResourcesMixin"
+    "TagLoaderMixin",
+    "TagManagerMixin"
   ],
   "client": [
     "ClientPacketListenerMixin",
-    "JeiRecipesGuiMixin"
+    "JeiRecipeLayoutMixin"
   ],
   "injectors": {
     "defaultRequire": 1

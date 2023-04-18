@@ -48,6 +48,7 @@ public class AlmostJEI implements IModPlugin {
         var recipeId = recipeCategory.getRegistryName(recipe);
         if (recipeId == null) return;
 
+
         var link = CRTLookup.getLink(recipeId);
         if (link == null) return;
 

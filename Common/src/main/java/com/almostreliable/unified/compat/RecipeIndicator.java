@@ -52,4 +52,6 @@ public final class RecipeIndicator {
         GuiComponent.blit(poseStack, 0, 0, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE);
         poseStack.popPose();
     }
+
+    public record RenderEntry(int pX, int pY) {}
 }

@@ -41,6 +41,7 @@ public final class TestUtils {
             Defaults.getTags(Platform.FORGE),
             TEST_MOD_PRIORITIES,
             new HashMap<>(),
+            new HashMap<>(),
             new HashSet<>(),
             new HashSet<>(),
             new HashSet<>(),
@@ -104,7 +105,11 @@ public final class TestUtils {
     }
 
     public static StoneStrataHandler createTestStrataHandler() {
-        return StoneStrataHandler.create(List.of(), Set.of(), TagMap.create(List.of()));
+        return StoneStrataHandler.create(
+                List.of(),
+                Set.of(),
+                TagMap.create(Set.of())
+        );
     }
 
     public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {

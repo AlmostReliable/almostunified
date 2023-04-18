@@ -14,13 +14,18 @@ public class StoneStrataHandler {
     private final List<String> stoneStrata;
     private final Pattern tagMatcher;
     private final TagMap stoneStrataTagMap;
+
+    // don't clear the caches, so they are available for the runtime and KubeJS binding
+    // the runtime holding this handler is automatically yeeted on reload
     private final Map<UnifyTag<?>, Boolean> stoneStrataTagCache;
+    private final Map<ResourceLocation, String> stoneStrataCache;
 
     private StoneStrataHandler(List<String> stoneStrata, Pattern tagMatcher, TagMap stoneStrataTagMap) {
         this.stoneStrata = createSortedStoneStrata(stoneStrata);
         this.tagMatcher = tagMatcher;
         this.stoneStrataTagMap = stoneStrataTagMap;
         this.stoneStrataTagCache = new HashMap<>();
+        this.stoneStrataCache = new HashMap<>();
     }
 
     /**
@@ -46,16 +51,27 @@ public class StoneStrataHandler {
     }
 
     /**
-     * Returns the stone strata from given item. Method works on the requirement that it's an item which has a stone strata.
-     * Use {@link #isStoneStrataTag(UnifyTag)} to fill this requirement.
+     * Returns the stone strata from the given item. Assumes that the item has a stone strata tag.
+     * Use {@link #isStoneStrataTag(UnifyTag)} to ensure this requirement.
      *
      * @param item The item to get the stone strata from.
      * @return The stone strata of the item. Clean stone strata returns an empty string for later sorting as a
      * fallback variant.
      */
     public String getStoneStrata(ResourceLocation item) {
+        return stoneStrataCache.computeIfAbsent(item, this::computeStoneStrata);
+    }
+
+    /**
+     * Implementation logic for {@link #getStoneStrata(ResourceLocation)}.
+     *
+     * @param item The item to get the stone strata from.
+     * @return The stone strata of the item. Clean stone strata returns an empty string for later sorting as a
+     * fallback variant.
+     */
+    private String computeStoneStrata(ResourceLocation item) {
         String strata = stoneStrataTagMap
-                .getTags(item)
+                .getTagsByItem(item)
                 .stream()
                 .findFirst()
                 .map(UnifyTag::location)
@@ -87,9 +103,5 @@ public class StoneStrataHandler {
 
     public boolean isStoneStrataTag(UnifyTag<Item> tag) {
         return stoneStrataTagCache.computeIfAbsent(tag, t -> tagMatcher.matcher(t.location().toString()).matches());
-    }
-
-    public void clearCache() {
-        stoneStrataTagCache.clear();
     }
 }

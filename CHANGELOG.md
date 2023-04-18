@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.4.0] - 2023-04-18
+
+### WARNING
+This update features a new config option inside the `unify.json` called `tagOwnerships`.<br>
+Since it's a top-level option, this won't reset your config and all other options should be preserved. However,
+an automatic backup will be created in case something goes wrong.
+
+### Added
+- tag ownerships
+  - a new milestone feature allowing tags to be converted to other tags
+  - this allows unifying inconsistent tags like `forge:coals` and `forge:gems/coal`
+  - you can read more about it in the [wiki][tag-ownerships]
+
+### Changed
+- improved stone strata lookup speed
+
+### Fixed
+- some Mekanism recipes not being unified
+- log spam on multiple preferred tags
+- JEI indicator not showing anymore with new JEI versions
+
+<!-- Links -->
+[tag-ownerships]: https://github.com/AlmostReliable/almostunified/wiki/Unification-Config#tag-ownerships
+
 ## [0.3.8] - 2023-04-06
 
 ### Fixed
@@ -45,6 +69,7 @@ Initial 1.19.3 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.4.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.3-0.4.0-beta
 [0.3.8]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.3-0.3.8-beta
 [0.3.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.3-0.3.7-beta
 [0.3.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.3-0.3.6-beta

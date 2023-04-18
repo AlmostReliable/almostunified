@@ -1,9 +1,9 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.StoneStrataHandler;
-import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.config.DuplicationConfig;
+import com.almostreliable.unified.config.ServerConfigs;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
@@ -11,20 +11,17 @@ import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.FileUtils;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
-import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagManager;
-import net.minecraft.world.item.Item;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
+
     private final RecipeHandlerFactory recipeHandlerFactory;
     private final TagMap filteredTagMap;
     private final DuplicationConfig dupConfig;
@@ -32,32 +29,48 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final DebugConfig debugConfig;
     private final ReplacementMap replacementMap;
 
-    private AlmostUnifiedRuntimeImpl(RecipeHandlerFactory recipeHandlerFactory, TagMap tagMap, DuplicationConfig dupConfig, UnifyConfig unifyConfig, DebugConfig debugConfig) {
+    private AlmostUnifiedRuntimeImpl(
+            RecipeHandlerFactory recipeHandlerFactory,
+            TagMap filteredTagMap,
+            ReplacementMap replacementMap,
+            DuplicationConfig dupConfig,
+            UnifyConfig unifyConfig,
+            DebugConfig debugConfig
+    ) {
         this.recipeHandlerFactory = recipeHandlerFactory;
+        this.filteredTagMap = filteredTagMap;
+        this.replacementMap = replacementMap;
         this.dupConfig = dupConfig;
         this.unifyConfig = unifyConfig;
         this.debugConfig = debugConfig;
-        List<UnifyTag<Item>> allowedTags = unifyConfig.bakeTags();
-        this.filteredTagMap = tagMap.filtered(allowedTags::contains, unifyConfig::includeItem);
-        StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(unifyConfig.getStoneStrata(),
-                AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
-                tagMap);
-        this.replacementMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, unifyConfig);
     }
 
-    public static AlmostUnifiedRuntimeImpl create(TagManager tagManager) {
-        Objects.requireNonNull(tagManager);
-
+    public static AlmostUnifiedRuntimeImpl create(TagManager tagManager, ServerConfigs serverConfigs) {
         createGitIgnoreIfNotExists();
-        DuplicationConfig dupConfig = Config.load(DuplicationConfig.NAME, new DuplicationConfig.Serializer());
-        UnifyConfig unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-        DebugConfig debugConfig = Config.load(DebugConfig.NAME, new DebugConfig.Serializer());
+        DuplicationConfig dupConfig = serverConfigs.getDupConfig();
+        UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
+        DebugConfig debugConfig = serverConfigs.getDebugConfig();
 
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(factory);
 
-        TagMap tagMap = TagMap.create(tagManager);
-        return new AlmostUnifiedRuntimeImpl(factory, tagMap, dupConfig, unifyConfig, debugConfig);
+        var allowedTags = unifyConfig.bakeTags();
+        TagMap globalTagMap = TagMap.create(tagManager);
+        TagMap filteredTagMap = globalTagMap.filtered(allowedTags::contains, unifyConfig::includeItem);
+
+        StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(unifyConfig.getStoneStrata(),
+                AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()), globalTagMap);
+
+        var replacementMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, unifyConfig);
+
+        return new AlmostUnifiedRuntimeImpl(
+                factory,
+                filteredTagMap,
+                replacementMap,
+                dupConfig,
+                unifyConfig,
+                debugConfig
+        );
     }
 
     private static void createGitIgnoreIfNotExists() {

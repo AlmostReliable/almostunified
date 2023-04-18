@@ -78,7 +78,6 @@ public class RecipeTransformer {
 
         unifyConfig.clearCache();
         duplicationConfig.clearCache();
-        replacementMap.getStoneStrataHandler().clearCache();
 
         if (tracker != null) recipes.putAll(tracker.compute());
         return result;

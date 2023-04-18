@@ -1,5 +1,6 @@
 package com.almostreliable.unified.recipe;
 
+import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.utils.JsonUtils;
@@ -64,20 +65,28 @@ public class RecipeContextImpl implements RecipeContext {
             return null;
         }
         JsonElement copy = element.deepCopy();
-        tryReplacingItemInIngredient(copy);
+        tryCreateIngredientReplacement(copy);
         return element.equals(copy) ? null : copy;
     }
 
-    private void tryReplacingItemInIngredient(@Nullable JsonElement element) {
+    private void tryCreateIngredientReplacement(@Nullable JsonElement element) {
         if (element instanceof JsonArray array) {
             for (JsonElement e : array) {
-                tryReplacingItemInIngredient(e);
+                tryCreateIngredientReplacement(e);
             }
         }
 
         if (element instanceof JsonObject object) {
-            tryReplacingItemInIngredient(object.get(RecipeConstants.VALUE));
-            tryReplacingItemInIngredient(object.get(RecipeConstants.INGREDIENT));
+            tryCreateIngredientReplacement(object.get(RecipeConstants.VALUE));
+            tryCreateIngredientReplacement(object.get(RecipeConstants.INGREDIENT));
+
+            if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
+                UnifyTag<Item> tag = Utils.toItemTag(primitive.getAsString());
+                UnifyTag<Item> ownershipTag = AlmostUnified.getTagOwnerships().getOwnerByTag(tag);
+                if (ownershipTag != null) {
+                    object.add(RecipeConstants.TAG, new JsonPrimitive(ownershipTag.location().toString()));
+                }
+            }
 
             if (object.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {
                 ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());

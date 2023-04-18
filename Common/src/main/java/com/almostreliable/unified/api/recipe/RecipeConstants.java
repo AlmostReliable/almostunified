@@ -29,6 +29,8 @@ public final class RecipeConstants {
     // mekanism
     public static final String MAIN_INPUT = "mainInput";
     public static final String MAIN_OUTPUT = "mainOutput";
+    public static final String ITEM_INPUT = "itemInput";
+    public static final String ITEM_OUTPUT = "itemOutput";
     public static final String SECONDARY_OUTPUT = "secondaryOutput";
 
     // modern industrialization
