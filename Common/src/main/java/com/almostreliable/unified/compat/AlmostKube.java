@@ -73,7 +73,7 @@ public class AlmostKube extends KubeJSPlugin {
                     .getRuntime()
                     .getFilteredTagMap()
                     .orElseThrow(UnifyWrapper::notLoadedException)
-                    .getItems(asUnifyTag)
+                    .getItemsByTag(asUnifyTag)
                     .stream()
                     .map(ResourceLocation::toString)
                     .collect(Collectors.toSet());

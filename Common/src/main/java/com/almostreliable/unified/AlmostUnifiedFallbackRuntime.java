@@ -5,21 +5,25 @@ import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.TagOwnerships;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 // TODO: Implement sync so it's not just a fallback
 public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
 
     @Nullable private static AlmostUnifiedFallbackRuntime INSTANCE;
     @Nullable private UnifyConfig config;
-    @Nullable private ReplacementMap replacementMap;
     @Nullable private TagMap filteredTagMap;
+    @Nullable private ReplacementMap replacementMap;
+    @Nullable private TagOwnerships tagOwnerships;
 
     public static AlmostUnifiedFallbackRuntime getInstance() {
         if (INSTANCE == null) {
@@ -32,8 +36,9 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
 
     public void reload() {
         config = null;
-        replacementMap = null;
         filteredTagMap = null;
+        replacementMap = null;
+        tagOwnerships = null;
         build();
     }
 
@@ -46,11 +51,12 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     }
 
     public void build() {
-        var config = getConfig();
-        List<UnifyTag<Item>> unifyTags = config.bakeTags();
-        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, config::includeItem);
-        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(config);
-        replacementMap = new ReplacementMap(Objects.requireNonNull(filteredTagMap), stoneStrataHandler, config);
+        var uc = getConfig();
+        Set<UnifyTag<Item>> unifyTags = uc.bakeTags();
+        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, uc::includeItem);
+        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(uc);
+        replacementMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, uc);
+        tagOwnerships = new TagOwnerships(unifyTags, uc.getTagOwnerships());
     }
 
     private static StoneStrataHandler getStoneStrataHandler(UnifyConfig config) {

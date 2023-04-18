@@ -9,6 +9,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -21,19 +22,35 @@ public class UnifyConfig extends Config {
     private final List<String> unbakedTags;
     private final List<String> materials;
     private final Map<ResourceLocation, String> priorityOverrides;
+    private final Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships;
     private final Set<UnifyTag<Item>> ignoredTags;
     private final Set<Pattern> ignoredItems;
     private final Set<Pattern> ignoredRecipeTypes;
     private final Set<Pattern> ignoredRecipes;
     private final boolean hideJeiRei;
-    private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
 
-    public UnifyConfig(List<String> modPriorities, List<String> stoneStrata, List<String> unbakedTags, List<String> materials, Map<ResourceLocation, String> priorityOverrides, Set<UnifyTag<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean hideJeiRei) {
+    private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
+    @Nullable private Set<UnifyTag<Item>> bakedTagsCache;
+
+    public UnifyConfig(
+            List<String> modPriorities,
+            List<String> stoneStrata,
+            List<String> unbakedTags,
+            List<String> materials,
+            Map<ResourceLocation, String> priorityOverrides,
+            Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships,
+            Set<UnifyTag<Item>> ignoredTags,
+            Set<Pattern> ignoredItems,
+            Set<Pattern> ignoredRecipeTypes,
+            Set<Pattern> ignoredRecipes,
+            boolean hideJeiRei
+    ) {
         this.modPriorities = modPriorities;
         this.stoneStrata = stoneStrata;
         this.unbakedTags = unbakedTags;
         this.materials = materials;
         this.priorityOverrides = priorityOverrides;
+        this.tagOwnerships = tagOwnerships;
         this.ignoredTags = ignoredTags;
         this.ignoredItems = ignoredItems;
         this.ignoredRecipeTypes = ignoredRecipeTypes;
@@ -50,8 +67,12 @@ public class UnifyConfig extends Config {
         return Collections.unmodifiableList(stoneStrata);
     }
 
-    public List<UnifyTag<Item>> bakeTags() {
-        List<UnifyTag<Item>> result = new ArrayList<>();
+    public Set<UnifyTag<Item>> bakeTags() {
+        if (bakedTagsCache != null) {
+            return bakedTagsCache;
+        }
+
+        Set<UnifyTag<Item>> result = new HashSet<>();
 
         for (String tag : unbakedTags) {
             for (String material : materials) {
@@ -59,15 +80,17 @@ public class UnifyConfig extends Config {
                 ResourceLocation asRL = ResourceLocation.tryParse(replace);
                 if (asRL == null) {
                     AlmostUnified.LOG.warn("Could not bake tag <{}> with material <{}>", tag, material);
-                } else {
-                    UnifyTag<Item> t = UnifyTag.item(asRL);
-                    if (!ignoredTags.contains(t)) {
-                        result.add(t);
-                    }
+                    continue;
+                }
+
+                UnifyTag<Item> t = UnifyTag.item(asRL);
+                if (!ignoredTags.contains(t)) {
+                    result.add(t);
                 }
             }
         }
 
+        bakedTagsCache = result;
         return result;
     }
 
@@ -79,6 +102,10 @@ public class UnifyConfig extends Config {
 
     public Map<ResourceLocation, String> getPriorityOverrides() {
         return Collections.unmodifiableMap(priorityOverrides);
+    }
+
+    public Map<ResourceLocation, Set<ResourceLocation>> getTagOwnerships() {
+        return Collections.unmodifiableMap(tagOwnerships);
     }
 
     public boolean includeItem(ResourceLocation item) {
@@ -125,6 +152,7 @@ public class UnifyConfig extends Config {
         public static final String TAGS = "tags";
         public static final String MATERIALS = "materials";
         public static final String PRIORITY_OVERRIDES = "priorityOverrides";
+        public static final String TAG_OWNERSHIPS = "tagOwnerships";
         public static final String IGNORED_TAGS = "ignoredTags";
         public static final String IGNORED_ITEMS = "ignoredItems";
         public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
@@ -149,6 +177,18 @@ public class UnifyConfig extends Config {
                             entry -> entry.getValue().getAsString(),
                             (a, b) -> b,
                             HashMap::new)), new HashMap<>());
+            Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships = safeGet(() -> json
+                    .getAsJsonObject(TAG_OWNERSHIPS)
+                    .entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            entry -> new ResourceLocation(entry.getKey()),
+                            entry -> JsonUtils.toList(entry.getValue().getAsJsonArray())
+                                    .stream()
+                                    .map(ResourceLocation::new)
+                                    .collect(Collectors.toSet()),
+                            (a, b) -> b,
+                            HashMap::new)), new HashMap<>());
             Set<UnifyTag<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
                     .stream()
@@ -166,6 +206,7 @@ public class UnifyConfig extends Config {
                     tags,
                     materials,
                     priorityOverrides,
+                    tagOwnerships,
                     ignoredTags,
                     ignoredItems,
                     ignoredRecipeTypes,
@@ -186,6 +227,12 @@ public class UnifyConfig extends Config {
                 priorityOverrides.add(tag.toString(), new JsonPrimitive(mod));
             });
             json.add(PRIORITY_OVERRIDES, priorityOverrides);
+            JsonObject tagOwnerships = new JsonObject();
+            config.tagOwnerships.forEach((parent, child) -> {
+                tagOwnerships.add(parent.toString(),
+                        JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
+            });
+            json.add(TAG_OWNERSHIPS, tagOwnerships);
             json.add(IGNORED_TAGS,
                     JsonUtils.toArray(config.ignoredTags
                             .stream()

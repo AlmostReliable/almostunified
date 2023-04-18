@@ -71,7 +71,7 @@ public class StoneStrataHandler {
      */
     private String computeStoneStrata(ResourceLocation item) {
         String strata = stoneStrataTagMap
-                .getTags(item)
+                .getTagsByItem(item)
                 .stream()
                 .findFirst()
                 .map(UnifyTag::location)

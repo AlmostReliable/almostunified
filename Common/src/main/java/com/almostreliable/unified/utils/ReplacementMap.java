@@ -26,7 +26,7 @@ public class ReplacementMap {
 
     @Nullable
     public UnifyTag<Item> getPreferredTagForItem(ResourceLocation item) {
-        Collection<UnifyTag<Item>> tags = tagMap.getTags(item);
+        Collection<UnifyTag<Item>> tags = tagMap.getTagsByItem(item);
 
         if (tags.isEmpty()) {
             return null;
@@ -61,7 +61,7 @@ public class ReplacementMap {
     @Nullable
     public ResourceLocation getPreferredItemForTag(UnifyTag<Item> tag, Predicate<ResourceLocation> itemFilter) {
         List<ResourceLocation> items = tagMap
-                .getItems(tag)
+                .getItemsByTag(tag)
                 .stream()
                 .filter(itemFilter)
                 // Helps us to get the clean stone variant first in case of a stone strata tag
