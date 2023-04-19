@@ -1,6 +1,7 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.AlmostUnifiedRuntime;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
@@ -91,8 +92,9 @@ public class HideHelper {
     private static Set<ResourceLocation> getRefItems(ReplacementMap repMap) {
         Set<ResourceLocation> hidingList = new HashSet<>();
 
-        for (var ref : AlmostUnified.getTagOwnerships().getRefs()) {
-            var owner = AlmostUnified.getTagOwnerships().getOwnerByTag(ref);
+        var tagOwnerships = AlmostUnifiedFallbackRuntime.getInstance().getTagOwnerships();
+        for (var ref : tagOwnerships.getRefs()) {
+            var owner = tagOwnerships.getOwnerByTag(ref);
             assert owner != null;
 
             var dominantItem = repMap.getPreferredItemForTag(owner, $ -> true);
