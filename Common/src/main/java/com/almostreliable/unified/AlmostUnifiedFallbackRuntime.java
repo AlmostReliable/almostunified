@@ -7,6 +7,7 @@ import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.TagOwnerships;
 import com.almostreliable.unified.utils.UnifyTag;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -83,5 +84,10 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     @Override
     public Optional<UnifyConfig> getUnifyConfig() {
         return Optional.ofNullable(config);
+    }
+
+    public TagOwnerships getTagOwnerships() {
+        Preconditions.checkNotNull(tagOwnerships, "TagOwnerships were not loaded correctly");
+        return tagOwnerships;
     }
 }
