@@ -16,7 +16,7 @@ public final class AlmostUnified {
 
     public static final Logger LOG = LogManager.getLogger(BuildConfig.MOD_NAME);
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
-    @Nullable private static TagManager TAG_MANGER;
+    @Nullable private static TagManager TAG_MANAGER;
     @Nullable private static StartupConfig STARTUP_CONFIG;
     @Nullable private static ServerConfigs SERVER_CONFIGS;
     @Nullable private static TagOwnerships TAG_OWNERSHIPS;
@@ -40,17 +40,17 @@ public final class AlmostUnified {
     }
 
     public static void onTagManagerReload(TagManager tagManager) {
-        TAG_MANGER = tagManager;
+        TAG_MANAGER = tagManager;
         SERVER_CONFIGS = ServerConfigs.load();
         var uc = SERVER_CONFIGS.getUnifyConfig();
         TAG_OWNERSHIPS = new TagOwnerships(uc.bakeTags(), uc.getTagOwnerships());
     }
 
     public static void onReloadRecipeManager() {
-        Preconditions.checkNotNull(TAG_MANGER, "TagManager was not loaded correctly");
+        Preconditions.checkNotNull(TAG_MANAGER, "TagManager was not loaded correctly");
         Preconditions.checkNotNull(SERVER_CONFIGS, "ServerConfigs were not loaded correctly");
 
-        RUNTIME = AlmostUnifiedRuntimeImpl.create(TAG_MANGER, SERVER_CONFIGS);
+        RUNTIME = AlmostUnifiedRuntimeImpl.create(TAG_MANAGER, SERVER_CONFIGS);
     }
 
     public static TagOwnerships getTagOwnerships() {
