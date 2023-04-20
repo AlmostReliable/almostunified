@@ -93,7 +93,7 @@ public class RecipeContextImpl implements RecipeContext {
                 UnifyTag<Item> tag = getPreferredTagForItem(item);
                 if (tag != null) {
                     object.remove(RecipeConstants.ITEM);
-                    object.add(RecipeConstants.TAG, new JsonPrimitive(tag.location().toString()));
+                    object.addProperty(RecipeConstants.TAG, tag.location().toString());
                 }
             }
         }
@@ -144,7 +144,7 @@ public class RecipeContextImpl implements RecipeContext {
                 ResourceLocation item = getPreferredItemForTag(Utils.toItemTag(primitive.getAsString()), $ -> true);
                 if (item != null) {
                     object.remove(RecipeConstants.TAG);
-                    object.add(RecipeConstants.ITEM, new JsonPrimitive(item.toString()));
+                    object.addProperty(RecipeConstants.ITEM, item.toString());
                 }
                 return element;
             }
