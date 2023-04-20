@@ -63,15 +63,20 @@ public class ReplacementMap {
 
     @Nullable
     public ResourceLocation getPreferredItemForTag(UnifyTag<Item> tag, Predicate<ResourceLocation> itemFilter) {
+        var tagToLookup = tagOwnerships.getOwnerByTag(tag);
+        if (tagToLookup == null) tagToLookup = tag;
+
         List<ResourceLocation> items = tagMap
-                .getItemsByTag(tag)
+                .getItemsByTag(tagToLookup)
                 .stream()
                 .filter(itemFilter)
                 // Helps us to get the clean stone variant first in case of a stone strata tag
                 .sorted(Comparator.comparingInt(value -> value.toString().length()))
                 .toList();
 
-        ResourceLocation overrideItem = getOverrideForTag(tag, items);
+        if (items.isEmpty()) return null;
+
+        ResourceLocation overrideItem = getOverrideForTag(tagToLookup, items);
         if (overrideItem != null) {
             return overrideItem;
         }
