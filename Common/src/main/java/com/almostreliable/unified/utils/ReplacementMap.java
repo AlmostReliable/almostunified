@@ -12,15 +12,17 @@ import java.util.function.Predicate;
 
 public class ReplacementMap {
 
-    private final TagMap tagMap;
     private final UnifyConfig unifyConfig;
+    private final TagMap tagMap;
     private final StoneStrataHandler stoneStrataHandler;
+    private final TagOwnerships tagOwnerships;
     private final Set<ResourceLocation> warnings;
 
-    public ReplacementMap(TagMap tagMap, StoneStrataHandler stoneStrataHandler, UnifyConfig unifyConfig) {
+    public ReplacementMap(UnifyConfig unifyConfig, TagMap tagMap, StoneStrataHandler stoneStrataHandler, TagOwnerships tagOwnerships) {
         this.tagMap = tagMap;
         this.unifyConfig = unifyConfig;
         this.stoneStrataHandler = stoneStrataHandler;
+        this.tagOwnerships = tagOwnerships;
         this.warnings = new HashSet<>();
     }
 
@@ -36,7 +38,8 @@ public class ReplacementMap {
             AlmostUnified.LOG.warn(
                     "Item '{}' has multiple preferred tags '{}' for recipe replacement. This needs to be manually fixed by the user.",
                     item,
-                    tags.stream().map(UnifyTag::location).toList());
+                    tags.stream().map(UnifyTag::location).toList()
+            );
             warnings.add(item);
         }
 
