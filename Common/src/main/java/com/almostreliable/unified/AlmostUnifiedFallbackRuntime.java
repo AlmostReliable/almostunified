@@ -7,7 +7,6 @@ import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.TagOwnerships;
 import com.almostreliable.unified.utils.UnifyTag;
-import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -17,14 +16,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-// TODO: Implement sync so it's not just a fallback
+// TODO: Implement sync, so it's not just a fallback
 public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
 
     @Nullable private static AlmostUnifiedFallbackRuntime INSTANCE;
-    @Nullable private UnifyConfig config;
+
+    @Nullable private UnifyConfig unifyConfig;
     @Nullable private TagMap filteredTagMap;
-    @Nullable private ReplacementMap replacementMap;
     @Nullable private TagOwnerships tagOwnerships;
+    @Nullable private ReplacementMap replacementMap;
 
     public static AlmostUnifiedFallbackRuntime getInstance() {
         if (INSTANCE == null) {
@@ -36,31 +36,23 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     }
 
     public void reload() {
-        config = null;
+        unifyConfig = null;
         filteredTagMap = null;
-        replacementMap = null;
         tagOwnerships = null;
+        replacementMap = null;
         build();
     }
 
-    private UnifyConfig getConfig() {
-        if (config == null) {
-            config = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-        }
-
-        return config;
-    }
-
     public void build() {
-        var uc = getConfig();
-        Set<UnifyTag<Item>> unifyTags = uc.bakeTags();
-        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, uc::includeItem);
-        StoneStrataHandler stoneStrataHandler = getStoneStrataHandler(uc);
-        replacementMap = new ReplacementMap(filteredTagMap, stoneStrataHandler, uc);
-        tagOwnerships = new TagOwnerships(unifyTags, uc.getTagOwnerships());
+        unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
+        Set<UnifyTag<Item>> unifyTags = unifyConfig.bakeTags();
+        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
+        StoneStrataHandler stoneStrataHandler = createStoneStrataHandler(unifyConfig);
+        tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
+        replacementMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
     }
 
-    private static StoneStrataHandler getStoneStrataHandler(UnifyConfig config) {
+    private static StoneStrataHandler createStoneStrataHandler(UnifyConfig config) {
         Set<UnifyTag<Item>> stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(config.getStoneStrata());
         TagMap stoneStrataTagMap = TagMap.create(stoneStrataTags);
         return StoneStrataHandler.create(config.getStoneStrata(), stoneStrataTags, stoneStrataTagMap);
@@ -83,11 +75,11 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
 
     @Override
     public Optional<UnifyConfig> getUnifyConfig() {
-        return Optional.ofNullable(config);
+        return Optional.ofNullable(unifyConfig);
     }
 
-    public TagOwnerships getTagOwnerships() {
-        Preconditions.checkNotNull(tagOwnerships, "TagOwnerships were not loaded correctly");
-        return tagOwnerships;
+    @Override
+    public Optional<TagOwnerships> getTagOwnerships() {
+        return Optional.ofNullable(tagOwnerships);
     }
 }

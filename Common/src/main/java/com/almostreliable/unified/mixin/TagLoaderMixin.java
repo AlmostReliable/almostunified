@@ -27,7 +27,7 @@ public class TagLoaderMixin {
         if (directory.equals("tags/items")) {
             try {
                 Map<ResourceLocation, Collection<Holder<Item>>> rawTags = Utils.cast(cir.getReturnValue());
-                AlmostUnified.getTagOwnerships().applyOwnershipToRawTags(rawTags);
+                AlmostUnified.getRuntime().getTagOwnerships().ifPresent(to -> to.applyOwnershipToRawTags(rawTags));
             } catch (Exception e) {
                 AlmostUnified.LOG.error("Error applying tag ownerships to raw tags", e);
             }

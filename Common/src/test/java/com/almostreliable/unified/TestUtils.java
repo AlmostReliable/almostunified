@@ -113,9 +113,16 @@ public final class TestUtils {
     }
 
     public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {
-        ReplacementMap map = new ReplacementMap(TagMapTests.testTagMap(),
+        TagOwnerships tagOwnerships = new TagOwnerships(
+                DEFAULT_UNIFY_CONFIG.bakeTags(),
+                DEFAULT_UNIFY_CONFIG.getTagOwnerships()
+        );
+        ReplacementMap map = new ReplacementMap(
+                DEFAULT_UNIFY_CONFIG,
+                TagMapTests.testTagMap(),
                 createTestStrataHandler(),
-                DEFAULT_UNIFY_CONFIG);
+                tagOwnerships
+        );
         RecipeHandlerFactory factory = new RecipeHandlerFactory();
         consumer.accept(factory);
         return new RecipeTransformer(factory, map, DEFAULT_UNIFY_CONFIG, null);

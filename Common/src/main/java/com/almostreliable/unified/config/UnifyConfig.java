@@ -5,7 +5,6 @@ import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -224,7 +223,7 @@ public class UnifyConfig extends Config {
             json.add(MATERIALS, JsonUtils.toArray(config.materials));
             JsonObject priorityOverrides = new JsonObject();
             config.priorityOverrides.forEach((tag, mod) -> {
-                priorityOverrides.add(tag.toString(), new JsonPrimitive(mod));
+                priorityOverrides.addProperty(tag.toString(), mod);
             });
             json.add(PRIORITY_OVERRIDES, priorityOverrides);
             JsonObject tagOwnerships = new JsonObject();
@@ -242,7 +241,7 @@ public class UnifyConfig extends Config {
             serializePatterns(json, IGNORED_ITEMS, config.ignoredItems);
             serializePatterns(json, IGNORED_RECIPE_TYPES, config.ignoredRecipeTypes);
             serializePatterns(json, IGNORED_RECIPES, config.ignoredRecipes);
-            json.add(HIDE_JEI_REI, new JsonPrimitive(config.hideJeiRei));
+            json.addProperty(HIDE_JEI_REI, config.hideJeiRei);
             return json;
         }
     }

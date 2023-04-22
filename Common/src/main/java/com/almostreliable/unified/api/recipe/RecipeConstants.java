@@ -9,6 +9,7 @@ public final class RecipeConstants {
     public static final String INGREDIENT = "ingredient";
     public static final String INGREDIENTS = "ingredients";
     public static final String INPUT_ITEMS = "inputItems";
+    public static final String CATALYST = "catalyst";
 
     // common outputs
     public static final String OUTPUT = "output";

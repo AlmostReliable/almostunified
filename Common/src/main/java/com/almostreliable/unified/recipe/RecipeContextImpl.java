@@ -64,6 +64,7 @@ public class RecipeContextImpl implements RecipeContext {
         if (element == null) {
             return null;
         }
+
         JsonElement copy = element.deepCopy();
         tryCreateIngredientReplacement(copy);
         return element.equals(copy) ? null : copy;
@@ -82,10 +83,11 @@ public class RecipeContextImpl implements RecipeContext {
 
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
                 UnifyTag<Item> tag = Utils.toItemTag(primitive.getAsString());
-                UnifyTag<Item> ownershipTag = AlmostUnified.getTagOwnerships().getOwnerByTag(tag);
-                if (ownershipTag != null) {
-                    object.add(RecipeConstants.TAG, new JsonPrimitive(ownershipTag.location().toString()));
-                }
+                AlmostUnified.getRuntime()
+                        .getTagOwnerships()
+                        .map(o -> o.getOwnerByTag(tag))
+                        .ifPresent(ownerTag -> object.addProperty(RecipeConstants.TAG,
+                                ownerTag.location().toString()));
             }
 
             if (object.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {
@@ -93,7 +95,7 @@ public class RecipeContextImpl implements RecipeContext {
                 UnifyTag<Item> tag = getPreferredTagForItem(item);
                 if (tag != null) {
                     object.remove(RecipeConstants.ITEM);
-                    object.add(RecipeConstants.TAG, new JsonPrimitive(tag.location().toString()));
+                    object.addProperty(RecipeConstants.TAG, tag.location().toString());
                 }
             }
         }
@@ -107,17 +109,18 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Override
     @Nullable
-    public JsonElement createResultReplacement(@Nullable JsonElement element, boolean includeTagCheck, String... lookupKeys) {
+    public JsonElement createResultReplacement(@Nullable JsonElement element, boolean tagLookup, String... lookupKeys) {
         if (element == null) {
             return null;
         }
+
         JsonElement copy = element.deepCopy();
-        JsonElement result = tryCreateResultReplacement(copy, includeTagCheck, lookupKeys);
+        JsonElement result = tryCreateResultReplacement(copy, tagLookup, lookupKeys);
         return element.equals(result) ? null : result;
     }
 
     @Nullable
-    public JsonElement tryCreateResultReplacement(JsonElement element, boolean lookupForTag, String... keys) {
+    private JsonElement tryCreateResultReplacement(JsonElement element, boolean tagLookup, String... lookupKeys) {
         if (element instanceof JsonPrimitive primitive) {
             ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
             ResourceLocation replacement = getReplacementForItem(item);
@@ -128,23 +131,23 @@ public class RecipeContextImpl implements RecipeContext {
         }
 
         if (element instanceof JsonArray array &&
-            JsonUtils.replaceOn(array, j -> tryCreateResultReplacement(j, lookupForTag, keys))) {
+            JsonUtils.replaceOn(array, j -> tryCreateResultReplacement(j, tagLookup, lookupKeys))) {
             return element;
         }
 
         if (element instanceof JsonObject object) {
-            for (String key : keys) {
-                if (JsonUtils.replaceOn(object, key, j -> tryCreateResultReplacement(j, lookupForTag, keys))) {
+            for (String key : lookupKeys) {
+                if (JsonUtils.replaceOn(object, key, j -> tryCreateResultReplacement(j, tagLookup, lookupKeys))) {
                     return element;
                 }
             }
 
-            // Some mods have tags for results instead of items. We replace those with the preferred item.
-            if (lookupForTag && object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
+            // when tags are used as outputs, replace them with the preferred item
+            if (tagLookup && object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
                 ResourceLocation item = getPreferredItemForTag(Utils.toItemTag(primitive.getAsString()), $ -> true);
                 if (item != null) {
                     object.remove(RecipeConstants.TAG);
-                    object.add(RecipeConstants.ITEM, new JsonPrimitive(item.toString()));
+                    object.addProperty(RecipeConstants.ITEM, item.toString());
                 }
                 return element;
             }
