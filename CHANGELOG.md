@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.4.2] - 2023-04-22
+
+### Fixed
+- tag ownerships not being in sync on some recipes
+- automatic item hiding not working with all ownership tags
+- Immersive Engineering catalysts not being unified
+- Immersive Engineering secondary outputs not being unified
+
 ## [0.4.1] - 2023-04-19
 
 ### Fixed
@@ -51,6 +59,7 @@ Initial 1.19.4 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.4.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.2-beta
 [0.4.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.1-beta
 [0.4.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.0-beta
 [0.3.8]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.3.8-beta
