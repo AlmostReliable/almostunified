@@ -3,6 +3,7 @@ package com.almostreliable.unified;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.TagOwnerships;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,4 +19,6 @@ public interface AlmostUnifiedRuntime {
     Optional<ReplacementMap> getReplacementMap();
 
     Optional<UnifyConfig> getUnifyConfig();
+
+    Optional<TagOwnerships> getTagOwnerships();
 }

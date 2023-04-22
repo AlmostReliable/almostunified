@@ -15,10 +15,11 @@ import javax.annotation.Nullable;
 public final class AlmostUnified {
 
     public static final Logger LOG = LogManager.getLogger(BuildConfig.MOD_NAME);
+
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
-    @Nullable private static TagManager TAG_MANAGER;
     @Nullable private static StartupConfig STARTUP_CONFIG;
     @Nullable private static ServerConfigs SERVER_CONFIGS;
+    @Nullable private static TagManager TAG_MANAGER;
     @Nullable private static TagOwnerships TAG_OWNERSHIPS;
 
     public static StartupConfig getStartupConfig() {
@@ -40,21 +41,17 @@ public final class AlmostUnified {
     }
 
     public static void onTagManagerReload(TagManager tagManager) {
-        TAG_MANAGER = tagManager;
         SERVER_CONFIGS = ServerConfigs.load();
-        var uc = SERVER_CONFIGS.getUnifyConfig();
-        TAG_OWNERSHIPS = new TagOwnerships(uc.bakeTags(), uc.getTagOwnerships());
+        TAG_MANAGER = tagManager;
+        var unifyConfig = SERVER_CONFIGS.getUnifyConfig();
+        TAG_OWNERSHIPS = new TagOwnerships(unifyConfig.bakeTags(), unifyConfig.getTagOwnerships());
     }
 
     public static void onReloadRecipeManager() {
-        Preconditions.checkNotNull(TAG_MANAGER, "TagManager was not loaded correctly");
         Preconditions.checkNotNull(SERVER_CONFIGS, "ServerConfigs were not loaded correctly");
-
-        RUNTIME = AlmostUnifiedRuntimeImpl.create(TAG_MANAGER, SERVER_CONFIGS);
-    }
-
-    public static TagOwnerships getTagOwnerships() {
+        Preconditions.checkNotNull(TAG_MANAGER, "TagManager was not loaded correctly");
         Preconditions.checkNotNull(TAG_OWNERSHIPS, "TagOwnerships were not loaded correctly");
-        return TAG_OWNERSHIPS;
+
+        RUNTIME = AlmostUnifiedRuntimeImpl.create(SERVER_CONFIGS, TAG_MANAGER, TAG_OWNERSHIPS);
     }
 }

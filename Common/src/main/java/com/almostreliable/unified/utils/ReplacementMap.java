@@ -12,15 +12,17 @@ import java.util.function.Predicate;
 
 public class ReplacementMap {
 
-    private final TagMap tagMap;
     private final UnifyConfig unifyConfig;
+    private final TagMap tagMap;
     private final StoneStrataHandler stoneStrataHandler;
+    private final TagOwnerships tagOwnerships;
     private final Set<ResourceLocation> warnings;
 
-    public ReplacementMap(TagMap tagMap, StoneStrataHandler stoneStrataHandler, UnifyConfig unifyConfig) {
+    public ReplacementMap(UnifyConfig unifyConfig, TagMap tagMap, StoneStrataHandler stoneStrataHandler, TagOwnerships tagOwnerships) {
         this.tagMap = tagMap;
         this.unifyConfig = unifyConfig;
         this.stoneStrataHandler = stoneStrataHandler;
+        this.tagOwnerships = tagOwnerships;
         this.warnings = new HashSet<>();
     }
 
@@ -36,7 +38,8 @@ public class ReplacementMap {
             AlmostUnified.LOG.warn(
                     "Item '{}' has multiple preferred tags '{}' for recipe replacement. This needs to be manually fixed by the user.",
                     item,
-                    tags.stream().map(UnifyTag::location).toList());
+                    tags.stream().map(UnifyTag::location).toList()
+            );
             warnings.add(item);
         }
 
@@ -60,15 +63,20 @@ public class ReplacementMap {
 
     @Nullable
     public ResourceLocation getPreferredItemForTag(UnifyTag<Item> tag, Predicate<ResourceLocation> itemFilter) {
+        var tagToLookup = tagOwnerships.getOwnerByTag(tag);
+        if (tagToLookup == null) tagToLookup = tag;
+
         List<ResourceLocation> items = tagMap
-                .getItemsByTag(tag)
+                .getItemsByTag(tagToLookup)
                 .stream()
                 .filter(itemFilter)
                 // Helps us to get the clean stone variant first in case of a stone strata tag
                 .sorted(Comparator.comparingInt(value -> value.toString().length()))
                 .toList();
 
-        ResourceLocation overrideItem = getOverrideForTag(tag, items);
+        if (items.isEmpty()) return null;
+
+        ResourceLocation overrideItem = getOverrideForTag(tagToLookup, items);
         if (overrideItem != null) {
             return overrideItem;
         }
