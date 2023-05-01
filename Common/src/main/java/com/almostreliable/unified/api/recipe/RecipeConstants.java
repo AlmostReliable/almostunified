@@ -38,5 +38,8 @@ public final class RecipeConstants {
     public static final String ITEM_INPUTS = "item_inputs";
     public static final String ITEM_OUTPUTS = "item_outputs";
 
+    // ars nouveau
+    public static final String PEDESTAL_ITEMS = "pedestalItems";
+
     private RecipeConstants() {}
 }
