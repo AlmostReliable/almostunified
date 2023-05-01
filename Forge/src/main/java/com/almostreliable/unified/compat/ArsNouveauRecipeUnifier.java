@@ -1,16 +1,11 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.crafting.Ingredient;
-
-import javax.annotation.Nullable;
 
 public class ArsNouveauRecipeUnifier implements RecipeUnifier {
     @Override
@@ -31,13 +26,5 @@ public class ArsNouveauRecipeUnifier implements RecipeUnifier {
             }
             return json;
         });
-    }
-
-    @Nullable
-    private JsonElement createIngredientReplacement(@Nullable JsonElement element, RecipeContext ctx) {
-        if (element instanceof JsonObject json && json.has(RecipeConstants.ITEM)) {
-            return ctx.createIngredientReplacement(json.get(RecipeConstants.ITEM));
-        }
-        return ctx.createIngredientReplacement(element);
     }
 }
