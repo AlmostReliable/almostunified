@@ -25,5 +25,6 @@ public class ArsNouveauRecipeUnifier implements RecipeUnifier {
             }
             return json;
         });
+        builder.put(RecipeConstants.REAGENT, (json, ctx) -> ctx.createIngredientReplacement(json));
     }
 }

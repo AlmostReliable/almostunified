@@ -40,6 +40,7 @@ public final class RecipeConstants {
 
     // ars nouveau
     public static final String PEDESTAL_ITEMS = "pedestalItems";
+    public static final String REAGENT = "reagent";
 
     private RecipeConstants() {}
 }
