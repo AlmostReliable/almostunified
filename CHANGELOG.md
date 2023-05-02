@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.3.9] - 2023-04-22
+
+### Added
+- support for Ars Nouveau ([#44], [#45])
+
+### Changed
+- improved stone strata lookup speed
+
+### Fixed
+- Immersive Engineering catalysts not being unified
+- Immersive Engineering secondary outputs not being unified
+- some Mekanism recipes not being unified
+- log spam on multiple preferred tags
+
+<!-- Links -->
+[#44]: https://github.com/AlmostReliable/almostunified/pull/44
+[#45]: https://github.com/AlmostReliable/almostunified/issues/45
+
 ## [0.3.8] - 2023-04-06
 
 ### Fixed
@@ -298,6 +316,7 @@ Initial beta release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.3.9]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.9-beta
 [0.3.8]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.8-beta
 [0.3.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.7-beta
 [0.3.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.18-0.3.6-beta
