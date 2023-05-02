@@ -39,7 +39,6 @@ public class TagMap {
      * @return A new {@link TagMap}.
      */
     public static TagMap create(TagManager tagManager) {
-        Objects.requireNonNull(tagManager, "Requires a non-null tag manager");
         var tags = tagManager
                 .getResult()
                 .stream()

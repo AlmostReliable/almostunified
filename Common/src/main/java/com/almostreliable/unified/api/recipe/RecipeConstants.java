@@ -9,6 +9,7 @@ public final class RecipeConstants {
     public static final String INGREDIENT = "ingredient";
     public static final String INGREDIENTS = "ingredients";
     public static final String INPUT_ITEMS = "inputItems";
+    public static final String CATALYST = "catalyst";
 
     // common outputs
     public static final String OUTPUT = "output";
@@ -18,6 +19,10 @@ public final class RecipeConstants {
 
     // inner keys
     public static final String VALUE = "value";
+
+    // ars nouveau
+    public static final String PEDESTAL_ITEMS = "pedestalItems";
+    public static final String REAGENT = "reagent";
 
     // immersive engineering
     public static final String INPUT_0 = "input0";
@@ -29,6 +34,8 @@ public final class RecipeConstants {
     // mekanism
     public static final String MAIN_INPUT = "mainInput";
     public static final String MAIN_OUTPUT = "mainOutput";
+    public static final String ITEM_INPUT = "itemInput";
+    public static final String ITEM_OUTPUT = "itemOutput";
     public static final String SECONDARY_OUTPUT = "secondaryOutput";
 
     // modern industrialization
