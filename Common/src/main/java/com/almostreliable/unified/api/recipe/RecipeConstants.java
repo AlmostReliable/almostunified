@@ -20,6 +20,10 @@ public final class RecipeConstants {
     // inner keys
     public static final String VALUE = "value";
 
+    // ars nouveau
+    public static final String PEDESTAL_ITEMS = "pedestalItems";
+    public static final String REAGENT = "reagent";
+
     // immersive engineering
     public static final String INPUT_0 = "input0";
     public static final String INPUT_1 = "input1";
