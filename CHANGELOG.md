@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.4.3] - 2023-04-22
+
+### Added
+- support for Ars Nouveau ([#44], [#45])
+
+<!-- Links -->
+[#44]: https://github.com/AlmostReliable/almostunified/pull/44
+[#45]: https://github.com/AlmostReliable/almostunified/issues/45
+
 ## [0.4.2] - 2023-04-22
 
 ### Fixed
@@ -332,6 +341,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.4.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.4.3-beta
 [0.4.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.4.2-beta
 [0.4.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.4.1-beta
 [0.4.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.4.0-beta
