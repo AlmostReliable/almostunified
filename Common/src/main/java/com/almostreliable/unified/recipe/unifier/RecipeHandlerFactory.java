@@ -1,5 +1,6 @@
 package com.almostreliable.unified.recipe.unifier;
 
+import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
@@ -9,6 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RecipeHandlerFactory {
+
+    private static final ResourceLocation SMITHING_TYPE = new ResourceLocation("minecraft:smithing");
+
     private final Map<ResourceLocation, RecipeUnifier> transformersByType = new HashMap<>();
     private final Map<String, RecipeUnifier> transformersByModId = new HashMap<>();
 
@@ -18,6 +22,12 @@ public class RecipeHandlerFactory {
         if (context.hasProperty(ShapedRecipeKeyUnifier.PATTERN_PROPERTY) &&
             context.hasProperty(ShapedRecipeKeyUnifier.KEY_PROPERTY)) {
             ShapedRecipeKeyUnifier.INSTANCE.collectUnifier(builder);
+        }
+
+        if (context.hasProperty(SmithingRecipeUnifier.ADDITION_PROPERTY) &&
+            context.hasProperty(SmithingRecipeUnifier.BASE_PROPERTY) &&
+            context.hasProperty(RecipeConstants.RESULT)) {
+            SmithingRecipeUnifier.INSTANCE.collectUnifier(builder);
         }
 
         ResourceLocation type = context.getType();

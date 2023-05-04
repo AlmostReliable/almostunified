@@ -61,7 +61,12 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
     @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
         factory.registerForMod(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
-        factory.registerForMod(ModConstants.ARS_NOUVEAU, new ArsNouveauRecipeUnifier());
+        List.of(
+                ModConstants.ARS_CREO,
+                ModConstants.ARS_ELEMENTAL,
+                ModConstants.ARS_NOUVEAU,
+                ModConstants.ARS_SCALAES
+        ).forEach(modId -> factory.registerForMod(modId, new ArsNouveauRecipeUnifier()));
         factory.registerForMod(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         factory.registerForMod(ModConstants.MEKANISM, new MekanismRecipeUnifier());
     }
