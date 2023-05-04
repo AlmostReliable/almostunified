@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.4.4] - 2023-05-04
+
+### Added
+- support for Ars Nouveau add-ons
+  - Ars Creo
+  - Ars Elemental
+  - Ars Scalaes
+- support for the vanilla Smithing Table and smithing-like recipes 
+- Russian translation ([#47])
+
+<!-- Links -->
+[#47]: https://github.com/AlmostReliable/almostunified/pull/47
+
 ## [0.4.3] - 2023-04-22
 
 ### Added
@@ -68,6 +81,7 @@ Initial 1.19.4 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.4.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.4-beta
 [0.4.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.3-beta
 [0.4.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.2-beta
 [0.4.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.1-beta
