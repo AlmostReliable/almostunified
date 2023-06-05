@@ -90,7 +90,10 @@ subprojects {
          * Kotlin accessor methods are not generated in this gradle, they can be accessed through quoted names.
          */
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
-        "mappings"(loom.officialMojangMappings())
+        "mappings"(loom.layered {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-$minecraftVersion:$parchmentVersion@zip")
+        })
 
         /**
          * Helps to load mods in development through an extra directory. Sadly this does not support transitive dependencies. :-(
