@@ -12,7 +12,7 @@ val junitVersion: String by project
 val minecraftVersion: String by project
 
 plugins {
-    id("com.github.gmazzo.buildconfig") version ("3.1.0")
+    id("com.github.gmazzo.buildconfig") version ("4.0.4")
 }
 
 architectury {

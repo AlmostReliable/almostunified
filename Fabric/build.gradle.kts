@@ -7,7 +7,7 @@ val jeiVersion: String by project
 val kubejsVersion: String by project
 
 plugins {
-    id("com.github.johnrengelman.shadow") version ("7.1.2")
+    id("com.github.johnrengelman.shadow") version ("8.1.1")
 }
 
 architectury {
