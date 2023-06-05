@@ -24,3 +24,4 @@ extra-mods-*
 *.log.gz
 eclipse
 run
+.architectury-transformer
