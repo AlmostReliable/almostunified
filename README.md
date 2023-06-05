@@ -7,17 +7,19 @@
 
 A [Minecraft] mod to unify resources.
 
-[![Version][version_badge]][version_link]
-[![Total Downloads CF][total_downloads_cf_badge]][curseforge]
-[![Total Downloads MR][total_downloads_mr_badge]][modrinth]
 [![Workflow Status][workflow_status_badge]][workflow_status_link]
 [![License][license_badge]][license]
 
-[Discord] | [Wiki] | [CurseForge] | [Modrinth]
+[![Version][version_badge]][version_link]
+[![Total Downloads CF][total_downloads_cf_badge]][curseforge]
+[![Total Downloads MR][total_downloads_mr_badge]][modrinth]
+
+[![Discord][discord_badge]][discord]
+[![Wiki][wiki_badge]][wiki]
 
 </div>
 
-## **📖 Wiki**
+## **📖 Information**
 For an in-depth explanation of the mod, its functionality, config descriptions, FAQs and more, check out the [wiki].
 
 ## **🔧 Manual Installation**
@@ -28,7 +30,7 @@ For an in-depth explanation of the mod, its functionality, config descriptions, 
 ## **🔗 Depending on the Mod**
 
 ### Maven
-Every release of this project is built and published to the [BlameJared] maven.
+Every release of this project is built on and published to the [BlameJared] maven.
 
 ```groovy
 repositories {
@@ -77,20 +79,21 @@ The `common` module uses [fabric-loom]. This allows to use [ParchmentMC][parchme
 Do not use Fabric related features inside the `common` module!
 
 ## **💚 Credits**
-This project is using the [MultiLoader Template] by [Jared].<br>
 The logo was made by [mo_shark].
 
 ## **🎓 License**
 This project is licensed under the [GNU Lesser General Public License v3.0][license].
 
 <!-- Badges -->
-[version_badge]: https://img.shields.io/github/v/release/AlmostReliable/almostunified?include_prereleases&style=flat-square
-[version_link]: https://github.com/AlmostReliable/almostunified/releases/latest
-[total_downloads_cf_badge]: http://cf.way2muchnoise.eu/full_633823.svg?badge_style=flat
-[total_downloads_mr_badge]: https://img.shields.io/modrinth/dt/sdaSaQEz?color=5da545&label=Modrinth&style=flat-square
-[workflow_status_badge]: https://img.shields.io/github/actions/workflow/status/AlmostReliable/almostunified/build.yml?branch=1.19.2&style=flat-square
+[workflow_status_badge]: https://img.shields.io/github/actions/workflow/status/AlmostReliable/almostunified/build.yml?branch=1.19.2&style=for-the-badge
 [workflow_status_link]: https://github.com/AlmostReliable/almostunified/actions
-[license_badge]: https://img.shields.io/github/license/AlmostReliable/almostunified?style=flat-square
+[license_badge]: https://img.shields.io/github/license/AlmostReliable/almostunified?style=for-the-badge
+[version_badge]: https://img.shields.io/badge/dynamic/json?color=0078FF&label=release&style=for-the-badge&query=name&url=https://api.razonyang.com/v1/github/tag/AlmostReliable/almostunified%3Fprefix=v1.19.2-
+[version_link]: https://github.com/AlmostReliable/almostunified/releases/latest
+[total_downloads_cf_badge]: https://img.shields.io/badge/dynamic/json?color=e04e14&label=CurseForge&style=for-the-badge&query=downloads.total&url=https%3A%2F%2Fapi.cfwidget.com%2F633823&logo=curseforge
+[total_downloads_mr_badge]: https://img.shields.io/modrinth/dt/sdaSaQEz?color=5da545&label=Modrinth&style=for-the-badge&logo=modrinth
+[discord_badge]: https://img.shields.io/discord/917251858974789693?color=5865f2&label=Discord&logo=discord&style=for-the-badge
+[wiki_badge]: https://img.shields.io/badge/Read%20the-Wiki-ba00ff?style=for-the-badge
 [maven_common_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-common%2Fmaven-metadata.xml&style=flat-square
 [maven_common_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-common/
 [maven_fabric_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-fabric%2Fmaven-metadata.xml&style=flat-square
