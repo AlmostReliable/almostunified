@@ -131,8 +131,7 @@ public final class Defaults {
 
     public static List<String> getIgnoredRecipeTypes(Platform platform) {
         return switch (platform) {
-            case FORGE -> List.of("cucumber:shaped_tag");
-            case FABRIC -> List.of("cucumber:shaped_tag");
+            default -> List.of("cucumber:shaped_tag");
         };
     }
 
