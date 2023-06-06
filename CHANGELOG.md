@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [X.X.X] - 2023-XX-XX
+
+### Added
+- simplified Chinese translation ([#49])
+
+<!-- Links -->
+[#49]: https://github.com/AlmostReliable/almostunified/issues/49
+
 ## [0.4.4] - 2023-05-04
 
 ### Added
