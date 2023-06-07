@@ -8,10 +8,14 @@ and this project adheres to [Semantic Versioning].
 ## [X.X.X] - 2023-XX-XX
 
 ### Added
+- repair unification for `TieredItems` (tools) and `ArmorItems`
+  - supports vanilla Anvil
+  - works for all mods as long as they properly call the super method
 - simplified Chinese translation ([#49])
 
 <!-- Links -->
 [#49]: https://github.com/AlmostReliable/almostunified/issues/49
+[#49]: https://github.com/AlmostReliable/almostunified/issues/53
 
 ## [0.4.4] - 2023-05-04
 
