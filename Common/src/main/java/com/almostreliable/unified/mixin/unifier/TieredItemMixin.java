@@ -1,4 +1,4 @@
-package com.almostreliable.unified.mixin;
+package com.almostreliable.unified.mixin.unifier;
 
 import com.almostreliable.unified.AlmostUnified;
 import net.minecraft.world.item.ItemStack;

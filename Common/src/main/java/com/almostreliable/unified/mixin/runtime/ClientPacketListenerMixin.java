@@ -1,4 +1,4 @@
-package com.almostreliable.unified.mixin;
+package com.almostreliable.unified.mixin.runtime;
 
 import com.almostreliable.unified.ClientTagUpdateEvent;
 import net.minecraft.client.multiplayer.ClientPacketListener;

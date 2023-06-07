@@ -1,4 +1,4 @@
-package com.almostreliable.unified.mixin;
+package com.almostreliable.unified.mixin.runtime;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.utils.Utils;

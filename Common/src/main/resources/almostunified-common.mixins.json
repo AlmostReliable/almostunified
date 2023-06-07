@@ -5,13 +5,15 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "com.almostreliable.unified.mixin.AlmostMixinPlugin",
   "mixins": [
-    "RecipeManagerMixin",
-    "TagLoaderMixin",
-    "TagManagerMixin"
+    "runtime.RecipeManagerMixin",
+    "runtime.TagLoaderMixin",
+    "runtime.TagManagerMixin",
+    "unifier.ArmorItemMixin",
+    "unifier.TieredItemMixin"
   ],
   "client": [
-    "ClientPacketListenerMixin",
-    "JeiRecipeLayoutMixin"
+    "compat.JeiRecipeLayoutMixin",
+    "runtime.ClientPacketListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
