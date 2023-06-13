@@ -27,6 +27,12 @@ loom {
 }
 
 dependencies {
+    // loader
+    // required here for the @Environment annotations and the mixin dependencies
+    // Do NOT use other classes from the Fabric loader!
+    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+
+    // compile time mods
     modCompileOnly("dev.latvian.mods:kubejs:$kubejsVersion") // required for common kubejs plugin | common has remapping issues
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for common rei plugin
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
@@ -34,11 +40,7 @@ dependencies {
     modCompileOnly("mezz.jei:jei-$minecraftVersion-lib:$jeiVersion") // required for common jei plugin and mixin
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion") // required for common jei plugin and mixin
 
-    // The Fabric loader is required here to use the @Environment annotations and to get the mixin dependencies.
-    // Do NOT use other classes from the Fabric loader!
-    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
-
-    // JUnit Tests
+    // tests
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 }

@@ -25,20 +25,32 @@ loom {
 val common by configurations
 val shadowCommon by configurations
 dependencies {
+    // loader
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modApi("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion+$minecraftVersion")
 
+    // common module
     common(project(":Common", "namedElements")) { isTransitive = false }
     shadowCommon(project(":Common", "transformProductionFabric")) { isTransitive = false }
 
-    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion")!!)
+    // compile time mods
+    modCompileOnly("dev.latvian.mods:kubejs-fabric:$kubejsVersion") // required for common kubejs plugin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
     testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling
     modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric-api:$jeiVersion") // required for common jei plugin and mixin
-    when (fabricRecipeViewer) { // runtime only
-        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
-        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion")
-        else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
+
+    // runtime dependencies
+    modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion") {
+        exclude("net.fabricmc", "fabric-loader")
+    }
+    modLocalRuntime(
+        when (fabricRecipeViewer) {
+            "rei" -> "me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion"
+            "jei" -> "mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion"
+            else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
+        }
+    ) {
+        exclude("net.fabricmc", "fabric-loader")
     }
 }
