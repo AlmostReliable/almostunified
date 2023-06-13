@@ -48,6 +48,7 @@ buildConfig {
     buildConfigField("String", "MOD_NAME", "\"$modName\"")
     buildConfigField("String", "MOD_VERSION", "\"$version\"")
     packageName(modPackage)
+    useJavaOutput()
 }
 
 // TODO reactivate when specific mod is not annoying anymore
