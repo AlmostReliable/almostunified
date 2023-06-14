@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.5.0] - 2023-06-14
+
+### Added
+- repair unification for `TieredItems` (tools) and `ArmorItems` ([#53])
+  - supports vanilla Anvil
+  - works for all mods as long as they properly call the super method
+- simplified Chinese translation ([#49])
+- shaped recipe type from Cucumber lib for Fabric to ignored types ([#52])
+
+<!-- Links -->
+[#49]: https://github.com/AlmostReliable/almostunified/issues/49
+[#52]: https://github.com/AlmostReliable/almostunified/pull/52
+[#53]: https://github.com/AlmostReliable/almostunified/issues/53
+
 ## [0.4.4] - 2023-05-04
 
 ### Added
@@ -81,6 +95,7 @@ Initial 1.19.4 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.5.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.3-0.5.0-beta
 [0.4.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.4-beta
 [0.4.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.3-beta
 [0.4.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.4-0.4.2-beta

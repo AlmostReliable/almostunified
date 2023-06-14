@@ -1,4 +1,4 @@
-package com.almostreliable.unified.mixin;
+package com.almostreliable.unified.mixin.compat;
 
 import com.almostreliable.unified.compat.AlmostJEI;
 import com.almostreliable.unified.compat.RecipeIndicator;

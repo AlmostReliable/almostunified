@@ -11,7 +11,7 @@ val junitVersion: String by project
 val minecraftVersion: String by project
 
 plugins {
-    id("com.github.gmazzo.buildconfig") version ("3.1.0")
+    id("com.github.gmazzo.buildconfig") version ("4.0.4")
 }
 
 architectury {
@@ -26,17 +26,19 @@ loom {
 }
 
 dependencies {
+    // loader
+    // required here for the @Environment annotations and the mixin dependencies
+    // Do NOT use other classes from the Fabric loader!
+    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+
+    // compile time mods
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for common rei plugin
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
     testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling
     modCompileOnly("mezz.jei:jei-$minecraftVersion-lib:$jeiVersion") // required for common jei plugin and mixin
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion") // required for common jei plugin and mixin
 
-    // The Fabric loader is required here to use the @Environment annotations and to get the mixin dependencies.
-    // Do NOT use other classes from the Fabric loader!
-    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
-
-    // JUnit Tests
+    // tests
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 }
@@ -46,6 +48,7 @@ buildConfig {
     buildConfigField("String", "MOD_NAME", "\"$modName\"")
     buildConfigField("String", "MOD_VERSION", "\"$version\"")
     packageName(modPackage)
+    useJavaOutput()
 }
 
 // TODO reactivate when specific mod is not annoying anymore

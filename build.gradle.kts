@@ -18,16 +18,18 @@ val modAuthor: String by project
 val githubRepo: String by project
 val githubUser: String by project
 val sharedRunDir: String by project
+val autoServiceVersion: String by project
+val parchmentVersion: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
 
 plugins {
     java
     `maven-publish`
-    id("architectury-plugin") version ("3.4-SNAPSHOT")
-    id("io.github.juuxel.loom-quiltflower") version "1.8.0" apply false
-    id("dev.architectury.loom") version ("1.0.302") apply false
-    id("com.github.johnrengelman.shadow") version "7.1.2" apply false
+    id("architectury-plugin") version ("3.4.+")
+    id("io.github.juuxel.loom-quiltflower") version "1.10.0" apply false
+    id("dev.architectury.loom") version ("1.2.+") apply false
+    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
 }
 
 architectury {
@@ -44,8 +46,9 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven("https://maven.shedaniel.me")
-        maven("https://maven.blamejared.com/")
+        maven("https://maven.parchmentmc.org") // Parchment
+        maven("https://maven.shedaniel.me") // REI
+        maven("https://maven.blamejared.com/") // JEI
         flatDir {
             name = extraModsPrefix
             dir(file("$extraModsPrefix-$minecraftVersion"))
@@ -71,7 +74,7 @@ subprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "io.github.juuxel.loom-quiltflower")
 
-    base.archivesName.set("$modId-${project.name.toLowerCase()}")
+    base.archivesName.set("$modId-${project.name.lowercase()}")
     version = "$minecraftVersion-$modVersion"
 
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
@@ -85,19 +88,22 @@ subprojects {
          * Kotlin accessor methods are not generated in this gradle, they can be accessed through quoted names.
          */
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
-        "mappings"(loom.officialMojangMappings())
+        "mappings"(loom.layered {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-1.19.3:$parchmentVersion@zip")
+        })
 
         /**
          * Helps to load mods in development through an extra directory. Sadly this does not support transitive dependencies. :-(
          */
         fileTree("$extraModsPrefix-$minecraftVersion") { include("**/*.jar") }
             .forEach { f ->
-                val sepIndex = f.nameWithoutExtension.lastIndexOf('-');
+                val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
                 if (sepIndex == -1) {
                     throw IllegalArgumentException("Invalid mod name: '${f.nameWithoutExtension}'. Expected format: 'modName-version.jar'")
                 }
-                val mod = f.nameWithoutExtension.substring(0, sepIndex);
-                val version = f.nameWithoutExtension.substring(sepIndex + 1);
+                val mod = f.nameWithoutExtension.substring(0, sepIndex)
+                val version = f.nameWithoutExtension.substring(sepIndex + 1)
                 println("Extra mod ${f.nameWithoutExtension} detected.")
                 "modLocalRuntime"("extra-mods:$mod:$version")
             }
@@ -105,8 +111,8 @@ subprojects {
         /**
          * Non-Minecraft dependencies
          */
-        compileOnly("com.google.auto.service:auto-service:1.0.1")
-        annotationProcessor("com.google.auto.service:auto-service:1.0.1")
+        compileOnly("com.google.auto.service:auto-service:$autoServiceVersion")
+        annotationProcessor("com.google.auto.service:auto-service:$autoServiceVersion")
     }
 
     /**
@@ -114,7 +120,7 @@ subprojects {
      */
     publishing {
         publications {
-            val mpm = project.properties["maven-publish-method"] as String;
+            val mpm = project.properties["maven-publish-method"] as String
             println("[Publish Task] Publishing method for project '${project.name}: $mpm")
             register(mpm, MavenPublication::class) {
                 artifactId = base.archivesName.get()
@@ -140,35 +146,37 @@ subprojects {
         compileOnly()
     }
 
-    /**
-     * Resource processing for defined targets. This will replace `${key}` with the specified values from the map below.
-     */
-    tasks.processResources {
-        val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
+    tasks {
+        /**
+         * Resource processing for defined targets. This will replace `${key}` with the specified values from the map below.
+         */
+        processResources {
+            val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
 
-        val replaceProperties = mapOf(
-            "version" to project.version as String,
-            "license" to license,
-            "modId" to modId,
-            "modName" to modName,
-            "minecraftVersion" to minecraftVersion,
-            "modAuthor" to modAuthor,
-            "modDescription" to modDescription,
-            "fabricApiVersion" to fabricApiVersion,
-            "forgeVersion" to forgeVersion,
-            "forgeFMLVersion" to forgeVersion.substringBefore("."), // Only use major version as FML error message sucks. The error message for wrong Forge version is way better.
-            "jeiVersion" to jeiVersion,
-            "reiVersion" to reiVersion,
-            "githubUser" to githubUser,
-            "githubRepo" to githubRepo
-        )
+            val replaceProperties = mapOf(
+                "version" to project.version as String,
+                "license" to license,
+                "modId" to modId,
+                "modName" to modName,
+                "minecraftVersion" to minecraftVersion,
+                "modAuthor" to modAuthor,
+                "modDescription" to modDescription,
+                "fabricApiVersion" to fabricApiVersion,
+                "forgeVersion" to forgeVersion,
+                "forgeFMLVersion" to forgeVersion.substringBefore("."), // Only use major version as FML error message sucks. The error message for wrong Forge version is way better.
+                "jeiVersion" to jeiVersion,
+                "reiVersion" to reiVersion,
+                "githubUser" to githubUser,
+                "githubRepo" to githubRepo
+            )
 
-        println("[Process Resources] Replacing properties in resources: ")
-        replaceProperties.forEach { (key, value) -> println("\t -> $key = $value") }
+            println("[Process Resources] Replacing properties in resources: ")
+            replaceProperties.forEach { (key, value) -> println("\t -> $key = $value") }
 
-        inputs.properties(replaceProperties)
-        filesMatching(resourceTargets) {
-            expand(replaceProperties)
+            inputs.properties(replaceProperties)
+            filesMatching(resourceTargets) {
+                expand(replaceProperties)
+            }
         }
     }
 }
@@ -185,7 +193,7 @@ subprojects {
 
     extensions.configure<LoomGradleExtensionAPI> {
         runs {
-            forEach { it ->
+            forEach {
                 it.runDir(if (sharedRunDir.toBoolean()) "../run" else "run")
                 // Allows DCEVM hot-swapping when using the JetBrains Runtime (https://github.com/JetBrains/JetBrainsRuntime).
                 it.vmArgs("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
@@ -224,7 +232,7 @@ subprojects {
         named<RemapJarTask>("remapJar") {
             inputFile.set(named<ShadowJar>("shadowJar").get().archiveFile)
             dependsOn("shadowJar")
-            classifier = null
+            archiveClassifier.set(null as String?)
         }
 
         named<Jar>("jar") {
