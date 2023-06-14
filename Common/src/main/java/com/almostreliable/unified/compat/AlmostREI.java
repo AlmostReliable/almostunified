@@ -101,8 +101,8 @@ public class AlmostREI implements REIClientPlugin {
             public List<Widget> setupDisplay(Display display, Rectangle bounds) {
                 var widgets = lastView.setupDisplay(display, bounds);
                 var area = calculateArea(bounds);
-                widgets.add(Widgets.createDrawableWidget((helper, stack, mX, mY, delta) ->
-                        RecipeIndicator.renderIndicator(stack, area)));
+                widgets.add(Widgets.createDrawableWidget((guiGraphics, mX, mY, delta) ->
+                        RecipeIndicator.renderIndicator(guiGraphics, guiGraphics.pose(), area)));
                 var tooltipArea = new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight());
                 widgets.add(Widgets.createTooltip(tooltipArea, RecipeIndicator.constructTooltip(link)));
                 return widgets;

@@ -13,6 +13,7 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +45,7 @@ public class AlmostJEI implements IModPlugin {
         }
     }
 
-    public static <R> void handleIndicator(PoseStack stack, int mX, int mY, int posX, int posY, IRecipeCategory<R> recipeCategory, R recipe) {
+    public static <R> void handleIndicator(GuiGraphics guiGraphics, PoseStack stack, int mX, int mY, int posX, int posY, IRecipeCategory<R> recipeCategory, R recipe) {
         var recipeId = recipeCategory.getRegistryName(recipe);
         if (recipeId == null) return;
 
@@ -53,10 +54,10 @@ public class AlmostJEI implements IModPlugin {
         if (link == null) return;
 
         var area = new Rect2i(posX, posY, RecipeIndicator.RENDER_SIZE, RecipeIndicator.RENDER_SIZE);
-        RecipeIndicator.renderIndicator(stack, area);
+        RecipeIndicator.renderIndicator(guiGraphics, stack, area);
         if (mX >= area.getX() && mX <= area.getX() + area.getWidth() &&
             mY >= area.getY() && mY <= area.getY() + area.getHeight()) {
-            Utils.renderTooltip(stack, mX, mY, RecipeIndicator.constructTooltip(link));
+            Utils.renderTooltip(guiGraphics, mX, mY, RecipeIndicator.constructTooltip(link));
         }
     }
 }

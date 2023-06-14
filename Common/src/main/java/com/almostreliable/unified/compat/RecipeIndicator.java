@@ -2,11 +2,9 @@ package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.recipe.ClientRecipeTracker.ClientRecipeLink;
 import com.almostreliable.unified.utils.Utils;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -42,14 +40,12 @@ public final class RecipeIndicator {
         );
     }
 
-    static void renderIndicator(PoseStack poseStack, Rect2i area) {
+    static void renderIndicator(GuiGraphics guiGraphics, PoseStack poseStack, Rect2i area) {
         poseStack.pushPose();
         poseStack.translate(area.getX(), area.getY(), 0);
         var scale = area.getWidth() / (float) TEXTURE_SIZE;
         poseStack.scale(scale, scale, scale);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TEXTURE);
-        GuiComponent.blit(poseStack, 0, 0, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE);
+        guiGraphics.blit(TEXTURE, 0, 0, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE);
         poseStack.popPose();
     }
 
