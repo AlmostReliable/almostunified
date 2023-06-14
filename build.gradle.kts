@@ -235,6 +235,7 @@ subprojects {
         named<RemapJarTask>("remapJar") {
             inputFile.set(named<ShadowJar>("shadowJar").get().archiveFile)
             dependsOn("shadowJar")
+            archiveClassifier.set(null as String?)
         }
 
         named<Jar>("jar") {
