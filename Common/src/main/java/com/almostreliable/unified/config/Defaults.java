@@ -139,7 +139,7 @@ public final class Defaults {
         JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
         result.ignoreField(switch (platform) {
             case FORGE -> "conditions";
-            case FABRIC -> "fabric:conditions";
+            case FABRIC -> "fabric:load_conditions";
         });
         result.ignoreField("group");
         result.addRule("cookingtime", new JsonCompare.HigherRule());
@@ -152,7 +152,7 @@ public final class Defaults {
         JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
         result.ignoreField(switch (platform) {
             case FORGE -> "conditions";
-            case FABRIC -> "fabric:conditions";
+            case FABRIC -> "fabric:load_conditions";
         });
         result.ignoreField("group");
         result.ignoreField("pattern");
