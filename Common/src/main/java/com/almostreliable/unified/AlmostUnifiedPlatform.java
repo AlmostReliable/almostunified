@@ -48,6 +48,6 @@ public interface AlmostUnifiedPlatform {
 
     enum Platform {
         FORGE,
-        FABRIC;
+        FABRIC
     }
 }

@@ -23,7 +23,6 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.plugins.PluginManager;
 import me.shedaniel.rei.api.common.registry.ReloadStage;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
-import net.minecraft.client.renderer.Rect2i;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -99,21 +98,30 @@ public class AlmostREI implements REIClientPlugin {
 
             @Override
             public List<Widget> setupDisplay(Display display, Rectangle bounds) {
-                var widgets = lastView.setupDisplay(display, bounds);
-                var area = calculateArea(bounds);
-                widgets.add(Widgets.createDrawableWidget((guiGraphics, mX, mY, delta) ->
-                        RecipeIndicator.renderIndicator(guiGraphics, guiGraphics.pose(), area)));
-                var tooltipArea = new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight());
-                widgets.add(Widgets.createTooltip(tooltipArea, RecipeIndicator.constructTooltip(link)));
-                return widgets;
-            }
+                int pX;
+                int pY;
+                int size;
 
-            private Rect2i calculateArea(Rectangle bounds) {
                 if (plusButtonArea != null) {
                     var area = plusButtonArea.get(bounds);
-                    return new Rect2i(area.x, area.y - area.height - 2, area.width, area.height);
+                    pX = area.x;
+                    pY = area.y - area.height - 2;
+                    size = area.width;
+                } else {
+                    pX = bounds.x - RecipeIndicator.RENDER_SIZE / 2;
+                    pY = bounds.y - RecipeIndicator.RENDER_SIZE / 2;
+                    size = RecipeIndicator.RENDER_SIZE;
                 }
-                return new Rect2i(bounds.x, bounds.y, bounds.width, bounds.height);
+
+                var widgets = lastView.setupDisplay(display, bounds);
+                widgets.add(Widgets.createDrawableWidget(
+                        (guiGraphics, mX, mY, delta) -> RecipeIndicator.renderIndicator(guiGraphics, pX, pY, size)
+                ));
+
+                var tooltipArea = new Rectangle(pX, pY, size, size);
+                widgets.add(Widgets.createTooltip(tooltipArea, RecipeIndicator.constructTooltip(link)));
+
+                return widgets;
             }
         }
     }

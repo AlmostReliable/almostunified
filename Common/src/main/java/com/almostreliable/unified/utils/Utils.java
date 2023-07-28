@@ -1,17 +1,10 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.BuildConfig;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.ComponentRenderUtils;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class Utils {
     public static final ResourceLocation UNUSED_ID = new ResourceLocation(BuildConfig.MOD_ID, "unused_id");
@@ -43,17 +36,5 @@ public final class Utils {
 
     public static String prefix(String path) {
         return BuildConfig.MOD_ID + "." + path;
-    }
-
-    public static void renderTooltip(GuiGraphics guiGraphics, int mX, int mY, List<Component> tooltip) {
-        var mc = Minecraft.getInstance();
-        var screen = mc.screen;
-        if (screen == null) return;
-
-        List<FormattedCharSequence> formattedTooltip = new ArrayList<>(tooltip.size());
-        for (Component line : tooltip) {
-            formattedTooltip.addAll(ComponentRenderUtils.wrapComponents(line, 300, mc.font));
-        }
-        guiGraphics.renderTooltip(mc.font, formattedTooltip, mX, mY);
     }
 }

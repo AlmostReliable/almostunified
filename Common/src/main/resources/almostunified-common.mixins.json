@@ -12,7 +12,6 @@
     "unifier.TieredItemMixin"
   ],
   "client": [
-    "compat.JeiRecipeLayoutMixin",
     "runtime.ClientPacketListenerMixin"
   ],
   "injectors": {
