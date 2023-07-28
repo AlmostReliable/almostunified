@@ -39,11 +39,6 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
     }
 
     @Override
-    public boolean isDevelopmentEnvironment() {
-        return !FMLLoader.isProduction();
-    }
-
-    @Override
     public boolean isClient() {
         return FMLLoader.getDist() == Dist.CLIENT;
     }

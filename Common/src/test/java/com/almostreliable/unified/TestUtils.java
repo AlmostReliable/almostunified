@@ -38,7 +38,7 @@ public final class TestUtils {
     public static final UnifyConfig DEFAULT_UNIFY_CONFIG = new UnifyConfig(
             Defaults.STONE_STRATA,
             Defaults.MATERIALS,
-            Defaults.getTags(Platform.FORGE),
+            Defaults.getTags(AlmostUnifiedPlatform.Platform.FORGE),
             TEST_MOD_PRIORITIES,
             new HashMap<>(),
             new HashMap<>(),
@@ -55,11 +55,13 @@ public final class TestUtils {
     private TestUtils() {}
 
     public static JsonCompare.CompareSettings getDefaultCompareSettings() {
-        return Defaults.getDefaultDuplicateRules(Platform.FORGE);
+        return Defaults.getDefaultDuplicateRules(AlmostUnifiedPlatform.Platform.FORGE);
     }
 
     public static JsonCompare.CompareSettings getDefaultShapedCompareSettings() {
-        return Defaults.getDefaultDuplicateOverrides(Platform.FORGE).get(new ResourceLocation("crafting_shaped"));
+        return Defaults
+                .getDefaultDuplicateOverrides(AlmostUnifiedPlatform.Platform.FORGE)
+                .get(new ResourceLocation("crafting_shaped"));
     }
 
     public static final ResourceKey<Registry<Item>> FAKE_ITEM_REGISTRY = FakeResourceKeyRegistry.create("item");

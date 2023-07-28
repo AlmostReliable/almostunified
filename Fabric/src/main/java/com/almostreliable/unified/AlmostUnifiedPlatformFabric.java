@@ -29,11 +29,6 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
     }
 
     @Override
-    public boolean isDevelopmentEnvironment() {
-        return FabricLoader.getInstance().isDevelopmentEnvironment();
-    }
-
-    @Override
     public boolean isClient() {
         return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     }
