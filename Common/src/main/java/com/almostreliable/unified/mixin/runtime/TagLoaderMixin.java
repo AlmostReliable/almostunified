@@ -26,10 +26,10 @@ public class TagLoaderMixin {
     private <T> void onCreateLoadResult(Map<ResourceLocation, List<TagLoader.EntryWithSource>> map, CallbackInfoReturnable<Map<ResourceLocation, Collection<T>>> cir) {
         if (directory.equals("tags/items")) {
             try {
-                Map<ResourceLocation, Collection<Holder<Item>>> rawTags = Utils.cast(cir.getReturnValue());
-                AlmostUnified.getRuntime().getTagOwnerships().ifPresent(to -> to.applyOwnershipToRawTags(rawTags));
+                Map<ResourceLocation, Collection<Holder<Item>>> tags = Utils.cast(cir.getReturnValue());
+                AlmostUnified.onTagLoaderReload(tags);
             } catch (Exception e) {
-                AlmostUnified.LOG.error("Error applying tag ownerships to raw tags", e);
+                AlmostUnified.LOG.error(e.getMessage(), e);
             }
         }
     }

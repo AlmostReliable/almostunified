@@ -4,6 +4,7 @@ import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedRuntime;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.TagOwnerships;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -90,8 +91,9 @@ public class HideHelper {
      */
     private static Set<ResourceLocation> getRefItems(ReplacementMap repMap) {
         Set<ResourceLocation> hidingList = new HashSet<>();
+        TagOwnerships ownerships = repMap.getTagOwnerships();
 
-        AlmostUnified.getRuntime().getTagOwnerships().ifPresent(ownerships -> ownerships.getRefs().forEach(ref -> {
+        ownerships.getRefs().forEach(ref -> {
             var owner = ownerships.getOwnerByTag(ref);
             assert owner != null;
 
@@ -115,7 +117,7 @@ public class HideHelper {
             );
 
             hidingList.addAll(refItems);
-        }));
+        });
 
         return hidingList;
     }

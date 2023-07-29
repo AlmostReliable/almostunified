@@ -6,7 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.tags.TagManager;
+import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 
 import java.util.*;
@@ -26,7 +26,7 @@ public class TagMap {
      * It requires the registry to be loaded in order to validate the tags
      * and fetch the holder from it.
      * <p>
-     * For the server, use {@link #create(TagManager)} instead.
+     * For the server, use {@link #create(Map)} instead.
      *
      * @param unifyTags The unify tags.
      * @return A new tag map.
@@ -46,19 +46,17 @@ public class TagMap {
     }
 
     /**
-     * Creates a tag map from the vanilla {@link TagManager}.
+     * Creates a tag map from the vanilla tag collection passed by the {@link TagLoader}.
      * <p>
      * This should only be used on the server.<br>
-     * It will fetch all tags and items from the manager and store them. This tag map should later
-     * be filtered by using {@link #filtered(Predicate, Predicate)}.
+     * This tag map should later be filtered by using {@link #filtered(Predicate, Predicate)}.
      * <p>
      * For the client, use {@link #create(Set)} instead.
      *
-     * @param tagManager The vanilla tag manager.
+     * @param tags The vanilla tag collection.
      * @return A new tag map.
      */
-    public static TagMap create(TagManager tagManager) {
-        var tags = unpackTagManager(tagManager);
+    public static TagMap create(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
         TagMap tagMap = new TagMap();
 
         for (var entry : tags.entrySet()) {
@@ -127,23 +125,5 @@ public class TagMap {
     protected void put(UnifyTag<Item> tag, ResourceLocation item) {
         tagsToItems.computeIfAbsent(tag, k -> new HashSet<>()).add(item);
         itemsToTags.computeIfAbsent(item, k -> new HashSet<>()).add(tag);
-    }
-
-    /**
-     * Helper function to fetch all item tags and their item holders from the tag manager.
-     *
-     * @param tagManager The tag manager.
-     * @return A map of all item tags and their item holders.
-     */
-    private static Map<ResourceLocation, Collection<Holder<Item>>> unpackTagManager(TagManager tagManager) {
-        var tags = tagManager
-                .getResult()
-                .stream()
-                .filter(result -> result.key() == Registries.ITEM)
-                .findFirst()
-                .map(TagManager.LoadResult::tags)
-                .orElseThrow(() -> new IllegalStateException("No item tag result found"));
-
-        return Utils.cast(tags);
     }
 }

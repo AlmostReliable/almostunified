@@ -144,4 +144,8 @@ public class ReplacementMap {
         }
         return null;
     }
+
+    public TagOwnerships getTagOwnerships() {
+        return tagOwnerships;
+    }
 }
