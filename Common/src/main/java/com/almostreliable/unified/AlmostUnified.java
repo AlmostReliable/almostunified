@@ -7,6 +7,7 @@ import com.almostreliable.unified.config.StartupConfig;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.ReplacementMap;
+import com.almostreliable.unified.utils.TagInheritance;
 import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.TagOwnerships;
 import com.google.common.base.Preconditions;
@@ -74,6 +75,8 @@ public final class AlmostUnified {
         );
 
         ReplacementMap repMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
+
+        TagInheritance.applyInheritance(globalTagMap, filteredTagMap, repMap, tags);
 
         RecipeHandlerFactory recipeHandlerFactory = new RecipeHandlerFactory();
         AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(recipeHandlerFactory);
