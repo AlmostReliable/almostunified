@@ -38,6 +38,8 @@ public class UnifyConfig extends Config {
             List<String> materials,
             Map<ResourceLocation, String> priorityOverrides,
             Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships,
+//            boolean tagInheritance,
+//            Set<Pattern> ignoredInheritance,
             Set<UnifyTag<Item>> ignoredTags,
             Set<Pattern> ignoredItems,
             Set<Pattern> ignoredRecipeTypes,

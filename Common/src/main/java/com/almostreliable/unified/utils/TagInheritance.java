@@ -1,10 +1,12 @@
 package com.almostreliable.unified.utils;
 
+import com.almostreliable.unified.AlmostUnified;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -15,11 +17,48 @@ import java.util.stream.Collectors;
 
 public final class TagInheritance {
 
+    private static final Object LOCK = new Object();
+
+    private static Map<ResourceLocation, Collection<Holder<Item>>> RAW_ITEM_TAGS;
+    private static Map<ResourceLocation, Collection<Holder<Block>>> RAW_BLOCK_TAGS;
+
+    public static void initItemTags(Map<ResourceLocation, Collection<Holder<Item>>> rawItemTags) {
+        synchronized (LOCK) {
+            RAW_ITEM_TAGS = rawItemTags;
+        }
+    }
+
+    public static void initBlockTags(Map<ResourceLocation, Collection<Holder<Block>>> rawBlockTags) {
+        synchronized (LOCK) {
+            RAW_BLOCK_TAGS = rawBlockTags;
+        }
+    }
+
+    public static void run() {
+        if (RAW_ITEM_TAGS == null || RAW_BLOCK_TAGS == null) {
+            return;
+        }
+
+        AlmostUnified.onTagLoaderReload(RAW_ITEM_TAGS);
+
+        RAW_ITEM_TAGS = null;
+        RAW_BLOCK_TAGS = null;
+    }
+
     private TagInheritance() {}
 
     // TODO: add blacklist
     // TODO: add global switch
     // TODO: add logging
+    // TODO: block logic
+    /*
+    {
+        "immersive_engineering:crusher_multiblock": [
+            "forge:storage_blocks/steel",
+            "forge:storage_blocks/iron"
+        ]
+    }
+     */
 
     public static void applyInheritance(TagMap globalTagMap, TagMap filteredTagMap, ReplacementMap repMap, Map<ResourceLocation, Collection<Holder<Item>>> rawTags) {
         var relations = resolveRelations(filteredTagMap, repMap);
