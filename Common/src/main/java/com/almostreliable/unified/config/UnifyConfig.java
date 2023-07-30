@@ -119,7 +119,7 @@ public class UnifyConfig extends Config {
         return checkPatterns(dominantTags, patterns);
     }
 
-    public boolean shouldInheritBlockTag(UnifyTag<Item> itemTag, Set<UnifyTag<Block>> dominantTags) {
+    public boolean shouldInheritBlockTag(UnifyTag<Block> itemTag, Set<UnifyTag<Item>> dominantTags) {
         var patterns = blockTagInheritance.get(itemTag.location());
         return checkPatterns(dominantTags, patterns);
     }

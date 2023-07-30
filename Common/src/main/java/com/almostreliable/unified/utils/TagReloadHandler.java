@@ -50,44 +50,55 @@ public final class TagReloadHandler {
     private TagReloadHandler() {}
 
     // TODO: add logging
-    // TODO: block logic
-    // TODO: add config
-    /*
-    {
-        "immersive_engineering:crusher_multiblock": [
-            "forge:storage_blocks/steel",
-            "forge:storage_blocks/iron"
-        ]
-    }
-     */
 
-    // TODO: return boolean with true if something changed to rebuild the tagmaps for the runtime
+    // TODO: return boolean with true if something changed (ONLY IN THE ITEM TAGS) to rebuild the tagmaps for the runtime
     public static void applyInheritance(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, TagMap<Item> filteredTagMap, ReplacementMap repMap) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
 
         var relations = resolveRelations(filteredTagMap, repMap);
+        if (relations.isEmpty()) return;
+
+        var blockTagMap = TagMap.createFromBlockTags(RAW_BLOCK_TAGS);
 
         for (TagRelation relation : relations) {
-            var dominantHolder = findDominantHolder(relation);
-            if (dominantHolder == null) continue;
+            var dominantItemHolder = findDominantItemHolder(relation);
+            var dominantBlockHolder = findDominantBlockHolder(blockTagMap, relation.dominant);
 
-            var dominantTags = globalTagMap.getTagsByEntry(relation.dominant);
+            var dominantItemTags = globalTagMap.getTagsByEntry(relation.dominant);
 
             for (var item : relation.items) {
-                var itemTags = globalTagMap.getTagsByEntry(item);
+                if (dominantItemHolder != null) {
+                    var itemTags = globalTagMap.getTagsByEntry(item);
 
-                for (var itemTag : itemTags) {
-                    if (!unifyConfig.shouldInheritItemTag(itemTag, dominantTags)) continue;
+                    for (var itemTag : itemTags) {
+                        if (!unifyConfig.shouldInheritItemTag(itemTag, dominantItemTags)) continue;
 
-                    var itemTagHolders = RAW_ITEM_TAGS.get(itemTag.location());
-                    if (itemTagHolders == null) continue;
+                        var itemTagHolders = RAW_ITEM_TAGS.get(itemTag.location());
+                        if (itemTagHolders == null) continue;
 
-                    ImmutableSet.Builder<Holder<Item>> newHolders = ImmutableSet.builder();
-                    newHolders.addAll(itemTagHolders);
-                    newHolders.add(dominantHolder);
+                        ImmutableSet.Builder<Holder<Item>> newHolders = ImmutableSet.builder();
+                        newHolders.addAll(itemTagHolders);
+                        newHolders.add(dominantItemHolder);
 
-                    RAW_ITEM_TAGS.put(itemTag.location(), newHolders.build());
+                        RAW_ITEM_TAGS.put(itemTag.location(), newHolders.build());
+                    }
+                }
+
+                if (dominantBlockHolder == null) continue;
+                var blockTags = blockTagMap.getTagsByEntry(item);
+
+                for (var blockTag : blockTags) {
+                    if (!unifyConfig.shouldInheritBlockTag(blockTag, dominantItemTags)) continue;
+
+                    var blockTagHolders = RAW_BLOCK_TAGS.get(blockTag.location());
+                    if (blockTagHolders == null) continue;
+
+                    ImmutableSet.Builder<Holder<Block>> newHolders = ImmutableSet.builder();
+                    newHolders.addAll(blockTagHolders);
+                    newHolders.add(dominantBlockHolder);
+
+                    RAW_BLOCK_TAGS.put(blockTag.location(), newHolders.build());
                 }
             }
         }
@@ -120,13 +131,32 @@ public final class TagReloadHandler {
 
     @SuppressWarnings("StaticVariableUsedBeforeInitialization")
     @Nullable
-    private static Holder<Item> findDominantHolder(TagRelation relation) {
+    private static Holder<Item> findDominantItemHolder(TagRelation relation) {
         var tagHolders = RAW_ITEM_TAGS.get(relation.tag);
         if (tagHolders == null) return null;
 
         for (var tagHolder : tagHolders) {
             var holderKey = tagHolder.unwrapKey();
             if (holderKey.isPresent() && holderKey.get().location().equals(relation.dominant)) {
+                return tagHolder;
+            }
+        }
+
+        return null;
+    }
+
+    @SuppressWarnings("StaticVariableUsedBeforeInitialization")
+    @Nullable
+    private static Holder<Block> findDominantBlockHolder(TagMap<Block> tagMap, ResourceLocation dominant) {
+        var blockTags = tagMap.getTagsByEntry(dominant);
+        if (blockTags.isEmpty()) return null;
+
+        var tagHolders = RAW_BLOCK_TAGS.get(blockTags.iterator().next().location());
+        if (tagHolders == null) return null;
+
+        for (var tagHolder : tagHolders) {
+            var holderKey = tagHolder.unwrapKey();
+            if (holderKey.isPresent() && holderKey.get().location().equals(dominant)) {
                 return tagHolder;
             }
         }
