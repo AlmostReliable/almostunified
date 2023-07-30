@@ -6,6 +6,7 @@ import com.almostreliable.unified.utils.TagMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Comparator;
@@ -29,7 +30,7 @@ public class DebugConfig extends Config {
         this.dumpRecipes = dumpRecipes;
     }
 
-    public void logUnifyTagDump(TagMap tagMap) {
+    public void logUnifyTagDump(TagMap<Item> tagMap) {
         if (!dumpTagMap) {
             return;
         }
@@ -40,7 +41,7 @@ public class DebugConfig extends Config {
                     .stream()
                     .sorted(Comparator.comparing(t -> t.location().toString()))
                     .map(t -> StringUtils.rightPad(t.location().toString(), 40) + " => " + tagMap
-                            .getItemsByTag(t)
+                            .getEntriesByTag(t)
                             .stream()
                             .map(ResourceLocation::toString)
                             .sorted()

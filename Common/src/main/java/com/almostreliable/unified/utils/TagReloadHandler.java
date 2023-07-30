@@ -62,7 +62,7 @@ public final class TagReloadHandler {
      */
 
     // TODO: return boolean with true if something changed to rebuild the tagmaps for the runtime
-    public static void applyInheritance(UnifyConfig unifyConfig, TagMap globalTagMap, TagMap filteredTagMap, ReplacementMap repMap) {
+    public static void applyInheritance(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, TagMap<Item> filteredTagMap, ReplacementMap repMap) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
 
@@ -72,10 +72,10 @@ public final class TagReloadHandler {
             var dominantHolder = findDominantHolder(relation);
             if (dominantHolder == null) continue;
 
-            var dominantTags = globalTagMap.getTagsByItem(relation.dominant);
+            var dominantTags = globalTagMap.getTagsByEntry(relation.dominant);
 
             for (var item : relation.items) {
-                var itemTags = globalTagMap.getTagsByItem(item);
+                var itemTags = globalTagMap.getTagsByEntry(item);
 
                 for (var itemTag : itemTags) {
                     if (!unifyConfig.shouldInheritItemTag(itemTag, dominantTags)) continue;
@@ -93,11 +93,11 @@ public final class TagReloadHandler {
         }
     }
 
-    private static Set<TagRelation> resolveRelations(TagMap filteredTagMap, ReplacementMap repMap) {
+    private static Set<TagRelation> resolveRelations(TagMap<Item> filteredTagMap, ReplacementMap repMap) {
         Set<TagRelation> relations = new HashSet<>();
 
         for (var unifyTag : filteredTagMap.getTags()) {
-            var itemsByTag = filteredTagMap.getItemsByTag(unifyTag);
+            var itemsByTag = filteredTagMap.getEntriesByTag(unifyTag);
 
             // avoid handling single entries and tags that only contain the same namespace for all items
             long namespaces = itemsByTag.stream().map(ResourceLocation::getNamespace).distinct().count();

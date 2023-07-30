@@ -65,8 +65,8 @@ public final class AlmostUnified {
         TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
         tagOwnerships.applyOwnerships(tags);
 
-        TagMap globalTagMap = TagMap.create(tags);
-        TagMap filteredTagMap = globalTagMap.filtered(unifyTags::contains, unifyConfig::includeItem);
+        var globalTagMap = TagMap.createFromItemTags(tags);
+        var filteredTagMap = globalTagMap.filtered(unifyTags::contains, unifyConfig::includeItem);
 
         StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(
                 unifyConfig.getStoneStrata(),
