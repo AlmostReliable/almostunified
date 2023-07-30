@@ -5,12 +5,14 @@ import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonObject;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -74,11 +76,20 @@ public class UnifyConfig extends Config {
     }
 
     public Set<UnifyTag<Item>> bakeTags() {
+        return bakeTags($ -> true);
+    }
+
+    public Set<UnifyTag<Item>> bakeAndValidateTags(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
+        return bakeTags(tags::containsKey);
+    }
+
+    private Set<UnifyTag<Item>> bakeTags(Predicate<ResourceLocation> tagValidator) {
         if (bakedTagsCache != null) {
             return bakedTagsCache;
         }
 
         Set<UnifyTag<Item>> result = new HashSet<>();
+        Set<UnifyTag<Item>> wrongTags = new HashSet<>();
 
         for (String tag : unbakedTags) {
             for (String material : materials) {
@@ -90,10 +101,22 @@ public class UnifyConfig extends Config {
                 }
 
                 UnifyTag<Item> t = UnifyTag.item(asRL);
-                if (!ignoredTags.contains(t)) {
-                    result.add(t);
+                if (ignoredTags.contains(t)) continue;
+
+                if (!tagValidator.test(asRL)) {
+                    wrongTags.add(t);
+                    continue;
                 }
+
+                result.add(t);
             }
+        }
+
+        if (!wrongTags.isEmpty()) {
+            AlmostUnified.LOG.warn(
+                    "The following tags are invalid and will be ignored: {}",
+                    wrongTags.stream().map(UnifyTag::location).collect(Collectors.toList())
+            );
         }
 
         bakedTagsCache = result;

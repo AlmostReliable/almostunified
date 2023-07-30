@@ -60,7 +60,7 @@ public final class AlmostUnified {
         ServerConfigs serverConfigs = ServerConfigs.load();
         UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
 
-        var unifyTags = unifyConfig.bakeTags();
+        var unifyTags = unifyConfig.bakeAndValidateTags(tags);
 
         TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
         tagOwnerships.applyOwnerships(tags);
