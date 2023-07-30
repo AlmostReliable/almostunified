@@ -57,6 +57,9 @@ public final class AlmostUnified {
     public static void onTagLoaderReload(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
         Preconditions.checkNotNull(TAG_MANAGER, "TagManager was not loaded correctly");
 
+        RecipeHandlerFactory recipeHandlerFactory = new RecipeHandlerFactory();
+        AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(recipeHandlerFactory);
+
         ServerConfigs serverConfigs = ServerConfigs.load();
         UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
 
@@ -76,10 +79,20 @@ public final class AlmostUnified {
 
         ReplacementMap repMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
 
-        TagReloadHandler.applyInheritance(unifyConfig, globalTagMap, filteredTagMap, repMap);
+        var needsRebuild = TagReloadHandler.applyInheritance(unifyConfig, globalTagMap, filteredTagMap, repMap);
 
-        RecipeHandlerFactory recipeHandlerFactory = new RecipeHandlerFactory();
-        AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(recipeHandlerFactory);
+        if (needsRebuild) {
+            globalTagMap = TagMap.createFromItemTags(tags);
+            filteredTagMap = globalTagMap.filtered(unifyTags::contains, unifyConfig::includeItem);
+
+            stoneStrataHandler = StoneStrataHandler.create(
+                    unifyConfig.getStoneStrata(),
+                    AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
+                    globalTagMap
+            );
+
+            repMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
+        }
 
         RUNTIME = new AlmostUnifiedRuntimeImpl(serverConfigs, filteredTagMap, repMap, recipeHandlerFactory);
     }

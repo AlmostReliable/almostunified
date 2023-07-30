@@ -51,7 +51,7 @@ public final class TagReloadHandler {
         RAW_BLOCK_TAGS = null;
     }
 
-    public static void applyInheritance(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, TagMap<Item> filteredTagMap, ReplacementMap repMap) {
+    public static boolean applyInheritance(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, TagMap<Item> filteredTagMap, ReplacementMap repMap) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
 
@@ -59,7 +59,7 @@ public final class TagReloadHandler {
         Multimap<ResourceLocation, ResourceLocation> changedBlockTags = HashMultimap.create();
 
         var relations = resolveRelations(filteredTagMap, repMap);
-        if (relations.isEmpty()) return;
+        if (relations.isEmpty()) return false;
 
         var blockTagMap = TagMap.createFromBlockTags(RAW_BLOCK_TAGS);
 
@@ -91,7 +91,10 @@ public final class TagReloadHandler {
             changedItemTags.asMap().forEach((dominant, tags) -> {
                 AlmostUnified.LOG.info("[TagInheritance] Added '{}' to item tags {}", dominant, tags);
             });
+            return true;
         }
+
+        return false;
     }
 
     private static Set<TagRelation> resolveRelations(TagMap<Item> filteredTagMap, ReplacementMap repMap) {
