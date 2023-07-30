@@ -167,6 +167,8 @@ public final class TagReloadHandler {
             var itemTagHolders = RAW_ITEM_TAGS.get(itemTag.location());
             if (itemTagHolders == null) continue;
 
+            if (itemTagHolders.contains(dominantItemHolder)) continue; // already present, no need to add it again
+
             ImmutableSet.Builder<Holder<Item>> newHolders = ImmutableSet.builder();
             newHolders.addAll(itemTagHolders);
             newHolders.add(dominantItemHolder);
@@ -187,6 +189,8 @@ public final class TagReloadHandler {
 
             var blockTagHolders = RAW_BLOCK_TAGS.get(blockTag.location());
             if (blockTagHolders == null) continue;
+
+            if (blockTagHolders.contains(dominantBlockHolder)) continue; // already present, no need to add it again
 
             ImmutableSet.Builder<Holder<Block>> newHolders = ImmutableSet.builder();
             newHolders.addAll(blockTagHolders);
