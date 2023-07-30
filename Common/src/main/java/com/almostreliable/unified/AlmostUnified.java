@@ -14,7 +14,6 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +28,6 @@ public final class AlmostUnified {
     public static final Logger LOG = LogManager.getLogger(BuildConfig.MOD_NAME);
 
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
-    @Nullable private static TagManager TAG_MANAGER;
     @Nullable private static StartupConfig STARTUP_CONFIG;
 
     public static boolean isRuntimeLoaded() {
@@ -50,13 +48,7 @@ public final class AlmostUnified {
         return STARTUP_CONFIG;
     }
 
-    public static void onTagManagerReload(TagManager tagManager) {
-        TAG_MANAGER = tagManager;
-    }
-
     public static void onTagLoaderReload(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
-        Preconditions.checkNotNull(TAG_MANAGER, "TagManager was not loaded correctly");
-
         RecipeHandlerFactory recipeHandlerFactory = new RecipeHandlerFactory();
         AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(recipeHandlerFactory);
 
