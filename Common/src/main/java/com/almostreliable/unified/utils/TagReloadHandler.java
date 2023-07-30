@@ -3,7 +3,9 @@ package com.almostreliable.unified.utils;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +25,8 @@ public final class TagReloadHandler {
 
     private static Map<ResourceLocation, Collection<Holder<Item>>> RAW_ITEM_TAGS;
     private static Map<ResourceLocation, Collection<Holder<Block>>> RAW_BLOCK_TAGS;
+
+    private TagReloadHandler() {}
 
     public static void initItemTags(Map<ResourceLocation, Collection<Holder<Item>>> rawItemTags) {
         synchronized (LOCK) {
@@ -47,14 +51,12 @@ public final class TagReloadHandler {
         RAW_BLOCK_TAGS = null;
     }
 
-    private TagReloadHandler() {}
-
-    // TODO: add logging
-
-    // TODO: return boolean with true if something changed (ONLY IN THE ITEM TAGS) to rebuild the tagmaps for the runtime
     public static void applyInheritance(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, TagMap<Item> filteredTagMap, ReplacementMap repMap) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
+
+        Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
+        Multimap<ResourceLocation, ResourceLocation> changedBlockTags = HashMultimap.create();
 
         var relations = resolveRelations(filteredTagMap, repMap);
         if (relations.isEmpty()) return;
@@ -62,45 +64,33 @@ public final class TagReloadHandler {
         var blockTagMap = TagMap.createFromBlockTags(RAW_BLOCK_TAGS);
 
         for (TagRelation relation : relations) {
+            var dominant = relation.dominant;
             var dominantItemHolder = findDominantItemHolder(relation);
-            var dominantBlockHolder = findDominantBlockHolder(blockTagMap, relation.dominant);
+            var dominantBlockHolder = findDominantBlockHolder(blockTagMap, dominant);
 
-            var dominantItemTags = globalTagMap.getTagsByEntry(relation.dominant);
+            var dominantItemTags = globalTagMap.getTagsByEntry(dominant);
 
             for (var item : relation.items) {
                 if (dominantItemHolder != null) {
-                    var itemTags = globalTagMap.getTagsByEntry(item);
-
-                    for (var itemTag : itemTags) {
-                        if (!unifyConfig.shouldInheritItemTag(itemTag, dominantItemTags)) continue;
-
-                        var itemTagHolders = RAW_ITEM_TAGS.get(itemTag.location());
-                        if (itemTagHolders == null) continue;
-
-                        ImmutableSet.Builder<Holder<Item>> newHolders = ImmutableSet.builder();
-                        newHolders.addAll(itemTagHolders);
-                        newHolders.add(dominantItemHolder);
-
-                        RAW_ITEM_TAGS.put(itemTag.location(), newHolders.build());
-                    }
+                    var changed = applyItemTags(unifyConfig, globalTagMap, dominantItemHolder, dominantItemTags, item);
+                    changedItemTags.putAll(dominant, changed);
                 }
-
-                if (dominantBlockHolder == null) continue;
-                var blockTags = blockTagMap.getTagsByEntry(item);
-
-                for (var blockTag : blockTags) {
-                    if (!unifyConfig.shouldInheritBlockTag(blockTag, dominantItemTags)) continue;
-
-                    var blockTagHolders = RAW_BLOCK_TAGS.get(blockTag.location());
-                    if (blockTagHolders == null) continue;
-
-                    ImmutableSet.Builder<Holder<Block>> newHolders = ImmutableSet.builder();
-                    newHolders.addAll(blockTagHolders);
-                    newHolders.add(dominantBlockHolder);
-
-                    RAW_BLOCK_TAGS.put(blockTag.location(), newHolders.build());
+                if (dominantBlockHolder != null) {
+                    var changed = applyBlockTags(unifyConfig, blockTagMap, dominantBlockHolder, dominantItemTags, item);
+                    changedBlockTags.putAll(dominant, changed);
                 }
             }
+        }
+
+        if (!changedBlockTags.isEmpty()) {
+            changedBlockTags.asMap().forEach((dominant, tags) -> {
+                AlmostUnified.LOG.info("[TagInheritance] Added '{}' to block tags {}", dominant, tags);
+            });
+        }
+        if (!changedItemTags.isEmpty()) {
+            changedItemTags.asMap().forEach((dominant, tags) -> {
+                AlmostUnified.LOG.info("[TagInheritance] Added '{}' to item tags {}", dominant, tags);
+            });
         }
     }
 
@@ -162,6 +152,48 @@ public final class TagReloadHandler {
         }
 
         return null;
+    }
+
+    private static Set<ResourceLocation> applyItemTags(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, Holder<Item> dominantItemHolder, Set<UnifyTag<Item>> dominantItemTags, ResourceLocation item) {
+        var itemTags = globalTagMap.getTagsByEntry(item);
+        Set<ResourceLocation> changed = new HashSet<>();
+
+        for (var itemTag : itemTags) {
+            if (!unifyConfig.shouldInheritItemTag(itemTag, dominantItemTags)) continue;
+
+            var itemTagHolders = RAW_ITEM_TAGS.get(itemTag.location());
+            if (itemTagHolders == null) continue;
+
+            ImmutableSet.Builder<Holder<Item>> newHolders = ImmutableSet.builder();
+            newHolders.addAll(itemTagHolders);
+            newHolders.add(dominantItemHolder);
+
+            RAW_ITEM_TAGS.put(itemTag.location(), newHolders.build());
+            changed.add(itemTag.location());
+        }
+
+        return changed;
+    }
+
+    private static Set<ResourceLocation> applyBlockTags(UnifyConfig unifyConfig, TagMap<Block> blockTagMap, Holder<Block> dominantBlockHolder, Set<UnifyTag<Item>> dominantItemTags, ResourceLocation item) {
+        var blockTags = blockTagMap.getTagsByEntry(item);
+        Set<ResourceLocation> changed = new HashSet<>();
+
+        for (var blockTag : blockTags) {
+            if (!unifyConfig.shouldInheritBlockTag(blockTag, dominantItemTags)) continue;
+
+            var blockTagHolders = RAW_BLOCK_TAGS.get(blockTag.location());
+            if (blockTagHolders == null) continue;
+
+            ImmutableSet.Builder<Holder<Block>> newHolders = ImmutableSet.builder();
+            newHolders.addAll(blockTagHolders);
+            newHolders.add(dominantBlockHolder);
+
+            RAW_BLOCK_TAGS.put(blockTag.location(), newHolders.build());
+            changed.add(blockTag.location());
+        }
+
+        return changed;
     }
 
     private record TagRelation(ResourceLocation tag, ResourceLocation dominant, Set<ResourceLocation> items) {}
