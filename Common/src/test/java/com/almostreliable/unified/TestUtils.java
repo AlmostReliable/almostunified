@@ -42,6 +42,8 @@ public final class TestUtils {
             TEST_MOD_PRIORITIES,
             new HashMap<>(),
             new HashMap<>(),
+            new HashMap<>(),
+            new HashMap<>(),
             new HashSet<>(),
             new HashSet<>(),
             new HashSet<>(),

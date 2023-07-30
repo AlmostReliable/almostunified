@@ -1,7 +1,7 @@
 package com.almostreliable.unified.mixin.runtime;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.utils.TagInheritance;
+import com.almostreliable.unified.utils.TagReloadHandler;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -29,8 +29,8 @@ public class TagLoaderMixin {
         if (directory.equals("tags/items")) {
             try {
                 Map<ResourceLocation, Collection<Holder<Item>>> tags = Utils.cast(cir.getReturnValue());
-                TagInheritance.initItemTags(tags);
-                TagInheritance.run();
+                TagReloadHandler.initItemTags(tags);
+                TagReloadHandler.run();
             } catch (Exception e) {
                 AlmostUnified.LOG.error(e.getMessage(), e);
             }
@@ -38,8 +38,8 @@ public class TagLoaderMixin {
         if (directory.equals("tags/blocks")) {
             try {
                 Map<ResourceLocation, Collection<Holder<Block>>> tags = Utils.cast(cir.getReturnValue());
-                TagInheritance.initBlockTags(tags);
-                TagInheritance.run();
+                TagReloadHandler.initBlockTags(tags);
+                TagReloadHandler.run();
             } catch (Exception e) {
                 AlmostUnified.LOG.error(e.getMessage(), e);
             }

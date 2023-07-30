@@ -1,6 +1,8 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.config.UnifyConfig;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public final class TagInheritance {
+public final class TagReloadHandler {
 
     private static final Object LOCK = new Object();
 
@@ -45,12 +47,11 @@ public final class TagInheritance {
         RAW_BLOCK_TAGS = null;
     }
 
-    private TagInheritance() {}
+    private TagReloadHandler() {}
 
-    // TODO: add blacklist
-    // TODO: add global switch
     // TODO: add logging
     // TODO: block logic
+    // TODO: add config
     /*
     {
         "immersive_engineering:crusher_multiblock": [
@@ -60,32 +61,40 @@ public final class TagInheritance {
     }
      */
 
-    public static void applyInheritance(TagMap globalTagMap, TagMap filteredTagMap, ReplacementMap repMap, Map<ResourceLocation, Collection<Holder<Item>>> rawTags) {
+    // TODO: return boolean with true if something changed to rebuild the tagmaps for the runtime
+    public static void applyInheritance(UnifyConfig unifyConfig, TagMap globalTagMap, TagMap filteredTagMap, ReplacementMap repMap) {
+        Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
+        Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
+
         var relations = resolveRelations(filteredTagMap, repMap);
 
-        for (RelationEntry relation : relations) {
-            var dominantHolder = findDominantHolder(rawTags, relation);
+        for (TagRelation relation : relations) {
+            var dominantHolder = findDominantHolder(relation);
             if (dominantHolder == null) continue;
+
+            var dominantTags = globalTagMap.getTagsByItem(relation.dominant);
 
             for (var item : relation.items) {
                 var itemTags = globalTagMap.getTagsByItem(item);
 
                 for (var itemTag : itemTags) {
-                    var itemTagHolders = rawTags.get(itemTag.location());
+                    if (!unifyConfig.shouldInheritItemTag(itemTag, dominantTags)) continue;
+
+                    var itemTagHolders = RAW_ITEM_TAGS.get(itemTag.location());
                     if (itemTagHolders == null) continue;
 
                     ImmutableSet.Builder<Holder<Item>> newHolders = ImmutableSet.builder();
                     newHolders.addAll(itemTagHolders);
                     newHolders.add(dominantHolder);
 
-                    rawTags.put(itemTag.location(), newHolders.build());
+                    RAW_ITEM_TAGS.put(itemTag.location(), newHolders.build());
                 }
             }
         }
     }
 
-    private static Set<RelationEntry> resolveRelations(TagMap filteredTagMap, ReplacementMap repMap) {
-        Set<RelationEntry> relations = new HashSet<>();
+    private static Set<TagRelation> resolveRelations(TagMap filteredTagMap, ReplacementMap repMap) {
+        Set<TagRelation> relations = new HashSet<>();
 
         for (var unifyTag : filteredTagMap.getTags()) {
             var itemsByTag = filteredTagMap.getItemsByTag(unifyTag);
@@ -103,15 +112,16 @@ public final class TagInheritance {
                     .collect(Collectors.toSet());
 
             if (items.isEmpty()) continue;
-            relations.add(new RelationEntry(unifyTag.location(), dominant, items));
+            relations.add(new TagRelation(unifyTag.location(), dominant, items));
         }
 
         return relations;
     }
 
+    @SuppressWarnings("StaticVariableUsedBeforeInitialization")
     @Nullable
-    private static Holder<Item> findDominantHolder(Map<ResourceLocation, Collection<Holder<Item>>> rawTags, RelationEntry relation) {
-        var tagHolders = rawTags.get(relation.tag);
+    private static Holder<Item> findDominantHolder(TagRelation relation) {
+        var tagHolders = RAW_ITEM_TAGS.get(relation.tag);
         if (tagHolders == null) return null;
 
         for (var tagHolder : tagHolders) {
@@ -124,5 +134,5 @@ public final class TagInheritance {
         return null;
     }
 
-    private record RelationEntry(ResourceLocation tag, ResourceLocation dominant, Set<ResourceLocation> items) {}
+    private record TagRelation(ResourceLocation tag, ResourceLocation dominant, Set<ResourceLocation> items) {}
 }

@@ -7,6 +7,7 @@ import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -22,6 +23,8 @@ public class UnifyConfig extends Config {
     private final List<String> materials;
     private final Map<ResourceLocation, String> priorityOverrides;
     private final Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships;
+    private final Map<ResourceLocation, Set<Pattern>> itemTagInheritance;
+    private final Map<ResourceLocation, Set<Pattern>> blockTagInheritance;
     private final Set<UnifyTag<Item>> ignoredTags;
     private final Set<Pattern> ignoredItems;
     private final Set<Pattern> ignoredRecipeTypes;
@@ -38,8 +41,8 @@ public class UnifyConfig extends Config {
             List<String> materials,
             Map<ResourceLocation, String> priorityOverrides,
             Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships,
-//            boolean tagInheritance,
-//            Set<Pattern> ignoredInheritance,
+            Map<ResourceLocation, Set<Pattern>> itemTagInheritance,
+            Map<ResourceLocation, Set<Pattern>> blockTagInheritance,
             Set<UnifyTag<Item>> ignoredTags,
             Set<Pattern> ignoredItems,
             Set<Pattern> ignoredRecipeTypes,
@@ -52,6 +55,8 @@ public class UnifyConfig extends Config {
         this.materials = materials;
         this.priorityOverrides = priorityOverrides;
         this.tagOwnerships = tagOwnerships;
+        this.itemTagInheritance = itemTagInheritance;
+        this.blockTagInheritance = blockTagInheritance;
         this.ignoredTags = ignoredTags;
         this.ignoredItems = ignoredItems;
         this.ignoredRecipeTypes = ignoredRecipeTypes;
@@ -109,6 +114,30 @@ public class UnifyConfig extends Config {
         return Collections.unmodifiableMap(tagOwnerships);
     }
 
+    public boolean shouldInheritItemTag(UnifyTag<Item> itemTag, Set<UnifyTag<Item>> dominantTags) {
+        var patterns = itemTagInheritance.get(itemTag.location());
+        return checkPatterns(dominantTags, patterns);
+    }
+
+    public boolean shouldInheritBlockTag(UnifyTag<Item> itemTag, Set<UnifyTag<Block>> dominantTags) {
+        var patterns = blockTagInheritance.get(itemTag.location());
+        return checkPatterns(dominantTags, patterns);
+    }
+
+    private static <T> boolean checkPatterns(Set<UnifyTag<T>> dominantTags, @Nullable Set<Pattern> patterns) {
+        if (patterns == null) return false;
+
+        for (var pattern : patterns) {
+            for (var dominantTag : dominantTags) {
+                if (pattern.matcher(dominantTag.location().toString()).matches()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public boolean includeItem(ResourceLocation item) {
         for (Pattern pattern : ignoredItems) {
             if (pattern.matcher(item.toString()).matches()) {
@@ -154,6 +183,8 @@ public class UnifyConfig extends Config {
         public static final String MATERIALS = "materials";
         public static final String PRIORITY_OVERRIDES = "priorityOverrides";
         public static final String TAG_OWNERSHIPS = "tagOwnerships";
+        public static final String ITEM_TAG_INHERITANCE = "itemTagInheritance";
+        public static final String BLOCK_TAG_INHERITANCE = "blockTagInheritance";
         public static final String IGNORED_TAGS = "ignoredTags";
         public static final String IGNORED_ITEMS = "ignoredItems";
         public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
@@ -190,6 +221,24 @@ public class UnifyConfig extends Config {
                                     .collect(Collectors.toSet()),
                             (a, b) -> b,
                             HashMap::new)), new HashMap<>());
+            Map<ResourceLocation, Set<Pattern>> itemTagInheritance = safeGet(() -> json
+                    .getAsJsonObject(ITEM_TAG_INHERITANCE)
+                    .keySet()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            ResourceLocation::new,
+                            key -> deserializePatterns(json.getAsJsonObject(ITEM_TAG_INHERITANCE), key, List.of()),
+                            (a, b) -> b,
+                            HashMap::new)), new HashMap<>());
+            Map<ResourceLocation, Set<Pattern>> blockTagInheritance = safeGet(() -> json
+                    .getAsJsonObject(BLOCK_TAG_INHERITANCE)
+                    .keySet()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            ResourceLocation::new,
+                            key -> deserializePatterns(json.getAsJsonObject(BLOCK_TAG_INHERITANCE), key, List.of()),
+                            (a, b) -> b,
+                            HashMap::new)), new HashMap<>());
             Set<UnifyTag<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
                     .stream()
@@ -208,6 +257,8 @@ public class UnifyConfig extends Config {
                     materials,
                     priorityOverrides,
                     tagOwnerships,
+                    itemTagInheritance,
+                    blockTagInheritance,
                     ignoredTags,
                     ignoredItems,
                     ignoredRecipeTypes,
@@ -234,6 +285,18 @@ public class UnifyConfig extends Config {
                         JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
             });
             json.add(TAG_OWNERSHIPS, tagOwnerships);
+            JsonObject itemTagInheritance = new JsonObject();
+            config.itemTagInheritance.forEach((tag, patterns) -> {
+                itemTagInheritance.add(tag.toString(),
+                        JsonUtils.toArray(patterns.stream().map(Pattern::toString).toList()));
+            });
+            json.add(ITEM_TAG_INHERITANCE, itemTagInheritance);
+            JsonObject blockTagInheritance = new JsonObject();
+            config.blockTagInheritance.forEach((tag, patterns) -> {
+                blockTagInheritance.add(tag.toString(),
+                        JsonUtils.toArray(patterns.stream().map(Pattern::toString).toList()));
+            });
+            json.add(BLOCK_TAG_INHERITANCE, blockTagInheritance);
             json.add(IGNORED_TAGS,
                     JsonUtils.toArray(config.ignoredTags
                             .stream()
