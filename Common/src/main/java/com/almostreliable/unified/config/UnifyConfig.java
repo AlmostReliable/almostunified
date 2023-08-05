@@ -10,7 +10,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -345,7 +344,6 @@ public class UnifyConfig extends Config {
                             HashMap::new));
         }
 
-        @NotNull
         private Map<ResourceLocation, Set<Pattern>> deserializePatternsForLocations(JsonObject rawConfigJson, String baseKey) {
             return safeGet(() -> unsafeDeserializePatternsForLocations(rawConfigJson, baseKey), new HashMap<>());
         }

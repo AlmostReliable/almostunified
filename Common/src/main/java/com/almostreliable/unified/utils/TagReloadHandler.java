@@ -12,7 +12,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -148,7 +147,6 @@ public final class TagReloadHandler {
      * @param dominant dominant item id
      * @return set of all items that are not the dominant item and are valid
      */
-    @NotNull
     private static Set<ResourceLocation> getNonDominantItemsAndValidate(Set<ResourceLocation> itemIds, ResourceLocation dominant) {
         Set<ResourceLocation> result = new HashSet<>(itemIds.size());
         for (ResourceLocation id : itemIds) {
