@@ -42,5 +42,8 @@ public final class RecipeConstants {
     public static final String ITEM_INPUTS = "item_inputs";
     public static final String ITEM_OUTPUTS = "item_outputs";
 
+    // cyclic
+    public static final String BONUS = "bonus";
+
     private RecipeConstants() {}
 }
