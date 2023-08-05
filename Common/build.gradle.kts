@@ -9,7 +9,7 @@ val jeiVersion: String by project
 val reiVersion: String by project
 
 plugins {
-    id("com.github.gmazzo.buildconfig") version ("4.0.4")
+    id("com.github.gmazzo.buildconfig") version "4.0.4"
 }
 
 architectury {

@@ -6,7 +6,7 @@ val jeiVersion: String by project
 val reiVersion: String by project
 
 plugins {
-    id("com.github.johnrengelman.shadow") version ("8.1.1")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 architectury {
@@ -44,7 +44,16 @@ dependencies {
             "rei" -> "me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion"
             else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
         }
-    ) {
-        exclude("net.fabricmc", "fabric-loader")
+    )
+}
+
+/**
+ * force the fabric loader and api versions that are defined in the project
+ * some mods ship another version which crashes the runtime
+ */
+configurations.all {
+    resolutionStrategy {
+        force("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+        force("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion+$minecraftVersion")
     }
 }

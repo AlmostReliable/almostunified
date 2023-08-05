@@ -21,7 +21,7 @@ val githubRepo: String by project
 val githubUser: String by project
 
 plugins {
-    id("architectury-plugin") version ("3.4.+")
+    id("architectury-plugin") version "3.4.+"
     id("dev.architectury.loom") version "1.3.+" apply false
     id("io.github.juuxel.loom-vineflower") version "1.11.0" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
@@ -63,7 +63,6 @@ subprojects {
     apply(plugin = "architectury-plugin")
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "io.github.juuxel.loom-vineflower")
-    apply(plugin = "java")
     apply(plugin = "maven-publish")
 
     base {
@@ -230,6 +229,7 @@ subprojects {
             inputFile.set(named<ShadowJar>("shadowJar").get().archiveFile)
             dependsOn("shadowJar")
             archiveClassifier.set(null as String?)
+            injectAccessWidener.set(true)
         }
 
         named<Jar>("jar") {
