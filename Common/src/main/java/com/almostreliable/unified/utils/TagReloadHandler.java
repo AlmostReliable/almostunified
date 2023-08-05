@@ -1,6 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.ReplacingData;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
@@ -51,14 +52,14 @@ public final class TagReloadHandler {
         RAW_BLOCK_TAGS = null;
     }
 
-    public static boolean applyInheritance(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, TagMap<Item> filteredTagMap, ReplacementMap repMap) {
+    public static boolean applyInheritance(UnifyConfig unifyConfig, ReplacingData replacingData) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
 
         Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
         Multimap<ResourceLocation, ResourceLocation> changedBlockTags = HashMultimap.create();
 
-        var relations = resolveRelations(filteredTagMap, repMap);
+        var relations = resolveRelations(replacingData.filteredTagMap(), replacingData.replacementMap());
         if (relations.isEmpty()) return false;
 
         var blockTagMap = TagMap.createFromBlockTags(RAW_BLOCK_TAGS);
@@ -68,11 +69,15 @@ public final class TagReloadHandler {
             var dominantItemHolder = findDominantItemHolder(relation);
             var dominantBlockHolder = findDominantBlockHolder(blockTagMap, dominant);
 
-            var dominantItemTags = globalTagMap.getTagsByEntry(dominant);
+            var dominantItemTags = replacingData.globalTagMap().getTagsByEntry(dominant);
 
             for (var item : relation.items) {
                 if (dominantItemHolder != null) {
-                    var changed = applyItemTags(unifyConfig, globalTagMap, dominantItemHolder, dominantItemTags, item);
+                    var changed = applyItemTags(unifyConfig,
+                            replacingData.globalTagMap(),
+                            dominantItemHolder,
+                            dominantItemTags,
+                            item);
                     changedItemTags.putAll(dominant, changed);
                 }
                 if (dominantBlockHolder != null) {

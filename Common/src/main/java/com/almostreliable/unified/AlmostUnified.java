@@ -1,13 +1,10 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.ServerConfigs;
 import com.almostreliable.unified.config.StartupConfig;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.ReplacementMap;
-import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.TagOwnerships;
 import com.almostreliable.unified.utils.TagReloadHandler;
 import com.google.common.base.Preconditions;
@@ -55,39 +52,37 @@ public final class AlmostUnified {
         ServerConfigs serverConfigs = ServerConfigs.load();
         UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
 
-        var unifyTags = unifyConfig.bakeAndValidateTags(tags);
-
-        TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
+        TagOwnerships tagOwnerships = new TagOwnerships(unifyConfig.bakeAndValidateTags(tags),
+                unifyConfig.getTagOwnerships());
         tagOwnerships.applyOwnerships(tags);
 
-        var globalTagMap = TagMap.createFromItemTags(tags);
-        var filteredTagMap = globalTagMap.filtered(unifyTags::contains, unifyConfig::includeItem);
+        ReplacingData replacingData = loadWithTagInheritance(tags, unifyConfig, tagOwnerships);
 
-        StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(
-                unifyConfig.getStoneStrata(),
-                AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
-                globalTagMap
-        );
+        RUNTIME = new AlmostUnifiedRuntimeImpl(serverConfigs,
+                replacingData.filteredTagMap(),
+                replacingData.replacementMap(),
+                recipeHandlerFactory);
+    }
 
-        ReplacementMap repMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
-
-        var needsRebuild = TagReloadHandler.applyInheritance(unifyConfig, globalTagMap, filteredTagMap, repMap);
-
+    /**
+     * Loads base data for replacing and also applies tag inheritance if configured. As tag inheritance will potentially
+     * mutate <b>{@code tags}</b> we have to reload the data with the new <b>{@code tags}</b>.
+     *
+     * @param tags          The vanilla tag map provided by the TagManager
+     * @param unifyConfig   The mod config to use for unifying
+     * @param tagOwnerships The tag ownerships to apply
+     * @return The loaded data
+     */
+    private static ReplacingData loadWithTagInheritance(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyConfig unifyConfig, TagOwnerships tagOwnerships) {
+        ReplacingData replacingData = ReplacingData.load(tags, unifyConfig, tagOwnerships);
+        var needsRebuild = TagReloadHandler.applyInheritance(unifyConfig, replacingData);
         if (needsRebuild) {
-            globalTagMap = TagMap.createFromItemTags(tags);
-            filteredTagMap = globalTagMap.filtered(unifyTags::contains, unifyConfig::includeItem);
-
-            stoneStrataHandler = StoneStrataHandler.create(
-                    unifyConfig.getStoneStrata(),
-                    AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
-                    globalTagMap
-            );
-
-            repMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
+            return ReplacingData.load(tags, unifyConfig, tagOwnerships);
         }
 
-        RUNTIME = new AlmostUnifiedRuntimeImpl(serverConfigs, filteredTagMap, repMap, recipeHandlerFactory);
+        return replacingData;
     }
+
 
     public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes) {
         Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
