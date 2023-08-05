@@ -10,6 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -248,6 +249,7 @@ public class UnifyConfig extends Config {
             List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.getTags(platform));
             List<String> materials = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MATERIALS)),
                     Defaults.MATERIALS);
+
             Map<ResourceLocation, String> priorityOverrides = safeGet(() -> json.getAsJsonObject(PRIORITY_OVERRIDES)
                     .entrySet()
                     .stream()
@@ -256,6 +258,7 @@ public class UnifyConfig extends Config {
                             entry -> entry.getValue().getAsString(),
                             (a, b) -> b,
                             HashMap::new)), new HashMap<>());
+
             Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships = safeGet(() -> json
                     .getAsJsonObject(TAG_OWNERSHIPS)
                     .entrySet()
@@ -268,30 +271,17 @@ public class UnifyConfig extends Config {
                                     .collect(Collectors.toSet()),
                             (a, b) -> b,
                             HashMap::new)), new HashMap<>());
-            Enum<TagInheritanceMode> itemTagInheritanceMode = safeGet(() -> TagInheritanceMode.valueOf(json
-                    .getAsJsonPrimitive(ITEM_TAG_INHERITANCE_MODE)
-                    .getAsString().toUpperCase()), TagInheritanceMode.ALLOW);
-            Map<ResourceLocation, Set<Pattern>> itemTagInheritance = safeGet(() -> json
-                    .getAsJsonObject(ITEM_TAG_INHERITANCE)
-                    .keySet()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            ResourceLocation::new,
-                            key -> deserializePatterns(json.getAsJsonObject(ITEM_TAG_INHERITANCE), key, List.of()),
-                            (a, b) -> b,
-                            HashMap::new)), new HashMap<>());
-            Enum<TagInheritanceMode> blockTagInheritanceMode = safeGet(() -> TagInheritanceMode.valueOf(json
-                    .getAsJsonPrimitive(BLOCK_TAG_INHERITANCE_MODE)
-                    .getAsString().toUpperCase()), TagInheritanceMode.ALLOW);
-            Map<ResourceLocation, Set<Pattern>> blockTagInheritance = safeGet(() -> json
-                    .getAsJsonObject(BLOCK_TAG_INHERITANCE)
-                    .keySet()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            ResourceLocation::new,
-                            key -> deserializePatterns(json.getAsJsonObject(BLOCK_TAG_INHERITANCE), key, List.of()),
-                            (a, b) -> b,
-                            HashMap::new)), new HashMap<>());
+
+
+            Enum<TagInheritanceMode> itemTagInheritanceMode = deserializeTagInheritanceMode(json,
+                    ITEM_TAG_INHERITANCE_MODE);
+            Map<ResourceLocation, Set<Pattern>> itemTagInheritance = deserializePatternsForLocations(json,
+                    ITEM_TAG_INHERITANCE);
+            Enum<TagInheritanceMode> blockTagInheritanceMode = deserializeTagInheritanceMode(json,
+                    BLOCK_TAG_INHERITANCE_MODE);
+            Map<ResourceLocation, Set<Pattern>> blockTagInheritance = deserializePatternsForLocations(json,
+                    BLOCK_TAG_INHERITANCE);
+
             Set<UnifyTag<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
                     .stream()
@@ -320,6 +310,44 @@ public class UnifyConfig extends Config {
                     ignoredRecipes,
                     hideJeiRei
             );
+        }
+
+        private TagInheritanceMode deserializeTagInheritanceMode(JsonObject json, String key) {
+            return safeGet(() -> TagInheritanceMode.valueOf(json
+                    .getAsJsonPrimitive(key)
+                    .getAsString().toUpperCase()), TagInheritanceMode.ALLOW);
+        }
+
+        /**
+         * Deserialize a list of patterns from a json object with a base key. Example json:
+         * <pre>
+         *     {
+         *          "baseKey": {
+         *              "location1": [ pattern1, pattern2 ],
+         *              "location2": [ pattern3, pattern4 ]
+         *          }
+         *     }
+         * </pre>
+         *
+         * @param rawConfigJson The raw config json
+         * @param baseKey       The base key
+         * @return The deserialized patterns separated by location
+         */
+        private Map<ResourceLocation, Set<Pattern>> unsafeDeserializePatternsForLocations(JsonObject rawConfigJson, String baseKey) {
+            JsonObject json = rawConfigJson.getAsJsonObject(baseKey);
+            return json
+                    .keySet()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            ResourceLocation::new,
+                            key -> deserializePatterns(json, key, List.of()),
+                            (a, b) -> b,
+                            HashMap::new));
+        }
+
+        @NotNull
+        private Map<ResourceLocation, Set<Pattern>> deserializePatternsForLocations(JsonObject rawConfigJson, String baseKey) {
+            return safeGet(() -> unsafeDeserializePatternsForLocations(rawConfigJson, baseKey), new HashMap<>());
         }
 
         @Override
