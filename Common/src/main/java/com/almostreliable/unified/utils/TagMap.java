@@ -89,7 +89,7 @@ public class TagMap<T> {
     }
 
     /**
-     * Unwrap all holders and put them into the tag map.
+     * Unwrap all holders, verify them and put them into the tag map.
      *
      * @param tagMap   The tag map to fill.
      * @param holders  The holders to unwrap.

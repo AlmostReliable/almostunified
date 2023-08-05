@@ -52,40 +52,45 @@ public final class AlmostUnified {
         ServerConfigs serverConfigs = ServerConfigs.load();
         UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
 
-        TagOwnerships tagOwnerships = new TagOwnerships(unifyConfig.bakeAndValidateTags(tags),
-                unifyConfig.getTagOwnerships());
+        TagOwnerships tagOwnerships = new TagOwnerships(
+                unifyConfig.bakeAndValidateTags(tags),
+                unifyConfig.getTagOwnerships()
+        );
         tagOwnerships.applyOwnerships(tags);
 
-        ReplacingData replacingData = loadWithTagInheritance(tags, unifyConfig, tagOwnerships);
+        ReplacementData replacementData = loadReplacementData(tags, unifyConfig, tagOwnerships);
 
-        RUNTIME = new AlmostUnifiedRuntimeImpl(serverConfigs,
-                replacingData.filteredTagMap(),
-                replacingData.replacementMap(),
-                recipeHandlerFactory);
+        RUNTIME = new AlmostUnifiedRuntimeImpl(
+                serverConfigs,
+                replacementData.filteredTagMap(),
+                replacementData.replacementMap(),
+                recipeHandlerFactory
+        );
+    }
+
+    public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes) {
+        Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
+        RUNTIME.run(recipes, getStartupConfig().isServerOnly());
     }
 
     /**
-     * Loads base data for replacing and also applies tag inheritance if configured. As tag inheritance will potentially
-     * mutate <b>{@code tags}</b> we have to reload the data with the new <b>{@code tags}</b>.
+     * Loads the required data for the replacement logic.
+     * <p>
+     * This method applies tag inheritance and rebuilds the replacement data if the
+     * inheritance mutates the tags.
      *
      * @param tags          The vanilla tag map provided by the TagManager
      * @param unifyConfig   The mod config to use for unifying
      * @param tagOwnerships The tag ownerships to apply
      * @return The loaded data
      */
-    private static ReplacingData loadWithTagInheritance(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyConfig unifyConfig, TagOwnerships tagOwnerships) {
-        ReplacingData replacingData = ReplacingData.load(tags, unifyConfig, tagOwnerships);
-        var needsRebuild = TagReloadHandler.applyInheritance(unifyConfig, replacingData);
+    private static ReplacementData loadReplacementData(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyConfig unifyConfig, TagOwnerships tagOwnerships) {
+        ReplacementData replacementData = ReplacementData.load(tags, unifyConfig, tagOwnerships);
+        var needsRebuild = TagReloadHandler.applyInheritance(unifyConfig, replacementData);
         if (needsRebuild) {
-            return ReplacingData.load(tags, unifyConfig, tagOwnerships);
+            return ReplacementData.load(tags, unifyConfig, tagOwnerships);
         }
 
-        return replacingData;
-    }
-
-
-    public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes) {
-        Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
-        RUNTIME.run(recipes, getStartupConfig().isServerOnly());
+        return replacementData;
     }
 }

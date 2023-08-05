@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 
 public final class Utils {
     public static final ResourceLocation UNUSED_ID = new ResourceLocation(BuildConfig.MOD_ID, "unused_id");
@@ -36,5 +37,24 @@ public final class Utils {
 
     public static String prefix(String path) {
         return BuildConfig.MOD_ID + "." + path;
+    }
+
+    /**
+     * Checks if all ids have the same namespace
+     *
+     * @param ids set of ids
+     * @return true if all ids have the same namespace
+     */
+    public static boolean allSameNamespace(Set<ResourceLocation> ids) {
+        if (ids.size() <= 1) return true;
+
+        var it = ids.iterator();
+        var namespace = it.next().getNamespace();
+
+        while (it.hasNext()) {
+            if (!it.next().getNamespace().equals(namespace)) return false;
+        }
+
+        return true;
     }
 }

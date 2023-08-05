@@ -1,7 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.ReplacingData;
+import com.almostreliable.unified.ReplacementData;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
@@ -51,18 +51,18 @@ public final class TagReloadHandler {
         RAW_BLOCK_TAGS = null;
     }
 
-    public static boolean applyInheritance(UnifyConfig unifyConfig, ReplacingData replacingData) {
+    public static boolean applyInheritance(UnifyConfig unifyConfig, ReplacementData replacementData) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
 
         Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
         Multimap<ResourceLocation, ResourceLocation> changedBlockTags = HashMultimap.create();
 
-        var relations = resolveRelations(replacingData.filteredTagMap(), replacingData.replacementMap());
+        var relations = resolveRelations(replacementData.filteredTagMap(), replacementData.replacementMap());
         if (relations.isEmpty()) return false;
 
         var blockTagMap = TagMap.createFromBlockTags(RAW_BLOCK_TAGS);
-        var globalTagMap = replacingData.globalTagMap();
+        var globalTagMap = replacementData.globalTagMap();
 
         for (TagRelation relation : relations) {
             var dominant = relation.dominant;
@@ -107,12 +107,12 @@ public final class TagReloadHandler {
             var itemsByTag = filteredTagMap.getEntriesByTag(unifyTag);
 
             // avoid handling single entries and tags that only contain the same namespace for all items
-            if (allSameNamespace(itemsByTag)) continue;
+            if (Utils.allSameNamespace(itemsByTag)) continue;
 
             ResourceLocation dominant = repMap.getPreferredItemForTag(unifyTag, $ -> true);
             if (dominant == null || !BuiltInRegistries.ITEM.containsKey(dominant)) continue;
 
-            Set<ResourceLocation> items = getNonDominantItemsAndValidate(itemsByTag, dominant);
+            Set<ResourceLocation> items = getValidatedItems(itemsByTag, dominant);
 
             if (items.isEmpty()) continue;
             relations.add(new TagRelation(unifyTag.location(), dominant, items));
@@ -122,32 +122,13 @@ public final class TagReloadHandler {
     }
 
     /**
-     * Checks if all ids have the same namespace
+     * Returns a set of all items that are not the dominant item and are valid by checking if they are registered.
      *
-     * @param ids set of ids
-     * @return true if all ids have the same namespace
+     * @param itemIds  The set of all items that are in the tag
+     * @param dominant The dominant item
+     * @return A set of all items that are not the dominant item and are valid
      */
-    private static boolean allSameNamespace(Set<ResourceLocation> ids) {
-        if (ids.size() <= 1) return true;
-
-        var it = ids.iterator();
-        var namespace = it.next().getNamespace();
-
-        while (it.hasNext()) {
-            if (!it.next().getNamespace().equals(namespace)) return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns a set of all items that are not the dominant item and are valid by checking if they are registered
-     *
-     * @param itemIds  set of item ids
-     * @param dominant dominant item id
-     * @return set of all items that are not the dominant item and are valid
-     */
-    private static Set<ResourceLocation> getNonDominantItemsAndValidate(Set<ResourceLocation> itemIds, ResourceLocation dominant) {
+    private static Set<ResourceLocation> getValidatedItems(Set<ResourceLocation> itemIds, ResourceLocation dominant) {
         Set<ResourceLocation> result = new HashSet<>(itemIds.size());
         for (ResourceLocation id : itemIds) {
             if (!id.equals(dominant) && BuiltInRegistries.ITEM.containsKey(id)) {

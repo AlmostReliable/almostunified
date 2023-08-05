@@ -318,14 +318,14 @@ public class UnifyConfig extends Config {
         }
 
         /**
-         * Deserialize a list of patterns from a json object with a base key. Example json:
+         * Deserializes a list of patterns from a json object with a base key. Example json:
          * <pre>
-         *     {
-         *          "baseKey": {
-         *              "location1": [ pattern1, pattern2 ],
-         *              "location2": [ pattern3, pattern4 ]
-         *          }
-         *     }
+         * {
+         *   "baseKey": {
+         *     "location1": [ pattern1, pattern2 ],
+         *     "location2": [ pattern3, pattern4 ]
+         *   }
+         * }
          * </pre>
          *
          * @param rawConfigJson The raw config json
