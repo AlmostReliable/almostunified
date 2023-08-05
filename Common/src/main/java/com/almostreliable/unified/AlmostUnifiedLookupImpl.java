@@ -9,8 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,7 +65,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
                 .getRuntime()
                 .getFilteredTagMap()
                 .map(tagMap -> tagMap
-                        .getItemsByTag(asUnifyTag)
+                        .getEntriesByTag(asUnifyTag)
                         .stream()
                         .flatMap(rl -> BuiltInRegistries.ITEM.getOptional(rl).stream())
                         .collect(Collectors.toSet()))

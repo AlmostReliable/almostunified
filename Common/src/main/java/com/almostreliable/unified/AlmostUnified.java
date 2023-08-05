@@ -1,19 +1,16 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.ServerConfigs;
 import com.almostreliable.unified.config.StartupConfig;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.ReplacementMap;
-import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.TagOwnerships;
+import com.almostreliable.unified.utils.TagReloadHandler;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +25,6 @@ public final class AlmostUnified {
     public static final Logger LOG = LogManager.getLogger(BuildConfig.MOD_NAME);
 
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
-    @Nullable private static TagManager TAG_MANAGER;
     @Nullable private static StartupConfig STARTUP_CONFIG;
 
     public static boolean isRuntimeLoaded() {
@@ -49,40 +45,52 @@ public final class AlmostUnified {
         return STARTUP_CONFIG;
     }
 
-    public static void onTagManagerReload(TagManager tagManager) {
-        TAG_MANAGER = tagManager;
-    }
-
     public static void onTagLoaderReload(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
-        Preconditions.checkNotNull(TAG_MANAGER, "TagManager was not loaded correctly");
+        RecipeHandlerFactory recipeHandlerFactory = new RecipeHandlerFactory();
+        AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(recipeHandlerFactory);
 
         ServerConfigs serverConfigs = ServerConfigs.load();
         UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
 
-        var unifyTags = unifyConfig.bakeTags();
-
-        TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
+        TagOwnerships tagOwnerships = new TagOwnerships(
+                unifyConfig.bakeAndValidateTags(tags),
+                unifyConfig.getTagOwnerships()
+        );
         tagOwnerships.applyOwnerships(tags);
 
-        TagMap globalTagMap = TagMap.create(tags);
-        TagMap filteredTagMap = globalTagMap.filtered(unifyTags::contains, unifyConfig::includeItem);
+        ReplacementData replacementData = loadReplacementData(tags, unifyConfig, tagOwnerships);
 
-        StoneStrataHandler stoneStrataHandler = StoneStrataHandler.create(
-                unifyConfig.getStoneStrata(),
-                AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(unifyConfig.getStoneStrata()),
-                globalTagMap
+        RUNTIME = new AlmostUnifiedRuntimeImpl(
+                serverConfigs,
+                replacementData.filteredTagMap(),
+                replacementData.replacementMap(),
+                recipeHandlerFactory
         );
-
-        ReplacementMap repMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
-
-        RecipeHandlerFactory recipeHandlerFactory = new RecipeHandlerFactory();
-        AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(recipeHandlerFactory);
-
-        RUNTIME = new AlmostUnifiedRuntimeImpl(serverConfigs, filteredTagMap, repMap, recipeHandlerFactory);
     }
 
     public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes) {
         Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
         RUNTIME.run(recipes, getStartupConfig().isServerOnly());
+    }
+
+    /**
+     * Loads the required data for the replacement logic.
+     * <p>
+     * This method applies tag inheritance and rebuilds the replacement data if the
+     * inheritance mutates the tags.
+     *
+     * @param tags          The vanilla tag map provided by the TagManager
+     * @param unifyConfig   The mod config to use for unifying
+     * @param tagOwnerships The tag ownerships to apply
+     * @return The loaded data
+     */
+    private static ReplacementData loadReplacementData(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyConfig unifyConfig, TagOwnerships tagOwnerships) {
+        ReplacementData replacementData = ReplacementData.load(tags, unifyConfig, tagOwnerships);
+        var needsRebuild = TagReloadHandler.applyInheritance(unifyConfig, replacementData);
+        if (needsRebuild) {
+            return ReplacementData.load(tags, unifyConfig, tagOwnerships);
+        }
+
+        return replacementData;
     }
 }

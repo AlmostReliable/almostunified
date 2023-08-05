@@ -11,6 +11,7 @@ import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import java.util.Map;
 import java.util.Optional;
@@ -20,20 +21,20 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final UnifyConfig unifyConfig;
     private final DuplicationConfig duplicationConfig;
     private final DebugConfig debugConfig;
-    private final TagMap filteredTagMap;
+    private final TagMap<Item> tagMap;
     private final ReplacementMap replacementMap;
     private final RecipeHandlerFactory recipeHandlerFactory;
 
     AlmostUnifiedRuntimeImpl(
             ServerConfigs configs,
-            TagMap tagMap,
+            TagMap<Item> tagMap,
             ReplacementMap repMap,
             RecipeHandlerFactory recipeHandlerFactory
     ) {
         this.unifyConfig = configs.getUnifyConfig();
         this.duplicationConfig = configs.getDupConfig();
         this.debugConfig = configs.getDebugConfig();
-        this.filteredTagMap = tagMap;
+        this.tagMap = tagMap;
         this.replacementMap = repMap;
         this.recipeHandlerFactory = recipeHandlerFactory;
     }
@@ -41,7 +42,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     @Override
     public void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
         debugConfig.logRecipes(recipes, "recipes_before_unification.txt");
-        debugConfig.logUnifyTagDump(filteredTagMap);
+        debugConfig.logUnifyTagDump(tagMap);
 
         long startTime = System.currentTimeMillis();
         RecipeTransformer.Result result = new RecipeTransformer(
@@ -57,8 +58,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     }
 
     @Override
-    public Optional<TagMap> getFilteredTagMap() {
-        return Optional.of(filteredTagMap);
+    public Optional<TagMap<Item>> getFilteredTagMap() {
+        return Optional.of(tagMap);
     }
 
     @Override
