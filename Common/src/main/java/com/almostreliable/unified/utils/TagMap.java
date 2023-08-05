@@ -1,6 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -62,13 +63,7 @@ public class TagMap<T> {
 
         for (var entry : tags.entrySet()) {
             UnifyTag<Item> unifyTag = UnifyTag.item(entry.getKey());
-            for (Holder<?> holder : entry.getValue()) {
-                holder
-                        .unwrapKey()
-                        .map(ResourceKey::location)
-                        .filter(BuiltInRegistries.ITEM::containsKey)
-                        .ifPresent(itemId -> tagMap.put(unifyTag, itemId));
-            }
+            fillEntries(tagMap, entry.getValue(), unifyTag, BuiltInRegistries.ITEM);
         }
 
         return tagMap;
@@ -87,16 +82,28 @@ public class TagMap<T> {
 
         for (var entry : tags.entrySet()) {
             UnifyTag<Block> unifyTag = UnifyTag.block(entry.getKey());
-            for (Holder<?> holder : entry.getValue()) {
-                holder
-                        .unwrapKey()
-                        .map(ResourceKey::location)
-                        .filter(BuiltInRegistries.BLOCK::containsKey)
-                        .ifPresent(itemId -> tagMap.put(unifyTag, itemId));
-            }
+            fillEntries(tagMap, entry.getValue(), unifyTag, BuiltInRegistries.BLOCK);
         }
 
         return tagMap;
+    }
+
+    /**
+     * Unwrap all holders and put them into the tag map.
+     *
+     * @param tagMap   The tag map to fill.
+     * @param holders  The holders to unwrap.
+     * @param unifyTag The unify tag to use.
+     * @param registry The registry to use.
+     */
+    private static <T> void fillEntries(TagMap<T> tagMap, Collection<Holder<T>> holders, UnifyTag<T> unifyTag, Registry<T> registry) {
+        for (var holder : holders) {
+            holder
+                    .unwrapKey()
+                    .map(ResourceKey::location)
+                    .filter(registry::containsKey)
+                    .ifPresent(id -> tagMap.put(unifyTag, id));
+        }
     }
 
     /**
