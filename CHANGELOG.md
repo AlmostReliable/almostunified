@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## Unreleased
+## [0.6.0] - 2023-08-10
 
 ### Warning
 This update features new config options inside the `unify.json`.<br>
@@ -44,4 +44,5 @@ Initial 1.20.1 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.6.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.6.0-beta
 [0.5.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.5.0-beta
