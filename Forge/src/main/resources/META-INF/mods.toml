@@ -38,10 +38,3 @@ mandatory = false
 versionRange = "[${reiVersion},)"
 ordering = "BEFORE"
 side = "BOTH"
-
-[[dependencies."${modId}"]]
-modId = "kubejs"
-mandatory = false
-versionRange = "[${kubejsVersion},)"
-ordering = "BEFORE"
-side = "BOTH"

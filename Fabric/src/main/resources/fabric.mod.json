@@ -35,7 +35,6 @@
   },
   "suggests": {
     "jei": ">=${jeiVersion}",
-    "roughlyenoughitems": ">=${reiVersion}",
-    "kubejs": ">=${kubejsVersion}"
+    "roughlyenoughitems": ">=${reiVersion}"
   }
 }
