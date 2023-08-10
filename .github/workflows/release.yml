@@ -97,7 +97,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "# Build Information" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- JAR files: $(find output -maxdepth 1 -type f -name '*.jar' | wc -c)" >> $GITHUB_STEP_SUMMARY
+          echo "- JAR files: $(find output -maxdepth 1 -type f -name '*.jar' | wc -l)" >> $GITHUB_STEP_SUMMARY
           echo "- Folder size: $(du -sh output | cut -f1)" >> $GITHUB_STEP_SUMMARY
           echo "- Archive size: $(du -sh build.tar.gz | cut -f1)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -196,7 +196,9 @@ jobs:
           version-type: ${{ needs.build.outputs.RELEASE_TYPE }}
           changelog-file: output/changelog.md
 
-          loaders: forge
+          loaders: |
+            forge
+            neoforge
           game-versions: ${{ needs.build.outputs.MINECRAFT_VERSION }}
           java: ${{ env.JAVA_VERSION }}
 
@@ -229,7 +231,9 @@ jobs:
           version-type: ${{ needs.build.outputs.RELEASE_TYPE }}
           changelog-file: output/changelog.md
 
-          loaders: forge
+          loaders: |
+            forge
+            neoforge
           game-versions: ${{ needs.build.outputs.MINECRAFT_VERSION }}
           java: ${{ env.JAVA_VERSION }}
 

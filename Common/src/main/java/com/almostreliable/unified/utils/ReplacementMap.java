@@ -18,12 +18,12 @@ import java.util.function.Predicate;
 public class ReplacementMap {
 
     private final UnifyConfig unifyConfig;
-    private final TagMap tagMap;
+    private final TagMap<Item> tagMap;
     private final StoneStrataHandler stoneStrataHandler;
     private final TagOwnerships tagOwnerships;
     private final Set<ResourceLocation> warnings;
 
-    public ReplacementMap(UnifyConfig unifyConfig, TagMap tagMap, StoneStrataHandler stoneStrataHandler, TagOwnerships tagOwnerships) {
+    public ReplacementMap(UnifyConfig unifyConfig, TagMap<Item> tagMap, StoneStrataHandler stoneStrataHandler, TagOwnerships tagOwnerships) {
         this.tagMap = tagMap;
         this.unifyConfig = unifyConfig;
         this.stoneStrataHandler = stoneStrataHandler;
@@ -33,7 +33,7 @@ public class ReplacementMap {
 
     @Nullable
     public UnifyTag<Item> getPreferredTagForItem(ResourceLocation item) {
-        Collection<UnifyTag<Item>> tags = tagMap.getTagsByItem(item);
+        Collection<UnifyTag<Item>> tags = tagMap.getTagsByEntry(item);
 
         if (tags.isEmpty()) {
             return null;
@@ -72,7 +72,7 @@ public class ReplacementMap {
         if (tagToLookup == null) tagToLookup = tag;
 
         List<ResourceLocation> items = tagMap
-                .getItemsByTag(tagToLookup)
+                .getEntriesByTag(tagToLookup)
                 .stream()
                 .filter(itemFilter)
                 // Helps us to get the clean stone variant first in case of a stone strata tag
@@ -143,5 +143,9 @@ public class ReplacementMap {
             }
         }
         return null;
+    }
+
+    public TagOwnerships getTagOwnerships() {
+        return tagOwnerships;
     }
 }

@@ -9,18 +9,18 @@ import net.minecraft.world.item.Item;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class StoneStrataHandler {
+public final class StoneStrataHandler {
 
     private final List<String> stoneStrata;
     private final Pattern tagMatcher;
-    private final TagMap stoneStrataTagMap;
+    private final TagMap<Item> stoneStrataTagMap;
 
     // don't clear the caches, so they are available for the runtime and KubeJS binding
     // the runtime holding this handler is automatically yeeted on reload
     private final Map<UnifyTag<?>, Boolean> stoneStrataTagCache;
     private final Map<ResourceLocation, String> stoneStrataCache;
 
-    private StoneStrataHandler(List<String> stoneStrata, Pattern tagMatcher, TagMap stoneStrataTagMap) {
+    private StoneStrataHandler(List<String> stoneStrata, Pattern tagMatcher, TagMap<Item> stoneStrataTagMap) {
         this.stoneStrata = createSortedStoneStrata(stoneStrata);
         this.tagMatcher = tagMatcher;
         this.stoneStrataTagMap = stoneStrataTagMap;
@@ -41,8 +41,8 @@ public class StoneStrataHandler {
         return stoneStrata.stream().sorted(Comparator.comparingInt(String::length).reversed()).toList();
     }
 
-    public static StoneStrataHandler create(List<String> stoneStrataIds, Set<UnifyTag<Item>> stoneStrataTags, TagMap tagMap) {
-        TagMap stoneStrataTagMap = tagMap.filtered(stoneStrataTags::contains, item -> true);
+    public static StoneStrataHandler create(List<String> stoneStrataIds, Set<UnifyTag<Item>> stoneStrataTags, TagMap<Item> tagMap) {
+        var stoneStrataTagMap = tagMap.filtered(stoneStrataTags::contains, item -> true);
         Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
             case FORGE -> "forge:ores/.+";
             case FABRIC -> "(c:ores/.+|c:.+_ores)";
@@ -71,7 +71,7 @@ public class StoneStrataHandler {
      */
     private String computeStoneStrata(ResourceLocation item) {
         String strata = stoneStrataTagMap
-                .getTagsByItem(item)
+                .getTagsByEntry(item)
                 .stream()
                 .findFirst()
                 .map(UnifyTag::location)

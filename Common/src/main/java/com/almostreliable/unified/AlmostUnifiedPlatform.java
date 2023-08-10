@@ -6,11 +6,12 @@ import net.minecraft.world.item.Item;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 public interface AlmostUnifiedPlatform {
 
-    AlmostUnifiedPlatform INSTANCE = PlatformLoader.load(AlmostUnifiedPlatform.class);
+    AlmostUnifiedPlatform INSTANCE = load(AlmostUnifiedPlatform.class);
 
     /**
      * Gets the current platform
@@ -27,13 +28,6 @@ public interface AlmostUnifiedPlatform {
      */
     boolean isModLoaded(String modId);
 
-    /**
-     * Check if the game is currently in a development environment.
-     *
-     * @return True if in a development environment, false otherwise.
-     */
-    boolean isDevelopmentEnvironment();
-
     boolean isClient();
 
     Path getConfigPath();
@@ -43,4 +37,17 @@ public interface AlmostUnifiedPlatform {
     void bindRecipeHandlers(RecipeHandlerFactory factory);
 
     Set<UnifyTag<Item>> getStoneStrataTags(List<String> stoneStrataIds);
+
+    static <T> T load(Class<T> clazz) {
+        T loadedService = ServiceLoader.load(clazz)
+                .findFirst()
+                .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
+        AlmostUnified.LOG.debug("Loaded {} for service {}", loadedService, clazz);
+        return loadedService;
+    }
+
+    enum Platform {
+        FORGE,
+        FABRIC;
+    }
 }

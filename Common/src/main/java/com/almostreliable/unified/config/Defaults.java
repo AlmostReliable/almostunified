@@ -1,6 +1,6 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.Platform;
+import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.utils.JsonCompare;
 import net.minecraft.resources.ResourceLocation;
 
@@ -70,7 +70,7 @@ public final class Defaults {
 
     private Defaults() {}
 
-    public static List<String> getModPriorities(Platform platform) {
+    public static List<String> getModPriorities(AlmostUnifiedPlatform.Platform platform) {
         return switch (platform) {
             case FORGE -> List.of(
                     "minecraft",
@@ -93,7 +93,7 @@ public final class Defaults {
         };
     }
 
-    public static List<String> getTags(Platform platform) {
+    public static List<String> getTags(AlmostUnifiedPlatform.Platform platform) {
         return switch (platform) {
             case FORGE -> List.of(
                     "forge:nuggets/{material}",
@@ -129,17 +129,17 @@ public final class Defaults {
         };
     }
 
-    public static List<String> getIgnoredRecipeTypes(Platform platform) {
+    public static List<String> getIgnoredRecipeTypes(AlmostUnifiedPlatform.Platform platform) {
         return switch (platform) {
             default -> List.of("cucumber:shaped_tag");
         };
     }
 
-    public static JsonCompare.CompareSettings getDefaultDuplicateRules(Platform platform) {
+    public static JsonCompare.CompareSettings getDefaultDuplicateRules(AlmostUnifiedPlatform.Platform platform) {
         JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
         result.ignoreField(switch (platform) {
             case FORGE -> "conditions";
-            case FABRIC -> "fabric:conditions";
+            case FABRIC -> "fabric:load_conditions";
         });
         result.ignoreField("group");
         result.addRule("cookingtime", new JsonCompare.HigherRule());
@@ -148,11 +148,11 @@ public final class Defaults {
         return result;
     }
 
-    public static LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> getDefaultDuplicateOverrides(Platform platform) {
+    public static LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> getDefaultDuplicateOverrides(AlmostUnifiedPlatform.Platform platform) {
         JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
         result.ignoreField(switch (platform) {
             case FORGE -> "conditions";
-            case FABRIC -> "fabric:conditions";
+            case FABRIC -> "fabric:load_conditions";
         });
         result.ignoreField("group");
         result.ignoreField("pattern");

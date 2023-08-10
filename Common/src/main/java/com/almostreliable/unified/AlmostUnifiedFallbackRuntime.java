@@ -22,8 +22,7 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     @Nullable private static AlmostUnifiedFallbackRuntime INSTANCE;
 
     @Nullable private UnifyConfig unifyConfig;
-    @Nullable private TagMap filteredTagMap;
-    @Nullable private TagOwnerships tagOwnerships;
+    @Nullable private TagMap<Item> filteredTagMap;
     @Nullable private ReplacementMap replacementMap;
 
     public static AlmostUnifiedFallbackRuntime getInstance() {
@@ -38,23 +37,22 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     public void reload() {
         unifyConfig = null;
         filteredTagMap = null;
-        tagOwnerships = null;
         replacementMap = null;
         build();
     }
 
-    public void build() {
+    private void build() {
         unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
         Set<UnifyTag<Item>> unifyTags = unifyConfig.bakeTags();
         filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
         StoneStrataHandler stoneStrataHandler = createStoneStrataHandler(unifyConfig);
-        tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
+        TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
         replacementMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
     }
 
     private static StoneStrataHandler createStoneStrataHandler(UnifyConfig config) {
         Set<UnifyTag<Item>> stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(config.getStoneStrata());
-        TagMap stoneStrataTagMap = TagMap.create(stoneStrataTags);
+        TagMap<Item> stoneStrataTagMap = TagMap.create(stoneStrataTags);
         return StoneStrataHandler.create(config.getStoneStrata(), stoneStrataTags, stoneStrataTagMap);
     }
 
@@ -64,7 +62,7 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     }
 
     @Override
-    public Optional<TagMap> getFilteredTagMap() {
+    public Optional<TagMap<Item>> getFilteredTagMap() {
         return Optional.ofNullable(filteredTagMap);
     }
 
@@ -76,10 +74,5 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
     @Override
     public Optional<UnifyConfig> getUnifyConfig() {
         return Optional.ofNullable(unifyConfig);
-    }
-
-    @Override
-    public Optional<TagOwnerships> getTagOwnerships() {
-        return Optional.ofNullable(tagOwnerships);
     }
 }

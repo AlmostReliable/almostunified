@@ -1,6 +1,5 @@
 package com.almostreliable.unified.recipe;
 
-import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.utils.JsonUtils;
@@ -83,11 +82,10 @@ public class RecipeContextImpl implements RecipeContext {
 
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
                 UnifyTag<Item> tag = Utils.toItemTag(primitive.getAsString());
-                AlmostUnified.getRuntime()
-                        .getTagOwnerships()
-                        .map(o -> o.getOwnerByTag(tag))
-                        .ifPresent(ownerTag -> object.addProperty(RecipeConstants.TAG,
-                                ownerTag.location().toString()));
+                var ownerTag = replacementMap.getTagOwnerships().getOwnerByTag(tag);
+                if (ownerTag != null) {
+                    object.addProperty(RecipeConstants.TAG, ownerTag.location().toString());
+                }
             }
 
             if (object.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {

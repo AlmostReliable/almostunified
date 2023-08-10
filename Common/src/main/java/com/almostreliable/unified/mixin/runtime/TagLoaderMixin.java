@@ -1,11 +1,13 @@
 package com.almostreliable.unified.mixin.runtime;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.utils.TagReloadHandler;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,10 +28,20 @@ public class TagLoaderMixin {
     private <T> void onCreateLoadResult(Map<ResourceLocation, List<TagLoader.EntryWithSource>> map, CallbackInfoReturnable<Map<ResourceLocation, Collection<T>>> cir) {
         if (directory.equals("tags/items")) {
             try {
-                Map<ResourceLocation, Collection<Holder<Item>>> rawTags = Utils.cast(cir.getReturnValue());
-                AlmostUnified.getRuntime().getTagOwnerships().ifPresent(to -> to.applyOwnershipToRawTags(rawTags));
+                Map<ResourceLocation, Collection<Holder<Item>>> tags = Utils.cast(cir.getReturnValue());
+                TagReloadHandler.initItemTags(tags);
+                TagReloadHandler.run();
             } catch (Exception e) {
-                AlmostUnified.LOG.error("Error applying tag ownerships to raw tags", e);
+                AlmostUnified.LOG.error(e.getMessage(), e);
+            }
+        }
+        if (directory.equals("tags/blocks")) {
+            try {
+                Map<ResourceLocation, Collection<Holder<Block>>> tags = Utils.cast(cir.getReturnValue());
+                TagReloadHandler.initBlockTags(tags);
+                TagReloadHandler.run();
+            } catch (Exception e) {
+                AlmostUnified.LOG.error(e.getMessage(), e);
             }
         }
     }

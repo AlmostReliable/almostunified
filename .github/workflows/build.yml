@@ -7,9 +7,21 @@ on:
       - '1.19.4'
     tags-ignore:
       - '**'
+    paths:
+      - 'gradle/**'
+      - '**.java'
+      - '**.kts'
+      - '**.properties'
+      - '**/build.yml'
   pull_request:
     branches:
       - '1.19.4'
+    paths:
+      - 'gradle/**'
+      - '**.java'
+      - '**.kts'
+      - '**.properties'
+      - '**/build.yml'
 
 env:
   JAVA_DIST: 'zulu'
