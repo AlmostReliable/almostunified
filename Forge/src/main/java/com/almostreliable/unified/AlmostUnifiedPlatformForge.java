@@ -1,10 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.compat.AdAstraRecipeUnifier;
-import com.almostreliable.unified.compat.ArsNouveauRecipeUnifier;
-import com.almostreliable.unified.compat.ImmersiveEngineeringRecipeUnifier;
-import com.almostreliable.unified.compat.MekanismRecipeUnifier;
+import com.almostreliable.unified.compat.*;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.auto.service.AutoService;
@@ -39,11 +36,6 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
     }
 
     @Override
-    public boolean isDevelopmentEnvironment() {
-        return !FMLLoader.isProduction();
-    }
-
-    @Override
     public boolean isClient() {
         return FMLLoader.getDist() == Dist.CLIENT;
     }
@@ -67,6 +59,7 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
                 ModConstants.ARS_NOUVEAU,
                 ModConstants.ARS_SCALAES
         ).forEach(modId -> factory.registerForMod(modId, new ArsNouveauRecipeUnifier()));
+        factory.registerForMod(ModConstants.CYCLIC, new CyclicRecipeUnifier());
         factory.registerForMod(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         factory.registerForMod(ModConstants.MEKANISM, new MekanismRecipeUnifier());
     }

@@ -3,7 +3,8 @@ package com.almostreliable.unified.compat;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedRuntime;
 import com.almostreliable.unified.utils.ReplacementMap;
-import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.TagOwnerships;
+import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -17,22 +18,23 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class HideHelper {
+public final class HideHelper {
+
+    private HideHelper() {}
 
     public static Collection<ItemStack> createHidingList(AlmostUnifiedRuntime runtime) {
         ReplacementMap repMap = runtime.getReplacementMap().orElse(null);
-        TagMap tagMap = runtime.getFilteredTagMap().orElse(null);
+        var tagMap = runtime.getFilteredTagMap().orElse(null);
 
         if (repMap == null || tagMap == null) return new ArrayList<>();
 
         Set<ResourceLocation> hidingList = new HashSet<>();
 
         for (var unifyTag : tagMap.getTags()) {
-            var itemsByTag = tagMap.getItemsByTag(unifyTag);
+            var itemsByTag = tagMap.getEntriesByTag(unifyTag);
 
-            // avoid hiding single entries and tags that only contain the same namespace for all items
-            long namespaces = itemsByTag.stream().map(ResourceLocation::getNamespace).distinct().count();
-            if (namespaces <= 1) continue;
+            // avoid handling single entries and tags that only contain the same namespace for all items
+            if (Utils.allSameNamespace(itemsByTag)) continue;
 
             Set<ResourceLocation> replacements = new HashSet<>();
             for (ResourceLocation item : itemsByTag) {
@@ -90,8 +92,9 @@ public class HideHelper {
      */
     private static Set<ResourceLocation> getRefItems(ReplacementMap repMap) {
         Set<ResourceLocation> hidingList = new HashSet<>();
+        TagOwnerships ownerships = repMap.getTagOwnerships();
 
-        AlmostUnified.getRuntime().getTagOwnerships().ifPresent(ownerships -> ownerships.getRefs().forEach(ref -> {
+        ownerships.getRefs().forEach(ref -> {
             var owner = ownerships.getOwnerByTag(ref);
             assert owner != null;
 
@@ -115,7 +118,7 @@ public class HideHelper {
             );
 
             hidingList.addAll(refItems);
-        }));
+        });
 
         return hidingList;
     }

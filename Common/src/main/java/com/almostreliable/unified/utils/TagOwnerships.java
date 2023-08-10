@@ -78,7 +78,7 @@ public class TagOwnerships {
      *
      * @param rawTags The raw tags to apply ownerships to.
      */
-    public void applyOwnershipToRawTags(Map<ResourceLocation, Collection<Holder<Item>>> rawTags) {
+    public void applyOwnerships(Map<ResourceLocation, Collection<Holder<Item>>> rawTags) {
         Multimap<ResourceLocation, ResourceLocation> changedTags = HashMultimap.create();
 
         ownerToRefs.asMap().forEach((owner, refs) -> {
@@ -105,7 +105,7 @@ public class TagOwnerships {
 
                 for (Holder<Item> holder : refHolders) {
                     holders.add(holder);
-                    holder.unwrapKey().ifPresent(key -> changedTags.put(ref.location(), key.location()));
+                    holder.unwrapKey().ifPresent(key -> changedTags.put(owner.location(), key.location()));
                     changed = true;
                 }
             }
