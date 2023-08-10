@@ -2,12 +2,11 @@ val minecraftVersion: String by project
 val fabricLoaderVersion: String by project
 val fabricApiVersion: String by project
 val fabricRecipeViewer: String by project
-val reiVersion: String by project
 val jeiVersion: String by project
-val kubejsVersion: String by project
+val reiVersion: String by project
 
 plugins {
-    id("com.github.johnrengelman.shadow") version ("8.1.1")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 architectury {
@@ -16,7 +15,7 @@ architectury {
 }
 
 loom {
-    if (project.findProperty("enableAccessWidener") == "true") { // Optional property for `gradle.properties` to enable access wideners.
+    if (project.findProperty("enableAccessWidener") == "true") { // optional property for `gradle.properties`
         accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
         println("Access widener enabled for project ${project.name}. Access widener path: ${loom.accessWidenerPath.get()}")
     }
@@ -24,6 +23,7 @@ loom {
 
 val common by configurations
 val shadowCommon by configurations
+
 dependencies {
     // loader
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
@@ -34,23 +34,26 @@ dependencies {
     shadowCommon(project(":Common", "transformProductionFabric")) { isTransitive = false }
 
     // compile time mods
-    modCompileOnly("dev.latvian.mods:kubejs-fabric:$kubejsVersion") // required for common kubejs plugin
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric-api:$jeiVersion") // required for common jei plugin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
-    compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer on jei plugin
-    testCompileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // don't question this, it's required for compiling
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric-api:$jeiVersion") // required for common jei plugin and mixin
 
     // runtime dependencies
-    modLocalRuntime("dev.latvian.mods:kubejs-fabric:$kubejsVersion") {
-        exclude("net.fabricmc", "fabric-loader")
-    }
     modLocalRuntime(
         when (fabricRecipeViewer) {
-            "rei" -> "me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion"
             "jei" -> "mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion"
+            "rei" -> "me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion"
             else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
         }
-    ) {
-        exclude("net.fabricmc", "fabric-loader")
+    )
+}
+
+/**
+ * force the fabric loader and api versions that are defined in the project
+ * some mods ship another version which crashes the runtime
+ */
+configurations.all {
+    resolutionStrategy {
+        force("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+        force("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion+$minecraftVersion")
     }
 }

@@ -5,62 +5,48 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
 
 val license: String by project
-val fabricLoaderVersion: String by project
-val fabricApiVersion: String by project
-val forgeVersion: String by project
 val minecraftVersion: String by project
-val modPackage: String by project
 val modVersion: String by project
 val modId: String by project
 val modName: String by project
 val modDescription: String by project
 val modAuthor: String by project
-val githubRepo: String by project
-val githubUser: String by project
-val sharedRunDir: String by project
 val autoServiceVersion: String by project
 val parchmentVersion: String by project
+val fabricApiVersion: String by project
+val forgeVersion: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
-val kubejsVersion: String by project
+val githubRepo: String by project
+val githubUser: String by project
 
 plugins {
+    id("architectury-plugin") version "3.4.+"
+    id("dev.architectury.loom") version "1.3.+" apply false
+    id("io.github.juuxel.loom-vineflower") version "1.11.0" apply false
+    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     java
     `maven-publish`
-    id("architectury-plugin") version ("3.4.+")
-    id("io.github.juuxel.loom-quiltflower") version "1.10.0" apply false
-    id("dev.architectury.loom") version ("1.2.+") apply false
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
 }
 
 architectury {
     minecraft = minecraftVersion
 }
 
-val extraModsPrefix = "extra-mods"
-
+/**
+ * configurations for all projects including the root project
+ */
 allprojects {
     apply(plugin = "java")
-    apply(plugin = "architectury-plugin")
-    apply(plugin = "maven-publish")
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven("https://maven.parchmentmc.org") // Parchment
-        maven("https://maven.shedaniel.me") // REI
-        maven("https://maven.blamejared.com/") // JEI
-        maven("https://maven.saps.dev/minecraft") // KubeJS
-        flatDir {
-            name = extraModsPrefix
-            dir(file("$extraModsPrefix-$minecraftVersion"))
-        }
-    }
 
     tasks {
         withType<JavaCompile> {
             options.encoding = "UTF-8"
             options.release.set(17)
+        }
+
+        withType<GenerateModuleMetadata> {
+            enabled = false
         }
     }
 
@@ -70,24 +56,35 @@ allprojects {
     }
 }
 
+/**
+ * configurations for all projects except the root project
+ */
 subprojects {
-    apply(plugin = "java")
+    apply(plugin = "architectury-plugin")
     apply(plugin = "dev.architectury.loom")
+    apply(plugin = "io.github.juuxel.loom-vineflower")
     apply(plugin = "maven-publish")
-    apply(plugin = "io.github.juuxel.loom-quiltflower")
 
-    base.archivesName.set("$modId-${project.name.lowercase()}")
-    version = "$minecraftVersion-$modVersion"
+    base {
+        archivesName.set("$modId-${project.name.lowercase()}")
+        version = "$minecraftVersion-$modVersion"
+    }
+
+    repositories {
+        maven("https://maven.parchmentmc.org") // Parchment
+        maven("https://maven.shedaniel.me") // REI
+        maven("https://maven.blamejared.com/") // JEI
+        mavenLocal()
+    }
 
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
     loom.silentMojangMappingsLicense()
 
-    /**
-     * General dependencies used for all subprojects, e.g. mappings or the Minecraft version.
-     */
     dependencies {
         /**
-         * Kotlin accessor methods are not generated in this gradle, they can be accessed through quoted names.
+         * Minecraft
+         * Kotlin accessor methods are not generated in this gradle
+         * they can be accessed through quoted names instead
          */
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
         "mappings"(loom.layered {
@@ -96,61 +93,16 @@ subprojects {
         })
 
         /**
-         * Helps to load mods in development through an extra directory. Sadly this does not support transitive dependencies. :-(
-         */
-        fileTree("$extraModsPrefix-$minecraftVersion") { include("**/*.jar") }
-            .forEach { f ->
-                val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
-                if (sepIndex == -1) {
-                    throw IllegalArgumentException("Invalid mod name: '${f.nameWithoutExtension}'. Expected format: 'modName-version.jar'")
-                }
-                val mod = f.nameWithoutExtension.substring(0, sepIndex)
-                val version = f.nameWithoutExtension.substring(sepIndex + 1)
-                println("Extra mod ${f.nameWithoutExtension} detected.")
-                "modLocalRuntime"("extra-mods:$mod:$version")
-            }
-
-        /**
-         * Non-Minecraft dependencies
+         * non-Minecraft dependencies
          */
         compileOnly("com.google.auto.service:auto-service:$autoServiceVersion")
         annotationProcessor("com.google.auto.service:auto-service:$autoServiceVersion")
     }
 
-    /**
-     * Maven publishing
-     */
-    publishing {
-        publications {
-            val mpm = project.properties["maven-publish-method"] as String
-            println("[Publish Task] Publishing method for project '${project.name}: $mpm")
-            register(mpm, MavenPublication::class) {
-                artifactId = base.archivesName.get()
-                from(components["java"])
-            }
-        }
-
-        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-        repositories {
-            maven("file://${System.getenv("local_maven")}")
-        }
-    }
-
-    /**
-     * Disabling the runtime transformer from Architectury here.
-     * When the runtime transformer should be enabled again, remove this block and add the following to the respective subproject:
-     *
-     * configurations {
-     *      "developmentFabric" { extendsFrom(configurations["common"]) } // or "developmentForge" for Forge
-     * }
-     */
-    architectury {
-        compileOnly()
-    }
-
     tasks {
         /**
-         * Resource processing for defined targets. This will replace `${key}` with the specified values from the map below.
+         * resource processing for defined targets
+         * will replace `${key}` with the specified values from the map below
          */
         processResources {
             val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
@@ -165,15 +117,16 @@ subprojects {
                 "modDescription" to modDescription,
                 "fabricApiVersion" to fabricApiVersion,
                 "forgeVersion" to forgeVersion,
-                "forgeFMLVersion" to forgeVersion.substringBefore("."), // Only use major version as FML error message sucks. The error message for wrong Forge version is way better.
+                // use major version for FML only because wrong Forge version error message
+                // is way better than FML error message
+                "forgeFMLVersion" to forgeVersion.substringBefore("."),
                 "jeiVersion" to jeiVersion,
                 "reiVersion" to reiVersion,
-                "kubejsVersion" to kubejsVersion,
                 "githubUser" to githubUser,
                 "githubRepo" to githubRepo
             )
 
-            println("[Process Resources] Replacing properties in resources: ")
+            println("[Process Resources] Replacing resource properties for project '${project.name}': ")
             replaceProperties.forEach { (key, value) -> println("\t -> $key = $value") }
 
             inputs.properties(replaceProperties)
@@ -182,10 +135,46 @@ subprojects {
             }
         }
     }
+
+    /**
+     * Maven publishing
+     */
+    publishing {
+        publications {
+            val mpm = project.properties["maven-publish-method"] as String
+            println("[Publish Task] Publishing method for project '${project.name}': $mpm")
+            register(mpm, MavenPublication::class) {
+                artifactId = base.archivesName.get()
+                from(components["java"])
+            }
+        }
+
+        /**
+         * information on how to set up publishing
+         * https://docs.gradle.org/current/userguide/publishing_maven.html
+         */
+        repositories {
+            maven("file://${System.getenv("local_maven")}")
+        }
+    }
+
+    /**
+     * disabling the runtime transformer from Architectury
+     * if the runtime transformer should be enabled again, remove this block and
+     * add the following to the respective subproject:
+     *
+     * configurations {
+     *     "developmentFabric" { extendsFrom(configurations["common"]) }
+     *     "developmentForge" { extendsFrom(configurations["common"]) }
+     * }
+     */
+    architectury {
+        compileOnly()
+    }
 }
 
 /**
- * Subproject configurations and tasks only applied to subprojects that are not the common project, e.g. Fabric or Forge.
+ * configurations for all subprojects except the common project
  */
 subprojects {
     if (project.path == ":Common") {
@@ -197,15 +186,19 @@ subprojects {
     extensions.configure<LoomGradleExtensionAPI> {
         runs {
             forEach {
-                it.runDir(if (sharedRunDir.toBoolean()) "../run" else "run")
-                // Allows DCEVM hot-swapping when using the JetBrains Runtime (https://github.com/JetBrains/JetBrainsRuntime).
+                val dir = "../run/${project.name.lowercase()}_${it.environment}"
+                println("[${project.name}] Run config '${it.name}' directory set to: $dir")
+                it.runDir(dir)
+                // allows DCEVM hot-swapping when using the JBR (https://github.com/JetBrains/JetBrainsRuntime)
                 it.vmArgs("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
             }
         }
 
         /**
-         * "main" matches the default mod's name. Since `compileOnly()` is being used in Architectury,
-         * the local mods for the loaders need to be set up too. Otherwise, they won't recognize :Common.
+         * "main" matches the default mod name
+         * since `compileOnly()` is being used in Architectury, the local mods for the
+         * loaders need to be set up too
+         * otherwise, they won't recognize :Common.
          */
         with(mods.maybeCreate("main")) {
             fun Project.sourceSets() = extensions.getByName<SourceSetContainer>("sourceSets")
@@ -215,7 +208,7 @@ subprojects {
     }
 
     val common by configurations.creating
-    val shadowCommon by configurations.creating // Don't use shadow from the shadow plugin because IDEA isn't supposed to index this.
+    val shadowCommon by configurations.creating // don't use shadow from the plugin, IDEA shouldn't index this
     configurations {
         "compileClasspath" { extendsFrom(common) }
         "runtimeClasspath" { extendsFrom(common) }
@@ -236,6 +229,7 @@ subprojects {
             inputFile.set(named<ShadowJar>("shadowJar").get().archiveFile)
             dependsOn("shadowJar")
             archiveClassifier.set(null as String?)
+            injectAccessWidener.set(true)
         }
 
         named<Jar>("jar") {

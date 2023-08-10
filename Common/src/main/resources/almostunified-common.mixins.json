@@ -7,7 +7,6 @@
   "mixins": [
     "runtime.RecipeManagerMixin",
     "runtime.TagLoaderMixin",
-    "runtime.TagManagerMixin",
     "unifier.ArmorItemMixin",
     "unifier.TieredItemMixin"
   ],

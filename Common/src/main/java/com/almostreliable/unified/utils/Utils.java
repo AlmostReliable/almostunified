@@ -10,6 +10,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,5 +56,24 @@ public final class Utils {
             formattedTooltip.addAll(ComponentRenderUtils.wrapComponents(line, 150, mc.font));
         }
         screen.renderTooltip(stack, formattedTooltip, mX, mY);
+    }
+
+    /**
+     * Checks if all ids have the same namespace
+     *
+     * @param ids set of ids
+     * @return true if all ids have the same namespace
+     */
+    public static boolean allSameNamespace(Set<ResourceLocation> ids) {
+        if (ids.size() <= 1) return true;
+
+        var it = ids.iterator();
+        var namespace = it.next().getNamespace();
+
+        while (it.hasNext()) {
+            if (!it.next().getNamespace().equals(namespace)) return false;
+        }
+
+        return true;
     }
 }

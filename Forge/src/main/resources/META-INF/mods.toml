@@ -40,13 +40,6 @@ ordering = "BEFORE"
 side = "BOTH"
 
 [[dependencies."${modId}"]]
-modId = "rei_plugin_compatibilities"
-mandatory = false
-versionRange = "[9.0.43,)"
-ordering = "BEFORE"
-side = "BOTH"
-
-[[dependencies."${modId}"]]
 modId = "kubejs"
 mandatory = false
 versionRange = "[${kubejsVersion},)"
