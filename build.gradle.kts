@@ -187,7 +187,7 @@ subprojects {
         runs {
             forEach {
                 val dir = "../run/${project.name.lowercase()}_${it.environment}"
-                println("[${project.name}] Run config '${it.name}' directory set to: $dir")
+                println("[Run Config] ${project.name} '${it.name}' directory: $dir")
                 it.runDir(dir)
                 // allows DCEVM hot-swapping when using the JBR (https://github.com/JetBrains/JetBrainsRuntime)
                 it.vmArgs("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
