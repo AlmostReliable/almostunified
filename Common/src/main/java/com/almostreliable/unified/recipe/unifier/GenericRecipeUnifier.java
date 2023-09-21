@@ -8,22 +8,27 @@ import java.util.Set;
 
 public class GenericRecipeUnifier implements RecipeUnifier {
     public static final GenericRecipeUnifier INSTANCE = new GenericRecipeUnifier();
-    private final Set<String> inputKeys = Set.of(RecipeConstants.INPUT,
+    private static final Set<String> INPUT_KEYS = Set.of(
+            RecipeConstants.INPUT,
+            RecipeConstants.INPUTS,
             RecipeConstants.INGREDIENT,
             RecipeConstants.INGREDIENTS,
-            RecipeConstants.INPUT_ITEMS);
-    private final Set<String> outputKeys = Set.of(RecipeConstants.OUTPUT,
+            RecipeConstants.INPUT_ITEMS
+    );
+    private static final Set<String> OUTPUT_KEYS = Set.of(
+            RecipeConstants.OUTPUT,
             RecipeConstants.RESULT,
             RecipeConstants.RESULTS,
-            RecipeConstants.OUTPUT_ITEMS);
+            RecipeConstants.OUTPUT_ITEMS
+    );
 
     @Override
     public void collectUnifier(RecipeUnifierBuilder builder) {
-        for (String inputKey : inputKeys) {
+        for (String inputKey : INPUT_KEYS) {
             builder.put(inputKey, (json, ctx) -> ctx.createIngredientReplacement(json));
         }
 
-        for (String outputKey : outputKeys) {
+        for (String outputKey : OUTPUT_KEYS) {
             builder.put(outputKey, (json, ctx) -> ctx.createResultReplacement(json));
         }
     }

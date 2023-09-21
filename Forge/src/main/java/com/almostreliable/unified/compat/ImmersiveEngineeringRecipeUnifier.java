@@ -24,8 +24,6 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
                 RecipeConstants.INPUT,
                 // arc furnace
                 RecipeConstants.ADDITIVES,
-                // blueprint, mixer
-                RecipeConstants.INPUTS,
                 // refinery
                 RecipeConstants.CATALYST
         ).forEach(key -> builder.put(key, this::createIngredientReplacement));
