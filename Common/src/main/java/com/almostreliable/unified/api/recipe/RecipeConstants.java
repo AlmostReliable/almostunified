@@ -20,6 +20,7 @@ public final class RecipeConstants {
 
     // inner keys
     public static final String VALUE = "value";
+    public static final String BASE = "base";
 
     // ars nouveau
     public static final String PEDESTAL_ITEMS = "pedestalItems";

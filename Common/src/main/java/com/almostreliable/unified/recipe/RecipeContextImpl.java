@@ -78,6 +78,7 @@ public class RecipeContextImpl implements RecipeContext {
 
         if (element instanceof JsonObject object) {
             tryCreateIngredientReplacement(object.get(RecipeConstants.VALUE));
+            tryCreateIngredientReplacement(object.get(RecipeConstants.BASE));
             tryCreateIngredientReplacement(object.get(RecipeConstants.INGREDIENT));
 
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
