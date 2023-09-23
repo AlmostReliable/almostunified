@@ -42,6 +42,7 @@ public final class TestUtils {
             TEST_MOD_PRIORITIES,
             new HashMap<>(),
             new HashMap<>(),
+            new HashMap<>(),
             UnifyConfig.TagInheritanceMode.ALLOW,
             new HashMap<>(),
             UnifyConfig.TagInheritanceMode.ALLOW,

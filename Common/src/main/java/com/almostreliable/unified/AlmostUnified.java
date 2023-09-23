@@ -52,6 +52,8 @@ public final class AlmostUnified {
         ServerConfigs serverConfigs = ServerConfigs.load();
         UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
 
+        TagReloadHandler.applyCustomTags(unifyConfig);
+
         TagOwnerships tagOwnerships = new TagOwnerships(
                 unifyConfig.bakeAndValidateTags(tags),
                 unifyConfig.getTagOwnerships()

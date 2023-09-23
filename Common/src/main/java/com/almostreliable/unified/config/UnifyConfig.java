@@ -25,6 +25,7 @@ public class UnifyConfig extends Config {
     private final List<String> unbakedTags;
     private final List<String> materials;
     private final Map<ResourceLocation, String> priorityOverrides;
+    private final Map<ResourceLocation, Set<ResourceLocation>> customTags;
     private final Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships;
     private final Enum<TagInheritanceMode> itemTagInheritanceMode;
     private final Map<ResourceLocation, Set<Pattern>> itemTagInheritance;
@@ -45,6 +46,7 @@ public class UnifyConfig extends Config {
             List<String> unbakedTags,
             List<String> materials,
             Map<ResourceLocation, String> priorityOverrides,
+            Map<ResourceLocation, Set<ResourceLocation>> customTags,
             Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships,
             Enum<TagInheritanceMode> itemTagInheritanceMode,
             Map<ResourceLocation, Set<Pattern>> itemTagInheritance,
@@ -61,6 +63,7 @@ public class UnifyConfig extends Config {
         this.unbakedTags = unbakedTags;
         this.materials = materials;
         this.priorityOverrides = priorityOverrides;
+        this.customTags = customTags;
         this.tagOwnerships = tagOwnerships;
         this.itemTagInheritanceMode = itemTagInheritanceMode;
         this.itemTagInheritance = itemTagInheritance;
@@ -138,6 +141,10 @@ public class UnifyConfig extends Config {
 
     public Map<ResourceLocation, String> getPriorityOverrides() {
         return Collections.unmodifiableMap(priorityOverrides);
+    }
+
+    public Map<ResourceLocation, Set<ResourceLocation>> getCustomTags() {
+        return Collections.unmodifiableMap(customTags);
     }
 
     public Map<ResourceLocation, Set<ResourceLocation>> getTagOwnerships() {
@@ -227,6 +234,7 @@ public class UnifyConfig extends Config {
         public static final String TAGS = "tags";
         public static final String MATERIALS = "materials";
         public static final String PRIORITY_OVERRIDES = "priorityOverrides";
+        public static final String CUSTOM_TAGS = "customTags";
         public static final String TAG_OWNERSHIPS = "tagOwnerships";
         public static final String ITEM_TAG_INHERITANCE_MODE = "itemTagInheritanceMode";
         public static final String ITEM_TAG_INHERITANCE = "itemTagInheritance";
@@ -249,28 +257,35 @@ public class UnifyConfig extends Config {
             List<String> materials = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MATERIALS)),
                     Defaults.MATERIALS);
 
-            Map<ResourceLocation, String> priorityOverrides = safeGet(() -> json.getAsJsonObject(PRIORITY_OVERRIDES)
-                    .entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            entry -> new ResourceLocation(entry.getKey()),
-                            entry -> entry.getValue().getAsString(),
-                            (a, b) -> b,
-                            HashMap::new)), new HashMap<>());
+            Map<ResourceLocation, String> priorityOverrides = safeGet(
+                    () -> JsonUtils.deserializeMap(
+                            json,
+                            PRIORITY_OVERRIDES,
+                            e -> new ResourceLocation(e.getKey()),
+                            e -> e.getValue().getAsString()
+                    ),
+                    new HashMap<>()
+            );
 
-            Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships = safeGet(() -> json
-                    .getAsJsonObject(TAG_OWNERSHIPS)
-                    .entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            entry -> new ResourceLocation(entry.getKey()),
-                            entry -> JsonUtils.toList(entry.getValue().getAsJsonArray())
-                                    .stream()
-                                    .map(ResourceLocation::new)
-                                    .collect(Collectors.toSet()),
-                            (a, b) -> b,
-                            HashMap::new)), new HashMap<>());
+            Map<ResourceLocation, Set<ResourceLocation>> customTags = safeGet(
+                    () -> JsonUtils.deserializeMapSet(
+                            json,
+                            CUSTOM_TAGS,
+                            e -> new ResourceLocation(e.getKey()),
+                            ResourceLocation::new
+                    ),
+                    new HashMap<>()
+            );
 
+            Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships = safeGet(
+                    () -> JsonUtils.deserializeMapSet(
+                            json,
+                            TAG_OWNERSHIPS,
+                            e -> new ResourceLocation(e.getKey()),
+                            ResourceLocation::new
+                    ),
+                    new HashMap<>()
+            );
 
             Enum<TagInheritanceMode> itemTagInheritanceMode = deserializeTagInheritanceMode(json,
                     ITEM_TAG_INHERITANCE_MODE);
@@ -298,6 +313,7 @@ public class UnifyConfig extends Config {
                     tags,
                     materials,
                     priorityOverrides,
+                    customTags,
                     tagOwnerships,
                     itemTagInheritanceMode,
                     itemTagInheritance,
@@ -333,15 +349,12 @@ public class UnifyConfig extends Config {
          * @return The deserialized patterns separated by location
          */
         private Map<ResourceLocation, Set<Pattern>> unsafeDeserializePatternsForLocations(JsonObject rawConfigJson, String baseKey) {
-            JsonObject json = rawConfigJson.getAsJsonObject(baseKey);
-            return json
-                    .keySet()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            ResourceLocation::new,
-                            key -> deserializePatterns(json, key, List.of()),
-                            (a, b) -> b,
-                            HashMap::new));
+            return JsonUtils.deserializeMapSet(
+                    rawConfigJson,
+                    baseKey,
+                    e -> new ResourceLocation(e.getKey()),
+                    Pattern::compile
+            );
         }
 
         private Map<ResourceLocation, Set<Pattern>> deserializePatternsForLocations(JsonObject rawConfigJson, String baseKey) {
@@ -360,6 +373,12 @@ public class UnifyConfig extends Config {
                 priorityOverrides.addProperty(tag.toString(), mod);
             });
             json.add(PRIORITY_OVERRIDES, priorityOverrides);
+            JsonObject customTags = new JsonObject();
+            config.customTags.forEach((parent, child) -> {
+                customTags.add(parent.toString(),
+                        JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
+            });
+            json.add(CUSTOM_TAGS, customTags);
             JsonObject tagOwnerships = new JsonObject();
             config.tagOwnerships.forEach((parent, child) -> {
                 tagOwnerships.add(parent.toString(),

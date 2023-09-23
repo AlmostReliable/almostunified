@@ -9,6 +9,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -49,6 +51,50 @@ public final class TagReloadHandler {
 
         RAW_ITEM_TAGS = null;
         RAW_BLOCK_TAGS = null;
+    }
+
+    public static void applyCustomTags(UnifyConfig unifyConfig) {
+        Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
+
+        Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
+
+        for (var entry : unifyConfig.getCustomTags().entrySet()) {
+            ResourceLocation tag = entry.getKey();
+            Set<ResourceLocation> itemIds = entry.getValue();
+
+            for (ResourceLocation itemId : itemIds) {
+                if (!BuiltInRegistries.ITEM.containsKey(itemId)) {
+                    AlmostUnified.LOG.warn("[CustomTags] Custom tag '{}' contains invalid item '{}'", tag, itemId);
+                    continue;
+                }
+
+                ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, itemId);
+                Holder<Item> itemHolder = BuiltInRegistries.ITEM.getHolder(itemKey).orElse(null);
+                if (itemHolder == null) continue;
+
+                ImmutableSet.Builder<Holder<Item>> newHolders = ImmutableSet.builder();
+                var currentHolders = RAW_ITEM_TAGS.get(tag);
+
+                if (currentHolders != null) {
+                    if (currentHolders.contains(itemHolder)) {
+                        AlmostUnified.LOG.warn("[CustomTags] Custom tag '{}' already contains item '{}'", tag, itemId);
+                        continue;
+                    }
+
+                    newHolders.addAll(currentHolders);
+                }
+                newHolders.add(itemHolder);
+
+                RAW_ITEM_TAGS.put(tag, newHolders.build());
+                changedItemTags.put(tag, itemId);
+            }
+        }
+
+        if (!changedItemTags.isEmpty()) {
+            changedItemTags.asMap().forEach((tag, items) -> {
+                AlmostUnified.LOG.info("[CustomTags] Modified tag '#{}', added {}", tag, items);
+            });
+        }
     }
 
     public static boolean applyInheritance(UnifyConfig unifyConfig, ReplacementData replacementData) {
