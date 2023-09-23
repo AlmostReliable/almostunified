@@ -13,6 +13,7 @@ public final class RecipeConstants {
 
     // common outputs
     public static final String OUTPUT = "output";
+    public static final String OUTPUTS = "outputs";
     public static final String RESULT = "result";
     public static final String RESULTS = "results";
     public static final String OUTPUT_ITEMS = "outputItems";
