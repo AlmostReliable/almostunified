@@ -26,6 +26,10 @@ public final class RecipeConstants {
     public static final String PEDESTAL_ITEMS = "pedestalItems";
     public static final String REAGENT = "reagent";
 
+    // gregtech modern
+    public static final String TICK_INPUTS = "tickInputs";
+    public static final String TICK_OUTPUTS = "tickOutputs";
+
     // immersive engineering
     public static final String INPUT_0 = "input0";
     public static final String INPUT_1 = "input1";
