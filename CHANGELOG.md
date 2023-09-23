@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.7.0] - 2023-09-23
+
+### Warning
+This update features a new config option inside the `unify.json`.<br>
+Since it is a top-level option, this won't reset your config and all other options should
+be preserved. However, an automatic backup will be created in case something goes wrong.
+
+### Added
+- added the ability to add items to existing or new tags
+  - this allows you to alter tags without the requirement of using other tools such as KubeJS, CraftTweaker or datapacks
+  - you can read more about it in the [wiki][custom-tags]
+- added unification support for the Fabric NBT ingredient
+- added the `AlmostUnified` KubeJS binding, info about that can be found in the [wiki][kubejs-binding]
+- added support for EnderIO
+- added support for GregTech Modern
+
+### Removed
+- removed the unnecessary mixin plugin
+
+<!-- Links -->
+[custom-tags]: https://github.com/AlmostReliable/almostunified/wiki/Unification-Config#custom-tags
+[kubejs-binding]: https://github.com/AlmostReliable/almostunified/wiki/KubeJS
+
 ## [0.6.0] - 2023-08-10
 
 ### Warning
@@ -44,5 +67,6 @@ Initial 1.20.1 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.7.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.7.0-beta
 [0.6.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.6.0-beta
 [0.5.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.5.0-beta
