@@ -6,9 +6,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public final class JsonUtils {
@@ -101,5 +106,34 @@ public final class JsonUtils {
 
     public static List<String> toList(JsonArray array) {
         return StreamSupport.stream(array.spliterator(), false).map(JsonElement::getAsString).toList();
+    }
+
+    public static <K, V> Map<K, V> deserializeMap(
+            JsonObject json,
+            String key,
+            Function<Map.Entry<String, JsonElement>, K> keyMapper,
+            Function<Map.Entry<String, JsonElement>, V> valueMapper
+    ) {
+        return json.getAsJsonObject(key)
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(keyMapper, valueMapper, (a, b) -> b, HashMap::new));
+    }
+
+    public static <K, V> Map<K, Set<V>> deserializeMapSet(
+            JsonObject json,
+            String key,
+            Function<Map.Entry<String, JsonElement>, K> keyMapper,
+            Function<String, V> valueMapper
+    ) {
+        return deserializeMap(
+                json,
+                key,
+                keyMapper,
+                e -> toList(e.getValue().getAsJsonArray())
+                        .stream()
+                        .map(valueMapper)
+                        .collect(Collectors.toSet())
+        );
     }
 }
