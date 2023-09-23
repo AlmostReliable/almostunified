@@ -17,6 +17,7 @@ public class GenericRecipeUnifier implements RecipeUnifier {
     );
     private static final Set<String> OUTPUT_KEYS = Set.of(
             RecipeConstants.OUTPUT,
+            RecipeConstants.OUTPUTS,
             RecipeConstants.RESULT,
             RecipeConstants.RESULTS,
             RecipeConstants.OUTPUT_ITEMS

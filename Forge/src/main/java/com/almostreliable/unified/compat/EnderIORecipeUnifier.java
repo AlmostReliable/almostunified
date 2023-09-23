@@ -13,10 +13,5 @@ public class EnderIORecipeUnifier implements RecipeUnifier {
                 RecipeConstants.ITEM,
                 (json, ctx) -> ctx.createResultReplacement(json, false, RecipeConstants.ITEM)
         );
-        // sag mill
-        builder.put(
-                RecipeConstants.OUTPUTS,
-                (json, ctx) -> ctx.createResultReplacement(json)
-        );
     }
 }
