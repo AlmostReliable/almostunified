@@ -29,7 +29,19 @@ public class GregTechModernRecipeUnifier implements RecipeUnifier {
                 RecipeConstants.OUTPUTS,
                 RecipeConstants.TICK_OUTPUTS
         ).forEach(key ->
-                builder.put(key, (json, ctx) -> createContentReplacement(json, ctx, ctx::createResultReplacement))
+                builder.put(
+                        key,
+                        (json, ctx) -> createContentReplacement(
+                                json,
+                                ctx,
+                                element -> ctx.createResultReplacement(
+                                        element,
+                                        true,
+                                        RecipeConstants.ITEM,
+                                        RecipeConstants.INGREDIENT
+                                )
+                        )
+                )
         );
     }
 
