@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.7.2] - 2023-11-21
+
+## Added
+- added support for Integrated Dynamics
+
+### Fixed
+- fixed GregTech Modern compat to properly unify output ingredients
+
 ## [0.7.0] - 2023-09-23
 
 ### Warning
@@ -415,6 +423,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.7.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.7.2-beta
 [0.7.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.7.0-beta
 [0.6.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.6.0-beta
 [0.5.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.5.0-beta
