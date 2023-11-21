@@ -17,6 +17,7 @@ public final class ModConstants {
     public static final String ENDER_IO = "enderio";
     public static final String GREGTECH_MODERN = "gtceu";
     public static final String IMMERSIVE_ENGINEERING = "immersiveengineering";
+    public static final String INTEGRATED_DYNAMICS = "integrateddynamics";
     public static final String MEKANISM = "mekanism";
     public static final String MODERN_INDUSTRIALIZATION = "modern_industrialization";
 

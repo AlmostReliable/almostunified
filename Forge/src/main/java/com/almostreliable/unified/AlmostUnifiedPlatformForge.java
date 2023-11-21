@@ -63,6 +63,7 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
         factory.registerForMod(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
         factory.registerForMod(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
         factory.registerForMod(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
+        factory.registerForMod(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
         factory.registerForMod(ModConstants.MEKANISM, new MekanismRecipeUnifier());
     }
 
