@@ -4,7 +4,6 @@ import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -34,8 +33,12 @@ public class IntegratedDynamicsRecipeUnifier implements RecipeUnifier {
 
     @Nullable
     private JsonElement createResultReplacement(@Nullable JsonElement json, RecipeContext ctx) {
-        if (json instanceof JsonObject jsonObject && jsonObject.get(ITEMS) instanceof JsonArray jsonArray) {
-            ctx.createResultReplacement(jsonArray);
+        if (json instanceof JsonObject jsonObject && jsonObject.has(ITEMS)) {
+            JsonElement resultReplacement = ctx.createResultReplacement(jsonObject.get(ITEMS));
+            if (resultReplacement != null) {
+                jsonObject.add(ITEMS, resultReplacement);
+                return jsonObject;
+            }
         }
 
         return null;
