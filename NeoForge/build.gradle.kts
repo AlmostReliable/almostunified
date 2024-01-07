@@ -26,7 +26,16 @@ repositories {
 
 val common by configurations
 val shadowCommon by configurations
-val commonTests: SourceSetOutput = project(":Common").sourceSets["test"].output
+
+loom {
+    // load the test mod manually because NeoForge always uses main by default
+    mods {
+        create("testmod") {
+            sourceSet(sourceSets.test.get())
+            sourceSet(project(":Common").sourceSets.test.get())
+        }
+    }
+}
 
 dependencies {
     // loader
@@ -35,12 +44,14 @@ dependencies {
     // common module
     common(project(":Common", "namedElements")) { isTransitive = false }
     shadowCommon(project(":Common", "transformProductionNeoForge")) { isTransitive = false }
+    testImplementation(project(":Common", "namedElements"))
 
      // compile time mods
 //     modCompileOnly("mezz.jei:jei-$minecraftVersion-forge-api:$jeiVersion") { // required for common jei plugin
 //         isTransitive = false // prevents breaking the forge runtime
 //     }
      modCompileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion") // required for common rei plugin
+//     modImplementation("curse.maven:applied-energistics-2-223794:4997094")
 
      // runtime mods
      when (neoforgeRecipeViewer) {
@@ -64,12 +75,4 @@ dependencies {
             println("Extra mod ${f.nameWithoutExtension} detected.")
             "modLocalRuntime"("extra-mods:$mod:$version")
         }
-
-    modImplementation("curse.maven:applied-energistics-2-223794:4997094")
-
-    // tests
-    testImplementation(project(":Common"))
-    testImplementation(commonTests)
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 }

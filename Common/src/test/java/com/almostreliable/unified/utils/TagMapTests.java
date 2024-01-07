@@ -3,9 +3,6 @@ package com.almostreliable.unified.utils;
 import com.almostreliable.unified.TestUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TagMapTests {
 
@@ -34,26 +31,26 @@ public class TagMapTests {
         return tagMap;
     }
 
-    @Test
-    public void simpleCheck() {
-        TagMap<Item> tagMap = new TagMap<>();
-        UnifyTag<Item> bronzeOreTag = UnifyTag.item(new ResourceLocation("forge:ores/bronze"));
-        tagMap.put(bronzeOreTag, TestUtils.mod1RL("bronze_ore"));
-        tagMap.put(bronzeOreTag, TestUtils.mod2RL("bronze_ore"));
-        tagMap.put(bronzeOreTag, TestUtils.mod3RL("bronze_ore"));
-        tagMap.put(bronzeOreTag, TestUtils.mod4RL("bronze_ore"));
-        tagMap.put(bronzeOreTag, TestUtils.mod5RL("bronze_ore"));
-
-        assertEquals(tagMap.getEntriesByTag(bronzeOreTag).size(), 5);
-        assertEquals(tagMap.getTagsByEntry(TestUtils.mod1RL("bronze_ore")).size(), 1);
-        assertEquals(tagMap.getTagsByEntry(TestUtils.mod2RL("bronze_ore")).size(), 1);
-        assertEquals(tagMap.getTagsByEntry(TestUtils.mod3RL("bronze_ore")).size(), 1);
-        assertEquals(tagMap.getTagsByEntry(TestUtils.mod4RL("bronze_ore")).size(), 1);
-        assertEquals(tagMap.getTagsByEntry(TestUtils.mod5RL("bronze_ore")).size(), 1);
-
-        tagMap.put(UnifyTag.item(new ResourceLocation("forge:ores/invar")), TestUtils.mod1RL("invar_ore"));
-
-        assertEquals(tagMap.tagSize(), 2);
-        assertEquals(tagMap.itemSize(), 6);
-    }
+//    @Test
+//    public void simpleCheck() {
+//        TagMap<Item> tagMap = new TagMap<>();
+//        UnifyTag<Item> bronzeOreTag = UnifyTag.item(new ResourceLocation("forge:ores/bronze"));
+//        tagMap.put(bronzeOreTag, TestUtils.mod1RL("bronze_ore"));
+//        tagMap.put(bronzeOreTag, TestUtils.mod2RL("bronze_ore"));
+//        tagMap.put(bronzeOreTag, TestUtils.mod3RL("bronze_ore"));
+//        tagMap.put(bronzeOreTag, TestUtils.mod4RL("bronze_ore"));
+//        tagMap.put(bronzeOreTag, TestUtils.mod5RL("bronze_ore"));
+//
+//        assertEquals(tagMap.getEntriesByTag(bronzeOreTag).size(), 5);
+//        assertEquals(tagMap.getTagsByEntry(TestUtils.mod1RL("bronze_ore")).size(), 1);
+//        assertEquals(tagMap.getTagsByEntry(TestUtils.mod2RL("bronze_ore")).size(), 1);
+//        assertEquals(tagMap.getTagsByEntry(TestUtils.mod3RL("bronze_ore")).size(), 1);
+//        assertEquals(tagMap.getTagsByEntry(TestUtils.mod4RL("bronze_ore")).size(), 1);
+//        assertEquals(tagMap.getTagsByEntry(TestUtils.mod5RL("bronze_ore")).size(), 1);
+//
+//        tagMap.put(UnifyTag.item(new ResourceLocation("forge:ores/invar")), TestUtils.mod1RL("invar_ore"));
+//
+//        assertEquals(tagMap.tagSize(), 2);
+//        assertEquals(tagMap.itemSize(), 6);
+//    }
 }

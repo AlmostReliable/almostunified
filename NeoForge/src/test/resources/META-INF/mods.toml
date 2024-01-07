@@ -1,0 +1,22 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+license = "ARR"
+
+[[mods]]
+modId = "testmod"
+version = "13.3.7"
+displayName = "Test Mod"
+
+[[dependencies.testmod]]
+modId = "neoforge"
+type = "required"
+versionRange = "[1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.testmod]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1,)"
+ordering = "NONE"
+side = "BOTH"

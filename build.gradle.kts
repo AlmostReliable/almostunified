@@ -80,6 +80,7 @@ subprojects {
 
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
     loom.silentMojangMappingsLicense()
+    loom.createRemapConfigurations(sourceSets.getByName("test")) // create test implementations that allow remapping
 
     dependencies {
         /**
@@ -96,8 +97,8 @@ subprojects {
         /**
          * non-Minecraft dependencies
          */
-        compileOnly("com.google.auto.service:auto-service:$autoServiceVersion")
-        annotationProcessor("com.google.auto.service:auto-service:$autoServiceVersion")
+        compileOnly(testCompileOnly("com.google.auto.service:auto-service:$autoServiceVersion")!!)
+        annotationProcessor(testAnnotationProcessor("com.google.auto.service:auto-service:$autoServiceVersion")!!)
     }
 
     tasks {
@@ -185,8 +186,37 @@ subprojects {
 
     apply(plugin = "com.github.johnrengelman.shadow")
 
+    /**
+     * add the outputs of the common test source set to the test source set classpath
+     */
+    sourceSets.named("test") {
+        val cst = project(":Common").sourceSets.getByName("test")
+        this.compileClasspath += cst.output
+        this.runtimeClasspath += cst.output
+    }
+
     extensions.configure<LoomGradleExtensionAPI> {
         runs {
+            create("test_client") {
+                name("Testmod Client")
+                client()
+                property("fabric-api.gametest", "true")
+                property("neoforge.gameTestServer", "true")
+                property("neoforge.enabledGameTestNamespaces", "testmod")
+                property("almostlib.gametest.testPackages", "testmod.*")
+                source(sourceSets.test.get())
+            }
+
+            create("gametest") {
+                name("Gametest")
+                server()
+                source(sourceSets.test.get())
+                property("fabric-api.gametest", "true")
+                property("neoforge.gameTestServer", "true")
+                property("neoforge.enabledGameTestNamespaces", "testmod")
+                property("almostlib.gametest.testPackages", "testmod.*")
+            }
+
             forEach {
                 val dir = "../run/${project.name.lowercase()}_${it.environment}"
                 println("[Run Config] ${project.name} '${it.name}' directory: $dir")

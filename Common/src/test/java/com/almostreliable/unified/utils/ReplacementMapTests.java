@@ -1,11 +1,6 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.TestUtils;
-import net.minecraft.resources.ResourceLocation;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 // TODO I BROKE THEM! NEED TO FIX
 public class ReplacementMapTests {

@@ -32,6 +32,7 @@ dependencies {
     // common module
     common(project(":Common", "namedElements")) { isTransitive = false }
     shadowCommon(project(":Common", "transformProductionFabric")) { isTransitive = false }
+    testImplementation(project(":Common", "namedElements"))
 
     // compile time mods
     modCompileOnly("mezz.jei:jei-1.20.1-fabric-api:$jeiVersion") // required for common jei plugin // TODO re-enable when 1.20.4 is released
