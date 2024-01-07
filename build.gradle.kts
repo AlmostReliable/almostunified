@@ -14,6 +14,7 @@ val modAuthor: String by project
 val autoServiceVersion: String by project
 val parchmentVersion: String by project
 val fabricApiVersion: String by project
+val neoforgeVersion: String by project
 val forgeVersion: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
@@ -21,9 +22,8 @@ val githubRepo: String by project
 val githubUser: String by project
 
 plugins {
-    id("architectury-plugin") version "3.4.+"
-    id("dev.architectury.loom") version "1.3.+" apply false
-    id("io.github.juuxel.loom-vineflower") version "1.11.0" apply false
+    id("architectury-plugin") version "3.4-SNAPSHOT"
+    id("dev.architectury.loom") version "1.4.+" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     java
     `maven-publish`
@@ -62,7 +62,6 @@ allprojects {
 subprojects {
     apply(plugin = "architectury-plugin")
     apply(plugin = "dev.architectury.loom")
-    apply(plugin = "io.github.juuxel.loom-vineflower")
     apply(plugin = "maven-publish")
 
     base {
@@ -71,9 +70,11 @@ subprojects {
     }
 
     repositories {
+        maven("https://www.cursemaven.com")
         maven("https://maven.parchmentmc.org") // Parchment
         maven("https://maven.shedaniel.me") // REI
         maven("https://maven.blamejared.com/") // JEI
+        maven("https://maven.neoforged.net/releases")
         mavenLocal()
     }
 
@@ -89,7 +90,7 @@ subprojects {
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
         "mappings"(loom.layered {
             officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-$minecraftVersion:$parchmentVersion@zip")
+//            parchment("org.parchmentmc.data:parchment-$minecraftVersion:$parchmentVersion@zip") // TODO re-enable when 1.20.4 is released
         })
 
         /**
@@ -116,6 +117,7 @@ subprojects {
                 "modAuthor" to modAuthor,
                 "modDescription" to modDescription,
                 "fabricApiVersion" to fabricApiVersion,
+                "neoforgeVersion" to neoforgeVersion,
                 "forgeVersion" to forgeVersion,
                 // use major version for FML only because wrong Forge version error message
                 // is way better than FML error message

@@ -1,8 +1,8 @@
 val minecraftVersion: String by project
 val modId: String by project
 val junitVersion: String by project
-val forgeVersion: String by project
-val forgeRecipeViewer: String by project
+val neoforgeVersion: String by project
+val neoforgeRecipeViewer: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
 
@@ -14,22 +14,7 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    forge()
-}
-
-loom {
-    if (project.findProperty("enableAccessWidener") == "true") { // optional property for `gradle.properties`
-        accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
-        forge {
-            convertAccessWideners.set(true)
-            extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-        }
-        println("Access widener enabled for project ${project.name}. Access widener path: ${loom.accessWidenerPath.get()}")
-    }
-
-    forge {
-        mixinConfigs("$modId-common.mixins.json" /*, "$modId-forge.mixins.json"*/)
-    }
+    neoForge()
 }
 
 repositories {
@@ -45,24 +30,24 @@ val commonTests: SourceSetOutput = project(":Common").sourceSets["test"].output
 
 dependencies {
     // loader
-    forge("net.minecraftforge:forge:$minecraftVersion-$forgeVersion")
+    neoForge("net.neoforged:neoforge:${neoforgeVersion}")
 
     // common module
     common(project(":Common", "namedElements")) { isTransitive = false }
-    shadowCommon(project(":Common", "transformProductionForge")) { isTransitive = false }
+    shadowCommon(project(":Common", "transformProductionNeoForge")) { isTransitive = false }
 
-    // compile time mods
-    modCompileOnly("mezz.jei:jei-1.20.1-forge-api:$jeiVersion") { // required for common jei plugin // TODO re-enable when 1.20.4 is released
-        isTransitive = false // prevents breaking the forge runtime
-    }
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for common rei plugin
+     // compile time mods
+//     modCompileOnly("mezz.jei:jei-$minecraftVersion-forge-api:$jeiVersion") { // required for common jei plugin
+//         isTransitive = false // prevents breaking the forge runtime
+//     }
+     modCompileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion") // required for common rei plugin
 
-    // runtime mods
-//    when (forgeRecipeViewer) {
-//        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
-//        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
-//        else -> throw GradleException("Invalid forgeRecipeViewer value: $forgeRecipeViewer")
-//    }
+     // runtime mods
+     when (neoforgeRecipeViewer) {
+         "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
+         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion")
+         else -> throw GradleException("Invalid forgeRecipeViewer value: $neoforgeRecipeViewer")
+     }
 
     /**
      * helps to load mods in development through an extra directory
@@ -80,6 +65,7 @@ dependencies {
             "modLocalRuntime"("extra-mods:$mod:$version")
         }
 
+    modImplementation("curse.maven:applied-energistics-2-223794:4997094")
 
     // tests
     testImplementation(project(":Common"))

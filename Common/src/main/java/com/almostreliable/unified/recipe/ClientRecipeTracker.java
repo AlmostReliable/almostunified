@@ -2,9 +2,11 @@ package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.utils.Utils;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -17,13 +19,15 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * This recipe is used to track which recipes were unified. It is NOT used for crafting.
  * Each tracker will hold one namespace with a list of recipes that were unified for it.
  */
-public class ClientRecipeTracker implements Recipe<Container> {
+public record ClientRecipeTracker(String namespace, Map<ResourceLocation, ClientRecipeLink> recipes)
+        implements Recipe<Container> {
     public static final ResourceLocation ID = Utils.getRL("client_recipe_tracker");
     public static final String RECIPES = "recipes";
     public static final String NAMESPACE = "namespace";
@@ -37,14 +41,6 @@ public class ClientRecipeTracker implements Recipe<Container> {
         }
     };
 
-    private final ResourceLocation id;
-    private final Map<ResourceLocation, ClientRecipeLink> recipes = new HashMap<>();
-    private final String namespace;
-
-    protected ClientRecipeTracker(ResourceLocation id, String namespace) {
-        this.id = id;
-        this.namespace = namespace;
-    }
 
     /**
      * Creates a raw string representation.
@@ -81,11 +77,6 @@ public class ClientRecipeTracker implements Recipe<Container> {
     public ItemStack getResultItem(RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
-    }
     //</editor-fold>
 
     @Override
@@ -109,10 +100,15 @@ public class ClientRecipeTracker implements Recipe<Container> {
 
     public record ClientRecipeLink(ResourceLocation id, boolean isUnified, boolean isDuplicate) {}
 
+
+    public List<String> getLinkStrings() {
+        return recipes.values().stream().map(l -> createRaw(l.isUnified, l.isDuplicate, l.id.getPath())).toList();
+    }
+
     public static class Serializer implements RecipeSerializer<ClientRecipeTracker> {
 
         /**
-         * Reads a recipe from a json file. Recipe will look like this:
+         * Codec for the recipe tracker. Recipe will look like this:
          * <pre>
          * {@code
          * {
@@ -127,35 +123,42 @@ public class ClientRecipeTracker implements Recipe<Container> {
          * }
          * }
          * </pre>
-         *
-         * @param recipeId The id of the recipe for the tracker.
-         * @param json     The json object.
-         * @return The recipe tracker.
          */
+        public static final Codec<ClientRecipeTracker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.STRING.fieldOf("namespace").forGetter(ClientRecipeTracker::namespace),
+                Codec.list(Codec.STRING).fieldOf("recipes").forGetter(ClientRecipeTracker::getLinkStrings)
+        ).apply(instance, Serializer::of));
+
+
         @Override
-        public ClientRecipeTracker fromJson(ResourceLocation recipeId, JsonObject json) {
-            String namespace = json.get(NAMESPACE).getAsString();
-            JsonArray recipes = json.get(RECIPES).getAsJsonArray();
-            ClientRecipeTracker tracker = new ClientRecipeTracker(recipeId, namespace);
-            for (JsonElement element : recipes) {
-                ClientRecipeLink clientRecipeLink = parseRaw(namespace, element.getAsString());
-                tracker.add(clientRecipeLink);
+        public Codec<ClientRecipeTracker> codec() {
+            return CODEC;
+        }
+
+        private static ClientRecipeTracker of(String namespace, List<String> recipes) {
+            ImmutableMap.Builder<ResourceLocation, ClientRecipeLink> builder = ImmutableMap.builder();
+
+            for (String recipe : recipes) {
+                ClientRecipeLink link = parseRaw(namespace, recipe);
+                builder.put(link.id(), link);
             }
-            return tracker;
+
+            return new ClientRecipeTracker(namespace, builder.build());
         }
 
         @Override
-        public ClientRecipeTracker fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        public ClientRecipeTracker fromNetwork(FriendlyByteBuf buffer) {
             int size = buffer.readInt();
             String namespace = buffer.readUtf();
 
-            ClientRecipeTracker recipe = new ClientRecipeTracker(recipeId, namespace);
+            ImmutableMap.Builder<ResourceLocation, ClientRecipeLink> builder = ImmutableMap.builder();
             for (int i = 0; i < size; i++) {
                 String raw = buffer.readUtf();
                 ClientRecipeLink clientRecipeLink = parseRaw(namespace, raw);
-                recipe.add(clientRecipeLink);
+                builder.put(clientRecipeLink.id(), clientRecipeLink);
             }
-            return recipe;
+
+            return new ClientRecipeTracker(namespace, builder.build());
         }
 
         /**
@@ -192,7 +195,7 @@ public class ClientRecipeTracker implements Recipe<Container> {
          * @param raw       The raw string.
          * @return The client sided recipe link.
          */
-        private static ClientRecipeLink parseRaw(String namespace, String raw) {
+        public static ClientRecipeLink parseRaw(String namespace, String raw) {
             String[] split = raw.split("\\$", 2);
             int flag = Integer.parseInt(split[0]);
             boolean isUnified = (flag & UNIFIED_FLAG) != 0;
@@ -213,7 +216,7 @@ public class ClientRecipeTracker implements Recipe<Container> {
 
         /**
          * Creates a map with the namespace as key and the json recipe.
-         * These recipes are used later in {@link Serializer#fromJson(ResourceLocation, JsonObject)}
+         * These recipes are used later in {@link Serializer}
          *
          * @return The map with the namespace as key and the json recipe.
          */

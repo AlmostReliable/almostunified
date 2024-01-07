@@ -3,6 +3,7 @@ package com.almostreliable.unified.recipe;
 import com.almostreliable.unified.BuildConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import javax.annotation.Nullable;
 
@@ -20,6 +21,7 @@ public final class CRTLookup {
         return Minecraft.getInstance().level
                 .getRecipeManager()
                 .byKey(linkRecipe)
+                .map(RecipeHolder::value)
                 .filter(ClientRecipeTracker.class::isInstance)
                 .map(ClientRecipeTracker.class::cast)
                 .map(tracker -> tracker.getLink(recipeId))
