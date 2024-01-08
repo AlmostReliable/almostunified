@@ -1,9 +1,6 @@
 package testmod.gametest_core;
 
-import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.StructureUtils;
-import net.minecraft.gametest.framework.TestFunction;
+import net.minecraft.gametest.framework.*;
 import net.minecraft.world.level.block.Rotation;
 import testmod.gametest_core.mixin.GameTestHelperAccessor;
 import testmod.gametest_core.mixin.GameTestRegistryAccessor;
@@ -28,81 +25,87 @@ public class GameTestLoader {
 
     private GameTestLoader() {}
 
-    public static void registerProvider(GameTestProvider provider) {
-        for (Method method : provider.getClass().getDeclaredMethods()) {
-            GameTest gametest = method.getAnnotation(GameTest.class);
-            if (gametest != null) {
-                register(provider, method, gametest);
-            }
-        }
-    }
+    public static void registerProviders(Class<?>... providerClasses) {
+        for (var providerClass : providerClasses) {
+            if (!isAllowedModIdToRun(providerClass)) continue;
 
-    @SafeVarargs
-    public static void registerProviders(Class<? extends GameTestProvider>... providerClasses) {
-        for (Class<? extends GameTestProvider> providerClass : providerClasses) {
+            Object instance;
             try {
-                var constructor = providerClass.getConstructor();
-                var instance = constructor.newInstance();
-                if (!isAllowedModIdToRun(instance)) continue;
-                registerProvider(instance);
-            } catch (InvocationTargetException | NoSuchMethodException | InstantiationException |
-                     IllegalAccessException e) {
+                instance = providerClass.getConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
+
+            for (Method method : providerClass.getDeclaredMethods()) {
+                GameTest gametest = method.getAnnotation(GameTest.class);
+                SimpleGameTest simpleGametest = method.getAnnotation(SimpleGameTest.class);
+                if (gametest != null && simpleGametest != null) {
+                    throw new IllegalArgumentException(
+                            "Cannot have both @GameTest and @SimpleGameTest on the same method");
+                }
+
+                if (gametest != null) {
+                    register(method, gametest, TestMethodConsumer.of(instance, method)::accept);
+                }
+
+                if (simpleGametest != null) {
+                    register(method, simpleGametest, TestMethodConsumer.of(instance, method)::acceptAutoSucceed);
+                }
+            }
         }
     }
 
-    private static void register(GameTestProvider provider, Method method, GameTest gametest) {
+
+    private static void register(Method method, GameTest gametest, Consumer<GameTestHelper> consumer) {
         String template = gametest.template();
         if (template.isEmpty()) {
             template = "testmod:empty_test_structure";
         }
 
-        Rotation rotation = StructureUtils.getRotationForRotationSteps(gametest.rotationSteps());
-
-        String className = method.getDeclaringClass().getSimpleName();
-        String methodName = method.getName().toLowerCase();
-        String classNameLower = className.toLowerCase();
-
-        var test = new TestFunction(
-                gametest.batch(),
-                classNameLower + "." + methodName,
+        var test = new TestFunction(gametest.batch(),
+                createTestName(method),
                 template,
-                rotation,
+                StructureUtils.getRotationForRotationSteps(gametest.rotationSteps()),
                 gametest.timeoutTicks(),
                 gametest.setupTicks(),
                 gametest.required(),
                 gametest.requiredSuccesses(),
                 gametest.attempts(),
-                convertMethodToConsumer(provider, method)
-        );
+                consumer);
 
         GameTestRegistryAccessor.TEST_FUNCTIONS().add(test);
-        GameTestRegistryAccessor.TEST_CLASS_NAMES().add(className);
+        GameTestRegistryAccessor.TEST_CLASS_NAMES().add(method.getDeclaringClass().getSimpleName());
     }
 
-    private static Consumer<GameTestHelper> convertMethodToConsumer(GameTestProvider provider, Method method) {
-        if (Modifier.isStatic(method.getModifiers())) {
-            throw new RuntimeException("Static methods are not supported");
+    private static void register(Method method, SimpleGameTest gametest, Consumer<GameTestHelper> consumer) {
+        String template = gametest.template();
+        if (template.isEmpty()) {
+            template = "testmod:empty_test_structure";
         }
 
-        return testHelper -> {
-            try {
-                Class<?>[] parameterTypes = method.getParameterTypes();
-                if (parameterTypes.length != 1) {
-                    throw new IllegalStateException("Method must have exactly one parameter");
-                }
+        var test = new TestFunction(gametest.batch(),
+                createTestName(method),
+                template,
+                Rotation.NONE,
+                100,
+                0,
+                true,
+                1,
+                gametest.attempts(),
+                consumer);
 
-                //noinspection CastToIncompatibleInterface
-                AlmostGameTestHelper almostHelper = new AlmostGameTestHelper(((GameTestHelperAccessor) testHelper).getTestInfo());
-                method.invoke(provider, almostHelper);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        };
+        GameTestRegistryAccessor.TEST_FUNCTIONS().add(test);
+        GameTestRegistryAccessor.TEST_CLASS_NAMES().add(method.getDeclaringClass().getSimpleName());
     }
 
-    private static boolean isAllowedModIdToRun(GameTestProvider provider) {
+    private static String createTestName(Method method) {
+        String className = method.getDeclaringClass().getSimpleName().toLowerCase();
+        String methodName = method.getName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+        return className + "." + methodName;
+    }
+
+    private static boolean isAllowedModIdToRun(Class<?> provider) {
         if (ENABLED_MODS == null) {
             String enabledNamespaces = System.getProperty(ENABLED_NAMESPACES);
             if (enabledNamespaces == null) {
@@ -117,7 +120,71 @@ public class GameTestLoader {
             }
         }
 
-        String name = provider.getClass().getName();
+        String name = provider.getName();
         return ENABLED_MODS.stream().map(p -> p.matcher(name)).anyMatch(Matcher::matches);
+    }
+
+    private record TestMethodConsumer(Object instance, Method method) {
+
+        static TestMethodConsumer of(Object instance, Method method) {
+            if (Modifier.isStatic(method.getModifiers())) {
+                throw new RuntimeException("Static methods are not supported");
+            }
+
+            return new TestMethodConsumer(instance, method);
+        }
+
+        private String describeError(Throwable throwable) {
+            if (throwable.getCause() != null) {
+                return describeError(throwable.getCause());
+            }
+
+            if (throwable.getMessage() == null) {
+                return throwable.toString();
+            }
+
+            return throwable.getClass().getName() + ": " + throwable.getMessage();
+        }
+
+        public void acceptAutoSucceed(GameTestHelper testHelper) {
+            accept(testHelper);
+            testHelper.succeed();
+        }
+
+        public void accept(GameTestHelper testHelper) {
+            try {
+                unsafeAccept(testHelper);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                if (e.getTargetException() instanceof AssertionError ae) {
+                    throw new GameTestAssertException(ae.getMessage());
+                }
+
+                throw new RuntimeException(describeError(e.getTargetException()));
+            }
+        }
+
+        public void unsafeAccept(GameTestHelper testHelper) throws IllegalAccessException, InvocationTargetException {
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            if (parameterTypes.length == 0) {
+                method.invoke(instance);
+                return;
+            }
+
+            if (parameterTypes.length == 1) {
+                if (!GameTestHelper.class.isAssignableFrom(parameterTypes[0])) {
+                    throw new RuntimeException(
+                            "Unsupported parameter type. Parameter must extend " + GameTestHelper.class.getName());
+                }
+
+                //noinspection CastToIncompatibleInterface
+                AlmostGameTestHelper almostHelper = new AlmostGameTestHelper(((GameTestHelperAccessor) testHelper).getTestInfo());
+                method.invoke(instance, almostHelper);
+                return;
+            }
+
+            throw new RuntimeException("Unsupported number of parameters. Must be 0 or 1");
+        }
     }
 }

@@ -1,15 +1,14 @@
 package testmod.tests;
 
-import net.minecraft.gametest.framework.GameTest;
-import testmod.gametest_core.AlmostGameTestHelper;
-import testmod.gametest_core.GameTestProvider;
+import testmod.gametest_core.SimpleGameTest;
 
-public class ExampleTest implements GameTestProvider {
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    @GameTest
-    public void foo(AlmostGameTestHelper helper) {
-        helper.succeedIf(() -> {
+public class ExampleTest {
 
-        });
+    @SimpleGameTest
+    public void testMaddinCanRun() {
+        assertTrue(true);
     }
+
 }
