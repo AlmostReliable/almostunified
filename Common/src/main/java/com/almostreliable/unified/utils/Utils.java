@@ -1,7 +1,9 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.BuildConfig;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
@@ -9,11 +11,11 @@ import java.util.Set;
 
 public final class Utils {
     public static final ResourceLocation UNUSED_ID = new ResourceLocation(BuildConfig.MOD_ID, "unused_id");
-    public static final UnifyTag<Item> UNUSED_TAG = UnifyTag.item(UNUSED_ID);
+    public static final TagKey<Item> UNUSED_TAG = TagKey.create(Registries.ITEM, UNUSED_ID);
 
     private Utils() {}
 
-    public static UnifyTag<Item> toItemTag(@Nullable String tag) {
+    public static TagKey<Item> toItemTag(@Nullable String tag) {
         if (tag == null) {
             return UNUSED_TAG;
         }
@@ -23,7 +25,7 @@ public final class Utils {
             return UNUSED_TAG;
         }
 
-        return UnifyTag.item(rl);
+        return TagKey.create(Registries.ITEM, rl);
     }
 
     @SuppressWarnings("unchecked")

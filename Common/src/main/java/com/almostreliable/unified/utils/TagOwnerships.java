@@ -3,7 +3,9 @@ package com.almostreliable.unified.utils;
 import com.almostreliable.unified.AlmostUnified;
 import com.google.common.collect.*;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
@@ -24,8 +26,8 @@ public class TagOwnerships {
      * Map Key = Tag to replace<br>
      * Map Value = Tag to replace with
      */
-    private final Map<UnifyTag<Item>, UnifyTag<Item>> refsToOwner;
-    private final Multimap<UnifyTag<Item>, UnifyTag<Item>> ownerToRefs;
+    private final Map<TagKey<Item>, TagKey<Item>> refsToOwner;
+    private final Multimap<TagKey<Item>, TagKey<Item>> ownerToRefs;
 
     /**
      * Creates a new TagOwnerships instance that contains immutable maps of all tag ownership relationships.
@@ -36,14 +38,14 @@ public class TagOwnerships {
      * @param unifyTags          The set of all unify tags in use.
      * @param tagOwnershipConfig The map of all tag ownership relationships.
      */
-    public TagOwnerships(Set<UnifyTag<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnershipConfig) {
-        ImmutableMap.Builder<UnifyTag<Item>, UnifyTag<Item>> refsToOwnerBuilder = ImmutableMap.builder();
-        ImmutableMultimap.Builder<UnifyTag<Item>, UnifyTag<Item>> ownerToRefsBuilder = ImmutableMultimap.builder();
+    public TagOwnerships(Set<TagKey<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnershipConfig) {
+        ImmutableMap.Builder<TagKey<Item>, TagKey<Item>> refsToOwnerBuilder = ImmutableMap.builder();
+        ImmutableMultimap.Builder<TagKey<Item>, TagKey<Item>> ownerToRefsBuilder = ImmutableMultimap.builder();
 
         tagOwnershipConfig.forEach((rawOwner, rawRefs) -> {
             for (ResourceLocation rawRef : rawRefs) {
-                UnifyTag<Item> owner = UnifyTag.item(rawOwner);
-                UnifyTag<Item> ref = UnifyTag.item(rawRef);
+                TagKey<Item> owner = TagKey.create(Registries.ITEM, rawOwner);
+                TagKey<Item> ref = TagKey.create(Registries.ITEM, rawRef);
 
                 if (!unifyTags.contains(owner)) {
                     AlmostUnified.LOG.warn(
@@ -92,7 +94,7 @@ public class TagOwnerships {
             holders.addAll(rawHolders);
             boolean changed = false;
 
-            for (UnifyTag<Item> ref : refs) {
+            for (var ref : refs) {
                 var refHolders = rawTags.get(ref.location());
                 if (refHolders == null) {
                     AlmostUnified.LOG.warn(
@@ -129,7 +131,7 @@ public class TagOwnerships {
      * @return The owner tag, or null if the provided tag is not a reference tag.
      */
     @Nullable
-    public UnifyTag<Item> getOwnerByTag(UnifyTag<Item> tag) {
+    public TagKey<Item> getOwnerByTag(TagKey<Item> tag) {
         return refsToOwner.get(tag);
     }
 
@@ -138,7 +140,7 @@ public class TagOwnerships {
      *
      * @return A set of all reference tags.
      */
-    public Set<UnifyTag<Item>> getRefs() {
+    public Set<TagKey<Item>> getRefs() {
         return refsToOwner.keySet();
     }
 }

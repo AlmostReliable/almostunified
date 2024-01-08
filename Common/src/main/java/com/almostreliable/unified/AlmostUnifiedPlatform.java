@@ -1,7 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.UnifyTag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import java.nio.file.Path;
@@ -36,7 +36,7 @@ public interface AlmostUnifiedPlatform {
 
     void bindRecipeHandlers(RecipeHandlerFactory factory);
 
-    Set<UnifyTag<Item>> getStoneStrataTags(List<String> stoneStrataIds);
+    Set<TagKey<Item>> getStoneStrataTags(List<String> stoneStrataIds);
 
     static <T> T load(Class<T> clazz) {
         T loadedService = ServiceLoader.load(clazz)

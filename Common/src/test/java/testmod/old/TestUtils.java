@@ -6,14 +6,18 @@ import com.almostreliable.unified.config.Defaults;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.*;
+import com.almostreliable.unified.utils.JsonCompare;
+import com.almostreliable.unified.utils.ReplacementMap;
+import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.TagOwnerships;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import testmod.old.FakeResourceKeyRegistry;
 import testmod.old.utils.TagMapTests;
 
 import java.util.HashMap;
@@ -73,11 +77,11 @@ public final class TestUtils {
     }
 
     public static final ResourceKey<Registry<Item>> FAKE_ITEM_REGISTRY = FakeResourceKeyRegistry.create("item");
-    public static final UnifyTag<Item> BRONZE_ORES_TAG = tag("forge:ores/bronze");
-    public static final UnifyTag<Item> INVAR_ORES_TAG = tag("forge:ores/invar");
-    public static final UnifyTag<Item> TIN_ORES_TAG = tag("forge:ores/tin");
-    public static final UnifyTag<Item> SILVER_ORES_TAG = tag("forge:ores/silver");
-    public static final List<UnifyTag<Item>> TEST_ALLOWED_TAGS = List.of(
+    public static final TagKey<Item> BRONZE_ORES_TAG = tag("forge:ores/bronze");
+    public static final TagKey<Item> INVAR_ORES_TAG = tag("forge:ores/invar");
+    public static final TagKey<Item> TIN_ORES_TAG = tag("forge:ores/tin");
+    public static final TagKey<Item> SILVER_ORES_TAG = tag("forge:ores/silver");
+    public static final List<TagKey<Item>> TEST_ALLOWED_TAGS = List.of(
             BRONZE_ORES_TAG,
             INVAR_ORES_TAG,
             TIN_ORES_TAG,
@@ -90,8 +94,8 @@ public final class TestUtils {
      * @param name the name of the tag
      * @return a TagKey for the given name
      */
-    public static UnifyTag<Item> tag(String name) {
-        return UnifyTag.item(new ResourceLocation(name));
+    public static TagKey<Item> tag(String name) {
+        return TagKey.create(Registries.ITEM, new ResourceLocation(name));
     }
 
     public static ResourceLocation mod1RL(String name) {

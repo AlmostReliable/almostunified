@@ -1,18 +1,19 @@
 package testmod.old.utils;
 
 import com.almostreliable.unified.utils.TagMap;
-import com.almostreliable.unified.utils.UnifyTag;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class TagMapTests {
 
     public static TagMap<Item> testTagMap() {
         TagMap<Item> tagMap = new TagMap<>();
-        UnifyTag<Item> bronzeOreTag = UnifyTag.item(new ResourceLocation("forge:ores/bronze"));
-        UnifyTag<Item> invarOreTag = UnifyTag.item(new ResourceLocation("forge:ores/invar"));
-        UnifyTag<Item> tinOreTag = UnifyTag.item(new ResourceLocation("forge:ores/tin"));
-        UnifyTag<Item> silverOreTag = UnifyTag.item(new ResourceLocation("forge:ores/silver"));
+        TagKey<Item> bronzeOreTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/bronze"));
+        TagKey<Item> invarOreTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/invar"));
+        TagKey<Item> tinOreTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/tin"));
+        TagKey<Item> silverOreTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/silver"));
 
         // TODO Tagmap builder pls
 //        tagMap.put(bronzeOreTag, TestUtils.mod1RL("bronze_ore"));

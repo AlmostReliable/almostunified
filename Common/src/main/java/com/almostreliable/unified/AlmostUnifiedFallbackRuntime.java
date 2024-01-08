@@ -6,9 +6,9 @@ import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.TagOwnerships;
-import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
@@ -41,19 +41,19 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
         build();
     }
 
+    private static StoneStrataHandler createStoneStrataHandler(UnifyConfig config) {
+        Set<TagKey<Item>> stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(config.getStoneStrata());
+        TagMap<Item> stoneStrataTagMap = TagMap.create(stoneStrataTags);
+        return StoneStrataHandler.create(config.getStoneStrata(), stoneStrataTags, stoneStrataTagMap);
+    }
+
     private void build() {
         unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-        Set<UnifyTag<Item>> unifyTags = unifyConfig.bakeTags();
+        Set<TagKey<Item>> unifyTags = unifyConfig.bakeTags();
         filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
         StoneStrataHandler stoneStrataHandler = createStoneStrataHandler(unifyConfig);
         TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
         replacementMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
-    }
-
-    private static StoneStrataHandler createStoneStrataHandler(UnifyConfig config) {
-        Set<UnifyTag<Item>> stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(config.getStoneStrata());
-        TagMap<Item> stoneStrataTagMap = TagMap.create(stoneStrataTags);
-        return StoneStrataHandler.create(config.getStoneStrata(), stoneStrataTags, stoneStrataTagMap);
     }
 
     @Override

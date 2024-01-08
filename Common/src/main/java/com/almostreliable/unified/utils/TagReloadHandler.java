@@ -12,6 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -218,7 +219,7 @@ public final class TagReloadHandler {
         return null;
     }
 
-    private static Set<ResourceLocation> applyItemTags(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, Holder<Item> dominantItemHolder, Set<UnifyTag<Item>> dominantItemTags, ResourceLocation item) {
+    private static Set<ResourceLocation> applyItemTags(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, Holder<Item> dominantItemHolder, Set<TagKey<Item>> dominantItemTags, ResourceLocation item) {
         var itemTags = globalTagMap.getTagsByEntry(item);
         Set<ResourceLocation> changed = new HashSet<>();
 
@@ -232,7 +233,7 @@ public final class TagReloadHandler {
         return changed;
     }
 
-    private static Set<ResourceLocation> applyBlockTags(UnifyConfig unifyConfig, TagMap<Block> blockTagMap, Holder<Block> dominantBlockHolder, Set<UnifyTag<Item>> dominantItemTags, ResourceLocation item) {
+    private static Set<ResourceLocation> applyBlockTags(UnifyConfig unifyConfig, TagMap<Block> blockTagMap, Holder<Block> dominantBlockHolder, Set<TagKey<Item>> dominantItemTags, ResourceLocation item) {
         var blockTags = blockTagMap.getTagsByEntry(item);
         Set<ResourceLocation> changed = new HashSet<>();
 
@@ -246,7 +247,7 @@ public final class TagReloadHandler {
         return changed;
     }
 
-    private static <T> boolean tryUpdatingRawTags(Holder<T> dominantHolder, UnifyTag<T> tag, Map<ResourceLocation, Collection<Holder<T>>> rawTags) {
+    private static <T> boolean tryUpdatingRawTags(Holder<T> dominantHolder, TagKey<T> tag, Map<ResourceLocation, Collection<Holder<T>>> rawTags) {
         var tagHolders = rawTags.get(tag.location());
         if (tagHolders == null) return false;
         if (tagHolders.contains(dominantHolder)) return false; // already present, no need to add it again

@@ -3,11 +3,12 @@ package com.almostreliable.unified.config;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.utils.JsonUtils;
-import com.almostreliable.unified.utils.UnifyTag;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -31,14 +32,14 @@ public class UnifyConfig extends Config {
     private final Map<ResourceLocation, Set<Pattern>> itemTagInheritance;
     private final Enum<TagInheritanceMode> blockTagInheritanceMode;
     private final Map<ResourceLocation, Set<Pattern>> blockTagInheritance;
-    private final Set<UnifyTag<Item>> ignoredTags;
+    private final Set<TagKey<Item>> ignoredTags;
     private final Set<Pattern> ignoredItems;
     private final Set<Pattern> ignoredRecipeTypes;
     private final Set<Pattern> ignoredRecipes;
     private final boolean hideJeiRei;
 
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
-    @Nullable private Set<UnifyTag<Item>> bakedTagsCache;
+    @Nullable private Set<TagKey<Item>> bakedTagsCache;
 
     public UnifyConfig(
             List<String> modPriorities,
@@ -52,7 +53,7 @@ public class UnifyConfig extends Config {
             Map<ResourceLocation, Set<Pattern>> itemTagInheritance,
             Enum<TagInheritanceMode> blockTagInheritanceMode,
             Map<ResourceLocation, Set<Pattern>> blockTagInheritance,
-            Set<UnifyTag<Item>> ignoredTags,
+            Set<TagKey<Item>> ignoredTags,
             Set<Pattern> ignoredItems,
             Set<Pattern> ignoredRecipeTypes,
             Set<Pattern> ignoredRecipes,
@@ -85,52 +86,37 @@ public class UnifyConfig extends Config {
         return Collections.unmodifiableList(stoneStrata);
     }
 
-    public Set<UnifyTag<Item>> bakeTags() {
-        return bakeTags($ -> true);
-    }
+    /**
+     * Checks all patterns against all dominant tags.
+     * <p>
+     * This implementation works based on the assumption that the mode is {@link TagInheritanceMode#ALLOW}.
+     * Flip the result if the mode is {@link TagInheritanceMode#DENY}.
+     *
+     * @param dominantTags The tags of the dominant item to check.
+     * @param patterns     The patterns to check against.
+     * @param <T>          The type of the dominant tags.
+     * @return Whether the dominant tags match any of the patterns.
+     */
+    private static <T> boolean checkPatterns(Set<TagKey<T>> dominantTags, @Nullable Set<Pattern> patterns) {
+        if (patterns == null) return false;
 
-    public Set<UnifyTag<Item>> bakeAndValidateTags(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
-        return bakeTags(tags::containsKey);
-    }
-
-    private Set<UnifyTag<Item>> bakeTags(Predicate<ResourceLocation> tagValidator) {
-        if (bakedTagsCache != null) {
-            return bakedTagsCache;
-        }
-
-        Set<UnifyTag<Item>> result = new HashSet<>();
-        Set<UnifyTag<Item>> wrongTags = new HashSet<>();
-
-        for (String tag : unbakedTags) {
-            for (String material : materials) {
-                String replace = tag.replace("{material}", material);
-                ResourceLocation asRL = ResourceLocation.tryParse(replace);
-                if (asRL == null) {
-                    AlmostUnified.LOG.warn("Could not bake tag <{}> with material <{}>", tag, material);
-                    continue;
+        for (var pattern : patterns) {
+            for (var dominantTag : dominantTags) {
+                if (pattern.matcher(dominantTag.location().toString()).matches()) {
+                    return true;
                 }
-
-                UnifyTag<Item> t = UnifyTag.item(asRL);
-                if (ignoredTags.contains(t)) continue;
-
-                if (!tagValidator.test(asRL)) {
-                    wrongTags.add(t);
-                    continue;
-                }
-
-                result.add(t);
             }
         }
 
-        if (!wrongTags.isEmpty()) {
-            AlmostUnified.LOG.warn(
-                    "The following tags are invalid and will be ignored: {}",
-                    wrongTags.stream().map(UnifyTag::location).collect(Collectors.toList())
-            );
-        }
+        return false;
+    }
 
-        bakedTagsCache = result;
-        return result;
+    public Set<TagKey<Item>> bakeTags() {
+        return bakeTags($ -> true);
+    }
+
+    public Set<TagKey<Item>> bakeAndValidateTags(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
+        return bakeTags(tags::containsKey);
     }
 
     // exposed for KubeJS binding
@@ -151,43 +137,58 @@ public class UnifyConfig extends Config {
         return Collections.unmodifiableMap(tagOwnerships);
     }
 
-    public boolean shouldInheritItemTag(UnifyTag<Item> itemTag, Set<UnifyTag<Item>> dominantTags) {
+    private Set<TagKey<Item>> bakeTags(Predicate<ResourceLocation> tagValidator) {
+        if (bakedTagsCache != null) {
+            return bakedTagsCache;
+        }
+
+        Set<TagKey<Item>> result = new HashSet<>();
+        Set<TagKey<Item>> wrongTags = new HashSet<>();
+
+        for (String tag : unbakedTags) {
+            for (String material : materials) {
+                String replace = tag.replace("{material}", material);
+                ResourceLocation asRL = ResourceLocation.tryParse(replace);
+                if (asRL == null) {
+                    AlmostUnified.LOG.warn("Could not bake tag <{}> with material <{}>", tag, material);
+                    continue;
+                }
+
+                var t = TagKey.create(Registries.ITEM, asRL);
+                if (ignoredTags.contains(t)) continue;
+
+                if (!tagValidator.test(asRL)) {
+                    wrongTags.add(t);
+                    continue;
+                }
+
+                result.add(t);
+            }
+        }
+
+        if (!wrongTags.isEmpty()) {
+            AlmostUnified.LOG.warn(
+                    "The following tags are invalid and will be ignored: {}",
+                    wrongTags.stream().map(TagKey::location).collect(Collectors.toList())
+            );
+        }
+
+        bakedTagsCache = result;
+        return result;
+    }
+
+    public boolean shouldInheritItemTag(TagKey<Item> itemTag, Set<TagKey<Item>> dominantTags) {
         var patterns = itemTagInheritance.get(itemTag.location());
         boolean result = checkPatterns(dominantTags, patterns);
         // noinspection SimplifiableConditionalExpression
         return itemTagInheritanceMode == TagInheritanceMode.ALLOW ? result : !result;
     }
 
-    public boolean shouldInheritBlockTag(UnifyTag<Block> itemTag, Set<UnifyTag<Item>> dominantTags) {
+    public boolean shouldInheritBlockTag(TagKey<Block> itemTag, Set<TagKey<Item>> dominantTags) {
         var patterns = blockTagInheritance.get(itemTag.location());
         boolean result = checkPatterns(dominantTags, patterns);
         // noinspection SimplifiableConditionalExpression
         return blockTagInheritanceMode == TagInheritanceMode.ALLOW ? result : !result;
-    }
-
-    /**
-     * Checks all patterns against all dominant tags.
-     * <p>
-     * This implementation works based on the assumption that the mode is {@link TagInheritanceMode#ALLOW}.
-     * Flip the result if the mode is {@link TagInheritanceMode#DENY}.
-     *
-     * @param dominantTags The tags of the dominant item to check.
-     * @param patterns     The patterns to check against.
-     * @param <T>          The type of the dominant tags.
-     * @return Whether the dominant tags match any of the patterns.
-     */
-    private static <T> boolean checkPatterns(Set<UnifyTag<T>> dominantTags, @Nullable Set<Pattern> patterns) {
-        if (patterns == null) return false;
-
-        for (var pattern : patterns) {
-            for (var dominantTag : dominantTags) {
-                if (pattern.matcher(dominantTag.location().toString()).matches()) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     public boolean includeItem(ResourceLocation item) {
@@ -296,10 +297,10 @@ public class UnifyConfig extends Config {
             Map<ResourceLocation, Set<Pattern>> blockTagInheritance = deserializePatternsForLocations(json,
                     BLOCK_TAG_INHERITANCE);
 
-            Set<UnifyTag<Item>> ignoredTags = safeGet(() -> JsonUtils
+            Set<TagKey<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
                     .stream()
-                    .map(s -> UnifyTag.item(new ResourceLocation(s)))
+                    .map(s -> TagKey.create(Registries.ITEM, new ResourceLocation(s)))
                     .collect(Collectors.toSet()), new HashSet<>());
             Set<Pattern> ignoredItems = deserializePatterns(json, IGNORED_ITEMS, List.of());
             Set<Pattern> ignoredRecipeTypes = deserializePatterns(json, IGNORED_RECIPE_TYPES,
@@ -402,7 +403,7 @@ public class UnifyConfig extends Config {
             json.add(IGNORED_TAGS,
                     JsonUtils.toArray(config.ignoredTags
                             .stream()
-                            .map(UnifyTag::location)
+                            .map(TagKey::location)
                             .map(ResourceLocation::toString)
                             .toList()));
             serializePatterns(json, IGNORED_ITEMS, config.ignoredItems);

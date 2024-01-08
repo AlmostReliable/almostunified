@@ -2,11 +2,11 @@ package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.config.UnifyConfig;
-import com.almostreliable.unified.utils.UnifyTag;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -20,7 +20,7 @@ public final class AlmostKube {
 
     @Nullable
     public static String getPreferredTagForItem(ItemStack stack) {
-        UnifyTag<Item> tag = AlmostUnified
+        var tag = AlmostUnified
                 .getRuntime()
                 .getReplacementMap()
                 .orElseThrow(AlmostKube::notLoadedException)
@@ -38,12 +38,12 @@ public final class AlmostKube {
     }
 
     public static ItemStack getPreferredItemForTag(ResourceLocation tag) {
-        UnifyTag<Item> asUnifyTag = UnifyTag.item(tag);
+        var tagKey = TagKey.create(Registries.ITEM, tag);
         ResourceLocation item = AlmostUnified
                 .getRuntime()
                 .getReplacementMap()
                 .orElseThrow(AlmostKube::notLoadedException)
-                .getPreferredItemForTag(asUnifyTag, $ -> true);
+                .getPreferredItemForTag(tagKey, $ -> true);
         return BuiltInRegistries.ITEM.get(item).getDefaultInstance();
     }
 
@@ -59,12 +59,12 @@ public final class AlmostKube {
     }
 
     public static Set<String> getItemIds(ResourceLocation tag) {
-        UnifyTag<Item> asUnifyTag = UnifyTag.item(tag);
+        var tagKey = TagKey.create(Registries.ITEM, tag);
         return AlmostUnified
                 .getRuntime()
                 .getFilteredTagMap()
                 .orElseThrow(AlmostKube::notLoadedException)
-                .getEntriesByTag(asUnifyTag)
+                .getEntriesByTag(tagKey)
                 .stream()
                 .map(ResourceLocation::toString)
                 .collect(Collectors.toSet());

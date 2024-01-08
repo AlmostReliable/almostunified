@@ -12,7 +12,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class ReplacementMap {
@@ -32,8 +35,8 @@ public class ReplacementMap {
     }
 
     @Nullable
-    public UnifyTag<Item> getPreferredTagForItem(ResourceLocation item) {
-        Collection<UnifyTag<Item>> tags = tagMap.getTagsByEntry(item);
+    public TagKey<Item> getPreferredTagForItem(ResourceLocation item) {
+        var tags = tagMap.getTagsByEntry(item);
 
         if (tags.isEmpty()) {
             return null;
@@ -43,7 +46,7 @@ public class ReplacementMap {
             AlmostUnified.LOG.warn(
                     "Item '{}' has multiple preferred tags '{}' for recipe replacement. This needs to be manually fixed by the user.",
                     item,
-                    tags.stream().map(UnifyTag::location).toList()
+                    tags.stream().map(TagKey::location).toList()
             );
             warnings.add(item);
         }
@@ -53,7 +56,7 @@ public class ReplacementMap {
 
     @Nullable
     public ResourceLocation getReplacementForItem(ResourceLocation item) {
-        UnifyTag<Item> t = getPreferredTagForItem(item);
+        var t = getPreferredTagForItem(item);
         if (t == null) {
             return null;
         }
@@ -67,7 +70,7 @@ public class ReplacementMap {
     }
 
     @Nullable
-    public ResourceLocation getPreferredItemForTag(UnifyTag<Item> tag, Predicate<ResourceLocation> itemFilter) {
+    public ResourceLocation getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
         var tagToLookup = tagOwnerships.getOwnerByTag(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
@@ -103,7 +106,7 @@ public class ReplacementMap {
      * @return Whether the item is in one of the unify tags of the ingredient.
      */
     public boolean isItemInUnifiedIngredient(Ingredient ingred, ItemStack item) {
-        Set<UnifyTag<Item>> checkedTags = new HashSet<>();
+        Set<TagKey<Item>> checkedTags = new HashSet<>();
 
         for (ItemStack ingredItem : ingred.getItems()) {
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(ingredItem.getItem());
@@ -122,7 +125,7 @@ public class ReplacementMap {
     }
 
     @Nullable
-    private ResourceLocation getOverrideForTag(UnifyTag<Item> tag, List<ResourceLocation> items) {
+    private ResourceLocation getOverrideForTag(TagKey<Item> tag, List<ResourceLocation> items) {
         String priorityOverride = unifyConfig.getPriorityOverrides().get(tag.location());
         if (priorityOverride != null) {
             ResourceLocation item = findItemByNamespace(items, priorityOverride);

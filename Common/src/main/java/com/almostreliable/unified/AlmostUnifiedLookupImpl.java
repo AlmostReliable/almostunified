@@ -1,7 +1,6 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.AlmostUnifiedLookup;
-import com.almostreliable.unified.utils.UnifyTag;
 import com.google.auto.service.AutoService;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -37,11 +36,10 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     @Nullable
     @Override
     public Item getPreferredItemForTag(TagKey<Item> tag) {
-        UnifyTag<Item> asUnifyTag = UnifyTag.item(tag.location());
         return AlmostUnified
                 .getRuntime()
                 .getReplacementMap()
-                .map(rm -> rm.getPreferredItemForTag(asUnifyTag, $ -> true))
+                .map(rm -> rm.getPreferredItemForTag(tag, $ -> true))
                 .flatMap(BuiltInRegistries.ITEM::getOptional)
                 .orElse(null);
     }
@@ -60,12 +58,11 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
 
     @Override
     public Set<Item> getPotentialItems(TagKey<Item> tag) {
-        UnifyTag<Item> asUnifyTag = UnifyTag.item(tag.location());
         return AlmostUnified
                 .getRuntime()
                 .getFilteredTagMap()
                 .map(tagMap -> tagMap
-                        .getEntriesByTag(asUnifyTag)
+                        .getEntriesByTag(tag)
                         .stream()
                         .flatMap(rl -> BuiltInRegistries.ITEM.getOptional(rl).stream())
                         .collect(Collectors.toSet()))

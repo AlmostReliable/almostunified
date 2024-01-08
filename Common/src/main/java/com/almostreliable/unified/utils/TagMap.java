@@ -17,8 +17,8 @@ import java.util.function.Predicate;
 
 public class TagMap<T> {
 
-    private final Map<UnifyTag<T>, Set<ResourceLocation>> tagsToEntries = new HashMap<>();
-    private final Map<ResourceLocation, Set<UnifyTag<T>>> entriesToTags = new HashMap<>();
+    private final Map<TagKey<T>, Set<ResourceLocation>> tagsToEntries = new HashMap<>();
+    private final Map<ResourceLocation, Set<TagKey<T>>> entriesToTags = new HashMap<>();
 
     @VisibleForTesting
     public TagMap() {}
@@ -32,17 +32,16 @@ public class TagMap<T> {
      * <p>
      * For the server, use {@link #createFromItemTags(Map)} instead.
      *
-     * @param unifyTags The unify tags.
+     * @param tags The unify tags.
      * @return A new tag map.
      */
-    public static TagMap<Item> create(Set<UnifyTag<Item>> unifyTags) {
+    public static TagMap<Item> create(Set<TagKey<Item>> tags) {
         TagMap<Item> tagMap = new TagMap<>();
 
-        unifyTags.forEach(ut -> {
-            TagKey<Item> asTagKey = TagKey.create(Registries.ITEM, ut.location());
-            BuiltInRegistries.ITEM.getTagOrEmpty(asTagKey).forEach(holder -> {
+        tags.forEach(tag -> {
+            BuiltInRegistries.ITEM.getTagOrEmpty(tag).forEach(holder -> {
                 ResourceLocation key = BuiltInRegistries.ITEM.getKey(holder.value());
-                tagMap.put(ut, key);
+                tagMap.put(tag, key);
             });
         });
 
@@ -64,7 +63,7 @@ public class TagMap<T> {
         TagMap<Item> tagMap = new TagMap<>();
 
         for (var entry : tags.entrySet()) {
-            UnifyTag<Item> unifyTag = UnifyTag.item(entry.getKey());
+            var unifyTag = TagKey.create(Registries.ITEM, entry.getKey());
             fillEntries(tagMap, entry.getValue(), unifyTag, BuiltInRegistries.ITEM);
         }
 
@@ -83,7 +82,7 @@ public class TagMap<T> {
         TagMap<Block> tagMap = new TagMap<>();
 
         for (var entry : tags.entrySet()) {
-            UnifyTag<Block> unifyTag = UnifyTag.block(entry.getKey());
+            var unifyTag = TagKey.create(Registries.BLOCK, entry.getKey());
             fillEntries(tagMap, entry.getValue(), unifyTag, BuiltInRegistries.BLOCK);
         }
 
@@ -98,7 +97,7 @@ public class TagMap<T> {
      * @param unifyTag The unify tag to use.
      * @param registry The registry to use.
      */
-    private static <T> void fillEntries(TagMap<T> tagMap, Collection<Holder<T>> holders, UnifyTag<T> unifyTag, Registry<T> registry) {
+    private static <T> void fillEntries(TagMap<T> tagMap, Collection<Holder<T>> holders, TagKey<T> unifyTag, Registry<T> registry) {
         for (var holder : holders) {
             holder
                     .unwrapKey()
@@ -115,7 +114,7 @@ public class TagMap<T> {
      * @param entryFilter A filter to determine which entries to include.
      * @return A filtered copy of this tag map.
      */
-    public TagMap<T> filtered(Predicate<UnifyTag<T>> tagFilter, Predicate<ResourceLocation> entryFilter) {
+    public TagMap<T> filtered(Predicate<TagKey<T>> tagFilter, Predicate<ResourceLocation> entryFilter) {
         TagMap<T> tagMap = new TagMap<>();
 
         tagsToEntries.forEach((tag, items) -> {
@@ -136,15 +135,15 @@ public class TagMap<T> {
         return entriesToTags.size();
     }
 
-    public Set<ResourceLocation> getEntriesByTag(UnifyTag<T> tag) {
+    public Set<ResourceLocation> getEntriesByTag(TagKey<T> tag) {
         return Collections.unmodifiableSet(tagsToEntries.getOrDefault(tag, Collections.emptySet()));
     }
 
-    public Set<UnifyTag<T>> getTagsByEntry(ResourceLocation entry) {
+    public Set<TagKey<T>> getTagsByEntry(ResourceLocation entry) {
         return Collections.unmodifiableSet(entriesToTags.getOrDefault(entry, Collections.emptySet()));
     }
 
-    public Set<UnifyTag<T>> getTags() {
+    public Set<TagKey<T>> getTags() {
         return Collections.unmodifiableSet(tagsToEntries.keySet());
     }
 
@@ -157,7 +156,7 @@ public class TagMap<T> {
      * @param tag   The tag.
      * @param entry The entry.
      */
-    protected void put(UnifyTag<T> tag, ResourceLocation entry) {
+    protected void put(TagKey<T> tag, ResourceLocation entry) {
         tagsToEntries.computeIfAbsent(tag, k -> new HashSet<>()).add(entry);
         entriesToTags.computeIfAbsent(entry, k -> new HashSet<>()).add(tag);
     }

@@ -4,13 +4,13 @@ import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.ReplacementMap;
-import com.almostreliable.unified.utils.UnifyTag;
 import com.almostreliable.unified.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
@@ -39,7 +39,7 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
-    public ResourceLocation getPreferredItemForTag(@Nullable UnifyTag<Item> tag, Predicate<ResourceLocation> filter) {
+    public ResourceLocation getPreferredItemForTag(@Nullable TagKey<Item> tag, Predicate<ResourceLocation> filter) {
         if (tag == null) {
             return null;
         }
@@ -49,7 +49,7 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
-    public UnifyTag<Item> getPreferredTagForItem(@Nullable ResourceLocation item) {
+    public TagKey<Item> getPreferredTagForItem(@Nullable ResourceLocation item) {
         if (item == null) {
             return null;
         }
@@ -82,7 +82,7 @@ public class RecipeContextImpl implements RecipeContext {
             tryCreateIngredientReplacement(object.get(RecipeConstants.INGREDIENT));
 
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
-                UnifyTag<Item> tag = Utils.toItemTag(primitive.getAsString());
+                var tag = Utils.toItemTag(primitive.getAsString());
                 var ownerTag = replacementMap.getTagOwnerships().getOwnerByTag(tag);
                 if (ownerTag != null) {
                     object.addProperty(RecipeConstants.TAG, ownerTag.location().toString());
@@ -91,7 +91,7 @@ public class RecipeContextImpl implements RecipeContext {
 
             if (object.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {
                 ResourceLocation item = ResourceLocation.tryParse(primitive.getAsString());
-                UnifyTag<Item> tag = getPreferredTagForItem(item);
+                var tag = getPreferredTagForItem(item);
                 if (tag != null) {
                     object.remove(RecipeConstants.ITEM);
                     object.addProperty(RecipeConstants.TAG, tag.location().toString());

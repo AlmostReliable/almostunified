@@ -3,9 +3,10 @@ package com.almostreliable.unified;
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.compat.*;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.UnifyTag;
 import com.google.auto.service.AutoService;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
@@ -68,11 +69,11 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
     }
 
     @Override
-    public Set<UnifyTag<Item>> getStoneStrataTags(List<String> stoneStrataIds) {
+    public Set<TagKey<Item>> getStoneStrataTags(List<String> stoneStrataIds) {
         return stoneStrataIds
                 .stream()
                 .map(id -> new ResourceLocation("forge", "ores_in_ground/" + id))
-                .map(UnifyTag::item)
+                .map(id -> TagKey.create(Registries.ITEM, id))
                 .collect(Collectors.toSet());
     }
 }
