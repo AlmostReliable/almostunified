@@ -1,13 +1,4 @@
-package com.almostreliable.unified.util;
-
-import com.almostreliable.unified.TestUtils;
-import com.almostreliable.unified.utils.JsonCompare;
-import com.google.gson.JsonObject;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+package testmod.old.util;
 
 
 public class JsonCompareTest {

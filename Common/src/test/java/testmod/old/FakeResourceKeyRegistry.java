@@ -1,4 +1,4 @@
-package com.almostreliable.unified;
+package testmod.old;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;

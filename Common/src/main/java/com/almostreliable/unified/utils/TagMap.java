@@ -1,5 +1,6 @@
 package com.almostreliable.unified.utils;
 
+import com.google.common.annotations.VisibleForTesting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,7 +20,8 @@ public class TagMap<T> {
     private final Map<UnifyTag<T>, Set<ResourceLocation>> tagsToEntries = new HashMap<>();
     private final Map<ResourceLocation, Set<UnifyTag<T>>> entriesToTags = new HashMap<>();
 
-    protected TagMap() {}
+    @VisibleForTesting
+    public TagMap() {}
 
     /**
      * Creates an item tag map from a set of item unify tags.

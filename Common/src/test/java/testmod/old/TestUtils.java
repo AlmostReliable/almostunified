@@ -1,5 +1,6 @@
-package com.almostreliable.unified;
+package testmod.old;
 
+import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Defaults;
 import com.almostreliable.unified.config.UnifyConfig;
@@ -12,6 +13,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import testmod.old.FakeResourceKeyRegistry;
+import testmod.old.utils.TagMapTests;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,6 +1,7 @@
-package com.almostreliable.unified.utils;
+package testmod.old.utils;
 
-import com.almostreliable.unified.TestUtils;
+import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.UnifyTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -13,21 +14,22 @@ public class TagMapTests {
         UnifyTag<Item> tinOreTag = UnifyTag.item(new ResourceLocation("forge:ores/tin"));
         UnifyTag<Item> silverOreTag = UnifyTag.item(new ResourceLocation("forge:ores/silver"));
 
-        tagMap.put(bronzeOreTag, TestUtils.mod1RL("bronze_ore"));
-        tagMap.put(bronzeOreTag, TestUtils.mod2RL("bronze_ore"));
-        tagMap.put(bronzeOreTag, TestUtils.mod3RL("bronze_ore"));
-
-        tagMap.put(invarOreTag, TestUtils.mod1RL("invar_ore"));
-        tagMap.put(invarOreTag, TestUtils.mod2RL("invar_ore"));
-        tagMap.put(invarOreTag, TestUtils.mod3RL("invar_ore"));
-        tagMap.put(invarOreTag, TestUtils.mod4RL("invar_ore"));
-
-        tagMap.put(tinOreTag, TestUtils.mod3RL("tin_ore"));
-        tagMap.put(tinOreTag, TestUtils.mod4RL("tin_ore"));
-
-        tagMap.put(silverOreTag, TestUtils.mod3RL("silver_ore"));
-        tagMap.put(silverOreTag, TestUtils.mod4RL("silver_ore"));
-        tagMap.put(silverOreTag, TestUtils.mod5RL("silver_ore"));
+        // TODO Tagmap builder pls
+//        tagMap.put(bronzeOreTag, TestUtils.mod1RL("bronze_ore"));
+//        tagMap.put(bronzeOreTag, TestUtils.mod2RL("bronze_ore"));
+//        tagMap.put(bronzeOreTag, TestUtils.mod3RL("bronze_ore"));
+//
+//        tagMap.put(invarOreTag, TestUtils.mod1RL("invar_ore"));
+//        tagMap.put(invarOreTag, TestUtils.mod2RL("invar_ore"));
+//        tagMap.put(invarOreTag, TestUtils.mod3RL("invar_ore"));
+//        tagMap.put(invarOreTag, TestUtils.mod4RL("invar_ore"));
+//
+//        tagMap.put(tinOreTag, TestUtils.mod3RL("tin_ore"));
+//        tagMap.put(tinOreTag, TestUtils.mod4RL("tin_ore"));
+//
+//        tagMap.put(silverOreTag, TestUtils.mod3RL("silver_ore"));
+//        tagMap.put(silverOreTag, TestUtils.mod4RL("silver_ore"));
+//        tagMap.put(silverOreTag, TestUtils.mod5RL("silver_ore"));
         return tagMap;
     }
 

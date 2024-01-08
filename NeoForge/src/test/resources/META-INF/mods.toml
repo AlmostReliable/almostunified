@@ -20,3 +20,6 @@ type = "required"
 versionRange = "[1,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[mixins]]
+config = "testmod.mixins.json"

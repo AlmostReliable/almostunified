@@ -8,5 +8,6 @@
     "main": [
       "testmod.FabricTest"
     ]
-  }
+  },
+  "mixins": ["testmod.mixins.json"]
 }
