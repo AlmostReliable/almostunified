@@ -8,6 +8,7 @@ public class ExampleTest {
 
     @SimpleGameTest
     public void testMaddinCanRun() {
+        // Currently safe check that gradle conf is correct :')
         assertTrue(true);
     }
 

@@ -40,14 +40,6 @@ configurations.forEach {
     println(it)
 }
 
-val testForgeRuntimeLibrary by configurations.creating {
-    extendsFrom(configurations.getByName("forgeDependencies"))
-    extendsFrom(configurations.getByName("minecraftRuntimeLibraries"))
-    extendsFrom(configurations.getByName("forgeExtra"))
-}
-
-sourceSets["test"].runtimeClasspath += testForgeRuntimeLibrary
-
 dependencies {
     // loader
     neoForge("net.neoforged:neoforge:${neoforgeVersion}")
@@ -57,7 +49,7 @@ dependencies {
     shadowCommon(project(":Common", "transformProductionNeoForge")) { isTransitive = false }
     testImplementation(project(":Common", "namedElements"))
 
-    testForgeRuntimeLibrary("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    forgeRuntimeLibrary("org.junit.jupiter:junit-jupiter-api:5.8.1")
 
      // compile time mods
 //     modCompileOnly("mezz.jei:jei-$minecraftVersion-forge-api:$jeiVersion") { // required for common jei plugin
