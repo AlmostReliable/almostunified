@@ -1,6 +1,7 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.api.recipe.RecipeData;
 import com.almostreliable.unified.config.DuplicationConfig;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
@@ -219,13 +220,28 @@ public class RecipeTransformer {
      */
     public void unifyRecipe(RecipeLink recipe) {
         try {
-            RecipeContextImpl ctx = new RecipeContextImpl(recipe.getOriginal(), replacementMap);
+            var recipeData = new RecipeData() {
+
+                @Override
+                public ResourceLocation getType() {
+                    String type = recipe.getOriginal().get("type").getAsString();
+                    return new ResourceLocation(type);
+                }
+
+                @Override
+                public boolean hasProperty(String property) {
+                    return recipe.getOriginal().has(property);
+                }
+            };
+
             RecipeUnifierBuilderImpl builder = new RecipeUnifierBuilderImpl();
-            factory.fillUnifier(builder, ctx);
+            factory.fillUnifier(builder, recipeData);
+            RecipeContextImpl ctx = new RecipeContextImpl(replacementMap);
             JsonObject result = builder.unify(recipe.getOriginal(), ctx);
             if (result != null) {
                 recipe.setUnified(result);
             }
+
             propertiesLogger.log(recipe.getType(), recipe.getOriginal(), builder.getKeys());
         } catch (Exception e) {
             AlmostUnified.LOG.warn("Error unifying recipe '{}': {}", recipe.getId(), e.getMessage());

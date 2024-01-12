@@ -5,6 +5,7 @@ import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.Utils;
+import com.almostreliable.unified.utils.json.JsonCursor;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,10 +21,8 @@ import java.util.function.Predicate;
 public class RecipeContextImpl implements RecipeContext {
 
     private final ReplacementMap replacementMap;
-    private final JsonObject originalRecipe;
 
-    public RecipeContextImpl(JsonObject json, ReplacementMap replacementMap) {
-        this.originalRecipe = json;
+    public RecipeContextImpl(ReplacementMap replacementMap) {
         this.replacementMap = replacementMap;
     }
 
@@ -156,13 +155,95 @@ public class RecipeContextImpl implements RecipeContext {
     }
 
     @Override
-    public ResourceLocation getType() {
-        String type = originalRecipe.get("type").getAsString();
-        return new ResourceLocation(type);
+    public void replaceBasicInput(JsonCursor cursor) {
+        if (cursor.isArray()) {
+            cursor.walk(this::replaceBasicInput);
+            return;
+        }
+
+        if (cursor.isObject()) {
+            cursor.next(RecipeConstants.VALUE).ifPresent(this::replaceBasicInput);
+            cursor.next(RecipeConstants.BASE).ifPresent(this::replaceBasicInput);
+            cursor.next(RecipeConstants.INGREDIENT).ifPresent(this::replaceBasicInput);
+            cursor.next(RecipeConstants.TAG).ifPresent(this::tryReplaceTagOwnership);
+            tryReplaceItemWithTag(cursor);
+        }
     }
 
     @Override
-    public boolean hasProperty(String property) {
-        return originalRecipe.has(property);
+    public void replaceBasicOutput(JsonCursor cursor) {
+        replaceBasicOutput(cursor, true, RecipeConstants.ITEM);
+    }
+
+    @Override
+    public void replaceBasicOutput(JsonCursor cursor, boolean replaceTag, String... keyLookups) {
+        if (cursor.isPrimitive()) {
+            var item = ResourceLocation.tryParse(cursor.valueAsString());
+            var replacement = getReplacementForItem(item);
+            if (replacement != null) {
+                cursor.set(replacement.toString());
+            }
+
+            return;
+        }
+
+        if (cursor.isArray()) {
+            cursor.walk(c -> replaceBasicOutput(c, replaceTag, keyLookups));
+            return;
+        }
+
+        if (cursor.isObject()) {
+            for (String key : keyLookups) {
+                cursor.next(key).ifPresent(c -> replaceBasicOutput(c, replaceTag, keyLookups));
+            }
+
+            if (replaceTag) {
+                tryReplaceTagWithItem(cursor);
+            }
+        }
+    }
+
+    private void tryReplaceItemWithTag(JsonCursor cursor) {
+        if (!(cursor.value() instanceof JsonObject obj)) {
+            return;
+        }
+
+        TagKey<Item> tag = cursor
+                .next(RecipeConstants.ITEM)
+                .filter(JsonCursor::isPrimitive)
+                .map(c -> getPreferredTagForItem(ResourceLocation.tryParse(c.valueAsString())))
+                .orElse(null);
+        if (tag != null) {
+            obj.remove(RecipeConstants.ITEM);
+            obj.addProperty(RecipeConstants.TAG, tag.location().toString());
+        }
+    }
+
+    private void tryReplaceTagWithItem(JsonCursor cursor) {
+        if (!(cursor.value() instanceof JsonObject obj)) {
+            return;
+        }
+
+        var itemId = cursor
+                .next(RecipeConstants.TAG)
+                .filter(JsonCursor::isPrimitive)
+                .map(primitive -> getPreferredItemForTag(Utils.toItemTag(primitive.valueAsString()), $ -> true))
+                .orElse(null);
+        if (itemId != null) {
+            obj.remove(RecipeConstants.TAG);
+            obj.addProperty(RecipeConstants.ITEM, itemId.toString());
+        }
+    }
+
+    private void tryReplaceTagOwnership(JsonCursor cursor) {
+        if (!cursor.isPrimitive()) {
+            return;
+        }
+
+        var tag = Utils.toItemTag(cursor.valueAsString());
+        var owner = replacementMap.getTagOwnerships().getOwnerByTag(tag);
+        if (owner != null) {
+            cursor.set(owner.location().toString());
+        }
     }
 }

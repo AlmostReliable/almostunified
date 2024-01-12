@@ -1,5 +1,6 @@
 package com.almostreliable.unified.api.recipe;
 
+import com.almostreliable.unified.utils.json.JsonCursor;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -28,11 +29,9 @@ public interface RecipeContext {
     @Nullable
     JsonElement createResultReplacement(@Nullable JsonElement element, boolean includeTagCheck, String... lookupKeys);
 
-    ResourceLocation getType();
+    void replaceBasicInput(JsonCursor cursor);
 
-    boolean hasProperty(String property);
+    void replaceBasicOutput(JsonCursor cursor);
 
-    default String getModId() {
-        return getType().getNamespace();
-    }
+    void replaceBasicOutput(JsonCursor cursor, boolean replaceTag, String... keyLookups);
 }
