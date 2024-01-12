@@ -8,7 +8,7 @@ import net.minecraft.world.item.Item;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public final class StoneStrataHandler {
+public final class StoneStrataLookupImpl implements StoneStrataLookup {
 
     private final List<String> stoneStrata;
     private final Pattern tagMatcher;
@@ -19,7 +19,7 @@ public final class StoneStrataHandler {
     private final Map<TagKey<Item>, Boolean> stoneStrataTagCache;
     private final Map<ResourceLocation, String> stoneStrataCache;
 
-    private StoneStrataHandler(List<String> stoneStrata, Pattern tagMatcher, TagMap<Item> stoneStrataTagMap) {
+    private StoneStrataLookupImpl(List<String> stoneStrata, Pattern tagMatcher, TagMap<Item> stoneStrataTagMap) {
         this.stoneStrata = createSortedStoneStrata(stoneStrata);
         this.tagMatcher = tagMatcher;
         this.stoneStrataTagMap = stoneStrataTagMap;
@@ -40,23 +40,17 @@ public final class StoneStrataHandler {
         return stoneStrata.stream().sorted(Comparator.comparingInt(String::length).reversed()).toList();
     }
 
-    public static StoneStrataHandler create(List<String> stoneStrataIds, Set<TagKey<Item>> stoneStrataTags, TagMap<Item> tagMap) {
+    public static StoneStrataLookup create(List<String> stoneStrataIds, Set<TagKey<Item>> stoneStrataTags, TagMap<Item> tagMap) {
         var stoneStrataTagMap = tagMap.filtered(stoneStrataTags::contains, item -> true);
         Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
             case FORGE -> "forge:ores/.+";
             case FABRIC -> "(c:ores/.+|c:.+_ores)";
         });
-        return new StoneStrataHandler(stoneStrataIds, tagMatcher, stoneStrataTagMap);
+        return new StoneStrataLookupImpl(stoneStrataIds, tagMatcher, stoneStrataTagMap);
     }
 
-    /**
-     * Returns the stone strata from the given item. Assumes that the item has a stone strata tag.
-     * Use {@link #isStoneStrataTag(TagKey)} to ensure this requirement.
-     *
-     * @param item The item to get the stone strata from.
-     * @return The stone strata of the item. Clean stone strata returns an empty string for later sorting as a
-     * fallback variant.
-     */
+
+    @Override
     public String getStoneStrata(ResourceLocation item) {
         return stoneStrataCache.computeIfAbsent(item, this::computeStoneStrata);
     }
@@ -100,6 +94,7 @@ public final class StoneStrataHandler {
         return "";
     }
 
+    @Override
     public boolean isStoneStrataTag(TagKey<Item> tag) {
         return stoneStrataTagCache.computeIfAbsent(tag, t -> tagMatcher.matcher(t.location().toString()).matches());
     }

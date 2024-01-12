@@ -21,14 +21,14 @@ public class ReplacementMapImpl implements ReplacementMap {
 
     private final ModPriorities modPriorities;
     private final TagMap<Item> tagMap;
-    private final StoneStrataHandler stoneStrataHandler;
+    private final StoneStrataLookup stoneStrataLookup;
     private final TagOwnerships tagOwnerships;
     private final Set<ResourceLocation> warnings;
 
-    public ReplacementMapImpl(ModPriorities modPriorities, TagMap<Item> tagMap, StoneStrataHandler stoneStrataHandler, TagOwnerships tagOwnerships) {
+    public ReplacementMapImpl(ModPriorities modPriorities, TagMap<Item> tagMap, StoneStrataLookup stoneStrataLookup, TagOwnerships tagOwnerships) {
         this.tagMap = tagMap;
         this.modPriorities = modPriorities;
-        this.stoneStrataHandler = stoneStrataHandler;
+        this.stoneStrataLookup = stoneStrataLookup;
         this.tagOwnerships = tagOwnerships;
         this.warnings = new HashSet<>();
     }
@@ -62,9 +62,9 @@ public class ReplacementMapImpl implements ReplacementMap {
             return null;
         }
 
-        if (stoneStrataHandler.isStoneStrataTag(t)) {
-            String stone = stoneStrataHandler.getStoneStrata(item);
-            return getPreferredItemForTag(t, i -> stone.equals(stoneStrataHandler.getStoneStrata(i)));
+        if (stoneStrataLookup.isStoneStrataTag(t)) {
+            String stone = stoneStrataLookup.getStoneStrata(item);
+            return getPreferredItemForTag(t, i -> stone.equals(stoneStrataLookup.getStoneStrata(i)));
         }
 
         return getPreferredItemForTag(t);

@@ -1,7 +1,8 @@
 package testmod.old;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.api.StoneStrataHandler;
+import com.almostreliable.unified.api.StoneStrataLookup;
+import com.almostreliable.unified.api.StoneStrataLookupImpl;
 import com.almostreliable.unified.config.Defaults;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.TagMapImpl;
@@ -88,8 +89,8 @@ public final class TestUtils {
         return new ResourceLocation(TEST_MOD_5, name);
     }
 
-    public static StoneStrataHandler createTestStrataHandler() {
-        return StoneStrataHandler.create(
+    public static StoneStrataLookup createTestStrataHandler() {
+        return StoneStrataLookupImpl.create(
                 List.of(),
                 Set.of(),
                 TagMapImpl.create(Set.of())
