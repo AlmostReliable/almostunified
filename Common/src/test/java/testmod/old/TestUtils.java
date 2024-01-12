@@ -3,28 +3,17 @@ package testmod.old;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Defaults;
-import com.almostreliable.unified.config.UnifyConfig;
-import com.almostreliable.unified.recipe.RecipeTransformer;
-import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.JsonCompare;
-import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
-import com.almostreliable.unified.utils.TagOwnerships;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import testmod.old.utils.TagMapTests;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 public final class TestUtils {
 
@@ -40,25 +29,6 @@ public final class TestUtils {
             TEST_MOD_3,
             TEST_MOD_4,
             TEST_MOD_5
-    );
-
-    public static final UnifyConfig DEFAULT_UNIFY_CONFIG = new UnifyConfig(
-            Defaults.STONE_STRATA,
-            Defaults.MATERIALS,
-            Defaults.getTags(AlmostUnifiedPlatform.Platform.FORGE),
-            TEST_MOD_PRIORITIES,
-            new HashMap<>(),
-            new HashMap<>(),
-            new HashMap<>(),
-            UnifyConfig.TagInheritanceMode.ALLOW,
-            new HashMap<>(),
-            UnifyConfig.TagInheritanceMode.ALLOW,
-            new HashMap<>(),
-            new HashSet<>(),
-            new HashSet<>(),
-            new HashSet<>(),
-            new HashSet<>(),
-            true
     );
 
     public static final JsonCompare.CompareSettings DEFAULT_COMPARE_SETTINGS = getDefaultCompareSettings();
@@ -126,32 +96,32 @@ public final class TestUtils {
         );
     }
 
-    public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {
-        TagOwnerships tagOwnerships = new TagOwnerships(
-                DEFAULT_UNIFY_CONFIG.bakeTags(),
-                DEFAULT_UNIFY_CONFIG.getTagOwnerships()
-        );
-        ReplacementMap map = new ReplacementMap(
-                DEFAULT_UNIFY_CONFIG,
-                TagMapTests.testTagMap(),
-                createTestStrataHandler(),
-                tagOwnerships
-        );
-        RecipeHandlerFactory factory = new RecipeHandlerFactory();
-        consumer.accept(factory);
-        return new RecipeTransformer(factory, map, DEFAULT_UNIFY_CONFIG, null);
-    }
-
-    public static JsonObject json(String json) {
-        return new Gson().fromJson(json, JsonObject.class);
-    }
-
-    public static JsonObject json(String json, Consumer<JsonObject> consumer) {
-        Gson gson = new Gson();
-        JsonObject obj = gson.fromJson(json, JsonObject.class);
-        consumer.accept(obj);
-        return obj;
-    }
+//    public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {
+//        TagOwnerships tagOwnerships = new TagOwnerships(
+//                DEFAULT_UNIFY_CONFIG.bakeTags(),
+//                DEFAULT_UNIFY_CONFIG.getTagOwnerships()
+//        );
+//        ReplacementMap map = new ReplacementMap(
+//                DEFAULT_UNIFY_CONFIG,
+//                TagMapTests.testTagMap(),
+//                createTestStrataHandler(),
+//                tagOwnerships
+//        );
+//        RecipeHandlerFactory factory = new RecipeHandlerFactory();
+//        consumer.accept(factory);
+//        return new RecipeTransformer(factory, map, DEFAULT_UNIFY_CONFIG, null);
+//    }
+//
+//    public static JsonObject json(String json) {
+//        return new Gson().fromJson(json, JsonObject.class);
+//    }
+//
+//    public static JsonObject json(String json, Consumer<JsonObject> consumer) {
+//        Gson gson = new Gson();
+//        JsonObject obj = gson.fromJson(json, JsonObject.class);
+//        consumer.accept(obj);
+//        return obj;
+//    }
 
     public static final class Recipes {
 

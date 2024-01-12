@@ -98,7 +98,7 @@ public final class JsonUtils {
         return false;
     }
 
-    public static JsonArray toArray(List<String> list) {
+    public static JsonArray toArray(Iterable<String> list) {
         JsonArray array = new JsonArray();
         list.forEach(array::add);
         return array;

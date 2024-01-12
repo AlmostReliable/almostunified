@@ -35,7 +35,10 @@ public record ReplacementData(TagMap<Item> globalTagMap, TagMap<Item> filteredTa
                 globalTagMap
         );
 
-        var replacementMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
+        var replacementMap = new ReplacementMap(unifyConfig.getModPriorities(),
+                filteredTagMap,
+                stoneStrataHandler,
+                tagOwnerships);
 
         return new ReplacementData(globalTagMap, filteredTagMap, stoneStrataHandler, replacementMap);
     }

@@ -1,8 +1,8 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.StoneStrataHandler;
-import com.almostreliable.unified.config.UnifyConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -20,15 +20,15 @@ import java.util.function.Predicate;
 
 public class ReplacementMap {
 
-    private final UnifyConfig unifyConfig;
+    private final ModPriorities modPriorities;
     private final TagMap<Item> tagMap;
     private final StoneStrataHandler stoneStrataHandler;
     private final TagOwnerships tagOwnerships;
     private final Set<ResourceLocation> warnings;
 
-    public ReplacementMap(UnifyConfig unifyConfig, TagMap<Item> tagMap, StoneStrataHandler stoneStrataHandler, TagOwnerships tagOwnerships) {
+    public ReplacementMap(ModPriorities modPriorities, TagMap<Item> tagMap, StoneStrataHandler stoneStrataHandler, TagOwnerships tagOwnerships) {
         this.tagMap = tagMap;
-        this.unifyConfig = unifyConfig;
+        this.modPriorities = modPriorities;
         this.stoneStrataHandler = stoneStrataHandler;
         this.tagOwnerships = tagOwnerships;
         this.warnings = new HashSet<>();
@@ -84,17 +84,7 @@ public class ReplacementMap {
 
         if (items.isEmpty()) return null;
 
-        ResourceLocation overrideItem = getOverrideForTag(tagToLookup, items);
-        if (overrideItem != null) {
-            return overrideItem;
-        }
-
-        for (String modPriority : unifyConfig.getModPriorities()) {
-            ResourceLocation item = findItemByNamespace(items, modPriority);
-            if (item != null) return item;
-        }
-
-        return null;
+        return modPriorities.findPreferredItemId(tagToLookup, items);
     }
 
     /**
@@ -122,30 +112,6 @@ public class ReplacementMap {
         }
 
         return false;
-    }
-
-    @Nullable
-    private ResourceLocation getOverrideForTag(TagKey<Item> tag, List<ResourceLocation> items) {
-        String priorityOverride = unifyConfig.getPriorityOverrides().get(tag.location());
-        if (priorityOverride != null) {
-            ResourceLocation item = findItemByNamespace(items, priorityOverride);
-            if (item != null) return item;
-            AlmostUnified.LOG.warn(
-                    "Priority override mod '{}' for tag '{}' does not contain a valid item. Falling back to default priority.",
-                    priorityOverride,
-                    tag.location());
-        }
-        return null;
-    }
-
-    @Nullable
-    private ResourceLocation findItemByNamespace(List<ResourceLocation> items, String namespace) {
-        for (ResourceLocation item : items) {
-            if (item.getNamespace().equals(namespace)) {
-                return item;
-            }
-        }
-        return null;
     }
 
     public TagOwnerships getTagOwnerships() {

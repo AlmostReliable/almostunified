@@ -2,6 +2,8 @@ package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.api.ModPriorities;
+import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -21,11 +23,10 @@ import java.util.stream.Collectors;
 public class UnifyConfig extends Config {
     public static final String NAME = "unify";
 
-    private final List<String> modPriorities;
+    private final ModPriorities modPriorities;
     private final List<String> stoneStrata;
     private final List<String> unbakedTags;
     private final List<String> materials;
-    private final Map<ResourceLocation, String> priorityOverrides;
     private final Map<ResourceLocation, Set<ResourceLocation>> customTags;
     private final Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships;
     private final Enum<TagInheritanceMode> itemTagInheritanceMode;
@@ -42,11 +43,10 @@ public class UnifyConfig extends Config {
     @Nullable private Set<TagKey<Item>> bakedTagsCache;
 
     public UnifyConfig(
-            List<String> modPriorities,
+            ModPriorities modPriorities,
             List<String> stoneStrata,
             List<String> unbakedTags,
             List<String> materials,
-            Map<ResourceLocation, String> priorityOverrides,
             Map<ResourceLocation, Set<ResourceLocation>> customTags,
             Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships,
             Enum<TagInheritanceMode> itemTagInheritanceMode,
@@ -63,7 +63,6 @@ public class UnifyConfig extends Config {
         this.stoneStrata = stoneStrata;
         this.unbakedTags = unbakedTags;
         this.materials = materials;
-        this.priorityOverrides = priorityOverrides;
         this.customTags = customTags;
         this.tagOwnerships = tagOwnerships;
         this.itemTagInheritanceMode = itemTagInheritanceMode;
@@ -78,8 +77,8 @@ public class UnifyConfig extends Config {
         this.ignoredRecipeTypesCache = new HashMap<>();
     }
 
-    public List<String> getModPriorities() {
-        return Collections.unmodifiableList(modPriorities);
+    public ModPriorities getModPriorities() {
+        return modPriorities;
     }
 
     public List<String> getStoneStrata() {
@@ -123,10 +122,6 @@ public class UnifyConfig extends Config {
     @SuppressWarnings("unused")
     public List<String> getMaterials() {
         return Collections.unmodifiableList(materials);
-    }
-
-    public Map<ResourceLocation, String> getPriorityOverrides() {
-        return Collections.unmodifiableMap(priorityOverrides);
     }
 
     public Map<ResourceLocation, Set<ResourceLocation>> getCustomTags() {
@@ -247,26 +242,32 @@ public class UnifyConfig extends Config {
         public static final String IGNORED_RECIPES = "ignoredRecipes";
         public static final String HIDE_JEI_REI = "itemsHidingJeiRei";
 
-        @Override
-        public UnifyConfig deserialize(JsonObject json) {
+        private ModPriorities readModPriorities(JsonObject json) {
             var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
             List<String> modPriorities = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MOD_PRIORITIES)),
                     Defaults.getModPriorities(platform));
+
+            Map<TagKey<Item>, String> priorityOverrides = safeGet(
+                    () -> JsonUtils.deserializeMap(
+                            json,
+                            PRIORITY_OVERRIDES,
+                            e -> TagKey.create(Registries.ITEM, new ResourceLocation(e.getKey())),
+                            e -> e.getValue().getAsString()
+                    ),
+                    new HashMap<>()
+            );
+
+            return new ModPrioritiesImpl(modPriorities, priorityOverrides);
+        }
+        @Override
+        public UnifyConfig deserialize(JsonObject json) {
+            var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
+            ModPriorities modPriorities = readModPriorities(json);
             List<String> stoneStrata = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(STONE_STRATA)),
                     Defaults.STONE_STRATA);
             List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.getTags(platform));
             List<String> materials = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MATERIALS)),
                     Defaults.MATERIALS);
-
-            Map<ResourceLocation, String> priorityOverrides = safeGet(
-                    () -> JsonUtils.deserializeMap(
-                            json,
-                            PRIORITY_OVERRIDES,
-                            e -> new ResourceLocation(e.getKey()),
-                            e -> e.getValue().getAsString()
-                    ),
-                    new HashMap<>()
-            );
 
             Map<ResourceLocation, Set<ResourceLocation>> customTags = safeGet(
                     () -> JsonUtils.deserializeMapSet(
@@ -313,7 +314,6 @@ public class UnifyConfig extends Config {
                     stoneStrata,
                     tags,
                     materials,
-                    priorityOverrides,
                     customTags,
                     tagOwnerships,
                     itemTagInheritanceMode,
@@ -369,23 +369,27 @@ public class UnifyConfig extends Config {
             json.add(STONE_STRATA, JsonUtils.toArray(config.stoneStrata));
             json.add(TAGS, JsonUtils.toArray(config.unbakedTags));
             json.add(MATERIALS, JsonUtils.toArray(config.materials));
+
             JsonObject priorityOverrides = new JsonObject();
-            config.priorityOverrides.forEach((tag, mod) -> {
-                priorityOverrides.addProperty(tag.toString(), mod);
+            config.modPriorities.forEachOverride((tag, mod) -> {
+                priorityOverrides.addProperty(tag.location().toString(), mod);
             });
             json.add(PRIORITY_OVERRIDES, priorityOverrides);
+
             JsonObject customTags = new JsonObject();
             config.customTags.forEach((parent, child) -> {
                 customTags.add(parent.toString(),
                         JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
             });
             json.add(CUSTOM_TAGS, customTags);
+
             JsonObject tagOwnerships = new JsonObject();
             config.tagOwnerships.forEach((parent, child) -> {
                 tagOwnerships.add(parent.toString(),
                         JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
             });
             json.add(TAG_OWNERSHIPS, tagOwnerships);
+
             JsonObject itemTagInheritance = new JsonObject();
             config.itemTagInheritance.forEach((tag, patterns) -> {
                 itemTagInheritance.add(tag.toString(),
@@ -393,6 +397,7 @@ public class UnifyConfig extends Config {
             });
             json.add(ITEM_TAG_INHERITANCE_MODE, new JsonPrimitive(config.itemTagInheritanceMode.toString()));
             json.add(ITEM_TAG_INHERITANCE, itemTagInheritance);
+
             JsonObject blockTagInheritance = new JsonObject();
             config.blockTagInheritance.forEach((tag, patterns) -> {
                 blockTagInheritance.add(tag.toString(),
@@ -400,6 +405,7 @@ public class UnifyConfig extends Config {
             });
             json.add(BLOCK_TAG_INHERITANCE_MODE, new JsonPrimitive(config.blockTagInheritanceMode.toString()));
             json.add(BLOCK_TAG_INHERITANCE, blockTagInheritance);
+
             json.add(IGNORED_TAGS,
                     JsonUtils.toArray(config.ignoredTags
                             .stream()

@@ -53,7 +53,7 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
         filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
         StoneStrataHandler stoneStrataHandler = createStoneStrataHandler(unifyConfig);
         TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
-        replacementMap = new ReplacementMap(unifyConfig, filteredTagMap, stoneStrataHandler, tagOwnerships);
+        replacementMap = new ReplacementMap(unifyConfig.getModPriorities(), filteredTagMap, stoneStrataHandler, tagOwnerships);
     }
 
     @Override
