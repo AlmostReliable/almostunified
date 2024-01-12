@@ -2,6 +2,7 @@ package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.ReplacementData;
+import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
@@ -156,7 +157,7 @@ public final class TagReloadHandler {
             // avoid handling single entries and tags that only contain the same namespace for all items
             if (Utils.allSameNamespace(itemsByTag)) continue;
 
-            ResourceLocation dominant = repMap.getPreferredItemForTag(unifyTag, $ -> true);
+            ResourceLocation dominant = repMap.getPreferredItemForTag(unifyTag);
             if (dominant == null || !BuiltInRegistries.ITEM.containsKey(dominant)) continue;
 
             Set<ResourceLocation> items = getValidatedItems(itemsByTag, dominant);

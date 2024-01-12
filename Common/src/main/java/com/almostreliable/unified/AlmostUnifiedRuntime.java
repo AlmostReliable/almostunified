@@ -1,7 +1,7 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.config.UnifyConfig;
-import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;

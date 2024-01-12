@@ -1,9 +1,10 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
-import com.almostreliable.unified.utils.ReplacementMap;
+import com.almostreliable.unified.utils.ReplacementMapImpl;
 import com.almostreliable.unified.utils.TagMap;
 import com.almostreliable.unified.utils.TagOwnerships;
 import com.google.gson.JsonElement;
@@ -53,7 +54,10 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
         filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
         StoneStrataHandler stoneStrataHandler = createStoneStrataHandler(unifyConfig);
         TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
-        replacementMap = new ReplacementMap(unifyConfig.getModPriorities(), filteredTagMap, stoneStrataHandler, tagOwnerships);
+        replacementMap = new ReplacementMapImpl(unifyConfig.getModPriorities(),
+                filteredTagMap,
+                stoneStrataHandler,
+                tagOwnerships);
     }
 
     @Override

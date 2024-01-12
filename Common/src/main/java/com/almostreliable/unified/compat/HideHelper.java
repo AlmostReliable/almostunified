@@ -2,7 +2,7 @@ package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedRuntime;
-import com.almostreliable.unified.utils.ReplacementMap;
+import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.utils.TagOwnerships;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -98,7 +98,7 @@ public final class HideHelper {
             var owner = ownerships.getOwnerByTag(ref);
             assert owner != null;
 
-            var dominantItem = repMap.getPreferredItemForTag(owner, $ -> true);
+            var dominantItem = repMap.getPreferredItemForTag(owner);
 
             TagKey<Item> asTagKey = TagKey.create(Registries.ITEM, ref.location());
             Set<ResourceLocation> refItems = new HashSet<>();

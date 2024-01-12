@@ -43,7 +43,7 @@ public final class AlmostKube {
                 .getRuntime()
                 .getReplacementMap()
                 .orElseThrow(AlmostKube::notLoadedException)
-                .getPreferredItemForTag(tagKey, $ -> true);
+                .getPreferredItemForTag(tagKey);
         return BuiltInRegistries.ITEM.get(item).getDefaultInstance();
     }
 

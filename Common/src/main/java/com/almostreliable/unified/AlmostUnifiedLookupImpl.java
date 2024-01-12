@@ -39,7 +39,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
         return AlmostUnified
                 .getRuntime()
                 .getReplacementMap()
-                .map(rm -> rm.getPreferredItemForTag(tag, $ -> true))
+                .map(rm -> rm.getPreferredItemForTag(tag))
                 .flatMap(BuiltInRegistries.ITEM::getOptional)
                 .orElse(null);
     }

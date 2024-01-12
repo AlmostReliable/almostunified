@@ -2,6 +2,7 @@ package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.ModPriorities;
+import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.StoneStrataHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class ReplacementMap {
+public class ReplacementMapImpl implements ReplacementMap {
 
     private final ModPriorities modPriorities;
     private final TagMap<Item> tagMap;
@@ -26,7 +27,7 @@ public class ReplacementMap {
     private final TagOwnerships tagOwnerships;
     private final Set<ResourceLocation> warnings;
 
-    public ReplacementMap(ModPriorities modPriorities, TagMap<Item> tagMap, StoneStrataHandler stoneStrataHandler, TagOwnerships tagOwnerships) {
+    public ReplacementMapImpl(ModPriorities modPriorities, TagMap<Item> tagMap, StoneStrataHandler stoneStrataHandler, TagOwnerships tagOwnerships) {
         this.tagMap = tagMap;
         this.modPriorities = modPriorities;
         this.stoneStrataHandler = stoneStrataHandler;
@@ -35,6 +36,7 @@ public class ReplacementMap {
     }
 
     @Nullable
+    @Override
     public TagKey<Item> getPreferredTagForItem(ResourceLocation item) {
         var tags = tagMap.getTagsByEntry(item);
 
@@ -55,6 +57,7 @@ public class ReplacementMap {
     }
 
     @Nullable
+    @Override
     public ResourceLocation getReplacementForItem(ResourceLocation item) {
         var t = getPreferredTagForItem(item);
         if (t == null) {
@@ -66,14 +69,22 @@ public class ReplacementMap {
             return getPreferredItemForTag(t, i -> stone.equals(stoneStrataHandler.getStoneStrata(i)));
         }
 
-        return getPreferredItemForTag(t, i -> true);
+        return getPreferredItemForTag(t);
     }
 
     @Nullable
+    @Override
+    public ResourceLocation getPreferredItemForTag(TagKey<Item> tag) {
+        return getPreferredItemForTag(tag, i -> true);
+    }
+
+    @Nullable
+    @Override
     public ResourceLocation getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
         var tagToLookup = tagOwnerships.getOwnerByTag(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
+        // TODO do we really need a filter way? Maybe have two methods to explicitly check for stone strata
         List<ResourceLocation> items = tagMap
                 .getEntriesByTag(tagToLookup)
                 .stream()
@@ -95,6 +106,7 @@ public class ReplacementMap {
      * @param item   The item to check.
      * @return Whether the item is in one of the unify tags of the ingredient.
      */
+    @Override
     public boolean isItemInUnifiedIngredient(Ingredient ingred, ItemStack item) {
         Set<TagKey<Item>> checkedTags = new HashSet<>();
 
@@ -114,6 +126,7 @@ public class ReplacementMap {
         return false;
     }
 
+    @Override
     public TagOwnerships getTagOwnerships() {
         return tagOwnerships;
     }

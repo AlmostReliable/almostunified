@@ -1,5 +1,6 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.config.DuplicationConfig;
 import com.almostreliable.unified.config.ServerConfigs;
@@ -7,7 +8,6 @@ import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;

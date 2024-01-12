@@ -1,6 +1,7 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.recipe.RecipeData;
 import com.almostreliable.unified.config.DuplicationConfig;
 import com.almostreliable.unified.config.UnifyConfig;
@@ -8,7 +9,6 @@ import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.JsonQuery;
 import com.almostreliable.unified.utils.RecipeTypePropertiesLogger;
-import com.almostreliable.unified.utils.ReplacementMap;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;

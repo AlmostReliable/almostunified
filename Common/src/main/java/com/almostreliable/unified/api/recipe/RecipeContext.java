@@ -7,7 +7,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.function.Predicate;
 
 public interface RecipeContext {
 
@@ -15,7 +14,7 @@ public interface RecipeContext {
     ResourceLocation getReplacementForItem(@Nullable ResourceLocation item);
 
     @Nullable
-    ResourceLocation getPreferredItemForTag(@Nullable TagKey<Item> tag, Predicate<ResourceLocation> filter);
+    ResourceLocation getPreferredItemForTag(@Nullable TagKey<Item> tag);
 
     @Nullable
     TagKey<Item> getPreferredTagForItem(@Nullable ResourceLocation item);

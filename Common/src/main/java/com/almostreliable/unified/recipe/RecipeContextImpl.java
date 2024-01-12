@@ -1,9 +1,9 @@
 package com.almostreliable.unified.recipe;
 
+import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.utils.JsonUtils;
-import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.Utils;
 import com.almostreliable.unified.utils.json.JsonCursor;
 import com.google.gson.JsonArray;
@@ -15,7 +15,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.function.Predicate;
 
 @SuppressWarnings("SameParameterValue")
 public class RecipeContextImpl implements RecipeContext {
@@ -38,12 +37,12 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Nullable
     @Override
-    public ResourceLocation getPreferredItemForTag(@Nullable TagKey<Item> tag, Predicate<ResourceLocation> filter) {
+    public ResourceLocation getPreferredItemForTag(@Nullable TagKey<Item> tag) {
         if (tag == null) {
             return null;
         }
 
-        return replacementMap.getPreferredItemForTag(tag, filter);
+        return replacementMap.getPreferredItemForTag(tag);
     }
 
     @Nullable
@@ -142,7 +141,7 @@ public class RecipeContextImpl implements RecipeContext {
 
             // when tags are used as outputs, replace them with the preferred item
             if (tagLookup && object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
-                ResourceLocation item = getPreferredItemForTag(Utils.toItemTag(primitive.getAsString()), $ -> true);
+                ResourceLocation item = getPreferredItemForTag(Utils.toItemTag(primitive.getAsString()));
                 if (item != null) {
                     object.remove(RecipeConstants.TAG);
                     object.addProperty(RecipeConstants.ITEM, item.toString());
@@ -227,7 +226,7 @@ public class RecipeContextImpl implements RecipeContext {
         var itemId = cursor
                 .next(RecipeConstants.TAG)
                 .filter(JsonCursor::isPrimitive)
-                .map(primitive -> getPreferredItemForTag(Utils.toItemTag(primitive.valueAsString()), $ -> true))
+                .map(primitive -> getPreferredItemForTag(Utils.toItemTag(primitive.valueAsString())))
                 .orElse(null);
         if (itemId != null) {
             obj.remove(RecipeConstants.TAG);
