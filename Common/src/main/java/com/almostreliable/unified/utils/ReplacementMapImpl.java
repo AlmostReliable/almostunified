@@ -1,10 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.ReplacementMap;
-import com.almostreliable.unified.api.StoneStrataHandler;
-import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.api.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -82,7 +79,7 @@ public class ReplacementMapImpl implements ReplacementMap {
     @Nullable
     @Override
     public ResourceLocation getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
-        var tagToLookup = tagOwnerships.getOwnerByTag(tag);
+        var tagToLookup = tagOwnerships.getOwner(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
         // TODO do we really need a filter way? Maybe have two methods to explicitly check for stone strata

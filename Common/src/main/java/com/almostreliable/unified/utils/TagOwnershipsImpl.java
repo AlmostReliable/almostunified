@@ -1,6 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.api.TagOwnerships;
 import com.google.common.collect.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -10,10 +11,11 @@ import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-public class TagOwnerships {
+public class TagOwnershipsImpl implements TagOwnerships {
 
     /**
      * A map holding relationships between reference tags and their owner tags.
@@ -38,7 +40,7 @@ public class TagOwnerships {
      * @param unifyTags          The set of all unify tags in use.
      * @param tagOwnershipConfig The map of all tag ownership relationships.
      */
-    public TagOwnerships(Set<TagKey<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnershipConfig) {
+    public TagOwnershipsImpl(Set<TagKey<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnershipConfig) {
         ImmutableMap.Builder<TagKey<Item>, TagKey<Item>> refsToOwnerBuilder = ImmutableMap.builder();
         ImmutableMultimap.Builder<TagKey<Item>, TagKey<Item>> ownerToRefsBuilder = ImmutableMultimap.builder();
 
@@ -124,22 +126,19 @@ public class TagOwnerships {
         }
     }
 
-    /**
-     * Gets the owner tag for the provided reference tag.
-     *
-     * @param tag The reference tag to get the owner for.
-     * @return The owner tag, or null if the provided tag is not a reference tag.
-     */
+
+    @Override
     @Nullable
-    public TagKey<Item> getOwnerByTag(TagKey<Item> tag) {
-        return refsToOwner.get(tag);
+    public TagKey<Item> getOwner(TagKey<Item> referenceTag) {
+        return refsToOwner.get(referenceTag);
     }
 
-    /**
-     * Gets all reference tags for all owner tags.
-     *
-     * @return A set of all reference tags.
-     */
+    @Override
+    public Collection<TagKey<Item>> getRefs(TagKey<Item> ownerTag) {
+        return Collections.unmodifiableCollection(ownerToRefs.get(ownerTag));
+    }
+
+    @Override
     public Set<TagKey<Item>> getRefs() {
         return refsToOwner.keySet();
     }

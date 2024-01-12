@@ -7,7 +7,8 @@ import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMapImpl;
 import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.utils.TagMapImpl;
-import com.almostreliable.unified.utils.TagOwnerships;
+import com.almostreliable.unified.api.TagOwnerships;
+import com.almostreliable.unified.utils.TagOwnershipsImpl;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -54,7 +55,7 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
         Set<TagKey<Item>> unifyTags = unifyConfig.bakeTags();
         filteredTagMap = TagMapImpl.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
         StoneStrataHandler stoneStrataHandler = createStoneStrataHandler(unifyConfig);
-        TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
+        TagOwnerships tagOwnerships = new TagOwnershipsImpl(unifyTags, unifyConfig.getTagOwnerships());
         replacementMap = new ReplacementMapImpl(unifyConfig.getModPriorities(),
                 filteredTagMap,
                 stoneStrataHandler,

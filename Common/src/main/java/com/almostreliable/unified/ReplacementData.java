@@ -6,7 +6,7 @@ import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMapImpl;
 import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.utils.TagMapImpl;
-import com.almostreliable.unified.utils.TagOwnerships;
+import com.almostreliable.unified.api.TagOwnerships;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

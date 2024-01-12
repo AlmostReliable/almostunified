@@ -81,7 +81,7 @@ public class RecipeContextImpl implements RecipeContext {
 
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
                 var tag = Utils.toItemTag(primitive.getAsString());
-                var ownerTag = replacementMap.getTagOwnerships().getOwnerByTag(tag);
+                var ownerTag = replacementMap.getTagOwnerships().getOwner(tag);
                 if (ownerTag != null) {
                     object.addProperty(RecipeConstants.TAG, ownerTag.location().toString());
                 }
@@ -240,7 +240,7 @@ public class RecipeContextImpl implements RecipeContext {
         }
 
         var tag = Utils.toItemTag(cursor.valueAsString());
-        var owner = replacementMap.getTagOwnerships().getOwnerByTag(tag);
+        var owner = replacementMap.getTagOwnerships().getOwner(tag);
         if (owner != null) {
             cursor.set(owner.location().toString());
         }

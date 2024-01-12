@@ -5,7 +5,8 @@ import com.almostreliable.unified.config.ServerConfigs;
 import com.almostreliable.unified.config.StartupConfig;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.TagOwnerships;
+import com.almostreliable.unified.api.TagOwnerships;
+import com.almostreliable.unified.utils.TagOwnershipsImpl;
 import com.almostreliable.unified.utils.TagReloadHandler;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -54,7 +55,7 @@ public final class AlmostUnified {
 
         TagReloadHandler.applyCustomTags(unifyConfig);
 
-        TagOwnerships tagOwnerships = new TagOwnerships(
+        TagOwnershipsImpl tagOwnerships = new TagOwnershipsImpl(
                 unifyConfig.bakeAndValidateTags(tags),
                 unifyConfig.getTagOwnerships()
         );
