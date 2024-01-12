@@ -4,7 +4,7 @@ import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Defaults;
 import com.almostreliable.unified.utils.JsonCompare;
-import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.TagMapImpl;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -92,7 +92,7 @@ public final class TestUtils {
         return StoneStrataHandler.create(
                 List.of(),
                 Set.of(),
-                TagMap.create(Set.of())
+                TagMapImpl.create(Set.of())
         );
     }
 

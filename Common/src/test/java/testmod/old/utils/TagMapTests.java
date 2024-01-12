@@ -1,6 +1,7 @@
 package testmod.old.utils;
 
-import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.utils.TagMapImpl;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -9,7 +10,7 @@ import net.minecraft.world.item.Item;
 public class TagMapTests {
 
     public static TagMap<Item> testTagMap() {
-        TagMap<Item> tagMap = new TagMap<>();
+        TagMap<Item> tagMap = new TagMapImpl<>();
         TagKey<Item> bronzeOreTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/bronze"));
         TagKey<Item> invarOreTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/invar"));
         TagKey<Item> tinOreTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/tin"));

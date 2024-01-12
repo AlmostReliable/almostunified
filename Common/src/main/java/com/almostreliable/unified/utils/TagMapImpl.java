@@ -1,5 +1,6 @@
 package com.almostreliable.unified.utils;
 
+import com.almostreliable.unified.api.TagMap;
 import com.google.common.annotations.VisibleForTesting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -15,13 +16,13 @@ import net.minecraft.world.level.block.Block;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class TagMap<T> {
+public class TagMapImpl<T> implements TagMap<T> {
 
     private final Map<TagKey<T>, Set<ResourceLocation>> tagsToEntries = new HashMap<>();
     private final Map<ResourceLocation, Set<TagKey<T>>> entriesToTags = new HashMap<>();
 
     @VisibleForTesting
-    public TagMap() {}
+    public TagMapImpl() {}
 
     /**
      * Creates an item tag map from a set of item unify tags.
@@ -36,7 +37,7 @@ public class TagMap<T> {
      * @return A new tag map.
      */
     public static TagMap<Item> create(Set<TagKey<Item>> tags) {
-        TagMap<Item> tagMap = new TagMap<>();
+        TagMapImpl<Item> tagMap = new TagMapImpl<>();
 
         tags.forEach(tag -> {
             BuiltInRegistries.ITEM.getTagOrEmpty(tag).forEach(holder -> {
@@ -60,7 +61,7 @@ public class TagMap<T> {
      * @return A new item tag map.
      */
     public static TagMap<Item> createFromItemTags(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
-        TagMap<Item> tagMap = new TagMap<>();
+        TagMapImpl<Item> tagMap = new TagMapImpl<>();
 
         for (var entry : tags.entrySet()) {
             var unifyTag = TagKey.create(Registries.ITEM, entry.getKey());
@@ -79,7 +80,7 @@ public class TagMap<T> {
      * @return A new block tag map.
      */
     public static TagMap<Block> createFromBlockTags(Map<ResourceLocation, Collection<Holder<Block>>> tags) {
-        TagMap<Block> tagMap = new TagMap<>();
+        TagMapImpl<Block> tagMap = new TagMapImpl<>();
 
         for (var entry : tags.entrySet()) {
             var unifyTag = TagKey.create(Registries.BLOCK, entry.getKey());
@@ -97,7 +98,7 @@ public class TagMap<T> {
      * @param unifyTag The unify tag to use.
      * @param registry The registry to use.
      */
-    private static <T> void fillEntries(TagMap<T> tagMap, Collection<Holder<T>> holders, TagKey<T> unifyTag, Registry<T> registry) {
+    private static <T> void fillEntries(TagMapImpl<T> tagMap, Collection<Holder<T>> holders, TagKey<T> unifyTag, Registry<T> registry) {
         for (var holder : holders) {
             holder
                     .unwrapKey()
@@ -114,8 +115,9 @@ public class TagMap<T> {
      * @param entryFilter A filter to determine which entries to include.
      * @return A filtered copy of this tag map.
      */
+    @Override
     public TagMap<T> filtered(Predicate<TagKey<T>> tagFilter, Predicate<ResourceLocation> entryFilter) {
-        TagMap<T> tagMap = new TagMap<>();
+        TagMapImpl<T> tagMap = new TagMapImpl<>();
 
         tagsToEntries.forEach((tag, items) -> {
             if (!tagFilter.test(tag)) {
@@ -127,22 +129,27 @@ public class TagMap<T> {
         return tagMap;
     }
 
+    @Override
     public int tagSize() {
         return tagsToEntries.size();
     }
 
+    @Override
     public int itemSize() {
         return entriesToTags.size();
     }
 
+    @Override
     public Set<ResourceLocation> getEntriesByTag(TagKey<T> tag) {
         return Collections.unmodifiableSet(tagsToEntries.getOrDefault(tag, Collections.emptySet()));
     }
 
+    @Override
     public Set<TagKey<T>> getTagsByEntry(ResourceLocation entry) {
         return Collections.unmodifiableSet(entriesToTags.getOrDefault(entry, Collections.emptySet()));
     }
 
+    @Override
     public Set<TagKey<T>> getTags() {
         return Collections.unmodifiableSet(tagsToEntries.keySet());
     }

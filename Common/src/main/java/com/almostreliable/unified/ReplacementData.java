@@ -4,7 +4,8 @@ import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMapImpl;
-import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.utils.TagMapImpl;
 import com.almostreliable.unified.utils.TagOwnerships;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +27,7 @@ public record ReplacementData(TagMap<Item> globalTagMap, TagMap<Item> filteredTa
                               ReplacementMap replacementMap) {
 
     public static ReplacementData load(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyConfig unifyConfig, TagOwnerships tagOwnerships) {
-        var globalTagMap = TagMap.createFromItemTags(tags);
+        var globalTagMap = TagMapImpl.createFromItemTags(tags);
         var unifyTags = unifyConfig.bakeAndValidateTags(tags);
         var filteredTagMap = globalTagMap.filtered(unifyTags::contains, unifyConfig::includeItem);
 

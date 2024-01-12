@@ -2,7 +2,7 @@ package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.utils.FileUtils;
-import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.api.TagMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;

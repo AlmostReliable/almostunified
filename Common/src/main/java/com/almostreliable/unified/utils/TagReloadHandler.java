@@ -3,6 +3,7 @@ package com.almostreliable.unified.utils;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.ReplacementData;
 import com.almostreliable.unified.api.ReplacementMap;
+import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
@@ -109,7 +110,7 @@ public final class TagReloadHandler {
         var relations = resolveRelations(replacementData.filteredTagMap(), replacementData.replacementMap());
         if (relations.isEmpty()) return false;
 
-        var blockTagMap = TagMap.createFromBlockTags(RAW_BLOCK_TAGS);
+        var blockTagMap = TagMapImpl.createFromBlockTags(RAW_BLOCK_TAGS);
         var globalTagMap = replacementData.globalTagMap();
 
         for (TagRelation relation : relations) {

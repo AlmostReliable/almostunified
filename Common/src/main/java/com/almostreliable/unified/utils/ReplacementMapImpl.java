@@ -4,6 +4,7 @@ import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.StoneStrataHandler;
+import com.almostreliable.unified.api.TagMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

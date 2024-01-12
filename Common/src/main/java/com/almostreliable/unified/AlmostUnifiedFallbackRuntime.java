@@ -5,7 +5,8 @@ import com.almostreliable.unified.api.StoneStrataHandler;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMapImpl;
-import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.utils.TagMapImpl;
 import com.almostreliable.unified.utils.TagOwnerships;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
@@ -44,14 +45,14 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
 
     private static StoneStrataHandler createStoneStrataHandler(UnifyConfig config) {
         Set<TagKey<Item>> stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(config.getStoneStrata());
-        TagMap<Item> stoneStrataTagMap = TagMap.create(stoneStrataTags);
+        TagMap<Item> stoneStrataTagMap = TagMapImpl.create(stoneStrataTags);
         return StoneStrataHandler.create(config.getStoneStrata(), stoneStrataTags, stoneStrataTagMap);
     }
 
     private void build() {
         unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
         Set<TagKey<Item>> unifyTags = unifyConfig.bakeTags();
-        filteredTagMap = TagMap.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
+        filteredTagMap = TagMapImpl.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
         StoneStrataHandler stoneStrataHandler = createStoneStrataHandler(unifyConfig);
         TagOwnerships tagOwnerships = new TagOwnerships(unifyTags, unifyConfig.getTagOwnerships());
         replacementMap = new ReplacementMapImpl(unifyConfig.getModPriorities(),
