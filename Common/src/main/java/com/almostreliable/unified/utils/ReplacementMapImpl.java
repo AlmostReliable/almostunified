@@ -3,7 +3,6 @@ package com.almostreliable.unified.utils;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.*;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -96,14 +95,6 @@ public class ReplacementMapImpl implements ReplacementMap {
         return modPriorities.findPreferredItemId(tagToLookup, items);
     }
 
-    /**
-     * Gets all unify tags of the items within the given ingredient and checks
-     * whether the given item is in one of those tags.
-     *
-     * @param ingred The ingredient to get the unify tags from.
-     * @param item   The item to check.
-     * @return Whether the item is in one of the unify tags of the ingredient.
-     */
     @Override
     public boolean isItemInUnifiedIngredient(Ingredient ingred, ItemStack item) {
         Set<TagKey<Item>> checkedTags = new HashSet<>();
@@ -115,8 +106,7 @@ public class ReplacementMapImpl implements ReplacementMap {
             if (preferredTag == null || checkedTags.contains(preferredTag)) continue;
             checkedTags.add(preferredTag);
 
-            var preferredTagKey = TagKey.create(Registries.ITEM, preferredTag.location());
-            if (item.is(preferredTagKey)) {
+            if (item.is(preferredTag)) {
                 return true;
             }
         }

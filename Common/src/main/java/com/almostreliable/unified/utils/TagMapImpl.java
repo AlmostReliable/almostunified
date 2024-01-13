@@ -161,10 +161,38 @@ public class TagMapImpl<T> implements TagMap<T> {
      * it needs to be checked whether the tag or entry is valid before calling this method.
      *
      * @param tag   The tag.
-     * @param entry The entry.
+     * @param entries The entries as ids.
      */
-    protected void put(TagKey<T> tag, ResourceLocation entry) {
-        tagsToEntries.computeIfAbsent(tag, k -> new HashSet<>()).add(entry);
-        entriesToTags.computeIfAbsent(entry, k -> new HashSet<>()).add(tag);
+    private void put(TagKey<T> tag, ResourceLocation... entries) {
+        var entriesForTag = tagsToEntries.computeIfAbsent(tag, k -> new HashSet<>());
+        for (ResourceLocation entry : entries) {
+            entriesForTag.add(entry);
+            entriesToTags.computeIfAbsent(entry, k -> new HashSet<>()).add(tag);
+        }
+    }
+
+    public static class Builder<T> {
+        private final TagMapImpl<T> tagMap = new TagMapImpl<>();
+
+
+        public Builder<T> put(TagKey<T> tag, ResourceLocation... entries) {
+            for (var entry : entries) {
+                tagMap.put(tag, entry);
+            }
+
+            return this;
+        }
+
+        public Builder<T> put(TagKey<T> tag, String... entries) {
+            for (var entry : entries) {
+                tagMap.put(tag, new ResourceLocation(entry));
+            }
+
+            return this;
+        }
+
+        public TagMap<T> build() {
+            return tagMap;
+        }
     }
 }

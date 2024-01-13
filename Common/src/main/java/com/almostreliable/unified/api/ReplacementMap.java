@@ -22,6 +22,14 @@ public interface ReplacementMap {
     @Nullable
     ResourceLocation getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter);
 
+    /**
+     * Gets all unify tags of the items within the given ingredient and checks
+     * whether the given item is in one of those tags.
+     *
+     * @param ingred The ingredient to get the unify tags from.
+     * @param item   The item to check.
+     * @return Whether the item is in one of the unify tags of the ingredient.
+     */
     boolean isItemInUnifiedIngredient(Ingredient ingred, ItemStack item);
 
     TagOwnerships getTagOwnerships();
