@@ -5,7 +5,10 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RecipeTypePropertiesLogger {
     private final Map<String, List<String>> properties = new HashMap<>();
@@ -14,7 +17,7 @@ public class RecipeTypePropertiesLogger {
         return properties.computeIfAbsent(mod, $ -> new ArrayList<>());
     }
 
-    public void log(ResourceLocation recipeType, JsonObject recipe, Collection<String> keys) {
+    public void log(ResourceLocation recipeType, JsonObject recipe) {
         String mod = recipeType.getNamespace();
         recipe.entrySet().forEach(e -> getProperties(mod).add(e.getKey()));
     }

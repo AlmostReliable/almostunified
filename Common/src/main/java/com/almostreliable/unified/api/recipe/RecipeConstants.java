@@ -43,6 +43,7 @@ public final class RecipeConstants {
     public static final String ITEM_INPUT = "itemInput";
     public static final String ITEM_OUTPUT = "itemOutput";
     public static final String SECONDARY_OUTPUT = "secondaryOutput";
+    public static final String EXTRA_INPUT = "extraInput";
 
     // modern industrialization
     public static final String ITEM_INPUTS = "item_inputs";

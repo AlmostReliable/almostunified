@@ -1,7 +1,9 @@
 package com.almostreliable.unified.api.recipe;
 
-import com.almostreliable.unified.utils.json.JsonCursor;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -28,9 +30,28 @@ public interface RecipeContext {
     @Nullable
     JsonElement createResultReplacement(@Nullable JsonElement element, boolean includeTagCheck, String... lookupKeys);
 
-    void replaceBasicInput(JsonCursor cursor);
+    void unifyInputs(RecipeJson recipe, String recipeKey);
 
-    void replaceBasicOutput(JsonCursor cursor);
+    void unifyInputs(RecipeJson recipe, Iterable<String> recipeKeys);
 
-    void replaceBasicOutput(JsonCursor cursor, boolean replaceTag, String... keyLookups);
+    boolean unifyBasicInput(JsonElement jsonElement);
+
+    boolean unifyItemInput(JsonObject json);
+
+    boolean unifyTagInput(JsonObject json);
+
+    void unifyOutputs(RecipeJson recipe, String recipeKey);
+
+    void unifyOutputs(RecipeJson recipe, Iterable<String> recipeKeys);
+
+    void unifyOutputs(RecipeJson recipe, String recipeKey, boolean unifyTagToItems, String... nestedLookupKeys);
+
+    void unifyOutputs(RecipeJson recipe, boolean unifyTagToItems, String... keys);
+
+    boolean unifyBasicOutput(JsonObject json, boolean unifyTagToItems, String... lookupKeys);
+
+    boolean unifyBasicOutput(JsonArray json, boolean unifyTagToItems, String... lookupKeys);
+
+    @Nullable
+    JsonPrimitive createOutputReplacement(JsonPrimitive primitive);
 }

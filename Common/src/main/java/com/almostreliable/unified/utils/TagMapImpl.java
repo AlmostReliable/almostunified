@@ -191,6 +191,19 @@ public class TagMapImpl<T> implements TagMap<T> {
             return this;
         }
 
+        public Builder<T> put(TagKey<T> tag, Item... entries) {
+            for (var entry : entries) {
+                ResourceLocation key = BuiltInRegistries.ITEM.getKey(entry);
+                if (key.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
+                    throw new IllegalStateException("Cannot put item " + entry + " in tag " + tag);
+                }
+
+                tagMap.put(tag, key);
+            }
+
+            return this;
+        }
+
         public TagMap<T> build() {
             return tagMap;
         }

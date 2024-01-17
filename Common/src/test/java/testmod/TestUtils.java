@@ -1,24 +1,36 @@
 package testmod;
 
 import com.almostreliable.unified.api.*;
+import com.almostreliable.unified.api.recipe.RecipeContext;
+import com.almostreliable.unified.api.recipe.RecipeJson;
+import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
+import com.almostreliable.unified.recipe.RecipeContextImpl;
+import com.almostreliable.unified.recipe.RecipeJsonImpl;
 import com.almostreliable.unified.utils.ReplacementMapImpl;
 import com.almostreliable.unified.utils.TagMapImpl;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Type;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestUtils {
 
+    public static final Gson GSON = new GsonBuilder().create();
+
     public static final ModPriorities TEST_MOD_PRIORITIES = new ModPrioritiesImpl(
-            List.of("ae2", "mekanism", "thermal", "create"),
+            List.of("testmod", "mekanism", "thermal", "create"),
             new HashMap<>()
     );
 
@@ -58,6 +70,14 @@ public class TestUtils {
         }
     };
 
+    public static RecipeJson recipe(JsonObject json) {
+        return new RecipeJsonImpl(new ResourceLocation("test"), json);
+    }
+
+    public static JsonObject json(String json) {
+        return GSON.fromJson(json, JsonObject.class);
+    }
+
     public static TagKey<Item> itemTag(String s) {
         return TagKey.create(Registries.ITEM, new ResourceLocation(s));
     }
@@ -65,26 +85,86 @@ public class TestUtils {
 
     public static TagMap<Item> tagMap() {
         return new TagMapImpl.Builder<Item>()
-                .put(itemTag("testmod:ingots/osmium"),
-                        "minecraft:osmium_ingot",
-                        "mekanism:osmium_ingot",
-                        "thermal:osmium_ingot")
-                .put(itemTag("testmod:raw_materials/cobalt"),
-                        "mekanism:cobalt_chunk",
-                        "thermal:cobalt_chunk",
-                        "create:cobalt_chunk")
-                .put(itemTag("testmod:raw_materials/lead"),
-                        "mekanism:lead_chunk",
-                        "thermal:lead_chunk",
-                        "create:lead_chunk")
-                .put(itemTag("testmod:ores/aluminum"),
-                        "create:aluminum_ore",
-                        "thermal:aluminum_ore",
-                        "mekanism:aluminum_ore")
+                .put(itemTag("testmod:test_tag"),
+                        "minecraft:test_item",
+                        "mekanism:test_item",
+                        "thermal:test_item",
+                        "testmod:test_item")
                 .build();
     }
 
     public static ReplacementMap replacementMap() {
         return new ReplacementMapImpl(TEST_MOD_PRIORITIES, tagMap(), EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
+    }
+
+    public static ReplacementMap replacementMap(TagMap<Item> tagMap) {
+        return new ReplacementMapImpl(TEST_MOD_PRIORITIES, tagMap, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
+    }
+
+    public static RecipeContext recipeContext() {
+        return new RecipeContextImpl(replacementMap());
+    }
+
+    public static void assertUnify(RecipeUnifier unifier, String jsonActual, String jsonExpected) {
+        var actual = TestUtils.json(jsonActual);
+
+        var recipe = TestUtils.recipe(actual);
+        unifier.unifyItems(recipeContext(), recipe);
+        assertTrue(recipe.changed());
+
+        var expected = TestUtils.json(jsonExpected);
+        assertJson(expected, actual);
+    }
+
+    public static void assertNoUnify(RecipeUnifier unifier, String json) {
+        var actual = TestUtils.json(json);
+
+        var recipe = TestUtils.recipe(actual);
+        unifier.unifyItems(recipeContext(), recipe);
+        assertFalse(recipe.changed());
+
+        var expected = TestUtils.json(json);
+        assertJson(expected, actual);
+    }
+
+    public static void assertJson(JsonObject expected, JsonObject actual) {
+        Type type = new TypeToken<Map<String, Object>>() {}.getType();
+        Map<String, Object> expectedMap = GSON.fromJson(expected, type);
+        Map<String, Object> actualMap = GSON.fromJson(actual, type);
+        var difference = Maps.difference(expectedMap, actualMap);
+
+        if (difference.areEqual()) {
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb
+                .append("\nExpected:\t")
+                .append(GSON.toJson(expected))
+                .append("\nActual:\t\t")
+                .append(GSON.toJson(actual))
+                .append("\n");
+        if (!difference.entriesDiffering().isEmpty()) {
+            sb.append("Differences:\n");
+            difference.entriesDiffering().forEach((k, v) -> {
+                sb.append("\t").append(k).append(": ").append(v).append("\n");
+            });
+        }
+
+        if (!difference.entriesOnlyOnLeft().isEmpty()) {
+            sb.append("Only on left:\n");
+            difference.entriesOnlyOnLeft().forEach((k, v) -> {
+                sb.append("\t").append(k).append(": ").append(v).append("\n");
+            });
+        }
+
+        if (!difference.entriesOnlyOnRight().isEmpty()) {
+            sb.append("Only on right:\n");
+            difference.entriesOnlyOnRight().forEach((k, v) -> {
+                sb.append("\t").append(k).append(": ").append(v).append("\n");
+            });
+        }
+
+        fail(sb.toString());
     }
 }

@@ -1,5 +1,5 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-package com.almostreliable.unified.utils.json.impl;
+package testmod.tests;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

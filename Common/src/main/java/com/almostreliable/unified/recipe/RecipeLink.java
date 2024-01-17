@@ -1,5 +1,6 @@
 package com.almostreliable.unified.recipe;
 
+import com.almostreliable.unified.api.recipe.RecipeData;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RecipeLink {
+public class RecipeLink implements RecipeData {
     private final ResourceLocation id;
     private final ResourceLocation type;
     private final JsonObject originalRecipe;
@@ -27,6 +28,7 @@ public class RecipeLink {
         } catch (Exception e) {
             throw new IllegalArgumentException("Could not detect recipe type");
         }
+
     }
 
     /**
@@ -63,6 +65,11 @@ public class RecipeLink {
 
     public ResourceLocation getType() {
         return type;
+    }
+
+    @Override
+    public boolean hasProperty(String property) {
+        return getOriginal().has(property);
     }
 
     public JsonObject getOriginal() {

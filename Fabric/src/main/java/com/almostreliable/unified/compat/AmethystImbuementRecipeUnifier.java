@@ -1,29 +1,33 @@
 package com.almostreliable.unified.compat;
 
+import com.almostreliable.unified.api.recipe.RecipeContext;
+import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
+import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 
 import java.util.List;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class AmethystImbuementRecipeUnifier implements RecipeUnifier {
     @Override
-    public void collectUnifier(RecipeUnifierBuilder builder) {
-        final List<String> fields = List.of("imbueA",
-                "imbueB",
-                "imbueC",
-                "imbueD",
-                "craftA",
-                "craftB",
-                "craftC",
-                "craftD",
-                "craftE",
-                "craftF",
-                "craftG",
-                "craftH",
-                "craftI");
+    public void unifyItems(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
 
-        fields.forEach(field -> builder.put(field, (json, ctx) -> ctx.createIngredientReplacement(json)));
-        builder.put("resultA", (json, ctx) -> ctx.createResultReplacement(json));
+        context.unifyInputs(recipe,
+                List.of("imbueA",
+                        "imbueB",
+                        "imbueC",
+                        "imbueD",
+                        "craftA",
+                        "craftB",
+                        "craftC",
+                        "craftD",
+                        "craftE",
+                        "craftF",
+                        "craftG",
+                        "craftH",
+                        "craftI"));
+
+        context.unifyOutputs(recipe, "resultA");
     }
 }

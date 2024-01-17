@@ -1,6 +1,9 @@
 package com.almostreliable.unified.recipe.unifier;
 
-import com.almostreliable.unified.api.recipe.*;
+import com.almostreliable.unified.api.recipe.RecipeConstants;
+import com.almostreliable.unified.api.recipe.RecipeData;
+import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -8,35 +11,32 @@ import java.util.Map;
 
 public class RecipeHandlerFactory {
 
-    private static final ResourceLocation SMITHING_TYPE = new ResourceLocation("minecraft:smithing");
-
     private final Map<ResourceLocation, RecipeUnifier> transformersByType = new HashMap<>();
     private final Map<String, RecipeUnifier> transformersByModId = new HashMap<>();
 
-    public void fillUnifier(RecipeUnifierBuilder builder, RecipeData recipeData) {
-        GenericRecipeUnifier.INSTANCE.collectUnifier(builder);
-
-        if (recipeData.hasProperty(ShapedRecipeKeyUnifier.PATTERN_PROPERTY) &&
-            recipeData.hasProperty(ShapedRecipeKeyUnifier.KEY_PROPERTY)) {
-            ShapedRecipeKeyUnifier.INSTANCE.collectUnifier(builder);
-        }
-
-        if (recipeData.hasProperty(SmithingRecipeUnifier.ADDITION_PROPERTY) &&
-            recipeData.hasProperty(SmithingRecipeUnifier.BASE_PROPERTY) &&
-            recipeData.hasProperty(RecipeConstants.RESULT)) {
-            SmithingRecipeUnifier.INSTANCE.collectUnifier(builder);
-        }
-
-        ResourceLocation type = recipeData.getType();
-        RecipeUnifier byMod = transformersByModId.get(type.getNamespace());
-        if (byMod != null) {
-            byMod.collectUnifier(builder);
-        }
-
-        RecipeUnifier byType = transformersByType.get(type);
+    public RecipeUnifier getUnifier(RecipeData recipeData) {
+        // TODO move the type and modid thing into plugin
+        var type = recipeData.getType();
+        var byType = transformersByType.get(type);
         if (byType != null) {
-            byType.collectUnifier(builder);
+            return byType;
         }
+
+        var byMod = transformersByModId.get(type.getNamespace());
+        if (byMod != null) {
+            return byMod;
+        }
+
+        if (SmithingRecipeUnifier.INSTANCE.matches(recipeData)) {
+            return SmithingRecipeUnifier.INSTANCE;
+        }
+
+        if (recipeData.hasProperty(ShapedRecipeUnifier.PATTERN_PROPERTY) &&
+            recipeData.hasProperty(ShapedRecipeUnifier.KEY_PROPERTY)) {
+            return ShapedRecipeUnifier.INSTANCE;
+        }
+
+        return GenericRecipeUnifier.INSTANCE;
     }
 
     public void registerForType(ResourceLocation type, RecipeUnifier transformer) {

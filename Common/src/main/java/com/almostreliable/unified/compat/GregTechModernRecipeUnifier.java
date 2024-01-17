@@ -2,14 +2,13 @@ package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
+import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
+import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.Function;
 
 public class GregTechModernRecipeUnifier implements RecipeUnifier {
@@ -17,58 +16,34 @@ public class GregTechModernRecipeUnifier implements RecipeUnifier {
     private static final String CONTENT = "content";
 
     @Override
-    public void collectUnifier(RecipeUnifierBuilder builder) {
-        List.of(
-                RecipeConstants.INPUTS,
-                RecipeConstants.TICK_INPUTS
-        ).forEach(key ->
-                builder.put(key, (json, ctx) -> createContentReplacement(json, ctx, ctx::createIngredientReplacement))
-        );
+    public void unifyItems(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
 
-        List.of(
+        doUnify(recipe, RecipeConstants.INPUTS, context::unifyBasicInput);
+        doUnify(recipe, RecipeConstants.TICK_INPUTS, context::unifyBasicInput);
+
+        doUnify(recipe,
                 RecipeConstants.OUTPUTS,
-                RecipeConstants.TICK_OUTPUTS
-        ).forEach(key ->
-                builder.put(
-                        key,
-                        (json, ctx) -> createContentReplacement(
-                                json,
-                                ctx,
-                                element -> ctx.createResultReplacement(
-                                        element,
-                                        true,
-                                        RecipeConstants.ITEM,
-                                        RecipeConstants.INGREDIENT
-                                )
-                        )
-                )
-        );
+                json -> context.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
+        doUnify(recipe,
+                RecipeConstants.TICK_OUTPUTS,
+                json -> context.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
     }
 
-    @Nullable
-    private JsonElement createContentReplacement(@Nullable JsonElement json, RecipeContext ctx, Function<JsonElement, JsonElement> elementTransformer) {
-        if (json instanceof JsonObject jsonObject &&
-            jsonObject.get(RecipeConstants.ITEM) instanceof JsonArray jsonArray) {
-            JsonArray result = new JsonArray();
-            boolean changed = false;
-
-            for (JsonElement element : jsonArray) {
-                if (element instanceof JsonObject elementObject) {
-                    JsonElement replacement = elementTransformer.apply(elementObject.get(CONTENT));
-                    if (replacement != null) {
-                        elementObject.add(CONTENT, replacement);
-                        changed = true;
-                    }
-                    result.add(elementObject);
-                }
-            }
-
-            if (changed) {
-                jsonObject.add(RecipeConstants.ITEM, result);
-                return jsonObject;
-            }
+    public void doUnify(RecipeJson recipe, String key, Function<JsonObject, Boolean> callback) {
+        JsonElement property = recipe.getProperty(key);
+        if (property == null) {
+            return;
         }
 
-        return null;
+        if (!(property.getAsJsonObject().get(RecipeConstants.ITEM) instanceof JsonArray arr)) {
+            return;
+        }
+
+        for (JsonElement element : arr) {
+            if (element.getAsJsonObject().get(CONTENT) instanceof JsonObject content && callback.apply(content)) {
+                recipe.markChanged();
+            }
+        }
     }
 }

@@ -1,8 +1,9 @@
 package com.almostreliable.unified.recipe.unifier;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
+import com.almostreliable.unified.api.recipe.RecipeContext;
+import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
 
 import java.util.Set;
 
@@ -24,13 +25,8 @@ public class GenericRecipeUnifier implements RecipeUnifier {
     );
 
     @Override
-    public void collectUnifier(RecipeUnifierBuilder builder) {
-        for (String inputKey : INPUT_KEYS) {
-            builder.put(inputKey, (json, ctx) -> ctx.createIngredientReplacement(json));
-        }
-
-        for (String outputKey : OUTPUT_KEYS) {
-            builder.put(outputKey, (json, ctx) -> ctx.createResultReplacement(json));
-        }
+    public void unifyItems(RecipeContext context, RecipeJson recipe) {
+        context.unifyInputs(recipe, INPUT_KEYS);
+        context.unifyOutputs(recipe, OUTPUT_KEYS);
     }
 }

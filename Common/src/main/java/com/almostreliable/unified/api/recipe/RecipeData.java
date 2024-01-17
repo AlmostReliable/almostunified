@@ -4,12 +4,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface RecipeData {
 
+    ResourceLocation getId();
+
     ResourceLocation getType();
 
     boolean hasProperty(String property);
-
-    default String getModId() {
-        return getType().getNamespace();
-    }
-
 }

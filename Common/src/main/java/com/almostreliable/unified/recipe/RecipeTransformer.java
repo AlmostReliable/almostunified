@@ -2,7 +2,8 @@ package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.ReplacementMap;
-import com.almostreliable.unified.api.recipe.RecipeData;
+import com.almostreliable.unified.api.recipe.RecipeJson;
+import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.config.DuplicationConfig;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
@@ -220,29 +221,18 @@ public class RecipeTransformer {
      */
     public void unifyRecipe(RecipeLink recipe) {
         try {
-            var recipeData = new RecipeData() {
+            JsonObject maybeUnified = recipe.getOriginal().deepCopy(); // TODO remove later and store different
+            RecipeJson json = new RecipeJsonImpl(recipe.getId(), maybeUnified);
 
-                @Override
-                public ResourceLocation getType() {
-                    String type = recipe.getOriginal().get("type").getAsString();
-                    return new ResourceLocation(type);
-                }
-
-                @Override
-                public boolean hasProperty(String property) {
-                    return recipe.getOriginal().has(property);
-                }
-            };
-
-            RecipeUnifierBuilderImpl builder = new RecipeUnifierBuilderImpl();
-            factory.fillUnifier(builder, recipeData);
             RecipeContextImpl ctx = new RecipeContextImpl(replacementMap);
-            JsonObject result = builder.unify(recipe.getOriginal(), ctx);
-            if (result != null) {
-                recipe.setUnified(result);
+            RecipeUnifier unifier = factory.getUnifier(recipe);
+            unifier.unifyItems(ctx, json);
+
+            if (json.changed()) {
+                recipe.setUnified(maybeUnified);
             }
 
-            propertiesLogger.log(recipe.getType(), recipe.getOriginal(), builder.getKeys());
+            propertiesLogger.log(recipe.getType(), recipe.getOriginal());
         } catch (Exception e) {
             AlmostUnified.LOG.warn("Error unifying recipe '{}': {}", recipe.getId(), e.getMessage());
             e.printStackTrace();
