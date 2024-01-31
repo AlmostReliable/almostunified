@@ -5,7 +5,7 @@ import com.almostreliable.unified.compat.AdAstraRecipeUnifier;
 import com.almostreliable.unified.compat.AmethystImbuementRecipeUnifier;
 import com.almostreliable.unified.compat.GregTechModernRecipeUnifier;
 import com.almostreliable.unified.compat.ModernIndustrializationRecipeUnifier;
-import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import com.almostreliable.unified.api.UnifierRegistry;
 import com.google.auto.service.AutoService;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -45,7 +45,7 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
     }
 
     @Override
-    public void bindRecipeHandlers(RecipeHandlerFactory factory) {
+    public void bindRecipeHandlers(UnifierRegistry factory) {
         factory.registerForMod(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
         factory.registerForMod(ModConstants.AMETHYST_IMBUEMENT, new AmethystImbuementRecipeUnifier());
         factory.registerForMod(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());

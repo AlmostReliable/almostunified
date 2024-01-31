@@ -1,19 +1,19 @@
 package com.almostreliable.unified.recipe.unifier;
 
-import com.almostreliable.unified.api.recipe.RecipeConstants;
+import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.api.recipe.RecipeData;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RecipeHandlerFactory {
+public class UnifierRegistryImpl implements UnifierRegistry {
 
     private final Map<ResourceLocation, RecipeUnifier> transformersByType = new HashMap<>();
     private final Map<String, RecipeUnifier> transformersByModId = new HashMap<>();
 
+    @Override
     public RecipeUnifier getUnifier(RecipeData recipeData) {
         // TODO move the type and modid thing into plugin
         var type = recipeData.getType();
@@ -39,10 +39,12 @@ public class RecipeHandlerFactory {
         return GenericRecipeUnifier.INSTANCE;
     }
 
+    @Override
     public void registerForType(ResourceLocation type, RecipeUnifier transformer) {
         transformersByType.put(type, transformer);
     }
 
+    @Override
     public void registerForMod(String mod, RecipeUnifier transformer) {
         transformersByModId.put(mod, transformer);
     }

@@ -6,7 +6,8 @@ import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.config.DuplicationConfig;
 import com.almostreliable.unified.config.UnifyConfig;
-import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.JsonQuery;
 import com.almostreliable.unified.utils.RecipeTypePropertiesLogger;
@@ -26,14 +27,14 @@ import java.util.stream.Collectors;
 
 public class RecipeTransformer {
 
-    private final RecipeHandlerFactory factory;
+    private final UnifierRegistry factory;
     private final ReplacementMap replacementMap;
     private final UnifyConfig unifyConfig;
     private final DuplicationConfig duplicationConfig;
 
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(RecipeHandlerFactory factory, ReplacementMap replacementMap, UnifyConfig unifyConfig, DuplicationConfig duplicationConfig) {
+    public RecipeTransformer(UnifierRegistry factory, ReplacementMap replacementMap, UnifyConfig unifyConfig, DuplicationConfig duplicationConfig) {
         this.factory = factory;
         this.replacementMap = replacementMap;
         this.unifyConfig = unifyConfig;
@@ -215,7 +216,7 @@ public class RecipeTransformer {
 
     /**
      * Unifies a single recipe link. This method will modify the recipe link in-place.
-     * {@link RecipeHandlerFactory} will apply multiple unification's onto the recipe.
+     * {@link UnifierRegistryImpl} will apply multiple unification's onto the recipe.
      *
      * @param recipe The recipe link to unify.
      */

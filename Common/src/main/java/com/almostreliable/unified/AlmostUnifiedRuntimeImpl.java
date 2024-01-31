@@ -7,7 +7,7 @@ import com.almostreliable.unified.config.ServerConfigs;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
-import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
+import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.api.TagMap;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
@@ -23,20 +23,20 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final DebugConfig debugConfig;
     private final TagMap<Item> tagMap;
     private final ReplacementMap replacementMap;
-    private final RecipeHandlerFactory recipeHandlerFactory;
+    private final UnifierRegistry unifierRegistry;
 
     AlmostUnifiedRuntimeImpl(
             ServerConfigs configs,
             TagMap<Item> tagMap,
             ReplacementMap repMap,
-            RecipeHandlerFactory recipeHandlerFactory
+            UnifierRegistry unifierRegistry
     ) {
         this.unifyConfig = configs.getUnifyConfig();
         this.duplicationConfig = configs.getDupConfig();
         this.debugConfig = configs.getDebugConfig();
         this.tagMap = tagMap;
         this.replacementMap = repMap;
-        this.recipeHandlerFactory = recipeHandlerFactory;
+        this.unifierRegistry = unifierRegistry;
     }
 
     @Override
@@ -46,7 +46,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
         long startTime = System.currentTimeMillis();
         RecipeTransformer.Result result = new RecipeTransformer(
-                recipeHandlerFactory,
+                unifierRegistry,
                 replacementMap,
                 unifyConfig,
                 duplicationConfig

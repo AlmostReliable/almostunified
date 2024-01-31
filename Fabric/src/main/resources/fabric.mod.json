@@ -23,6 +23,10 @@
     ],
     "rei_client": [
       "com.almostreliable.unified.compat.AlmostREI"
+    ],
+    "almostunified": [
+      "com.almostreliable.unified.CommonPlugin",
+      "com.almostreliable.unified.FabricPlugin"
     ]
   },
   "mixins": [

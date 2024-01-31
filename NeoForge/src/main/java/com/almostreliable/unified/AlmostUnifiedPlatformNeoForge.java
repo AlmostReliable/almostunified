@@ -1,8 +1,8 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
+import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.compat.*;
-import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.google.auto.service.AutoService;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -52,8 +52,7 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
     }
 
     @Override
-    public void bindRecipeHandlers(RecipeHandlerFactory factory) {
-        factory.registerForMod(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
+    public void bindRecipeHandlers(UnifierRegistry factory) {
         List.of(
                 ModConstants.ARS_CREO,
                 ModConstants.ARS_ELEMENTAL,
@@ -62,7 +61,6 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
         ).forEach(modId -> factory.registerForMod(modId, new ArsNouveauRecipeUnifier()));
         factory.registerForMod(ModConstants.CYCLIC, new CyclicRecipeUnifier());
         factory.registerForMod(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
-        factory.registerForMod(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
         factory.registerForMod(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         factory.registerForMod(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
         factory.registerForMod(ModConstants.MEKANISM, new MekanismRecipeUnifier());

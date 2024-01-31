@@ -1,11 +1,12 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.TagOwnerships;
+import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.ServerConfigs;
 import com.almostreliable.unified.config.StartupConfig;
 import com.almostreliable.unified.config.UnifyConfig;
-import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.api.TagOwnerships;
+import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
 import com.almostreliable.unified.utils.TagOwnershipsImpl;
 import com.almostreliable.unified.utils.TagReloadHandler;
 import com.google.common.base.Preconditions;
@@ -47,8 +48,8 @@ public final class AlmostUnified {
     }
 
     public static void onTagLoaderReload(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
-        RecipeHandlerFactory recipeHandlerFactory = new RecipeHandlerFactory();
-        AlmostUnifiedPlatform.INSTANCE.bindRecipeHandlers(recipeHandlerFactory);
+        UnifierRegistry unifierRegistry = new UnifierRegistryImpl();
+        PluginManager.instance().registerUnifiers(unifierRegistry);
 
         ServerConfigs serverConfigs = ServerConfigs.load();
         UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
@@ -67,7 +68,7 @@ public final class AlmostUnified {
                 serverConfigs,
                 replacementData.filteredTagMap(),
                 replacementData.replacementMap(),
-                recipeHandlerFactory
+                unifierRegistry
         );
     }
 
