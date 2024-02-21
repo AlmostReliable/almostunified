@@ -4,6 +4,7 @@ val fabricApiVersion: String by project
 val fabricRecipeViewer: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
+val emiVersion: String by project
 
 plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -36,12 +37,14 @@ dependencies {
     // compile time mods
     modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric-api:$jeiVersion") // required for common jei plugin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
+    modCompileOnly("dev.emi:emi-fabric:$emiVersion+$minecraftVersion:api") // required for common emi plugin
 
     // runtime dependencies
     modLocalRuntime(
         when (fabricRecipeViewer) {
             "jei" -> "mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion"
             "rei" -> "me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion"
+            "emi" -> "dev.emi:emi-fabric:$emiVersion+$minecraftVersion"
             else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
         }
     )

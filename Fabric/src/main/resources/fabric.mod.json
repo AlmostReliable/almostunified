@@ -23,6 +23,9 @@
     ],
     "rei_client": [
       "com.almostreliable.unified.compat.AlmostREI"
+    ],
+    "emi": [
+      "com.almostreliable.unified.compat.AlmostEMI"
     ]
   },
   "mixins": [
@@ -35,6 +38,7 @@
   },
   "suggests": {
     "jei": ">=${jeiVersion}",
-    "roughlyenoughitems": ">=${reiVersion}"
+    "roughlyenoughitems": ">=${reiVersion}",
+    "emi": ">=${emiVersion}"
   }
 }
