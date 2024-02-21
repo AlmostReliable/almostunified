@@ -7,7 +7,7 @@ on:
       - 'v1.20.1-*.*.*'
 
 env:
-  JAVA_DIST: 'zulu'
+  JAVA_DIST: 'microsoft'
   JAVA_VERSION: 17
   MOD_ID: 'almostunified'
   MOD_NAME: 'AlmostUnified'
