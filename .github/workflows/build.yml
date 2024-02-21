@@ -24,7 +24,7 @@ on:
       - '**/build.yml'
 
 env:
-  JAVA_DIST: 'zulu'
+  JAVA_DIST: 'microsoft'
   JAVA_VERSION: 17
 
 jobs:
