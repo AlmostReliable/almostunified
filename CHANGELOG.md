@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.8.0] - 2024-02-21
+
+## Added
+- added integration for EMI
+  - same features as for JEI/REI including hiding stacks from tags used in recipes
+  - to disable it, you can use the flag for JEI/REI in the config
+  - requires at least EMI version 1.1.2 
+
+### Fixed
+- fixed Integrated Dynamics unifier not properly targetting outputs
+
 ## [0.7.2] - 2023-11-21
 
 ## Added
@@ -423,6 +434,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.8.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.8.0-beta
 [0.7.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.7.2-beta
 [0.7.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.7.0-beta
 [0.6.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.6.0-beta
