@@ -38,3 +38,10 @@ mandatory = false
 versionRange = "[${reiVersion},)"
 ordering = "BEFORE"
 side = "BOTH"
+
+[[dependencies."${modId}"]]
+modId = "emi"
+mandatory = false
+versionRange = "[${emiVersion},)"
+ordering = "BEFORE"
+side = "BOTH"

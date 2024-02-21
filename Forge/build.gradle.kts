@@ -5,6 +5,7 @@ val forgeVersion: String by project
 val forgeRecipeViewer: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
+val emiVersion: String by project
 
 val extraModsPrefix = "extra-mods"
 
@@ -56,11 +57,13 @@ dependencies {
         isTransitive = false // prevents breaking the forge runtime
     }
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion") // required for common rei plugin
+    modCompileOnly("dev.emi:emi-forge:$emiVersion+$minecraftVersion:api") // required for common emi plugin
 
     // runtime mods
     when (forgeRecipeViewer) {
         "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-forge:$jeiVersion") { isTransitive = false }
         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:$reiVersion")
+        "emi" -> modLocalRuntime("dev.emi:emi-forge:$emiVersion+$minecraftVersion")
         else -> throw GradleException("Invalid forgeRecipeViewer value: $forgeRecipeViewer")
     }
 

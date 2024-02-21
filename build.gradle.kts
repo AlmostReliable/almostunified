@@ -17,6 +17,7 @@ val fabricApiVersion: String by project
 val forgeVersion: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
+val emiVersion: String by project
 val githubRepo: String by project
 val githubUser: String by project
 
@@ -74,6 +75,7 @@ subprojects {
         maven("https://maven.parchmentmc.org") // Parchment
         maven("https://maven.shedaniel.me") // REI
         maven("https://maven.blamejared.com/") // JEI
+        maven("https://maven.terraformersmc.com/") // EMI
         mavenLocal()
     }
 
@@ -122,6 +124,7 @@ subprojects {
                 "forgeFMLVersion" to forgeVersion.substringBefore("."),
                 "jeiVersion" to jeiVersion,
                 "reiVersion" to reiVersion,
+                "emiVersion" to emiVersion,
                 "githubUser" to githubUser,
                 "githubRepo" to githubRepo
             )
