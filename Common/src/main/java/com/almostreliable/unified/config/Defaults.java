@@ -142,6 +142,7 @@ public final class Defaults {
             case FABRIC -> "fabric:load_conditions";
         });
         result.ignoreField("group");
+        result.ignoreField("category");
         result.addRule("cookingtime", new JsonCompare.HigherRule());
         result.addRule("energy", new JsonCompare.HigherRule());
         result.addRule("experience", new JsonCompare.HigherRule());
@@ -155,6 +156,7 @@ public final class Defaults {
             case FABRIC -> "fabric:load_conditions";
         });
         result.ignoreField("group");
+        result.ignoreField("category");
         result.ignoreField("pattern");
         result.ignoreField("key");
         LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> resultMap = new LinkedHashMap<>();
