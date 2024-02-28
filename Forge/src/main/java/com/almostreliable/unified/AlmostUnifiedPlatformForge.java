@@ -65,6 +65,19 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
         factory.registerForMod(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         factory.registerForMod(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
         factory.registerForMod(ModConstants.MEKANISM, new MekanismRecipeUnifier());
+        List.of(
+                ModConstants.TFC,
+                ModConstants.ADVANCED_TFC_TECH,
+                ModConstants.FIRMACIV,
+                ModConstants.FIRMALIFE,
+                ModConstants.PRECISION_PROSPECTING,
+                ModConstants.TFC_AMBIENTAL,
+                ModConstants.TFC_CAST_IRON_GRILL,
+                ModConstants.TFC_CASTING_WITH_CHANNELS,
+                ModConstants.TFC_THERMAL_DEPOSITS,
+                ModConstants.TFC_WATER_FLASKS,
+                ModConstants.WOODENCOG
+        ).forEach(modId -> factory.registerForMod(modId, new TfcRecipeUnifier()));
     }
 
     @Override
