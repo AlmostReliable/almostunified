@@ -2,268 +2,56 @@ name: Release
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - 'v1.19.2-*.*.*'
-
-env:
-  JAVA_DIST: 'microsoft'
-  JAVA_VERSION: 17
-  MOD_ID: 'almostunified'
-  MOD_NAME: 'AlmostUnified'
-  CURSEFORGE_ID: '633823'
-  MODRINTH_ID: 'sdaSaQEz'
+    inputs:
+      target_version:
+        type: string
+        required: false
+        description: "mod version | empty = next option"
+      update_type:
+        type: choice
+        required: false
+        description: "update type"
+        default: "minor"
+        options:
+          - "major"
+          - "minor"
+          - "patch"
+          - "none"
+      release_type:
+        type: choice
+        required: true
+        description: "type of release"
+        default: "release"
+        options:
+          - "alpha"
+          - "beta"
+          - "release"
+      loaders:
+        type: choice
+        required: true
+        description: "loaders to release for"
+        default: "both"
+        options:
+          - "fabric"
+          - "forge"
+          - "both"
+      debug:
+        type: boolean
+        required: false
+        default: false
+        description: "enable debug mode (GitHub only)"
 
 jobs:
-
-  build:
-    name: Build, collect info, parse changelog
-    runs-on: ubuntu-latest
-    outputs:
-      JAR_FILE: ${{ steps.collect_info.outputs.JAR_FILE }}
-      MINECRAFT_VERSION: ${{ steps.collect_info.outputs.MINECRAFT_VERSION }}
-      MOD_VERSION: ${{ steps.collect_info.outputs.MOD_VERSION }}
-      RELEASE_TYPE: ${{ steps.collect_info.outputs.RELEASE_TYPE }}
-    steps:
-      - name: Clone Repository
-        uses: actions/checkout@v3
-
-      - name: Set up JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: ${{ env.JAVA_DIST }}
-          cache: gradle
-
-      - name: Cleanup Gradle Cache
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
-
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
-
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Assemble the JARs
-        run: ./gradlew assemble
-
-      - name: Move JARs to central directory
-        run: |
-          mkdir output
-          mv -f Forge/build/libs/*.jar Fabric/build/libs/*.jar output/
-          rm -f output/*-dev-shadow.jar output/*-sources.jar
-
-      - name: Collect version information
-        id: collect_info
-        run: |
-          shopt -s failglob # print a warning if a glob does not match anything
-          set_var() {
-            echo $1="$2"
-            echo $1="$2" >> $GITHUB_OUTPUT
-            declare -g $1="$2"
-          }
-          set_var JAR_FILE $(eval echo output/${{ env.MOD_ID }}-*-*-*.jar)
-          set_var MINECRAFT_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f3)
-          set_var MOD_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f4)
-          set_var RELEASE_TYPE "$(echo ${GITHUB_REF##*/} | cut -d- -f3)"
-          set_var RELEASE_TYPE "$([[ -z $RELEASE_TYPE ]] && echo release || echo $RELEASE_TYPE)"
-
-      - name: Install changelog parser
-        uses: taiki-e/install-action@parse-changelog
-
-      - name: Parse changelog
-        run: parse-changelog CHANGELOG.md ${{ steps.collect_info.outputs.MOD_VERSION }} > output/changelog.md
-
-      - name: Archive results
-        run: tar -zcvf build.tar.gz output
-
-      - name: Upload results
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-artifacts
-          path: build.tar.gz
-          if-no-files-found: error
-          retention-days: 3
-
-      - name: Job Summary
-        run: |
-          echo "# Version Information" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Minecraft Version: ${{ steps.collect_info.outputs.MINECRAFT_VERSION }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Mod Version: ${{ steps.collect_info.outputs.MOD_VERSION }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Release Type: ${{ steps.collect_info.outputs.RELEASE_TYPE }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "# Build Information" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- JAR files: $(find output -maxdepth 1 -type f -name '*.jar' | wc -l)" >> $GITHUB_STEP_SUMMARY
-          echo "- Folder size: $(du -sh output | cut -f1)" >> $GITHUB_STEP_SUMMARY
-          echo "- Archive size: $(du -sh build.tar.gz | cut -f1)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "# Changelog" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          cat output/changelog.md >> $GITHUB_STEP_SUMMARY
-
-  mr-fabric-release:
-    name: Modrinth Fabric Release
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
-      - name: Extract build artifacts
-        run: tar -zxvf build.tar.gz
-
-      - name: Release Fabric on Modrinth
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: ${{ env.MODRINTH_ID }}
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          files: output/*fabric*.jar
-          name: ${{ env.MOD_NAME }}-Fabric-${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}
-          version: ${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}+fabric
-          version-type: ${{ needs.build.outputs.RELEASE_TYPE }}
-          changelog-file: output/changelog.md
-
-          loaders: fabric
-          game-versions: ${{ needs.build.outputs.MINECRAFT_VERSION }}
-          java: ${{ env.JAVA_VERSION }}
-
-          dependencies: |
-            jei(optional){curseforge:238222}{modrinth:u6dRKJwZ}
-            rei(optional){curseforge:310111}{modrinth:nfn13YXA}
-            kubejs(optional){curseforge:238086}{modrinth:umyGl7zF}
-
-  cf-fabric-release:
-    name: CurseForge Fabric Release
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
-      - name: Extract build artifacts
-        run: tar -zxvf build.tar.gz
-
-      - name: Release Fabric on CurseForge
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          curseforge-id: ${{ env.CURSEFORGE_ID }}
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: output/*fabric*.jar
-          name: ${{ env.MOD_NAME }}-Fabric-${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}
-          version: ${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}+fabric
-          version-type: ${{ needs.build.outputs.RELEASE_TYPE }}
-          changelog-file: output/changelog.md
-
-          loaders: fabric
-          game-versions: ${{ needs.build.outputs.MINECRAFT_VERSION }}
-          java: ${{ env.JAVA_VERSION }}
-
-          dependencies: |
-            jei(optional){curseforge:238222}{modrinth:u6dRKJwZ}
-            rei(optional){curseforge:310111}{modrinth:nfn13YXA}
-            kubejs(optional){curseforge:238086}{modrinth:umyGl7zF}
-
-  mr-forge-release:
-    name: Modrinth Forge Release
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
-      - name: Extract build artifacts
-        run: tar -zxvf build.tar.gz
-
-      - name: Release Forge on Modrinth
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: ${{ env.MODRINTH_ID }}
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          files: output/*forge*.jar
-          name: ${{ env.MOD_NAME }}-Forge-${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}
-          version: ${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}+forge
-          version-type: ${{ needs.build.outputs.RELEASE_TYPE }}
-          changelog-file: output/changelog.md
-
-          loaders: |
-            forge
-            neoforge
-          game-versions: ${{ needs.build.outputs.MINECRAFT_VERSION }}
-          java: ${{ env.JAVA_VERSION }}
-
-          dependencies: |
-            jei(optional){curseforge:238222}{modrinth:u6dRKJwZ}
-            rei(optional){curseforge:310111}{modrinth:nfn13YXA}
-            kubejs(optional){curseforge:238086}{modrinth:umyGl7zF}
-
-  cf-forge-release:
-    name: CurseForge Forge Release
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
-      - name: Extract build artifacts
-        run: tar -zxvf build.tar.gz
-
-      - name: Release Forge on CurseForge
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          curseforge-id: ${{ env.CURSEFORGE_ID }}
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: output/*forge*.jar
-          name: ${{ env.MOD_NAME }}-Forge-${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}
-          version: ${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}+forge
-          version-type: ${{ needs.build.outputs.RELEASE_TYPE }}
-          changelog-file: output/changelog.md
-
-          loaders: |
-            forge
-            neoforge
-          game-versions: ${{ needs.build.outputs.MINECRAFT_VERSION }}
-          java: ${{ env.JAVA_VERSION }}
-
-          dependencies: |
-            jei(optional){curseforge:238222}{modrinth:u6dRKJwZ}
-            rei(optional){curseforge:310111}{modrinth:nfn13YXA}
-            kubejs(optional){curseforge:238086}{modrinth:umyGl7zF}
-
-  github-release:
-    name: GitHub Release
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
-      - name: Extract build artifacts
-        run: tar -zxvf build.tar.gz
-
-      - name: Release on GitHub
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          files: output/*.jar
-          name: v${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}
-          version: ${{ needs.build.outputs.MINECRAFT_VERSION }}-${{ needs.build.outputs.MOD_VERSION }}
-          version-type: ${{ needs.build.outputs.RELEASE_TYPE }}
-          changelog-file: output/changelog.md
+  redirect:
+    uses: AlmostReliable/.github/.github/workflows/release-java17.yml@main
+    secrets: inherit
+    with:
+      mod_name: "AlmostUnified" # name used for the output JAR files (use a dash instead of spaces)
+      curseforge_id: "633823" # ID of the project on CurseForge
+      modrinth_id: "sdaSaQEz" # ID of the project on Modrinth
+      dependencies: "['jei(optional){curseforge:238222}{modrinth:u6dRKJwZ}', 'rei(optional){curseforge:310111}{modrinth:nfn13YXA}']" # can be removed if there are no dependencies
+      target_version: ${{ github.event.inputs.target_version }}
+      update_type: ${{ github.event.inputs.update_type }}
+      release_type: ${{ github.event.inputs.release_type }}
+      loaders: ${{ github.event.inputs.loaders }}
+      debug: ${{ github.event.inputs.debug }}
