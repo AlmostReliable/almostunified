@@ -5,7 +5,6 @@ import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.CRTLookup;
 import dev.emi.emi.api.EmiEntrypoint;
-import dev.emi.emi.api.EmiInitRegistry;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipe;
@@ -18,8 +17,26 @@ import net.minecraft.world.item.ItemStack;
 @EmiEntrypoint
 public class AlmostEMI implements EmiPlugin {
 
+    // temporarily disabled to due to it breaking transfer handlers
+    //    @Override
+    //    public void initialize(EmiInitRegistry registry) {
+    //        AlmostUnifiedFallbackRuntime.getInstance().reload();
+    //
+    //        var emiDisabled = AlmostUnified.getRuntime()
+    //                .getUnifyConfig()
+    //                .map(UnifyConfig::reiOrJeiDisabled)
+    //                .orElse(false);
+    //        if (emiDisabled) return;
+    //
+    //        for (ItemStack item : HideHelper.createHidingList(AlmostUnified.getRuntime())) {
+    //            registry.disableStack(EmiStack.of(item));
+    //        }
+    //    }
+
     @Override
-    public void initialize(EmiInitRegistry registry) {
+    public void register(EmiRegistry registry) {
+        registry.addRecipeDecorator(new IndicatorDecorator());
+
         AlmostUnifiedFallbackRuntime.getInstance().reload();
 
         var emiDisabled = AlmostUnified.getRuntime()
@@ -29,13 +46,8 @@ public class AlmostEMI implements EmiPlugin {
         if (emiDisabled) return;
 
         for (ItemStack item : HideHelper.createHidingList(AlmostUnified.getRuntime())) {
-            registry.disableStack(EmiStack.of(item));
+            registry.removeEmiStacks(EmiStack.of(item));
         }
-    }
-
-    @Override
-    public void register(EmiRegistry registry) {
-        registry.addRecipeDecorator(new IndicatorDecorator());
     }
 
     private static class IndicatorDecorator implements EmiRecipeDecorator {
