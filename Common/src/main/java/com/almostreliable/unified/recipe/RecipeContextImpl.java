@@ -60,26 +60,37 @@ public class RecipeContextImpl implements RecipeContext {
     @Nullable
     @Override
     public JsonElement createIngredientReplacement(@Nullable JsonElement element) {
+        return createIngredientReplacement(
+                element,
+                RecipeConstants.VALUE,
+                RecipeConstants.BASE,
+                RecipeConstants.INGREDIENT
+        );
+    }
+
+    @Nullable
+    @Override
+    public JsonElement createIngredientReplacement(@Nullable JsonElement element, String... lookupKeys) {
         if (element == null) {
             return null;
         }
 
         JsonElement copy = element.deepCopy();
-        tryCreateIngredientReplacement(copy);
+        tryCreateIngredientReplacement(copy, lookupKeys);
         return element.equals(copy) ? null : copy;
     }
 
-    private void tryCreateIngredientReplacement(@Nullable JsonElement element) {
+    private void tryCreateIngredientReplacement(@Nullable JsonElement element, String... lookupKeys) {
         if (element instanceof JsonArray array) {
             for (JsonElement e : array) {
-                tryCreateIngredientReplacement(e);
+                tryCreateIngredientReplacement(e, lookupKeys);
             }
         }
 
         if (element instanceof JsonObject object) {
-            tryCreateIngredientReplacement(object.get(RecipeConstants.VALUE));
-            tryCreateIngredientReplacement(object.get(RecipeConstants.BASE));
-            tryCreateIngredientReplacement(object.get(RecipeConstants.INGREDIENT));
+            for (String key : lookupKeys) {
+                tryCreateIngredientReplacement(object.get(key), lookupKeys);
+            }
 
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
                 UnifyTag<Item> tag = Utils.toItemTag(primitive.getAsString());
