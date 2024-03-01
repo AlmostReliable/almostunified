@@ -77,7 +77,7 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
                 ModConstants.TFC_THERMAL_DEPOSITS,
                 ModConstants.TFC_WATER_FLASKS,
                 ModConstants.WOODENCOG
-        ).forEach(modId -> factory.registerForMod(modId, new TfcRecipeUnifier()));
+        ).forEach(modId -> factory.registerForMod(modId, new TerraFirmaCraftRecipeUnifier()));
     }
 
     @Override

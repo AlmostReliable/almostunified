@@ -51,7 +51,7 @@ public final class RecipeConstants {
     // cyclic
     public static final String BONUS = "bonus";
 
-    // tfc
+    // terrafirmacraft
     public static final String STACK = "stack";
     public static final String EXTRA_PRODUCTS = "extra_products";
     public static final String FIRST_INPUT = "first_input";

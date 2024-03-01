@@ -32,7 +32,5 @@ public final class ModConstants {
     public static final String TFC_WATER_FLASKS = "waterflasks";
     public static final String WOODENCOG = "woodencog";
 
-
-
     private ModConstants() {}
 }

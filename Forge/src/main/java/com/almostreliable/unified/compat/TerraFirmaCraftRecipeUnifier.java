@@ -10,11 +10,11 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TfcRecipeUnifier implements RecipeUnifier {
+public class TerraFirmaCraftRecipeUnifier implements RecipeUnifier {
 
     @Override
     public void collectUnifier(RecipeUnifierBuilder builder) {
-        // Regular Ingredient
+        // regular ingredient
         List.of(
                 RecipeConstants.FIRST_INPUT,
                 RecipeConstants.SECOND_INPUT,
@@ -22,17 +22,21 @@ public class TfcRecipeUnifier implements RecipeUnifier {
                 RecipeConstants.BATCH
         ).forEach(key -> builder.put(key, (json, ctx) -> ctx.createIngredientReplacement(json)));
 
-        // Array of regular ingredients
+        // array of regular ingredients
         builder.forEachObject(RecipeConstants.EXTRA_PRODUCTS, this::createIngredientReplacement);
 
-        // Output keys that may contain "stack"
-        List.of(RecipeConstants.RESULT, RecipeConstants.OUTPUT_ITEM, RecipeConstants.EXTRA_DROP, RecipeConstants.RESULT_ITEM)
-                .forEach(key -> builder.put(key, this::createResultReplacement));
+        // output keys that may contain "stack"
+        List.of(
+                RecipeConstants.RESULT,
+                RecipeConstants.OUTPUT_ITEM,
+                RecipeConstants.EXTRA_DROP,
+                RecipeConstants.RESULT_ITEM
+        ).forEach(key -> builder.put(key, this::createResultReplacement));
     }
 
     @Nullable
     private JsonElement createResultReplacement(@Nullable JsonElement element, RecipeContext ctx) {
-        if (element instanceof JsonObject json && (json.has(RecipeConstants.STACK))) {
+        if (element instanceof JsonObject json && json.has(RecipeConstants.STACK)) {
             return ctx.createResultReplacement(json.get(RecipeConstants.STACK));
         }
         return ctx.createResultReplacement(element);
