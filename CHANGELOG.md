@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Fixed
+- fixed broken transfer handlers for unified items when using EMI ([#67])
+  - this now uses a less restrictive hiding approach for EMI
+  - unified items are visible in tag cycling until we find a proper solution
+
+<!-- Links -->
+[#67]: https://github.com/AlmostReliable/almostunified/issues/67
+
 ## [0.8.0] - 2024-02-21
 
 ## Added
