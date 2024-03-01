@@ -51,5 +51,20 @@ public final class RecipeConstants {
     // cyclic
     public static final String BONUS = "bonus";
 
+    // terrafirmacraft
+    public static final String STACK = "stack";
+    public static final String EXTRA_PRODUCTS = "extra_products";
+    public static final String FIRST_INPUT = "first_input";
+    public static final String SECOND_INPUT = "second_input";
+    public static final String INPUT_ITEM = "input_item";
+    public static final String OUTPUT_ITEM = "input_item";
+    public static final String EXTRA_DROP = "extra_drop";
+    public static final String BATCH = "batch";
+    public static final String RESULT_ITEM = "result_item";
+    public static final String MOLD = "mold";
+    public static final String PRIMARY_INGREDIENT = "primary_ingredient";
+    public static final String SECONDARY_INPUT = "secondary_input";
+    public static final String BASE_INGREDIENT = "base_ingredient";
+
     private RecipeConstants() {}
 }

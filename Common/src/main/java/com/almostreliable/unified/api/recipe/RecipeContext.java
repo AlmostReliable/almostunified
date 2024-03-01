@@ -23,6 +23,9 @@ public interface RecipeContext {
     JsonElement createIngredientReplacement(@Nullable JsonElement element);
 
     @Nullable
+    JsonElement createIngredientReplacement(@Nullable JsonElement element, String... lookupKeys);
+
+    @Nullable
     JsonElement createResultReplacement(@Nullable JsonElement element);
 
     @Nullable

@@ -20,6 +20,11 @@ public final class ModConstants {
     public static final String INTEGRATED_DYNAMICS = "integrateddynamics";
     public static final String MEKANISM = "mekanism";
     public static final String MODERN_INDUSTRIALIZATION = "modern_industrialization";
+    public static final String WOODENCOG = "woodencog";
+    public static final String TERRAFIRMACRAFT = "tfc";
+    public static final String ADVANCED_TFC_TECH = "advancedtfctech";
+    public static final String FIRMALIFE = "firmalife";
+    public static final String TFC_WATER_FLASKS = "waterflasks";
 
     private ModConstants() {}
 }
