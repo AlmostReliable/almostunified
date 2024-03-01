@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_version:
+        type: string
+        required: false
+        description: "mod version | empty = next option"
+      update_type:
+        type: choice
+        required: false
+        description: "update type"
+        default: "minor"
+        options:
+          - "major"
+          - "minor"
+          - "patch"
+          - "none"
+      release_type:
+        type: choice
+        required: true
+        description: "type of release"
+        default: "release"
+        options:
+          - "alpha"
+          - "beta"
+          - "release"
+      loaders:
+        type: choice
+        required: true
+        description: "loaders to release for"
+        default: "both"
+        options:
+          - "fabric"
+          - "forge"
+          - "both"
+      debug:
+        type: boolean
+        required: false
+        default: false
+        description: "enable debug mode (GitHub only)"
+
+jobs:
+  redirect:
+    uses: AlmostReliable/.github/.github/workflows/release-java17.yml@main
+    secrets: inherit
+    with:
+      mod_name: "AlmostUnified" # name used for the output JAR files (use a dash instead of spaces)
+      curseforge_id: "633823" # ID of the project on CurseForge
+      modrinth_id: "sdaSaQEz" # ID of the project on Modrinth
+      dependencies: "['jei(optional){curseforge:238222}{modrinth:u6dRKJwZ}', 'rei(optional){curseforge:310111}{modrinth:nfn13YXA}']" # can be removed if there are no dependencies
+      target_version: ${{ github.event.inputs.target_version }}
+      update_type: ${{ github.event.inputs.update_type }}
+      release_type: ${{ github.event.inputs.release_type }}
+      loaders: ${{ github.event.inputs.loaders }}
+      debug: ${{ github.event.inputs.debug }}
