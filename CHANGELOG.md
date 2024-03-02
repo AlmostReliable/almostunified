@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## Unreleased
+## [0.8.1] - 2024-03-02
 
 ### Fixed
 - fixed broken transfer handlers for unified items when using EMI ([#67])
@@ -444,6 +444,7 @@ Initial 1.19 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.8.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.8.1
 [0.8.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.8.0-beta
 [0.7.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.7.2-beta
 [0.7.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.19.2-0.7.0-beta
