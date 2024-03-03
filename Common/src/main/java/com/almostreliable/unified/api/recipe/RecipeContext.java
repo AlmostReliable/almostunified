@@ -34,7 +34,17 @@ public interface RecipeContext {
 
     void unifyInputs(RecipeJson recipe, Iterable<String> recipeKeys);
 
+    boolean unifyBasicInput(JsonElement jsonElement, Iterable<String> depthInputLookups);
+
     boolean unifyBasicInput(JsonElement jsonElement);
+
+    boolean unifySimpleInputs(JsonArray json, Iterable<String> depthInputLookups);
+
+    boolean unifySimpleInputs(JsonArray json);
+
+    boolean unifySimpleInputs(JsonObject json, Iterable<String> depthInputLookups);
+
+    boolean unifySimpleInputs(JsonObject json);
 
     boolean unifyItemInput(JsonObject json);
 
