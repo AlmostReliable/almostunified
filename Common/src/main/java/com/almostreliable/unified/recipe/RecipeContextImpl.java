@@ -176,32 +176,44 @@ public class RecipeContextImpl implements RecipeContext {
     }
 
     @Override
-    public boolean unifyBasicInput(JsonElement jsonElement) {
+    public boolean unifyBasicInput(JsonElement jsonElement, Iterable<String> depthInputLookups) {
         if (jsonElement instanceof JsonArray array) {
-            return unifySimpleInputs(array);
+            return unifySimpleInputs(array, depthInputLookups);
         }
 
         if (jsonElement instanceof JsonObject object) {
-            return unifySimpleInputs(object);
+            return unifySimpleInputs(object, depthInputLookups);
         }
 
         return false;
     }
 
-    public boolean unifySimpleInputs(JsonArray json) {
+    @Override
+    public boolean unifyBasicInput(JsonElement jsonElement) {
+        return unifyBasicInput(jsonElement, defaultInputDepthLookups);
+    }
+
+    @Override
+    public boolean unifySimpleInputs(JsonArray json, Iterable<String> depthInputLookups) {
         boolean changed = false;
 
         for (JsonElement element : json) {
-            changed |= unifyBasicInput(element);
+            changed |= unifyBasicInput(element, depthInputLookups);
         }
 
         return changed;
     }
 
-    public boolean unifySimpleInputs(JsonObject json) {
+    @Override
+    public boolean unifySimpleInputs(JsonArray json) {
+        return unifySimpleInputs(json, defaultInputDepthLookups);
+    }
+
+    @Override
+    public boolean unifySimpleInputs(JsonObject json, Iterable<String> depthInputLookups) {
         boolean changed = false;
 
-        for (String key : defaultInputDepthLookups) {
+        for (String key : depthInputLookups) {
             var element = json.get(key);
             if (element != null) {
                 changed |= unifyBasicInput(element);
@@ -212,6 +224,11 @@ public class RecipeContextImpl implements RecipeContext {
         changed |= unifyItemInput(json);
 
         return changed;
+    }
+
+    @Override
+    public boolean unifySimpleInputs(JsonObject json) {
+        return unifySimpleInputs(json, defaultInputDepthLookups);
     }
 
     @Override
