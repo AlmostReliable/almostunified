@@ -10,6 +10,7 @@ public class CommonTest {
             GameTestLoader.registerProviders(
                     ExampleTest.class,
                     ReplacementMapTests.class,
+                    ReplacementsTests.class,
                     UnifyTests.class,
                     ShapedRecipeUnifierTests.class,
                     SmithingRecipeUnifierTest.class,

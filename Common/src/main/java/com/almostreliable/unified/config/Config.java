@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class Config {
 
     public static <T extends Config> T load(String name, Serializer<T> serializer) {
+        AlmostUnified.LOG.info("Loading config: {}", name);
         JsonObject json = safeLoadJson(name);
         T config = serializer.deserialize(json);
         if (serializer.isInvalid()) {
@@ -29,7 +30,7 @@ public class Config {
             if (Files.exists(filePath)) {
                 backupConfig(name, filePath);
             }
-            AlmostUnified.LOG.warn("Creating config: {}", name);
+            AlmostUnified.LOG.warn("Config not found or invalid. Creating new config: {}", name);
             save(filePath, config, serializer);
         }
         return config;
@@ -64,7 +65,8 @@ public class Config {
         Path p = createConfigDir();
         try (BufferedReader reader = Files.newBufferedReader(buildPath(p, file))) {
             return new Gson().fromJson(reader, JsonObject.class);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            AlmostUnified.LOG.warn(ex);
         }
         return new JsonObject();
     }

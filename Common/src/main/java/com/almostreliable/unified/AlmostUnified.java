@@ -1,11 +1,10 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.TagInheritance;
 import com.almostreliable.unified.api.TagOwnerships;
 import com.almostreliable.unified.api.UnifierRegistry;
-import com.almostreliable.unified.config.Config;
-import com.almostreliable.unified.config.ServerConfigs;
-import com.almostreliable.unified.config.StartupConfig;
-import com.almostreliable.unified.config.UnifyConfig;
+import com.almostreliable.unified.api.UnifySettings;
+import com.almostreliable.unified.config.*;
 import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
 import com.almostreliable.unified.utils.TagOwnershipsImpl;
 import com.almostreliable.unified.utils.TagReloadHandler;
@@ -14,6 +13,7 @@ import com.google.gson.JsonElement;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,20 +52,31 @@ public final class AlmostUnified {
         PluginManager.instance().registerUnifiers(unifierRegistry);
 
         ServerConfigs serverConfigs = ServerConfigs.load();
-        UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
+        TagConfig tagConfig = serverConfigs.getTagConfig();
+        ReplacementsConfig replacementsConfig = serverConfigs.getReplacementsConfig();
+        DuplicationConfig dupConfig = serverConfigs.getDupConfig();
+        DebugConfig debugConfig = serverConfigs.getDebugConfig();
 
-        TagReloadHandler.applyCustomTags(unifyConfig);
+        UnifySettings unifySettings = serverConfigs.getUnifyConfig().bake(tags, replacementsConfig);
+
+        TagReloadHandler.applyCustomTags(tagConfig.getCustomTags());
 
         TagOwnershipsImpl tagOwnerships = new TagOwnershipsImpl(
-                unifyConfig.bakeAndValidateTags(tags),
-                unifyConfig.getTagOwnerships()
+                unifySettings.getTags(),
+                tagConfig.getTagOwnerships()
         );
         tagOwnerships.applyOwnerships(tags);
 
-        ReplacementData replacementData = loadReplacementData(tags, unifyConfig, tagOwnerships);
+        ReplacementData replacementData = loadReplacementData(tags,
+                unifySettings,
+                tagConfig.getItemTagInheritance(),
+                tagConfig.getBlockTagInheritance(),
+                tagOwnerships);
 
         RUNTIME = new AlmostUnifiedRuntimeImpl(
-                serverConfigs,
+                unifySettings,
+                dupConfig,
+                debugConfig,
                 replacementData.filteredTagMap(),
                 replacementData.replacementMap(),
                 unifierRegistry
@@ -83,16 +94,18 @@ public final class AlmostUnified {
      * This method applies tag inheritance and rebuilds the replacement data if the
      * inheritance mutates the tags.
      *
-     * @param tags          The vanilla tag map provided by the TagManager
-     * @param unifyConfig   The mod config to use for unifying
-     * @param tagOwnerships The tag ownerships to apply
+     * @param tags                The vanilla tag map provided by the TagManager
+     * @param unifySettings       The unify settings
+     * @param itemTagInheritance  The item tag inheritance
+     * @param blockTagInheritance The block tag inheritance
+     * @param tagOwnerships       The tag ownerships to apply
      * @return The loaded data
      */
-    private static ReplacementData loadReplacementData(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyConfig unifyConfig, TagOwnerships tagOwnerships) {
-        ReplacementData replacementData = ReplacementData.load(tags, unifyConfig, tagOwnerships);
-        var needsRebuild = TagReloadHandler.applyInheritance(unifyConfig, replacementData);
+    private static ReplacementData loadReplacementData(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifySettings unifySettings, TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, TagOwnerships tagOwnerships) {
+        ReplacementData replacementData = ReplacementData.load(tags, unifySettings, tagOwnerships);
+        var needsRebuild = TagReloadHandler.applyInheritance(itemTagInheritance, blockTagInheritance, replacementData);
         if (needsRebuild) {
-            return ReplacementData.load(tags, unifyConfig, tagOwnerships);
+            return ReplacementData.load(tags, unifySettings, tagOwnerships);
         }
 
         return replacementData;

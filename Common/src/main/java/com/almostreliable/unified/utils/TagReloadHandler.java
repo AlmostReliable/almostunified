@@ -3,8 +3,8 @@ package com.almostreliable.unified.utils;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.ReplacementData;
 import com.almostreliable.unified.api.ReplacementMap;
+import com.almostreliable.unified.api.TagInheritance;
 import com.almostreliable.unified.api.TagMap;
-import com.almostreliable.unified.config.UnifyConfig;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -56,12 +56,12 @@ public final class TagReloadHandler {
         RAW_BLOCK_TAGS = null;
     }
 
-    public static void applyCustomTags(UnifyConfig unifyConfig) {
+    public static void applyCustomTags(Map<ResourceLocation, Set<ResourceLocation>> customTags) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
 
         Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
 
-        for (var entry : unifyConfig.getCustomTags().entrySet()) {
+        for (var entry : customTags.entrySet()) {
             ResourceLocation tag = entry.getKey();
             Set<ResourceLocation> itemIds = entry.getValue();
 
@@ -100,7 +100,7 @@ public final class TagReloadHandler {
         }
     }
 
-    public static boolean applyInheritance(UnifyConfig unifyConfig, ReplacementData replacementData) {
+    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, ReplacementData replacementData) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
 
@@ -122,12 +122,20 @@ public final class TagReloadHandler {
 
             for (var item : relation.items) {
                 if (dominantItemHolder != null) {
-                    var changed = applyItemTags(unifyConfig, globalTagMap, dominantItemHolder, dominantItemTags, item);
+                    var changed = applyItemTags(itemTagInheritance,
+                            globalTagMap,
+                            dominantItemHolder,
+                            dominantItemTags,
+                            item);
                     changedItemTags.putAll(dominant, changed);
                 }
 
                 if (dominantBlockHolder != null) {
-                    var changed = applyBlockTags(unifyConfig, blockTagMap, dominantBlockHolder, dominantItemTags, item);
+                    var changed = applyBlockTags(blockTagInheritance,
+                            blockTagMap,
+                            dominantBlockHolder,
+                            dominantItemTags,
+                            item);
                     changedBlockTags.putAll(dominant, changed);
                 }
             }
@@ -221,12 +229,12 @@ public final class TagReloadHandler {
         return null;
     }
 
-    private static Set<ResourceLocation> applyItemTags(UnifyConfig unifyConfig, TagMap<Item> globalTagMap, Holder<Item> dominantItemHolder, Set<TagKey<Item>> dominantItemTags, ResourceLocation item) {
+    private static Set<ResourceLocation> applyItemTags(TagInheritance<Item> tagInheritance, TagMap<Item> globalTagMap, Holder<Item> dominantItemHolder, Set<TagKey<Item>> dominantItemTags, ResourceLocation item) {
         var itemTags = globalTagMap.getTagsByEntry(item);
         Set<ResourceLocation> changed = new HashSet<>();
 
         for (var itemTag : itemTags) {
-            if (!unifyConfig.shouldInheritItemTag(itemTag, dominantItemTags)) continue;
+            if (!tagInheritance.shouldInherit(itemTag, dominantItemTags)) continue;
             if (tryUpdatingRawTags(dominantItemHolder, itemTag, RAW_ITEM_TAGS)) {
                 changed.add(itemTag.location());
             }
@@ -235,12 +243,12 @@ public final class TagReloadHandler {
         return changed;
     }
 
-    private static Set<ResourceLocation> applyBlockTags(UnifyConfig unifyConfig, TagMap<Block> blockTagMap, Holder<Block> dominantBlockHolder, Set<TagKey<Item>> dominantItemTags, ResourceLocation item) {
+    private static Set<ResourceLocation> applyBlockTags(TagInheritance<Block> tagInheritance, TagMap<Block> blockTagMap, Holder<Block> dominantBlockHolder, Set<TagKey<Item>> dominantItemTags, ResourceLocation item) {
         var blockTags = blockTagMap.getTagsByEntry(item);
         Set<ResourceLocation> changed = new HashSet<>();
 
         for (var blockTag : blockTags) {
-            if (!unifyConfig.shouldInheritBlockTag(blockTag, dominantItemTags)) continue;
+            if (!tagInheritance.shouldInherit(blockTag, dominantItemTags)) continue;
             if (tryUpdatingRawTags(dominantBlockHolder, blockTag, RAW_BLOCK_TAGS)) {
                 changed.add(blockTag.location());
             }

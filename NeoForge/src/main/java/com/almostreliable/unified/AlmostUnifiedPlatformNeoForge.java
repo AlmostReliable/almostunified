@@ -16,6 +16,7 @@ import net.neoforged.fml.loading.LoadingModList;
 import net.neoforged.fml.loading.moddiscovery.ModInfo;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,7 +68,7 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
     }
 
     @Override
-    public Set<TagKey<Item>> getStoneStrataTags(List<String> stoneStrataIds) {
+    public Set<TagKey<Item>> getStoneStrataTags(Collection<String> stoneStrataIds) {
         return stoneStrataIds
                 .stream()
                 .map(id -> new ResourceLocation("forge", "ores_in_ground/" + id))

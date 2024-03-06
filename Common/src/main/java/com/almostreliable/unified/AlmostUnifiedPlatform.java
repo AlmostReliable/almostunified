@@ -5,7 +5,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Collection;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -36,7 +36,7 @@ public interface AlmostUnifiedPlatform {
 
     void bindRecipeHandlers(UnifierRegistry factory);
 
-    Set<TagKey<Item>> getStoneStrataTags(List<String> stoneStrataIds);
+    Set<TagKey<Item>> getStoneStrataTags(Collection<String> stoneStrataIds);
 
     static <T> T load(Class<T> clazz) {
         T loadedService = ServiceLoader.load(clazz)

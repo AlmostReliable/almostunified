@@ -2,6 +2,8 @@ package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.config.Config;
+import com.almostreliable.unified.config.ReplacementsConfig;
+import com.almostreliable.unified.config.TagConfig;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.utils.ReplacementMapImpl;
 import com.almostreliable.unified.utils.TagMapImpl;
@@ -49,10 +51,12 @@ public class AlmostUnifiedFallbackRuntime implements AlmostUnifiedRuntime {
 
     private void build() {
         unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
-        Set<TagKey<Item>> unifyTags = unifyConfig.bakeTags();
+        var tagConfig = Config.load(TagConfig.NAME, new TagConfig.Serializer());
+        var replacementsConfig = Config.load(ReplacementsConfig.NAME, new ReplacementsConfig.Serializer());
+        Set<TagKey<Item>> unifyTags = unifyConfig.bakeTags(replacementsConfig);
         filteredTagMap = TagMapImpl.create(unifyTags).filtered($ -> true, unifyConfig::includeItem);
         StoneStrataLookup stoneStrataLookup = createStoneStrataLookup(unifyConfig);
-        TagOwnerships tagOwnerships = new TagOwnershipsImpl(unifyTags, unifyConfig.getTagOwnerships());
+        TagOwnerships tagOwnerships = new TagOwnershipsImpl(unifyTags, tagConfig.getTagOwnerships());
         replacementMap = new ReplacementMapImpl(unifyConfig.getModPriorities(),
                 filteredTagMap,
                 stoneStrataLookup,

@@ -1,14 +1,14 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ReplacementMap;
+import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.UnifySettings;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.config.DuplicationConfig;
-import com.almostreliable.unified.config.ServerConfigs;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
-import com.almostreliable.unified.api.UnifierRegistry;
-import com.almostreliable.unified.api.TagMap;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
-    private final UnifyConfig unifyConfig;
+    private final UnifySettings unifySettings;
     private final DuplicationConfig duplicationConfig;
     private final DebugConfig debugConfig;
     private final TagMap<Item> tagMap;
@@ -26,14 +26,16 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final UnifierRegistry unifierRegistry;
 
     AlmostUnifiedRuntimeImpl(
-            ServerConfigs configs,
+            UnifySettings unifySettings,
+            DuplicationConfig duplicationConfig,
+            DebugConfig debugConfig,
             TagMap<Item> tagMap,
             ReplacementMap repMap,
             UnifierRegistry unifierRegistry
     ) {
-        this.unifyConfig = configs.getUnifyConfig();
-        this.duplicationConfig = configs.getDupConfig();
-        this.debugConfig = configs.getDebugConfig();
+        this.unifySettings = unifySettings;
+        this.duplicationConfig = duplicationConfig;
+        this.debugConfig = debugConfig;
         this.tagMap = tagMap;
         this.replacementMap = repMap;
         this.unifierRegistry = unifierRegistry;
@@ -48,7 +50,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         RecipeTransformer.Result result = new RecipeTransformer(
                 unifierRegistry,
                 replacementMap,
-                unifyConfig,
+                unifySettings,
                 duplicationConfig
         ).transformRecipes(recipes, skipClientTracking);
         RecipeDumper dumper = new RecipeDumper(result, startTime, System.currentTimeMillis());
@@ -69,6 +71,6 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
     @Override
     public Optional<UnifyConfig> getUnifyConfig() {
-        return Optional.of(unifyConfig);
+        return Optional.empty();
     }
 }

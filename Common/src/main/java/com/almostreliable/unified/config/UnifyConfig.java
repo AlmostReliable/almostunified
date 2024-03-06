@@ -3,16 +3,17 @@ package com.almostreliable.unified.config;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.ModPriorities;
+import com.almostreliable.unified.api.Replacements;
+import com.almostreliable.unified.api.UnifySettings;
+import com.almostreliable.unified.impl.UnifySettingsImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -20,19 +21,14 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("ReplaceNullCheck")
 public class UnifyConfig extends Config {
     public static final String NAME = "unify";
 
-    private final ModPriorities modPriorities;
+    private final List<String> modPriorities;
+    private final Map<TagKey<Item>, String> priorityOverrides;
     private final List<String> stoneStrata;
     private final List<String> unbakedTags;
-    private final List<String> materials;
-    private final Map<ResourceLocation, Set<ResourceLocation>> customTags;
-    private final Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships;
-    private final Enum<TagInheritanceMode> itemTagInheritanceMode;
-    private final Map<ResourceLocation, Set<Pattern>> itemTagInheritance;
-    private final Enum<TagInheritanceMode> blockTagInheritanceMode;
-    private final Map<ResourceLocation, Set<Pattern>> blockTagInheritance;
     private final Set<TagKey<Item>> ignoredTags;
     private final Set<Pattern> ignoredItems;
     private final Set<Pattern> ignoredRecipeTypes;
@@ -42,33 +38,11 @@ public class UnifyConfig extends Config {
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
     @Nullable private Set<TagKey<Item>> bakedTagsCache;
 
-    public UnifyConfig(
-            ModPriorities modPriorities,
-            List<String> stoneStrata,
-            List<String> unbakedTags,
-            List<String> materials,
-            Map<ResourceLocation, Set<ResourceLocation>> customTags,
-            Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships,
-            Enum<TagInheritanceMode> itemTagInheritanceMode,
-            Map<ResourceLocation, Set<Pattern>> itemTagInheritance,
-            Enum<TagInheritanceMode> blockTagInheritanceMode,
-            Map<ResourceLocation, Set<Pattern>> blockTagInheritance,
-            Set<TagKey<Item>> ignoredTags,
-            Set<Pattern> ignoredItems,
-            Set<Pattern> ignoredRecipeTypes,
-            Set<Pattern> ignoredRecipes,
-            boolean hideJeiRei
-    ) {
+    public UnifyConfig(List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean hideJeiRei) {
         this.modPriorities = modPriorities;
+        this.priorityOverrides = priorityOverrides;
         this.stoneStrata = stoneStrata;
         this.unbakedTags = unbakedTags;
-        this.materials = materials;
-        this.customTags = customTags;
-        this.tagOwnerships = tagOwnerships;
-        this.itemTagInheritanceMode = itemTagInheritanceMode;
-        this.itemTagInheritance = itemTagInheritance;
-        this.blockTagInheritanceMode = blockTagInheritanceMode;
-        this.blockTagInheritance = blockTagInheritance;
         this.ignoredTags = ignoredTags;
         this.ignoredItems = ignoredItems;
         this.ignoredRecipeTypes = ignoredRecipeTypes;
@@ -77,62 +51,40 @@ public class UnifyConfig extends Config {
         this.ignoredRecipeTypesCache = new HashMap<>();
     }
 
+//    public UnifySettings bake(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
+//        var mp = new ModPrioritiesImpl(modPriorities, priorityOverrides);
+//        var stoneStrata = getStoneStrata();
+//        var bakedTags = bakeAndValidateTags(tags);
+//        var ignoredItems = this.ignoredItems;
+//        var ignoredRecipes = this.ignoredRecipes;
+//        var ignoredRecipeTypes = this.ignoredRecipeTypes;
+//    }
+
+    public UnifySettings bake(Map<ResourceLocation, Collection<Holder<Item>>> tags, Replacements replacements) {
+        var mp = new ModPrioritiesImpl(modPriorities, priorityOverrides);
+        var bakedTags = bakeTags(tags::containsKey, replacements);
+
+        return new UnifySettingsImpl(mp, stoneStrata, bakedTags, ignoredItems, ignoredRecipes, ignoredRecipeTypes);
+    }
+
+
     public ModPriorities getModPriorities() {
-        return modPriorities;
+        return new ModPrioritiesImpl(modPriorities, priorityOverrides);
     }
 
     public List<String> getStoneStrata() {
-        return Collections.unmodifiableList(stoneStrata);
+        return stoneStrata;
     }
 
-    /**
-     * Checks all patterns against all dominant tags.
-     * <p>
-     * This implementation works based on the assumption that the mode is {@link TagInheritanceMode#ALLOW}.
-     * Flip the result if the mode is {@link TagInheritanceMode#DENY}.
-     *
-     * @param dominantTags The tags of the dominant item to check.
-     * @param patterns     The patterns to check against.
-     * @param <T>          The type of the dominant tags.
-     * @return Whether the dominant tags match any of the patterns.
-     */
-    private static <T> boolean checkPatterns(Set<TagKey<T>> dominantTags, @Nullable Set<Pattern> patterns) {
-        if (patterns == null) return false;
-
-        for (var pattern : patterns) {
-            for (var dominantTag : dominantTags) {
-                if (pattern.matcher(dominantTag.location().toString()).matches()) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    public Set<TagKey<Item>> bakeTags(Replacements replacements) {
+        return bakeTags($ -> true, replacements);
     }
 
-    public Set<TagKey<Item>> bakeTags() {
-        return bakeTags($ -> true);
+    public Set<TagKey<Item>> bakeAndValidateTags(Map<ResourceLocation, Collection<Holder<Item>>> tags, Replacements replacements) {
+        return bakeTags(tags::containsKey, replacements);
     }
 
-    public Set<TagKey<Item>> bakeAndValidateTags(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
-        return bakeTags(tags::containsKey);
-    }
-
-    // exposed for KubeJS binding
-    @SuppressWarnings("unused")
-    public List<String> getMaterials() {
-        return Collections.unmodifiableList(materials);
-    }
-
-    public Map<ResourceLocation, Set<ResourceLocation>> getCustomTags() {
-        return Collections.unmodifiableMap(customTags);
-    }
-
-    public Map<ResourceLocation, Set<ResourceLocation>> getTagOwnerships() {
-        return Collections.unmodifiableMap(tagOwnerships);
-    }
-
-    private Set<TagKey<Item>> bakeTags(Predicate<ResourceLocation> tagValidator) {
+    private Set<TagKey<Item>> bakeTags(Predicate<ResourceLocation> tagValidator, Replacements replacements) {
         if (bakedTagsCache != null) {
             return bakedTagsCache;
         }
@@ -140,50 +92,28 @@ public class UnifyConfig extends Config {
         Set<TagKey<Item>> result = new HashSet<>();
         Set<TagKey<Item>> wrongTags = new HashSet<>();
 
-        for (String tag : unbakedTags) {
-            for (String material : materials) {
-                String replace = tag.replace("{material}", material);
-                ResourceLocation asRL = ResourceLocation.tryParse(replace);
-                if (asRL == null) {
-                    AlmostUnified.LOG.warn("Could not bake tag <{}> with material <{}>", tag, material);
+        for (var unbakedTag : unbakedTags) {
+            var inflate = replacements.inflate(unbakedTag);
+            for (var rl : inflate) {
+                var tag = TagKey.create(Registries.ITEM, rl);
+                if (ignoredTags.contains(tag)) continue;
+
+                if (!tagValidator.test(rl)) {
+                    wrongTags.add(tag);
                     continue;
                 }
 
-                var t = TagKey.create(Registries.ITEM, asRL);
-                if (ignoredTags.contains(t)) continue;
-
-                if (!tagValidator.test(asRL)) {
-                    wrongTags.add(t);
-                    continue;
-                }
-
-                result.add(t);
+                result.add(tag);
             }
         }
 
         if (!wrongTags.isEmpty()) {
-            AlmostUnified.LOG.warn(
-                    "The following tags are invalid and will be ignored: {}",
-                    wrongTags.stream().map(TagKey::location).collect(Collectors.toList())
-            );
+            AlmostUnified.LOG.warn("The following tags are invalid and will be ignored: {}",
+                    wrongTags.stream().map(TagKey::location).collect(Collectors.toList()));
         }
 
         bakedTagsCache = result;
         return result;
-    }
-
-    public boolean shouldInheritItemTag(TagKey<Item> itemTag, Set<TagKey<Item>> dominantTags) {
-        var patterns = itemTagInheritance.get(itemTag.location());
-        boolean result = checkPatterns(dominantTags, patterns);
-        // noinspection SimplifiableConditionalExpression
-        return itemTagInheritanceMode == TagInheritanceMode.ALLOW ? result : !result;
-    }
-
-    public boolean shouldInheritBlockTag(TagKey<Block> itemTag, Set<TagKey<Item>> dominantTags) {
-        var patterns = blockTagInheritance.get(itemTag.location());
-        boolean result = checkPatterns(dominantTags, patterns);
-        // noinspection SimplifiableConditionalExpression
-        return blockTagInheritanceMode == TagInheritanceMode.ALLOW ? result : !result;
     }
 
     public boolean includeItem(ResourceLocation item) {
@@ -230,73 +160,30 @@ public class UnifyConfig extends Config {
         public static final String TAGS = "tags";
         public static final String MATERIALS = "materials";
         public static final String PRIORITY_OVERRIDES = "priorityOverrides";
-        public static final String CUSTOM_TAGS = "customTags";
-        public static final String TAG_OWNERSHIPS = "tagOwnerships";
-        public static final String ITEM_TAG_INHERITANCE_MODE = "itemTagInheritanceMode";
-        public static final String ITEM_TAG_INHERITANCE = "itemTagInheritance";
-        public static final String BLOCK_TAG_INHERITANCE_MODE = "blockTagInheritanceMode";
-        public static final String BLOCK_TAG_INHERITANCE = "blockTagInheritance";
         public static final String IGNORED_TAGS = "ignoredTags";
         public static final String IGNORED_ITEMS = "ignoredItems";
         public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
         public static final String IGNORED_RECIPES = "ignoredRecipes";
         public static final String HIDE_JEI_REI = "itemsHidingJeiRei";
 
-        private ModPriorities readModPriorities(JsonObject json) {
-            var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
-            List<String> modPriorities = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MOD_PRIORITIES)),
-                    Defaults.getModPriorities(platform));
-
-            Map<TagKey<Item>, String> priorityOverrides = safeGet(
-                    () -> JsonUtils.deserializeMap(
-                            json,
-                            PRIORITY_OVERRIDES,
-                            e -> TagKey.create(Registries.ITEM, new ResourceLocation(e.getKey())),
-                            e -> e.getValue().getAsString()
-                    ),
-                    new HashMap<>()
-            );
-
-            return new ModPrioritiesImpl(modPriorities, priorityOverrides);
-        }
         @Override
         public UnifyConfig deserialize(JsonObject json) {
             var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
-            ModPriorities modPriorities = readModPriorities(json);
+
+            // Mod priorities
+            List<String> modPriorities = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MOD_PRIORITIES)),
+                    Defaults.getModPriorities(platform));
+
+            Map<TagKey<Item>, String> priorityOverrides = safeGet(() -> JsonUtils.deserializeMap(json,
+                    PRIORITY_OVERRIDES,
+                    e -> TagKey.create(Registries.ITEM, new ResourceLocation(e.getKey())),
+                    e -> e.getValue().getAsString()), new HashMap<>());
+
             List<String> stoneStrata = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(STONE_STRATA)),
                     Defaults.STONE_STRATA);
             List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.getTags(platform));
             List<String> materials = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MATERIALS)),
                     Defaults.MATERIALS);
-
-            Map<ResourceLocation, Set<ResourceLocation>> customTags = safeGet(
-                    () -> JsonUtils.deserializeMapSet(
-                            json,
-                            CUSTOM_TAGS,
-                            e -> new ResourceLocation(e.getKey()),
-                            ResourceLocation::new
-                    ),
-                    new HashMap<>()
-            );
-
-            Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships = safeGet(
-                    () -> JsonUtils.deserializeMapSet(
-                            json,
-                            TAG_OWNERSHIPS,
-                            e -> new ResourceLocation(e.getKey()),
-                            ResourceLocation::new
-                    ),
-                    new HashMap<>()
-            );
-
-            Enum<TagInheritanceMode> itemTagInheritanceMode = deserializeTagInheritanceMode(json,
-                    ITEM_TAG_INHERITANCE_MODE);
-            Map<ResourceLocation, Set<Pattern>> itemTagInheritance = deserializePatternsForLocations(json,
-                    ITEM_TAG_INHERITANCE);
-            Enum<TagInheritanceMode> blockTagInheritanceMode = deserializeTagInheritanceMode(json,
-                    BLOCK_TAG_INHERITANCE_MODE);
-            Map<ResourceLocation, Set<Pattern>> blockTagInheritance = deserializePatternsForLocations(json,
-                    BLOCK_TAG_INHERITANCE);
 
             Set<TagKey<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
@@ -304,62 +191,21 @@ public class UnifyConfig extends Config {
                     .map(s -> TagKey.create(Registries.ITEM, new ResourceLocation(s)))
                     .collect(Collectors.toSet()), new HashSet<>());
             Set<Pattern> ignoredItems = deserializePatterns(json, IGNORED_ITEMS, List.of());
-            Set<Pattern> ignoredRecipeTypes = deserializePatterns(json, IGNORED_RECIPE_TYPES,
+            Set<Pattern> ignoredRecipeTypes = deserializePatterns(json,
+                    IGNORED_RECIPE_TYPES,
                     Defaults.getIgnoredRecipeTypes(platform));
             Set<Pattern> ignoredRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
             boolean hideJeiRei = safeGet(() -> json.getAsJsonPrimitive(HIDE_JEI_REI).getAsBoolean(), true);
 
-            return new UnifyConfig(
-                    modPriorities,
+            return new UnifyConfig(modPriorities,
+                    priorityOverrides,
                     stoneStrata,
                     tags,
-                    materials,
-                    customTags,
-                    tagOwnerships,
-                    itemTagInheritanceMode,
-                    itemTagInheritance,
-                    blockTagInheritanceMode,
-                    blockTagInheritance,
                     ignoredTags,
                     ignoredItems,
                     ignoredRecipeTypes,
                     ignoredRecipes,
-                    hideJeiRei
-            );
-        }
-
-        private TagInheritanceMode deserializeTagInheritanceMode(JsonObject json, String key) {
-            return safeGet(() -> TagInheritanceMode.valueOf(json
-                    .getAsJsonPrimitive(key)
-                    .getAsString().toUpperCase()), TagInheritanceMode.ALLOW);
-        }
-
-        /**
-         * Deserializes a list of patterns from a json object with a base key. Example json:
-         * <pre>
-         * {
-         *   "baseKey": {
-         *     "location1": [ pattern1, pattern2 ],
-         *     "location2": [ pattern3, pattern4 ]
-         *   }
-         * }
-         * </pre>
-         *
-         * @param rawConfigJson The raw config json
-         * @param baseKey       The base key
-         * @return The deserialized patterns separated by location
-         */
-        private Map<ResourceLocation, Set<Pattern>> unsafeDeserializePatternsForLocations(JsonObject rawConfigJson, String baseKey) {
-            return JsonUtils.deserializeMapSet(
-                    rawConfigJson,
-                    baseKey,
-                    e -> new ResourceLocation(e.getKey()),
-                    Pattern::compile
-            );
-        }
-
-        private Map<ResourceLocation, Set<Pattern>> deserializePatternsForLocations(JsonObject rawConfigJson, String baseKey) {
-            return safeGet(() -> unsafeDeserializePatternsForLocations(rawConfigJson, baseKey), new HashMap<>());
+                    hideJeiRei);
         }
 
         @Override
@@ -368,43 +214,12 @@ public class UnifyConfig extends Config {
             json.add(MOD_PRIORITIES, JsonUtils.toArray(config.modPriorities));
             json.add(STONE_STRATA, JsonUtils.toArray(config.stoneStrata));
             json.add(TAGS, JsonUtils.toArray(config.unbakedTags));
-            json.add(MATERIALS, JsonUtils.toArray(config.materials));
 
             JsonObject priorityOverrides = new JsonObject();
-            config.modPriorities.forEachOverride((tag, mod) -> {
+            config.priorityOverrides.forEach((tag, mod) -> {
                 priorityOverrides.addProperty(tag.location().toString(), mod);
             });
             json.add(PRIORITY_OVERRIDES, priorityOverrides);
-
-            JsonObject customTags = new JsonObject();
-            config.customTags.forEach((parent, child) -> {
-                customTags.add(parent.toString(),
-                        JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
-            });
-            json.add(CUSTOM_TAGS, customTags);
-
-            JsonObject tagOwnerships = new JsonObject();
-            config.tagOwnerships.forEach((parent, child) -> {
-                tagOwnerships.add(parent.toString(),
-                        JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
-            });
-            json.add(TAG_OWNERSHIPS, tagOwnerships);
-
-            JsonObject itemTagInheritance = new JsonObject();
-            config.itemTagInheritance.forEach((tag, patterns) -> {
-                itemTagInheritance.add(tag.toString(),
-                        JsonUtils.toArray(patterns.stream().map(Pattern::toString).toList()));
-            });
-            json.add(ITEM_TAG_INHERITANCE_MODE, new JsonPrimitive(config.itemTagInheritanceMode.toString()));
-            json.add(ITEM_TAG_INHERITANCE, itemTagInheritance);
-
-            JsonObject blockTagInheritance = new JsonObject();
-            config.blockTagInheritance.forEach((tag, patterns) -> {
-                blockTagInheritance.add(tag.toString(),
-                        JsonUtils.toArray(patterns.stream().map(Pattern::toString).toList()));
-            });
-            json.add(BLOCK_TAG_INHERITANCE_MODE, new JsonPrimitive(config.blockTagInheritanceMode.toString()));
-            json.add(BLOCK_TAG_INHERITANCE, blockTagInheritance);
 
             json.add(IGNORED_TAGS,
                     JsonUtils.toArray(config.ignoredTags
@@ -418,10 +233,5 @@ public class UnifyConfig extends Config {
             json.addProperty(HIDE_JEI_REI, config.hideJeiRei);
             return json;
         }
-    }
-
-    public enum TagInheritanceMode {
-        ALLOW,
-        DENY
     }
 }

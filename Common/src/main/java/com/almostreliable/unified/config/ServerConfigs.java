@@ -9,19 +9,26 @@ import java.nio.file.Path;
 public class ServerConfigs {
 
     private final UnifyConfig unifyConfig;
+    private final ReplacementsConfig replacementsConfig;
+    private final TagConfig tagConfig;
     private final DuplicationConfig dupConfig;
     private final DebugConfig debugConfig;
 
     public static ServerConfigs load() {
         createGitIgnoreIfNotExists();
         UnifyConfig unifyConfig = Config.load(UnifyConfig.NAME, new UnifyConfig.Serializer());
+        ReplacementsConfig replacementsConfig = Config.load(ReplacementsConfig.NAME,
+                new ReplacementsConfig.Serializer());
+        TagConfig tagConfig = Config.load(TagConfig.NAME, new TagConfig.Serializer());
         DuplicationConfig dupConfig = Config.load(DuplicationConfig.NAME, new DuplicationConfig.Serializer());
         DebugConfig debugConfig = Config.load(DebugConfig.NAME, new DebugConfig.Serializer());
-        return new ServerConfigs(unifyConfig, dupConfig, debugConfig);
+        return new ServerConfigs(unifyConfig, replacementsConfig, tagConfig, dupConfig, debugConfig);
     }
 
-    private ServerConfigs(UnifyConfig unifyConfig, DuplicationConfig dupConfig, DebugConfig debugConfig) {
+    private ServerConfigs(UnifyConfig unifyConfig, ReplacementsConfig replacementsConfig, TagConfig tagConfig, DuplicationConfig dupConfig, DebugConfig debugConfig) {
         this.unifyConfig = unifyConfig;
+        this.replacementsConfig = replacementsConfig;
+        this.tagConfig = tagConfig;
         this.dupConfig = dupConfig;
         this.debugConfig = debugConfig;
     }
@@ -37,6 +44,10 @@ public class ServerConfigs {
         }
     }
 
+    public ReplacementsConfig getReplacementsConfig() {
+        return replacementsConfig;
+    }
+
     public UnifyConfig getUnifyConfig() {
         return unifyConfig;
     }
@@ -47,5 +58,9 @@ public class ServerConfigs {
 
     public DebugConfig getDebugConfig() {
         return debugConfig;
+    }
+
+    public TagConfig getTagConfig() {
+        return tagConfig;
     }
 }

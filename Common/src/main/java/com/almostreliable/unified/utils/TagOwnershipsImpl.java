@@ -38,13 +38,13 @@ public class TagOwnershipsImpl implements TagOwnerships {
      * aren't present in the {@code unifyTags} set.
      *
      * @param unifyTags          The set of all unify tags in use.
-     * @param tagOwnershipConfig The map of all tag ownership relationships.
+     * @param rawTagOwnerships The map of all tag ownership relationships.
      */
-    public TagOwnershipsImpl(Set<TagKey<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnershipConfig) {
+    public TagOwnershipsImpl(Set<TagKey<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> rawTagOwnerships) {
         ImmutableMap.Builder<TagKey<Item>, TagKey<Item>> refsToOwnerBuilder = ImmutableMap.builder();
         ImmutableMultimap.Builder<TagKey<Item>, TagKey<Item>> ownerToRefsBuilder = ImmutableMultimap.builder();
 
-        tagOwnershipConfig.forEach((rawOwner, rawRefs) -> {
+        rawTagOwnerships.forEach((rawOwner, rawRefs) -> {
             for (ResourceLocation rawRef : rawRefs) {
                 TagKey<Item> owner = TagKey.create(Registries.ITEM, rawOwner);
                 TagKey<Item> ref = TagKey.create(Registries.ITEM, rawRef);
