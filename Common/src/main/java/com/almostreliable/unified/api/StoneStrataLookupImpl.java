@@ -19,7 +19,7 @@ public final class StoneStrataLookupImpl implements StoneStrataLookup {
     private final Map<TagKey<Item>, Boolean> stoneStrataTagCache;
     private final Map<ResourceLocation, String> stoneStrataCache;
 
-    private StoneStrataLookupImpl(List<String> stoneStrata, Pattern tagMatcher, TagMap<Item> stoneStrataTagMap) {
+    private StoneStrataLookupImpl(Collection<String> stoneStrata, Pattern tagMatcher, TagMap<Item> stoneStrataTagMap) {
         this.stoneStrata = createSortedStoneStrata(stoneStrata);
         this.tagMatcher = tagMatcher;
         this.stoneStrataTagMap = stoneStrataTagMap;
@@ -36,11 +36,11 @@ public final class StoneStrataLookupImpl implements StoneStrataLookup {
      * @param stoneStrata The stone strata list to sort.
      * @return The sorted stone strata list.
      */
-    private static List<String> createSortedStoneStrata(List<String> stoneStrata) {
+    private static List<String> createSortedStoneStrata(Collection<String> stoneStrata) {
         return stoneStrata.stream().sorted(Comparator.comparingInt(String::length).reversed()).toList();
     }
 
-    public static StoneStrataLookup create(List<String> stoneStrataIds, Set<TagKey<Item>> stoneStrataTags, TagMap<Item> tagMap) {
+    public static StoneStrataLookup create(Collection<String> stoneStrataIds, Set<TagKey<Item>> stoneStrataTags, TagMap<Item> tagMap) {
         var stoneStrataTagMap = tagMap.filtered(stoneStrataTags::contains, item -> true);
         Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
             case FORGE -> "forge:ores/.+";

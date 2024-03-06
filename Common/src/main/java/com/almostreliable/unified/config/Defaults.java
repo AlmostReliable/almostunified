@@ -2,10 +2,14 @@ package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.utils.JsonCompare;
+import com.google.common.collect.ImmutableMap;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("SpellCheckingInspection")
 public final class Defaults {
@@ -18,6 +22,63 @@ public final class Defaults {
             "diorite",
             "andesite"
     );
+
+    public static final Map<String, Collection<String>> REPLACEMENTS = Util.make(() -> {
+        ImmutableMap.Builder<String, Collection<String>> builder = ImmutableMap.builder();
+
+        builder.put("material", List.of(
+                "aeternium",
+                "aluminum",
+                "amber",
+                "apatite",
+                "bitumen",
+                "brass",
+                "bronze",
+                "charcoal",
+                "chrome",
+                "cinnabar",
+                "coal",
+                "coal_coke",
+                "cobalt",
+                "constantan",
+                "copper",
+                "diamond",
+                "electrum",
+                "elementium",
+                "emerald",
+                "enderium",
+                "fluorite",
+                "gold",
+                "graphite",
+                "invar",
+                "iridium",
+                "iron",
+                "lapis",
+                "lead",
+                "lumium",
+                "mithril",
+                "netherite",
+                "nickel",
+                "obsidian",
+                "osmium",
+                "peridot",
+                "platinum",
+                "potassium_nitrate",
+                "ruby",
+                "sapphire",
+                "signalum",
+                "silver",
+                "steel",
+                "sulfur",
+                "tin",
+                "tungsten",
+                "uranium",
+                "zinc"
+        ));
+
+        return builder.build();
+    });
+
     public static final List<String> MATERIALS = List.of(
             "aeternium",
             "aluminum",

@@ -2,11 +2,11 @@ package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.ReplacementMap;
+import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.UnifySettings;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.config.DuplicationConfig;
-import com.almostreliable.unified.config.UnifyConfig;
-import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.JsonQuery;
@@ -29,22 +29,22 @@ public class RecipeTransformer {
 
     private final UnifierRegistry factory;
     private final ReplacementMap replacementMap;
-    private final UnifyConfig unifyConfig;
+    private final UnifySettings unifySettings;
     private final DuplicationConfig duplicationConfig;
 
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(UnifierRegistry factory, ReplacementMap replacementMap, UnifyConfig unifyConfig, DuplicationConfig duplicationConfig) {
+    public RecipeTransformer(UnifierRegistry factory, ReplacementMap replacementMap, UnifySettings unifySettings, DuplicationConfig duplicationConfig) {
         this.factory = factory;
         this.replacementMap = replacementMap;
-        this.unifyConfig = unifyConfig;
+        this.unifySettings = unifySettings;
         this.duplicationConfig = duplicationConfig;
     }
 
     public boolean hasValidRecipeType(JsonObject json) {
         if (json.get("type") instanceof JsonPrimitive primitive) {
             ResourceLocation type = ResourceLocation.tryParse(primitive.getAsString());
-            return type != null && unifyConfig.includeRecipeType(type);
+            return type != null && unifySettings.shouldIncludeRecipeType(type);
         }
         return false;
     }
@@ -79,7 +79,7 @@ public class RecipeTransformer {
 
         AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size() + " (done in " + transformationTimer.stop() + ")");
 
-        unifyConfig.clearCache();
+        unifySettings.clearCache();
         duplicationConfig.clearCache();
 
         if (tracker != null) recipes.putAll(tracker.compute());
@@ -152,7 +152,8 @@ public class RecipeTransformer {
      * @return True if the recipe should be included, false otherwise.
      */
     private boolean includeRecipe(ResourceLocation recipe, JsonElement json) {
-        return unifyConfig.includeRecipe(recipe) && json.isJsonObject() && hasValidRecipeType(json.getAsJsonObject());
+        return unifySettings.shouldIncludeRecipe(recipe) && json.isJsonObject() &&
+               hasValidRecipeType(json.getAsJsonObject());
     }
 
     /**
