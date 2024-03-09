@@ -1,4 +1,4 @@
-package com.almostreliable.unified.utils;
+package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.api.TagMap;
 import com.google.common.annotations.VisibleForTesting;

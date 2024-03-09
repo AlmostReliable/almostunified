@@ -5,6 +5,7 @@ import com.almostreliable.unified.ReplacementData;
 import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.TagInheritance;
 import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.impl.TagMapImpl;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;

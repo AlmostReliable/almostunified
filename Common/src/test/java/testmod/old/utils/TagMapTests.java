@@ -1,7 +1,7 @@
 package testmod.old.utils;
 
 import com.almostreliable.unified.api.TagMap;
-import com.almostreliable.unified.utils.TagMapImpl;
+import com.almostreliable.unified.impl.TagMapImpl;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

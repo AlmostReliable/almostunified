@@ -1,9 +1,9 @@
 package testmod.tests;
 
 import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.impl.ReplacementMapImpl;
+import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
-import com.almostreliable.unified.utils.ReplacementMapImpl;
-import com.almostreliable.unified.utils.TagMapImpl;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

@@ -1,6 +1,8 @@
-package com.almostreliable.unified.api;
+package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.api.StoneStrataLookup;
+import com.almostreliable.unified.api.TagMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
