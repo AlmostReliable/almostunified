@@ -1,13 +1,17 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.*;
+import com.almostreliable.unified.api.ReplacementMap;
+import com.almostreliable.unified.api.StoneStrataLookup;
+import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.api.TagOwnerships;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.ReplacementsConfig;
 import com.almostreliable.unified.config.TagConfig;
 import com.almostreliable.unified.config.UnifyConfig;
-import com.almostreliable.unified.utils.ReplacementMapImpl;
-import com.almostreliable.unified.utils.TagMapImpl;
-import com.almostreliable.unified.utils.TagOwnershipsImpl;
+import com.almostreliable.unified.impl.ReplacementMapImpl;
+import com.almostreliable.unified.impl.StoneStrataLookupImpl;
+import com.almostreliable.unified.impl.TagMapImpl;
+import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

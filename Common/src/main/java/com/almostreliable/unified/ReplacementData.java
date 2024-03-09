@@ -1,8 +1,9 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.*;
-import com.almostreliable.unified.utils.ReplacementMapImpl;
-import com.almostreliable.unified.utils.TagMapImpl;
+import com.almostreliable.unified.impl.ReplacementMapImpl;
+import com.almostreliable.unified.impl.StoneStrataLookupImpl;
+import com.almostreliable.unified.impl.TagMapImpl;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

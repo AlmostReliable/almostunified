@@ -2,10 +2,10 @@ package testmod.old;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.StoneStrataLookup;
-import com.almostreliable.unified.api.StoneStrataLookupImpl;
 import com.almostreliable.unified.config.Defaults;
+import com.almostreliable.unified.impl.StoneStrataLookupImpl;
+import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.utils.JsonCompare;
-import com.almostreliable.unified.utils.TagMapImpl;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
