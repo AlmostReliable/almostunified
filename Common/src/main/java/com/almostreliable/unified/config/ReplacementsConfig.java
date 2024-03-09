@@ -74,7 +74,8 @@ public class ReplacementsConfig extends Config implements Replacements {
 
         @Override
         public ReplacementsConfig deserialize(JsonObject json) {
-            if (json.isEmpty()) {
+            //noinspection SizeReplaceableByIsEmpty
+            if (json.size() == 0) { // json.isEmpty crashes in prod...
                 setInvalid();
                 return new ReplacementsConfig(Defaults.REPLACEMENTS);
             }
