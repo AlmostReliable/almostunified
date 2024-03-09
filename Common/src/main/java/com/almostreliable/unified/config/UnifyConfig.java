@@ -33,12 +33,12 @@ public class UnifyConfig extends Config {
     private final Set<Pattern> ignoredItems;
     private final Set<Pattern> ignoredRecipeTypes;
     private final Set<Pattern> ignoredRecipes;
-    private final boolean hideJeiRei;
+    private final boolean recipeViewerHiding;
 
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
     @Nullable private Set<TagKey<Item>> bakedTagsCache;
 
-    public UnifyConfig(List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean hideJeiRei) {
+    public UnifyConfig(List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean recipeViewerHiding) {
         this.modPriorities = modPriorities;
         this.priorityOverrides = priorityOverrides;
         this.stoneStrata = stoneStrata;
@@ -47,7 +47,7 @@ public class UnifyConfig extends Config {
         this.ignoredItems = ignoredItems;
         this.ignoredRecipeTypes = ignoredRecipeTypes;
         this.ignoredRecipes = ignoredRecipes;
-        this.hideJeiRei = hideJeiRei;
+        this.recipeViewerHiding = recipeViewerHiding;
         this.ignoredRecipeTypesCache = new HashMap<>();
     }
 
@@ -145,8 +145,8 @@ public class UnifyConfig extends Config {
         });
     }
 
-    public boolean reiOrJeiDisabled() {
-        return !hideJeiRei;
+    public boolean hideNonPreferredItemsInRecipeViewers() {
+        return recipeViewerHiding;
     }
 
     public void clearCache() {
@@ -164,7 +164,7 @@ public class UnifyConfig extends Config {
         public static final String IGNORED_ITEMS = "ignoredItems";
         public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
         public static final String IGNORED_RECIPES = "ignoredRecipes";
-        public static final String HIDE_JEI_REI = "itemsHidingJeiRei";
+        public static final String RECIPE_VIEWER_HIDING = "recipeViewerHiding";
 
         @Override
         public UnifyConfig deserialize(JsonObject json) {
@@ -195,7 +195,8 @@ public class UnifyConfig extends Config {
                     IGNORED_RECIPE_TYPES,
                     Defaults.getIgnoredRecipeTypes(platform));
             Set<Pattern> ignoredRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
-            boolean hideJeiRei = safeGet(() -> json.getAsJsonPrimitive(HIDE_JEI_REI).getAsBoolean(), true);
+            boolean recipeViewerHiding = safeGet(() -> json.getAsJsonPrimitive(RECIPE_VIEWER_HIDING).getAsBoolean(),
+                    true);
 
             return new UnifyConfig(modPriorities,
                     priorityOverrides,
@@ -205,7 +206,7 @@ public class UnifyConfig extends Config {
                     ignoredItems,
                     ignoredRecipeTypes,
                     ignoredRecipes,
-                    hideJeiRei);
+                    recipeViewerHiding);
         }
 
         @Override
@@ -230,7 +231,7 @@ public class UnifyConfig extends Config {
             serializePatterns(json, IGNORED_ITEMS, config.ignoredItems);
             serializePatterns(json, IGNORED_RECIPE_TYPES, config.ignoredRecipeTypes);
             serializePatterns(json, IGNORED_RECIPES, config.ignoredRecipes);
-            json.addProperty(HIDE_JEI_REI, config.hideJeiRei);
+            json.addProperty(RECIPE_VIEWER_HIDING, config.recipeViewerHiding);
             return json;
         }
     }
