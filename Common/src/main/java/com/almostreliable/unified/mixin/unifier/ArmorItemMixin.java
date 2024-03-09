@@ -18,10 +18,11 @@ public class ArmorItemMixin {
 
     @Inject(method = "isValidRepairItem", at = @At("HEAD"), cancellable = true)
     private void unified$repairUnification(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
-        AlmostUnified.getRuntime().getReplacementMap().ifPresent(replacementMap -> {
-            if (replacementMap.isItemInUnifiedIngredient(material.getRepairIngredient(), repairCandidate)) {
-                cir.setReturnValue(true);
-            }
-        });
+        if (AlmostUnified
+                .getRuntime()
+                .getReplacementMap()
+                .isItemInUnifiedIngredient(material.getRepairIngredient(), repairCandidate)) {
+            cir.setReturnValue(true);
+        }
     }
 }

@@ -6,7 +6,6 @@ import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.api.UnifySettings;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.config.DuplicationConfig;
-import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.google.gson.JsonElement;
@@ -14,7 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import java.util.Map;
-import java.util.Optional;
 
 public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
@@ -60,17 +58,17 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     }
 
     @Override
-    public Optional<TagMap<Item>> getFilteredTagMap() {
-        return Optional.of(tagMap);
+    public TagMap<Item> getFilteredTagMap() {
+        return tagMap;
     }
 
     @Override
-    public Optional<ReplacementMap> getReplacementMap() {
-        return Optional.of(replacementMap);
+    public ReplacementMap getReplacementMap() {
+        return replacementMap;
     }
 
     @Override
-    public Optional<UnifyConfig> getUnifyConfig() {
-        return Optional.empty();
+    public UnifySettings getUnifyConfig() {
+        return unifySettings;
     }
 }

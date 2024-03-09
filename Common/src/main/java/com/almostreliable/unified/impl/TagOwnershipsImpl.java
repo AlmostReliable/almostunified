@@ -37,7 +37,7 @@ public class TagOwnershipsImpl implements TagOwnerships {
      * It is ensured that all owner tags are present in the {@code unifyTags} set, and that all reference tags
      * aren't present in the {@code unifyTags} set.
      *
-     * @param unifyTags          The set of all unify tags in use.
+     * @param unifyTags        The set of all unify tags in use.
      * @param rawTagOwnerships The map of all tag ownership relationships.
      */
     public TagOwnershipsImpl(Set<TagKey<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> rawTagOwnerships) {
@@ -73,6 +73,10 @@ public class TagOwnershipsImpl implements TagOwnerships {
 
         this.refsToOwner = refsToOwnerBuilder.build();
         this.ownerToRefs = ownerToRefsBuilder.build();
+    }
+
+    public TagOwnershipsImpl() {
+        this(Collections.emptySet(), Collections.emptyMap());
     }
 
     /**

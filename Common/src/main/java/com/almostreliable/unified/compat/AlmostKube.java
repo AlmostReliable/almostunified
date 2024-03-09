@@ -1,7 +1,7 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.config.UnifyConfig;
+import com.almostreliable.unified.api.UnifySettings;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -23,7 +23,6 @@ public final class AlmostKube {
         var tag = AlmostUnified
                 .getRuntime()
                 .getReplacementMap()
-                .orElseThrow(AlmostKube::notLoadedException)
                 .getPreferredTagForItem(getId(stack));
         return tag == null ? null : tag.location().toString();
     }
@@ -32,7 +31,6 @@ public final class AlmostKube {
         ResourceLocation replacement = AlmostUnified
                 .getRuntime()
                 .getReplacementMap()
-                .orElseThrow(AlmostKube::notLoadedException)
                 .getReplacementForItem(getId(stack));
         return BuiltInRegistries.ITEM.get(replacement).getDefaultInstance();
     }
@@ -42,7 +40,6 @@ public final class AlmostKube {
         ResourceLocation item = AlmostUnified
                 .getRuntime()
                 .getReplacementMap()
-                .orElseThrow(AlmostKube::notLoadedException)
                 .getPreferredItemForTag(tagKey);
         return BuiltInRegistries.ITEM.get(item).getDefaultInstance();
     }
@@ -51,7 +48,6 @@ public final class AlmostKube {
         return AlmostUnified
                 .getRuntime()
                 .getFilteredTagMap()
-                .orElseThrow(AlmostKube::notLoadedException)
                 .getTags()
                 .stream()
                 .map(tag -> tag.location().toString())
@@ -63,15 +59,14 @@ public final class AlmostKube {
         return AlmostUnified
                 .getRuntime()
                 .getFilteredTagMap()
-                .orElseThrow(AlmostKube::notLoadedException)
                 .getEntriesByTag(tagKey)
                 .stream()
                 .map(ResourceLocation::toString)
                 .collect(Collectors.toSet());
     }
 
-    public static UnifyConfig getUnifyConfig() {
-        return AlmostUnified.getRuntime().getUnifyConfig().orElseThrow(AlmostKube::notLoadedException);
+    public static UnifySettings getUnifyConfig() {
+        return AlmostUnified.getRuntime().getUnifyConfig();
     }
 
     private static ResourceLocation getId(ItemStack stack) {
@@ -79,11 +74,5 @@ public final class AlmostKube {
                 .getResourceKey(stack.getItem())
                 .map(ResourceKey::location)
                 .orElseThrow(() -> new IllegalArgumentException("Item not found in registry"));
-    }
-
-    private static IllegalStateException notLoadedException() {
-        return new IllegalStateException(
-                "AlmostUnifiedRuntime is unavailable in KubeJS! Possible reasons: calling runtime too early, not in a server environment"
-        );
     }
 }

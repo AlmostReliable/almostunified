@@ -18,10 +18,11 @@ public class TieredItemMixin {
 
     @Inject(method = "isValidRepairItem", at = @At("HEAD"), cancellable = true)
     private void unified$repairUnification(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
-        AlmostUnified.getRuntime().getReplacementMap().ifPresent(replacementMap -> {
-            if (replacementMap.isItemInUnifiedIngredient(tier.getRepairIngredient(), repairCandidate)) {
-                cir.setReturnValue(true);
-            }
-        });
+        if (AlmostUnified
+                .getRuntime()
+                .getReplacementMap()
+                .isItemInUnifiedIngredient(tier.getRepairIngredient(), repairCandidate)) {
+            cir.setReturnValue(true);
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.almostreliable.unified.compat;
 
-import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.ItemHider;
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.recipe.CRTLookup;
@@ -37,8 +36,6 @@ public class AlmostJEI implements IModPlugin {
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime jei) {
-        AlmostUnifiedFallbackRuntime.getInstance().reload();
-
         Collection<ItemStack> items = new ArrayList<>();
         for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(ItemHider.HIDE_TAG)) {
             items.add(new ItemStack(itemHolder));
