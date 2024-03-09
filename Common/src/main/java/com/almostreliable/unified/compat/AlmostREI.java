@@ -1,6 +1,5 @@
 package com.almostreliable.unified.compat;
 
-import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.ClientTagUpdateEvent;
 import com.almostreliable.unified.ItemHider;
 import com.almostreliable.unified.api.ModConstants;
@@ -51,8 +50,6 @@ public class AlmostREI implements REIClientPlugin {
     @Override
     public void registerBasicEntryFiltering(BasicFilteringRule<?> rule) {
         filterUpdate = rule.hide(() -> {
-            AlmostUnifiedFallbackRuntime.getInstance().reload();
-
             Collection<ItemStack> items = new ArrayList<>();
             for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(ItemHider.HIDE_TAG)) {
                 items.add(new ItemStack(itemHolder));

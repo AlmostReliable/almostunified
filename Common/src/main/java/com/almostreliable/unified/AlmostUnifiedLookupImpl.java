@@ -3,7 +3,6 @@ package com.almostreliable.unified;
 import com.almostreliable.unified.api.AlmostUnifiedLookup;
 import com.google.auto.service.AutoService;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -25,60 +24,44 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     @Override
     public Item getReplacementForItem(ItemLike itemLike) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
-        return AlmostUnified
-                .getRuntime()
-                .getReplacementMap()
-                .map(rm -> rm.getReplacementForItem(id))
-                .flatMap(BuiltInRegistries.ITEM::getOptional)
-                .orElse(null);
+        ResourceLocation replacementId = AlmostUnified.getRuntime().getReplacementMap().getReplacementForItem(id);
+        if (replacementId == null) {
+            return null;
+        }
+
+        return BuiltInRegistries.ITEM.getOptional(replacementId).orElse(null);
     }
 
     @Nullable
     @Override
     public Item getPreferredItemForTag(TagKey<Item> tag) {
-        return AlmostUnified
-                .getRuntime()
-                .getReplacementMap()
-                .map(rm -> rm.getPreferredItemForTag(tag))
-                .flatMap(BuiltInRegistries.ITEM::getOptional)
-                .orElse(null);
+        ResourceLocation itemId = AlmostUnified.getRuntime().getReplacementMap().getPreferredItemForTag(tag);
+        if (itemId == null) {
+            return null;
+        }
+
+        return BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
     }
 
     @Nullable
     @Override
     public TagKey<Item> getPreferredTagForItem(ItemLike itemLike) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
-        return AlmostUnified
-                .getRuntime()
-                .getReplacementMap()
-                .map(rm -> rm.getPreferredTagForItem(id))
-                .map(ut -> TagKey.create(Registries.ITEM, ut.location()))
-                .orElse(null);
+        return AlmostUnified.getRuntime().getReplacementMap().getPreferredTagForItem(id);
     }
 
     @Override
     public Set<Item> getPotentialItems(TagKey<Item> tag) {
-        return AlmostUnified
-                .getRuntime()
-                .getFilteredTagMap()
-                .map(tagMap -> tagMap
-                        .getEntriesByTag(tag)
-                        .stream()
-                        .flatMap(rl -> BuiltInRegistries.ITEM.getOptional(rl).stream())
-                        .collect(Collectors.toSet()))
-                .orElseGet(Set::of);
+        Set<ResourceLocation> entries = AlmostUnified.getRuntime().getFilteredTagMap().getEntriesByTag(tag);
+
+        return entries
+                .stream()
+                .flatMap(rl -> BuiltInRegistries.ITEM.getOptional(rl).stream())
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Set<TagKey<Item>> getConfiguredTags() {
-        return AlmostUnified
-                .getRuntime()
-                .getFilteredTagMap()
-                .map(tagMap -> tagMap
-                        .getTags()
-                        .stream()
-                        .map(ut -> TagKey.create(Registries.ITEM, ut.location()))
-                        .collect(Collectors.toSet()))
-                .orElseGet(Set::of);
+        return AlmostUnified.getRuntime().getFilteredTagMap().getTags();
     }
 }

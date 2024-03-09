@@ -35,7 +35,7 @@ public final class AlmostUnified {
 
     public static AlmostUnifiedRuntime getRuntime() {
         if (RUNTIME == null) {
-            return AlmostUnifiedFallbackRuntime.getInstance();
+            return new EmptyAlmostUnifiedRuntime();
         }
         return RUNTIME;
     }
