@@ -1,10 +1,9 @@
 package com.almostreliable.unified.compat;
 
-import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.ClientTagUpdateEvent;
+import com.almostreliable.unified.ItemHider;
 import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.CRTLookup;
 import com.almostreliable.unified.recipe.ClientRecipeTracker.ClientRecipeLink;
 import com.almostreliable.unified.utils.Utils;
@@ -23,8 +22,14 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.plugins.PluginManager;
 import me.shedaniel.rei.api.common.registry.ReloadStage;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -48,14 +53,12 @@ public class AlmostREI implements REIClientPlugin {
         filterUpdate = rule.hide(() -> {
             AlmostUnifiedFallbackRuntime.getInstance().reload();
 
-            var reiDisabled = AlmostUnified
-                    .getRuntime()
-                    .getUnifyConfig()
-                    .map(UnifyConfig::reiOrJeiDisabled)
-                    .orElse(false);
-            if (reiDisabled) return List.of();
+            Collection<ItemStack> items = new ArrayList<>();
+            for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(ItemHider.HIDE_TAG)) {
+                items.add(new ItemStack(itemHolder));
+            }
 
-            return EntryIngredients.ofItemStacks(HideHelper.createHidingList(AlmostUnified.getRuntime()));
+            return EntryIngredients.ofItemStacks(items);
         });
     }
 

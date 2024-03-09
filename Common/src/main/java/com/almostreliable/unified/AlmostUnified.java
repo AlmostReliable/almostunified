@@ -56,8 +56,9 @@ public final class AlmostUnified {
         ReplacementsConfig replacementsConfig = serverConfigs.getReplacementsConfig();
         DuplicationConfig dupConfig = serverConfigs.getDupConfig();
         DebugConfig debugConfig = serverConfigs.getDebugConfig();
+        UnifyConfig unifyConfig = serverConfigs.getUnifyConfig();
 
-        UnifySettings unifySettings = serverConfigs.getUnifyConfig().bake(tags, replacementsConfig);
+        UnifySettings unifySettings = unifyConfig.bake(tags, replacementsConfig);
 
         TagReloadHandler.applyCustomTags(tagConfig.getCustomTags());
 
@@ -72,6 +73,10 @@ public final class AlmostUnified {
                 tagConfig.getItemTagInheritance(),
                 tagConfig.getBlockTagInheritance(),
                 tagOwnerships);
+
+        if (unifyConfig.hideNonPreferredItemsInRecipeViewers()) {
+            ItemHider.applyHideTags(tags, replacementData.replacementMap(), replacementData.filteredTagMap());
+        }
 
         RUNTIME = new AlmostUnifiedRuntimeImpl(
                 unifySettings,

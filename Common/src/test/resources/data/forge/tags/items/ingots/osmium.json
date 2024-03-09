@@ -1,0 +1,8 @@
+{
+  "values": [
+    "testmod:osmium_ingot",
+    "meka_fake:osmium_ingot",
+    "ie_fake:osmium_ingot",
+    "thermal_fake:osmium_ingot"
+  ]
+}
