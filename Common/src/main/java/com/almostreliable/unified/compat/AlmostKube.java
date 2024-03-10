@@ -1,7 +1,7 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.UnifySettings;
+import com.almostreliable.unified.api.UnifyHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -10,6 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,7 @@ public final class AlmostKube {
     public static Set<String> getTags() {
         return AlmostUnified
                 .getRuntime()
-                .getFilteredTagMap()
+                .getTagMap()
                 .getTags()
                 .stream()
                 .map(tag -> tag.location().toString())
@@ -58,15 +59,24 @@ public final class AlmostKube {
         var tagKey = TagKey.create(Registries.ITEM, tag);
         return AlmostUnified
                 .getRuntime()
-                .getFilteredTagMap()
+                .getTagMap()
                 .getEntriesByTag(tagKey)
                 .stream()
                 .map(ResourceLocation::toString)
                 .collect(Collectors.toSet());
     }
 
-    public static UnifySettings getUnifyConfig() {
-        return AlmostUnified.getRuntime().getUnifyConfig();
+    public static Collection<? extends UnifyHandler> getUnifyHandlers() {
+        return AlmostUnified
+                .getRuntime()
+                .getUnifyHandlers();
+    }
+
+    @Nullable
+    public static UnifyHandler getUnifyHandler(String name) {
+        return AlmostUnified
+                .getRuntime()
+                .getUnifyHandler(name);
     }
 
     private static ResourceLocation getId(ItemStack stack) {
