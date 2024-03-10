@@ -52,7 +52,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
 
     @Override
     public Set<Item> getPotentialItems(TagKey<Item> tag) {
-        Set<ResourceLocation> entries = AlmostUnified.getRuntime().getFilteredTagMap().getEntriesByTag(tag);
+        Set<ResourceLocation> entries = AlmostUnified.getRuntime().getTagMap().getEntriesByTag(tag);
 
         return entries
                 .stream()
@@ -62,6 +62,6 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
 
     @Override
     public Set<TagKey<Item>> getConfiguredTags() {
-        return AlmostUnified.getRuntime().getFilteredTagMap().getTags();
+        return AlmostUnified.getRuntime().getTagMap().getTags();
     }
 }

@@ -17,6 +17,7 @@ public interface UnifySettings {
 
     void clearCache();
 
-
     boolean hideNonPreferredItemsInRecipeViewers();
+
+    String getName();
 }

@@ -1,6 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.Replacements;
+import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.config.*;
@@ -69,9 +70,15 @@ public final class AlmostUnified {
         tagOwnerships.applyOwnerships(tags);
 
         List<UnifyHandler> unifyHandlers = createAndPrepareUnifySettings(tags, unifyConfigs, tagOwnerships, tagConfig);
+        TagMap<Item> tagMap = TagMapImpl.compose(unifyHandlers.stream().map(UnifyHandler::getTagMap).toList());
         ItemHider.applyHideTags(tags, unifyHandlers);
 
-        RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers, dupConfig, debugConfig, unifierRegistry);
+        RUNTIME = new AlmostUnifiedRuntimeImpl(tagMap,
+                unifyHandlers,
+                dupConfig,
+                debugConfig,
+                unifierRegistry,
+                tagOwnerships);
     }
 
     private static List<UnifyHandler> createAndPrepareUnifySettings(Map<ResourceLocation, Collection<Holder<Item>>> tags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagConfig tagConfig) {
@@ -109,10 +116,11 @@ public final class AlmostUnified {
                 }
 
                 visitedTags.put(tag, config.getName());
-                return false;
+                return true;
             };
 
-            result.addAll(config.bakeTags(validator, replacements));
+            Set<TagKey<Item>> tags = config.bakeTags(validator, replacements);
+            result.addAll(tags);
         }
 
         if (!wrongTags.isEmpty()) {

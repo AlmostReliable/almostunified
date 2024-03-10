@@ -108,6 +108,24 @@ public class TagMapImpl<T> implements TagMap<T> {
         }
     }
 
+    public static <T> TagMap<T> compose(List<TagMap<T>> tagMaps) {
+        TagMapImpl<T> result = new TagMapImpl<>();
+        for (var tagMap : tagMaps) {
+            Set<TagKey<T>> tags = tagMap.getTags();
+            for (TagKey<T> tag : tags) {
+                if (!result.getEntriesByTag(tag).isEmpty()) {
+                    throw new IllegalArgumentException("Tag map already contains entries for " + tag);
+                }
+
+                for (ResourceLocation rl : tagMap.getEntriesByTag(tag)) {
+                    result.put(tag, rl);
+                }
+            }
+        }
+
+        return result;
+    }
+
     /**
      * Creates a filtered tag map copy.
      *
@@ -160,7 +178,7 @@ public class TagMapImpl<T> implements TagMap<T> {
      * If the entries don't exist in the internal maps yet, they will be created. That means
      * it needs to be checked whether the tag or entry is valid before calling this method.
      *
-     * @param tag   The tag.
+     * @param tag     The tag.
      * @param entries The entries as ids.
      */
     private void put(TagKey<T> tag, ResourceLocation... entries) {

@@ -22,6 +22,7 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     private final Set<Pattern> ignoredRecipes;
     private final Set<Pattern> ignoredRecipeTypes;
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache = new HashMap<>();
+    private final String name;
 
     public static List<UnifyHandler> create(Collection<UnifyConfig> configs, TagMap<Item> tags, TagOwnershipsImpl tagOwnerships) {
         return configs
@@ -42,15 +43,19 @@ public final class UnifyHandlerImpl implements UnifyHandler {
 
         ModPriorities modPriorities = config.getModPriorities();
         var replacementMap = new ReplacementMapImpl(modPriorities, filteredTagMap, stoneStrata, tagOwnerships);
-        return new UnifyHandlerImpl(modPriorities,
+        return new UnifyHandlerImpl(
+                config.getName(),
+                modPriorities,
                 replacementMap,
                 filteredTagMap,
                 config.getIgnoredRecipes(),
                 config.getIgnoredRecipeTypes(),
-                config.hideNonPreferredItemsInRecipeViewers());
+                config.hideNonPreferredItemsInRecipeViewers()
+        );
     }
 
-    public UnifyHandlerImpl(ModPriorities modPriorities, ReplacementMapImpl replacementMap, TagMap<Item> tagMap, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, boolean recipeViewerHiding) {
+    public UnifyHandlerImpl(String name, ModPriorities modPriorities, ReplacementMapImpl replacementMap, TagMap<Item> tagMap, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, boolean recipeViewerHiding) {
+        this.name = name;
         this.modPriorities = modPriorities;
         this.tagMap = tagMap;
         this.ignoredRecipes = ignoredRecipes;
@@ -99,6 +104,11 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     @Override
     public boolean hideNonPreferredItemsInRecipeViewers() {
         return recipeViewerHiding;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Nullable
