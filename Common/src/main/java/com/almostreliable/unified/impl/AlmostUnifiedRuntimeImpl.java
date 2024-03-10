@@ -25,7 +25,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final TagOwnerships tagOwnerships;
     private final UnifyLookup compositeUnifyLookup;
 
-    AlmostUnifiedRuntimeImpl(TagMap<Item> tagMap, Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig, DebugConfig debugConfig, UnifierRegistry unifierRegistry, TagOwnerships tagOwnerships) {
+    public AlmostUnifiedRuntimeImpl(TagMap<Item> tagMap, Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig, DebugConfig debugConfig, UnifierRegistry unifierRegistry, TagOwnerships tagOwnerships) {
         this.tagMap = tagMap;
         this.unifyHandlers = unifyHandlers;
         this.duplicationConfig = duplicationConfig;
