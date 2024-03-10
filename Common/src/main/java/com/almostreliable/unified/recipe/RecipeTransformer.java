@@ -3,6 +3,7 @@ package com.almostreliable.unified.recipe;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.api.UnifySettings;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
@@ -17,7 +18,6 @@ import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -28,25 +28,14 @@ import java.util.stream.Collectors;
 public class RecipeTransformer {
 
     private final UnifierRegistry factory;
-    private final ReplacementMap replacementMap;
-    private final UnifySettings unifySettings;
+    private final Collection<? extends UnifyHandler> unifyHandlers;
     private final DuplicationConfig duplicationConfig;
-
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(UnifierRegistry factory, ReplacementMap replacementMap, UnifySettings unifySettings, DuplicationConfig duplicationConfig) {
+    public RecipeTransformer(UnifierRegistry factory, Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig) {
         this.factory = factory;
-        this.replacementMap = replacementMap;
-        this.unifySettings = unifySettings;
+        this.unifyHandlers = unifyHandlers;
         this.duplicationConfig = duplicationConfig;
-    }
-
-    public boolean hasValidRecipeType(JsonObject json) {
-        if (json.get("type") instanceof JsonPrimitive primitive) {
-            ResourceLocation type = ResourceLocation.tryParse(primitive.getAsString());
-            return type != null && unifySettings.shouldIncludeRecipeType(type);
-        }
-        return false;
     }
 
     /**
@@ -77,9 +66,10 @@ public class RecipeTransformer {
             result.addAll(recipeLinks);
         });
 
-        AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size() + " (done in " + transformationTimer.stop() + ")");
+        AlmostUnified.LOG.warn(
+                "Recipe count afterwards: " + recipes.size() + " (done in " + transformationTimer.stop() + ")");
 
-        unifySettings.clearCache();
+        unifyHandlers.forEach(UnifySettings::clearCache);
         duplicationConfig.clearCache();
 
         if (tracker != null) recipes.putAll(tracker.compute());
@@ -138,22 +128,9 @@ public class RecipeTransformer {
         return recipes
                 .entrySet()
                 .stream()
-                .filter(entry -> includeRecipe(entry.getKey(), entry.getValue()))
                 .map(entry -> new RecipeLink(entry.getKey(), entry.getValue().getAsJsonObject()))
                 .sorted(Comparator.comparing(entry -> entry.getId().toString()))
                 .collect(Collectors.groupingByConcurrent(RecipeLink::getType));
-    }
-
-    /**
-     * Checks if a recipe should be included in the transformation.
-     *
-     * @param recipe The recipe to check.
-     * @param json   The recipe's json. Will be used to check if the recipe has a valid type.
-     * @return True if the recipe should be included, false otherwise.
-     */
-    private boolean includeRecipe(ResourceLocation recipe, JsonElement json) {
-        return unifySettings.shouldIncludeRecipe(recipe) && json.isJsonObject() &&
-               hasValidRecipeType(json.getAsJsonObject());
     }
 
     /**
@@ -226,9 +203,15 @@ public class RecipeTransformer {
             JsonObject maybeUnified = recipe.getOriginal().deepCopy(); // TODO remove later and store different
             RecipeJson json = new RecipeJsonImpl(recipe.getId(), maybeUnified);
 
-            RecipeContextImpl ctx = new RecipeContextImpl(replacementMap);
-            RecipeUnifier unifier = factory.getUnifier(recipe);
-            unifier.unifyItems(ctx, json);
+            for (var handler : unifyHandlers) {
+                if (!handler.shouldIncludeRecipe(recipe)) {
+                    continue;
+                }
+
+                RecipeContextImpl ctx = new RecipeContextImpl(handler);
+                RecipeUnifier unifier = factory.getUnifier(recipe);
+                unifier.unifyItems(ctx, json);
+            }
 
             if (json.changed()) {
                 recipe.setUnified(maybeUnified);

@@ -1,15 +1,11 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.Replacements;
-import com.almostreliable.unified.api.UnifySettings;
-import com.almostreliable.unified.impl.UnifySettingsImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.JsonObject;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -51,23 +47,6 @@ public class UnifyConfig extends Config {
         this.ignoredRecipeTypesCache = new HashMap<>();
     }
 
-//    public UnifySettings bake(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
-//        var mp = new ModPrioritiesImpl(modPriorities, priorityOverrides);
-//        var stoneStrata = getStoneStrata();
-//        var bakedTags = bakeAndValidateTags(tags);
-//        var ignoredItems = this.ignoredItems;
-//        var ignoredRecipes = this.ignoredRecipes;
-//        var ignoredRecipeTypes = this.ignoredRecipeTypes;
-//    }
-
-    public UnifySettings bake(Map<ResourceLocation, Collection<Holder<Item>>> tags, Replacements replacements) {
-        var mp = new ModPrioritiesImpl(modPriorities, priorityOverrides);
-        var bakedTags = bakeTags(tags::containsKey, replacements);
-
-        return new UnifySettingsImpl(mp, stoneStrata, bakedTags, ignoredItems, ignoredRecipes, ignoredRecipeTypes);
-    }
-
-
     public ModPriorities getModPriorities() {
         return new ModPrioritiesImpl(modPriorities, priorityOverrides);
     }
@@ -76,40 +55,30 @@ public class UnifyConfig extends Config {
         return stoneStrata;
     }
 
-    public Set<TagKey<Item>> bakeTags(Replacements replacements) {
-        return bakeTags($ -> true, replacements);
+    public Set<TagKey<Item>> getBakedTags() {
+        if (bakedTagsCache == null) {
+            throw new IllegalStateException("Tags are not baked. bakeTags(...) must be called first");
+        }
+
+        return bakedTagsCache;
     }
 
-    public Set<TagKey<Item>> bakeAndValidateTags(Map<ResourceLocation, Collection<Holder<Item>>> tags, Replacements replacements) {
-        return bakeTags(tags::containsKey, replacements);
-    }
-
-    private Set<TagKey<Item>> bakeTags(Predicate<ResourceLocation> tagValidator, Replacements replacements) {
+    public Set<TagKey<Item>> bakeTags(Predicate<TagKey<Item>> tagValidator, Replacements replacements) {
         if (bakedTagsCache != null) {
             return bakedTagsCache;
         }
 
         Set<TagKey<Item>> result = new HashSet<>();
-        Set<TagKey<Item>> wrongTags = new HashSet<>();
-
         for (var unbakedTag : unbakedTags) {
             var inflate = replacements.inflate(unbakedTag);
             for (var rl : inflate) {
                 var tag = TagKey.create(Registries.ITEM, rl);
                 if (ignoredTags.contains(tag)) continue;
-
-                if (!tagValidator.test(rl)) {
-                    wrongTags.add(tag);
-                    continue;
-                }
+                if (result.contains(tag)) continue;
+                if (!tagValidator.test(tag)) continue;
 
                 result.add(tag);
             }
-        }
-
-        if (!wrongTags.isEmpty()) {
-            AlmostUnified.LOG.warn("The following tags are invalid and will be ignored: {}",
-                    wrongTags.stream().map(TagKey::location).collect(Collectors.toList()));
         }
 
         bakedTagsCache = result;
@@ -125,32 +94,20 @@ public class UnifyConfig extends Config {
         return true;
     }
 
-    public boolean includeRecipe(ResourceLocation recipe) {
-        for (Pattern pattern : ignoredRecipes) {
-            if (pattern.matcher(recipe.toString()).matches()) {
-                return false;
-            }
-        }
-        return true;
+    public Set<Pattern> getIgnoredRecipeTypes() {
+        return ignoredRecipeTypes;
     }
 
-    public boolean includeRecipeType(ResourceLocation type) {
-        return ignoredRecipeTypesCache.computeIfAbsent(type, t -> {
-            for (Pattern pattern : ignoredRecipeTypes) {
-                if (pattern.matcher(t.toString()).matches()) {
-                    return false;
-                }
-            }
-            return true;
-        });
+    public Set<Pattern> getIgnoredRecipes() {
+        return ignoredRecipes;
     }
 
     public boolean hideNonPreferredItemsInRecipeViewers() {
         return recipeViewerHiding;
     }
 
-    public void clearCache() {
-        ignoredRecipeTypesCache.clear();
+    public String getName() {
+        return NAME;
     }
 
     public static class Serializer extends Config.Serializer<UnifyConfig> {

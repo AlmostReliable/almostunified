@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class TagOwnershipsImpl implements TagOwnerships {
 
@@ -37,10 +38,10 @@ public class TagOwnershipsImpl implements TagOwnerships {
      * It is ensured that all owner tags are present in the {@code unifyTags} set, and that all reference tags
      * aren't present in the {@code unifyTags} set.
      *
-     * @param unifyTags        The set of all unify tags in use.
-     * @param rawTagOwnerships The map of all tag ownership relationships.
+     * @param enabledTagsFilter Filter for all enables tags which may be used in unification
+     * @param rawTagOwnerships  The map of all tag ownership relationships.
      */
-    public TagOwnershipsImpl(Set<TagKey<Item>> unifyTags, Map<ResourceLocation, Set<ResourceLocation>> rawTagOwnerships) {
+    public TagOwnershipsImpl(Predicate<TagKey<Item>> enabledTagsFilter, Map<ResourceLocation, Set<ResourceLocation>> rawTagOwnerships) {
         ImmutableMap.Builder<TagKey<Item>, TagKey<Item>> refsToOwnerBuilder = ImmutableMap.builder();
         ImmutableMultimap.Builder<TagKey<Item>, TagKey<Item>> ownerToRefsBuilder = ImmutableMultimap.builder();
 
@@ -49,7 +50,7 @@ public class TagOwnershipsImpl implements TagOwnerships {
                 TagKey<Item> owner = TagKey.create(Registries.ITEM, rawOwner);
                 TagKey<Item> ref = TagKey.create(Registries.ITEM, rawRef);
 
-                if (!unifyTags.contains(owner)) {
+                if (!enabledTagsFilter.test(owner)) {
                     AlmostUnified.LOG.warn(
                             "[TagOwnerships] Owner tag '#{}' is not present in the unify tag list!",
                             owner.location()
@@ -57,7 +58,7 @@ public class TagOwnershipsImpl implements TagOwnerships {
                     continue;
                 }
 
-                if (unifyTags.contains(ref)) {
+                if (enabledTagsFilter.test(ref)) {
                     AlmostUnified.LOG.warn(
                             "[TagOwnerships] Reference tag '#{}' of owner tag '#{}' is present in the unify tag list!",
                             ref.location(),
@@ -76,7 +77,7 @@ public class TagOwnershipsImpl implements TagOwnerships {
     }
 
     public TagOwnershipsImpl() {
-        this(Collections.emptySet(), Collections.emptyMap());
+        this(t -> false, Collections.emptyMap());
     }
 
     /**

@@ -1,10 +1,10 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.ReplacementData;
 import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.TagInheritance;
 import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.impl.TagMapImpl;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
@@ -20,10 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class TagReloadHandler {
 
@@ -101,18 +98,17 @@ public final class TagReloadHandler {
         }
     }
 
-    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, ReplacementData replacementData) {
+    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, TagMap<Item> globalTagMap, List<UnifyHandler> unifySettingsList) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
 
         Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
         Multimap<ResourceLocation, ResourceLocation> changedBlockTags = HashMultimap.create();
 
-        var relations = resolveRelations(replacementData.filteredTagMap(), replacementData.replacementMap());
+        var relations = resolveRelations(unifySettingsList);
         if (relations.isEmpty()) return false;
 
         var blockTagMap = TagMapImpl.createFromBlockTags(RAW_BLOCK_TAGS);
-        var globalTagMap = replacementData.globalTagMap();
 
         for (TagRelation relation : relations) {
             var dominant = relation.dominant;
@@ -156,6 +152,16 @@ public final class TagReloadHandler {
         }
 
         return false;
+    }
+
+    private static Set<TagRelation> resolveRelations(List<UnifyHandler> unifyHandlers) {
+        Set<TagRelation> relations = new HashSet<>();
+
+        for (var handler : unifyHandlers) {
+            relations.addAll(resolveRelations(handler.getTagMap(), handler));
+        }
+
+        return relations;
     }
 
     private static Set<TagRelation> resolveRelations(TagMap<Item> filteredTagMap, ReplacementMap repMap) {
