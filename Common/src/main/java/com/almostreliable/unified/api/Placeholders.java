@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 
-public interface Replacements {
+public interface Placeholders {
 
     Collection<ResourceLocation> inflate(String str);
 

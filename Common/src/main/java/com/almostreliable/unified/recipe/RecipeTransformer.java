@@ -1,9 +1,9 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.api.UnifyHandler;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.UnifySettings;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
@@ -39,7 +39,7 @@ public class RecipeTransformer {
     }
 
     /**
-     * Transforms a map of recipes. This method will modify the map in-place. Part of the transformation is to unify recipes with the given {@link ReplacementMap}.
+     * Transforms a map of recipes. This method will modify the map in-place. Part of the transformation is to unify recipes with the given {@link UnifyLookup}.
      * After unification, recipes will be checked for duplicates. All duplicates will be removed from the map.
      *
      * @param recipes            The map of recipes to transform.
@@ -103,7 +103,7 @@ public class RecipeTransformer {
     }
 
     /**
-     * Transforms a list of recipes. Part of the transformation is to unify recipes with the given {@link ReplacementMap}.
+     * Transforms a list of recipes. Part of the transformation is to unify recipes with the given {@link UnifyLookup}.
      * After unification, recipes will be checked for duplicates.
      * All duplicates will be removed from <b>{@code Map<ResourceLocation, JsonElement> allRecipes}</b>,
      * while unified recipes will replace the original recipes in the map.

@@ -1,9 +1,9 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.api.TagOwnerships;
 import com.almostreliable.unified.api.UnifyHandler;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -18,7 +18,7 @@ public interface AlmostUnifiedRuntime {
 
     TagMap<Item> getTagMap();
 
-    ReplacementMap getReplacementMap();
+    UnifyLookup getUnifyLookup();
 
     Collection<? extends UnifyHandler> getUnifyHandlers();
 

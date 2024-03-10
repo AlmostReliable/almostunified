@@ -1,10 +1,10 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.TagInheritance;
 import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.api.UnifyHandler;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.impl.TagMapImpl;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
@@ -98,14 +98,14 @@ public final class TagReloadHandler {
         }
     }
 
-    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, TagMap<Item> globalTagMap, List<UnifyHandler> unifySettingsList) {
+    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, TagMap<Item> globalTagMap, List<UnifyHandler> unifyHandlers) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
 
         Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
         Multimap<ResourceLocation, ResourceLocation> changedBlockTags = HashMultimap.create();
 
-        var relations = resolveRelations(unifySettingsList);
+        var relations = resolveRelations(unifyHandlers);
         if (relations.isEmpty()) return false;
 
         var blockTagMap = TagMapImpl.createFromBlockTags(RAW_BLOCK_TAGS);
@@ -164,7 +164,7 @@ public final class TagReloadHandler {
         return relations;
     }
 
-    private static Set<TagRelation> resolveRelations(TagMap<Item> filteredTagMap, ReplacementMap repMap) {
+    private static Set<TagRelation> resolveRelations(TagMap<Item> filteredTagMap, UnifyLookup repMap) {
         Set<TagRelation> relations = new HashSet<>();
 
         for (var unifyTag : filteredTagMap.getTags()) {

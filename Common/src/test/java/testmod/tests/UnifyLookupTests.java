@@ -1,8 +1,8 @@
 package testmod.tests;
 
 import com.almostreliable.unified.api.TagMap;
-import com.almostreliable.unified.impl.ReplacementMapImpl;
 import com.almostreliable.unified.impl.TagMapImpl;
+import com.almostreliable.unified.impl.UnifyLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ReplacementMapTests {
+public class UnifyLookupTests {
 
     private static final TagMap<Item> TAG_MAP = new TagMapImpl.Builder<Item>()
             .put(TestUtils.itemTag("testmod:ingots/osmium"),
@@ -42,7 +42,7 @@ public class ReplacementMapTests {
                 new HashMap<>()
         );
 
-        var rm = new ReplacementMapImpl(modPriorities,
+        var rm = new UnifyLookupImpl(modPriorities,
                 TAG_MAP,
                 TestUtils.EMPTY_STRATA_LOOKUP,
                 TestUtils.EMPTY_TAG_OWNERSHIPS);
@@ -80,7 +80,7 @@ public class ReplacementMapTests {
                         m -> m.put(TestUtils.itemTag("testmod:ingots/electrum"), "create"))
         );
 
-        var rm = new ReplacementMapImpl(modPriorities,
+        var rm = new UnifyLookupImpl(modPriorities,
                 TAG_MAP,
                 TestUtils.EMPTY_STRATA_LOOKUP,
                 TestUtils.EMPTY_TAG_OWNERSHIPS);
@@ -102,7 +102,7 @@ public class ReplacementMapTests {
                 new HashMap<>()
         );
 
-        var rm = new ReplacementMapImpl(modPriorities,
+        var rm = new UnifyLookupImpl(modPriorities,
                 TAG_MAP,
                 TestUtils.EMPTY_STRATA_LOOKUP,
                 TestUtils.EMPTY_TAG_OWNERSHIPS);
@@ -125,7 +125,7 @@ public class ReplacementMapTests {
                 new HashMap<>()
         );
 
-        var rm = new ReplacementMapImpl(modPriorities,
+        var rm = new UnifyLookupImpl(modPriorities,
                 TAG_MAP,
                 TestUtils.EMPTY_STRATA_LOOKUP,
                 TestUtils.EMPTY_TAG_OWNERSHIPS);
@@ -158,7 +158,7 @@ public class ReplacementMapTests {
                         "minecraft:iron_pickaxe",
                         "minecraft:iron_shovel")
                 .build();
-        var rm = new ReplacementMapImpl(TestUtils.EMPTY_MOD_PRIORITIES,
+        var rm = new UnifyLookupImpl(TestUtils.EMPTY_MOD_PRIORITIES,
                 tagMap,
                 TestUtils.EMPTY_STRATA_LOOKUP,
                 TestUtils.EMPTY_TAG_OWNERSHIPS);

@@ -9,7 +9,7 @@ public class CommonTest {
         if (gametestEnabled) {
             GameTestLoader.registerProviders(
                     ExampleTest.class,
-                    ReplacementMapTests.class,
+                    UnifyLookupTests.class,
                     ReplacementsTests.class,
                     UnifyTests.class,
                     ShapedRecipeUnifierTests.class,

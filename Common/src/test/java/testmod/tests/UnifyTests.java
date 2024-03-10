@@ -1,10 +1,10 @@
 package testmod.tests;
 
 import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.TagMap;
-import com.almostreliable.unified.impl.ReplacementMapImpl;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.impl.TagMapImpl;
+import com.almostreliable.unified.impl.UnifyLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,8 +34,8 @@ public class UnifyTests {
                     Items.IRON_INGOT)
             .build();
 
-    public static ReplacementMap replacementMap() {
-        return new ReplacementMapImpl(MOD_PRIORITIES, TAG_MAP, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
+    public static UnifyLookup unifyLookup() {
+        return new UnifyLookupImpl(MOD_PRIORITIES, TAG_MAP, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
     }
 
     private static JsonObject json(String str) {
@@ -44,7 +44,7 @@ public class UnifyTests {
 
     @SimpleGameTest
     public void test() {
-        var rm = replacementMap();
+        var rm = unifyLookup();
         var recipe = json("""
                 {
                   "type": "minecraft:crafting_shaped",

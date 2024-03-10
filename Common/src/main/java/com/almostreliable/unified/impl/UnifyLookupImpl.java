@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class ReplacementMapImpl implements ReplacementMap {
+public class UnifyLookupImpl implements UnifyLookup {
 
     private final ModPriorities modPriorities;
     private final TagMap<Item> tagMap;
@@ -24,7 +24,7 @@ public class ReplacementMapImpl implements ReplacementMap {
     private final TagOwnerships tagOwnerships;
     private final Set<ResourceLocation> warnings;
 
-    public ReplacementMapImpl(ModPriorities modPriorities, TagMap<Item> tagMap, StoneStrataLookup stoneStrataLookup, TagOwnerships tagOwnerships) {
+    public UnifyLookupImpl(ModPriorities modPriorities, TagMap<Item> tagMap, StoneStrataLookup stoneStrataLookup, TagOwnerships tagOwnerships) {
         this.tagMap = tagMap;
         this.modPriorities = modPriorities;
         this.stoneStrataLookup = stoneStrataLookup;

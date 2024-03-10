@@ -1,5 +1,6 @@
-package com.almostreliable.unified;
+package com.almostreliable.unified.impl;
 
+import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.AlmostUnifiedLookup;
 import com.google.auto.service.AutoService;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,7 +25,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     @Override
     public Item getReplacementForItem(ItemLike itemLike) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
-        ResourceLocation replacementId = AlmostUnified.getRuntime().getReplacementMap().getReplacementForItem(id);
+        ResourceLocation replacementId = AlmostUnified.getRuntime().getUnifyLookup().getReplacementForItem(id);
         if (replacementId == null) {
             return null;
         }
@@ -35,7 +36,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     @Nullable
     @Override
     public Item getPreferredItemForTag(TagKey<Item> tag) {
-        ResourceLocation itemId = AlmostUnified.getRuntime().getReplacementMap().getPreferredItemForTag(tag);
+        ResourceLocation itemId = AlmostUnified.getRuntime().getUnifyLookup().getPreferredItemForTag(tag);
         if (itemId == null) {
             return null;
         }
@@ -47,7 +48,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     @Override
     public TagKey<Item> getPreferredTagForItem(ItemLike itemLike) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
-        return AlmostUnified.getRuntime().getReplacementMap().getPreferredTagForItem(id);
+        return AlmostUnified.getRuntime().getUnifyLookup().getPreferredTagForItem(id);
     }
 
     @Override
