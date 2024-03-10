@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ReplacementsTests {
     @SimpleGameTest
     public void testInflate() {
-        var replacements = new ReplacementsConfig(Map.of("material",
+        var replacements = new ReplacementsConfig("replacements", Map.of("material",
                 Set.of("iron", "gold"),
                 "type",
                 Set.of("gems", "rods", "raw_materials")));

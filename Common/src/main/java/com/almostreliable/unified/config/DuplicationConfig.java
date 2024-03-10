@@ -20,7 +20,8 @@ public class DuplicationConfig extends Config {
     private final boolean strictMode;
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
 
-    public DuplicationConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipes, boolean strictMode) {
+    public DuplicationConfig(String name, JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipes, boolean strictMode) {
+        super(name);
         this.defaultRules = defaultRules;
         this.overrideRules = overrideRules;
         this.ignoreRecipeTypes = ignoreRecipeTypes;
@@ -80,7 +81,7 @@ public class DuplicationConfig extends Config {
         public static final String STRICT_MODE = "strictMode";
 
         @Override
-        public DuplicationConfig deserialize(JsonObject json) {
+        public DuplicationConfig deserialize(String name, JsonObject json) {
             var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
             Set<Pattern> ignoreRecipeTypes = deserializePatterns(json,
                     IGNORED_RECIPE_TYPES,
@@ -100,7 +101,12 @@ public class DuplicationConfig extends Config {
                             LinkedHashMap::new)), Defaults.getDefaultDuplicateOverrides(platform));
             boolean strictMode = safeGet(() -> json.get(STRICT_MODE).getAsBoolean(), false);
 
-            return new DuplicationConfig(defaultRules, overrideRules, ignoreRecipeTypes, ignoreRecipes, strictMode);
+            return new DuplicationConfig(name,
+                    defaultRules,
+                    overrideRules,
+                    ignoreRecipeTypes,
+                    ignoreRecipes,
+                    strictMode);
         }
 
         private JsonCompare.CompareSettings createCompareSet(JsonObject rules) {

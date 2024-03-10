@@ -16,7 +16,8 @@ public class ReplacementsConfig extends Config implements Replacements {
     public static final String NAME = "replacements";
     private final Map<String, Collection<String>> replacements;
 
-    public ReplacementsConfig(Map<String, Collection<String>> replacements) {
+    public ReplacementsConfig(String name, Map<String, Collection<String>> replacements) {
+        super(name);
         this.replacements = replacements;
     }
 
@@ -73,11 +74,11 @@ public class ReplacementsConfig extends Config implements Replacements {
     public static class Serializer extends Config.Serializer<ReplacementsConfig> {
 
         @Override
-        public ReplacementsConfig deserialize(JsonObject json) {
+        public ReplacementsConfig deserialize(String name, JsonObject json) {
             //noinspection SizeReplaceableByIsEmpty
             if (json.size() == 0) { // json.isEmpty crashes in prod...
                 setInvalid();
-                return new ReplacementsConfig(Defaults.REPLACEMENTS);
+                return new ReplacementsConfig(name, Defaults.REPLACEMENTS);
             }
 
             Map<String, Collection<String>> replacements = safeGet(() -> {
@@ -96,7 +97,7 @@ public class ReplacementsConfig extends Config implements Replacements {
                 return builder.build();
             }, Defaults.REPLACEMENTS);
 
-            return new ReplacementsConfig(replacements);
+            return new ReplacementsConfig(name, replacements);
         }
 
         @Override

@@ -21,33 +21,38 @@ import java.util.stream.Collectors;
 
 public class Config {
 
+    private final String name;
+
+    public Config(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public static <T extends Config> T load(String name, Serializer<T> serializer) {
         AlmostUnified.LOG.info("Loading config: {}", name);
         JsonObject json = safeLoadJson(name);
-        T config = serializer.deserialize(json);
+        T config = serializer.deserialize(name, json);
         if (serializer.isInvalid()) {
-            Path filePath = buildPath(createConfigDir(), name);
-            if (Files.exists(filePath)) {
-                backupConfig(name, filePath);
-            }
-            AlmostUnified.LOG.warn("Config not found or invalid. Creating new config: {}", name);
-            save(filePath, config, serializer);
+            AlmostUnified.LOG.warn("Config not found or invalid. Creating new config: {}", config.getName());
+            save(config, serializer);
         }
+
         return config;
     }
 
-    private static void backupConfig(String name, Path p) {
-        AlmostUnified.LOG.warn("Config {} is invalid. Backing up and recreating.", name);
-        Path backupPath = p.resolveSibling(p.getFileName() + ".bak");
-        try {
-            Files.deleteIfExists(backupPath);
-            Files.move(p, backupPath);
-        } catch (IOException e) {
-            AlmostUnified.LOG.error("Could not backup config file", e);
-        }
+    public static <T extends Config> void save(T config, Serializer<T> serializer) {
+        Path filePath = buildPath(createConfigDir(), config.getName());
+        save(filePath, config, serializer);
     }
 
     public static <T extends Config> void save(Path p, T config, Serializer<T> serializer) {
+        if (Files.exists(p)) {
+            backupConfig(config.getName(), p);
+        }
+
         JsonObject json = serializer.serialize(config);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonString = gson.toJson(json);
@@ -61,7 +66,18 @@ public class Config {
         }
     }
 
-    private static JsonObject safeLoadJson(String file) {
+    private static void backupConfig(String name, Path p) {
+        AlmostUnified.LOG.warn("Config {} is invalid. Backing up and recreating.", name);
+        Path backupPath = p.resolveSibling(p.getFileName() + ".bak");
+        try {
+            Files.deleteIfExists(backupPath);
+            Files.move(p, backupPath);
+        } catch (IOException e) {
+            AlmostUnified.LOG.error("Could not backup config file", e);
+        }
+    }
+
+    public static JsonObject safeLoadJson(String file) {
         Path p = createConfigDir();
         try (BufferedReader reader = Files.newBufferedReader(buildPath(p, file))) {
             return new Gson().fromJson(reader, JsonObject.class);
@@ -71,7 +87,7 @@ public class Config {
         return new JsonObject();
     }
 
-    private static Path createConfigDir() {
+    public static Path createConfigDir() {
         Path p = AlmostUnifiedPlatform.INSTANCE.getConfigPath();
         try {
             Files.createDirectories(p);
@@ -122,7 +138,7 @@ public class Config {
                             .toList()));
         }
 
-        public abstract T deserialize(JsonObject json);
+        public abstract T deserialize(String name, JsonObject json);
 
         public abstract JsonObject serialize(T src);
     }

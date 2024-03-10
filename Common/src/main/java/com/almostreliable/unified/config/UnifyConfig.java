@@ -1,25 +1,31 @@
 package com.almostreliable.unified.config;
 
+import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.Replacements;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.utils.JsonUtils;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("ReplaceNullCheck")
 public class UnifyConfig extends Config {
-    public static final String NAME = "unify";
 
     private final List<String> modPriorities;
     private final Map<TagKey<Item>, String> priorityOverrides;
@@ -30,11 +36,71 @@ public class UnifyConfig extends Config {
     private final Set<Pattern> ignoredRecipeTypes;
     private final Set<Pattern> ignoredRecipes;
     private final boolean recipeViewerHiding;
-
-    private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
     @Nullable private Set<TagKey<Item>> bakedTagsCache;
 
-    public UnifyConfig(List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean recipeViewerHiding) {
+    public static Collection<UnifyConfig> safeLoadConfigs() {
+        try {
+            return loadConfigs();
+        } catch (IOException e) {
+            AlmostUnified.LOG.error("Could not load configs", e);
+            return List.of();
+        }
+    }
+
+    public static Collection<UnifyConfig> loadConfigs() throws IOException {
+        Path unifyFolder = AlmostUnifiedPlatform.INSTANCE.getConfigPath().resolve("unify");
+        var jsons = readJsons(unifyFolder);
+        if (jsons.isEmpty()) {
+            Serializer serializer = new Serializer();
+            UnifyConfig defaultConfig = serializer.deserialize("materials", new JsonObject());
+            Config.save(unifyFolder.resolve("materials.json"), defaultConfig, serializer);
+            return List.of(defaultConfig);
+        }
+
+        Collection<UnifyConfig> configs = new ArrayList<>();
+        for (var entry : jsons.entrySet()) {
+            var name = entry.getKey();
+            var json = entry.getValue();
+            Serializer serializer = new Serializer();
+            var config = serializer.deserialize(name, json);
+            if (serializer.isInvalid()) {
+                AlmostUnified.LOG.warn("Unify config not found or invalid. Creating new config: {}", name);
+                save(unifyFolder.resolve(config.getName() + ".json"), config, serializer);
+            }
+
+            configs.add(config);
+        }
+
+        return configs;
+    }
+
+    public static Map<String, JsonObject> readJsons(Path directory) {
+        Map<String, JsonObject> result = new HashMap<>();
+        Gson gson = new Gson();
+
+        try {
+            Files.createDirectories(directory);
+            var files = FileUtils.listFiles(directory.toFile(), new String[]{ "json" }, false);
+
+            for (var file : files) {
+                var fileName = FilenameUtils.getBaseName(file.getName());
+                try {
+                    var content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                    var jsonObject = gson.fromJson(content, JsonObject.class);
+                    result.put(fileName, jsonObject);
+                } catch (Throwable e) {
+                    AlmostUnified.LOG.error("Could not load json from file {}.json: ", fileName, e);
+                }
+            }
+        } catch (Throwable e) {
+            AlmostUnified.LOG.error("Could not load jsons: ", e);
+        }
+
+        return result;
+    }
+
+    public UnifyConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, boolean recipeViewerHiding) {
+        super(name);
         this.modPriorities = modPriorities;
         this.priorityOverrides = priorityOverrides;
         this.stoneStrata = stoneStrata;
@@ -44,7 +110,6 @@ public class UnifyConfig extends Config {
         this.ignoredRecipeTypes = ignoredRecipeTypes;
         this.ignoredRecipes = ignoredRecipes;
         this.recipeViewerHiding = recipeViewerHiding;
-        this.ignoredRecipeTypesCache = new HashMap<>();
     }
 
     public ModPriorities getModPriorities() {
@@ -106,10 +171,6 @@ public class UnifyConfig extends Config {
         return recipeViewerHiding;
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     public static class Serializer extends Config.Serializer<UnifyConfig> {
 
         public static final String MOD_PRIORITIES = "modPriorities";
@@ -124,7 +185,7 @@ public class UnifyConfig extends Config {
         public static final String RECIPE_VIEWER_HIDING = "recipeViewerHiding";
 
         @Override
-        public UnifyConfig deserialize(JsonObject json) {
+        public UnifyConfig deserialize(String name, JsonObject json) {
             var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
 
             // Mod priorities
@@ -139,8 +200,6 @@ public class UnifyConfig extends Config {
             List<String> stoneStrata = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(STONE_STRATA)),
                     Defaults.STONE_STRATA);
             List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.getTags(platform));
-            List<String> materials = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MATERIALS)),
-                    Defaults.MATERIALS);
 
             Set<TagKey<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
@@ -155,7 +214,9 @@ public class UnifyConfig extends Config {
             boolean recipeViewerHiding = safeGet(() -> json.getAsJsonPrimitive(RECIPE_VIEWER_HIDING).getAsBoolean(),
                     true);
 
-            return new UnifyConfig(modPriorities,
+            return new UnifyConfig(
+                    name,
+                    modPriorities,
                     priorityOverrides,
                     stoneStrata,
                     tags,
@@ -163,7 +224,8 @@ public class UnifyConfig extends Config {
                     ignoredItems,
                     ignoredRecipeTypes,
                     ignoredRecipes,
-                    recipeViewerHiding);
+                    recipeViewerHiding
+            );
         }
 
         @Override

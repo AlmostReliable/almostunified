@@ -5,8 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface UnifySettings {
 
-    String getName();
-
     ModPriorities getModPriorities();
 
     default boolean shouldIncludeRecipe(RecipeData recipe) {

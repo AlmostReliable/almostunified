@@ -8,6 +8,7 @@ import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.almostreliable.unified.impl.UnifyHandlerImpl;
 import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
+import com.almostreliable.unified.utils.FileUtils;
 import com.almostreliable.unified.utils.TagReloadHandler;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -53,13 +54,14 @@ public final class AlmostUnified {
         UnifierRegistry unifierRegistry = new UnifierRegistryImpl();
         PluginManager.instance().registerUnifiers(unifierRegistry);
 
-        ServerConfigs serverConfigs = ServerConfigs.load();
-        TagConfig tagConfig = serverConfigs.getTagConfig();
-        ReplacementsConfig replacementsConfig = serverConfigs.getReplacementsConfig();
-        DuplicationConfig dupConfig = serverConfigs.getDupConfig();
-        DebugConfig debugConfig = serverConfigs.getDebugConfig();
+        FileUtils.createGitIgnoreIfNotExists();
+        TagConfig tagConfig = Config.load(TagConfig.NAME, new TagConfig.Serializer());
+        ReplacementsConfig replacementsConfig = Config.load(ReplacementsConfig.NAME,
+                new ReplacementsConfig.Serializer());
+        DuplicationConfig dupConfig = Config.load(DuplicationConfig.NAME, new DuplicationConfig.Serializer());
+        DebugConfig debugConfig = Config.load(DebugConfig.NAME, new DebugConfig.Serializer());
 
-        List<UnifyConfig> unifyConfigs = List.of(serverConfigs.getUnifyConfig());
+        Collection<UnifyConfig> unifyConfigs = UnifyConfig.safeLoadConfigs();
         Set<TagKey<Item>> allUnifyTags = allUnifyTags(unifyConfigs, tags, replacementsConfig);
 
         TagReloadHandler.applyCustomTags(tagConfig.getCustomTags());
@@ -77,7 +79,7 @@ public final class AlmostUnified {
         RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers, dupConfig, debugConfig, unifierRegistry);
     }
 
-    private static List<UnifyHandler> createAndPrepareUnifySettings(Map<ResourceLocation, Collection<Holder<Item>>> tags, List<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagConfig tagConfig) {
+    private static List<UnifyHandler> createAndPrepareUnifySettings(Map<ResourceLocation, Collection<Holder<Item>>> tags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagConfig tagConfig) {
         var globalTagMap = TagMapImpl.createFromItemTags(tags);
         List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, globalTagMap, tagOwnerships);
         var needsRebuild = TagReloadHandler.applyInheritance(tagConfig.getItemTagInheritance(),

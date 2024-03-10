@@ -1,8 +1,8 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.utils.FileUtils;
 import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.utils.FileUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +22,8 @@ public class DebugConfig extends Config {
     public final boolean dumpOverview;
     public final boolean dumpRecipes;
 
-    public DebugConfig(boolean dumpTagMap, boolean dumpDuplicates, boolean dumpUnification, boolean dumpOverview, boolean dumpRecipes) {
+    public DebugConfig(String name, boolean dumpTagMap, boolean dumpDuplicates, boolean dumpUnification, boolean dumpOverview, boolean dumpRecipes) {
+        super(name);
         this.dumpTagMap = dumpTagMap;
         this.dumpDuplicates = dumpDuplicates;
         this.dumpUnification = dumpUnification;
@@ -73,8 +74,9 @@ public class DebugConfig extends Config {
         public static final String DUMP_RECIPES = "dumpRecipes";
 
         @Override
-        public DebugConfig deserialize(JsonObject json) {
+        public DebugConfig deserialize(String name, JsonObject json) {
             return new DebugConfig(
+                    name,
                     safeGet(() -> json.get(DUMP_TAG_MAP).getAsBoolean(), false),
                     safeGet(() -> json.get(DUMP_DUPLICATES).getAsBoolean(), false),
                     safeGet(() -> json.get(DUMP_UNIFICATION).getAsBoolean(), false),
