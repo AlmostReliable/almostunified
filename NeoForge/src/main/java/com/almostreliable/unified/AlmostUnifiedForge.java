@@ -6,10 +6,10 @@ import com.almostreliable.unified.recipe.ClientRecipeTracker;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.objectweb.asm.Type;
 
@@ -19,14 +19,12 @@ import java.util.*;
 @Mod(BuildConfig.MOD_ID)
 public class AlmostUnifiedForge {
 
-    public AlmostUnifiedForge() {
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
+    public AlmostUnifiedForge(IEventBus eventBus) {
         if (!AlmostUnified.getStartupConfig().isServerOnly()) {
-            modEventBus.addListener(this::onRegisterClientSyncRecipe);
+            eventBus.addListener(this::onRegisterClientSyncRecipe);
         }
 
-        modEventBus.addListener(this::onCommonSetup);
+        eventBus.addListener(this::onCommonSetup);
     }
 
     private void onRegisterClientSyncRecipe(RegisterEvent event) {
