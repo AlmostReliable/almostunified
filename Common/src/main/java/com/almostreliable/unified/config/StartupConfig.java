@@ -7,7 +7,8 @@ public class StartupConfig extends Config {
     public static final String NAME = "startup";
     private final boolean serverOnly;
 
-    public StartupConfig(boolean serverOnly) {
+    public StartupConfig(String name, boolean serverOnly) {
+        super(name);
         this.serverOnly = serverOnly;
     }
 
@@ -19,8 +20,8 @@ public class StartupConfig extends Config {
         public static final String SERVER_ONLY = "serverOnly";
 
         @Override
-        public StartupConfig deserialize(JsonObject json) {
-            return new StartupConfig(safeGet(() -> json.get(SERVER_ONLY).getAsBoolean(), false));
+        public StartupConfig deserialize(String name, JsonObject json) {
+            return new StartupConfig(name, safeGet(() -> json.get(SERVER_ONLY).getAsBoolean(), false));
         }
 
         @Override

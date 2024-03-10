@@ -29,7 +29,8 @@ public class TagConfig extends Config {
     private final TagInheritanceImpl.Mode blockTagInheritanceMode;
     private final Map<TagKey<Block>, Set<Pattern>> blockTagInheritance;
 
-    public TagConfig(Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships, TagInheritanceImpl.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritanceImpl.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance) {
+    public TagConfig(String name, Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships, TagInheritanceImpl.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritanceImpl.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance) {
+        super(name);
         this.customTags = customTags;
         this.tagOwnerships = tagOwnerships;
         this.itemTagInheritanceMode = itemTagInheritanceMode;
@@ -63,7 +64,7 @@ public class TagConfig extends Config {
         public static final String BLOCK_TAG_INHERITANCE = "blockTagInheritance";
 
         @Override
-        public TagConfig deserialize(JsonObject json) {
+        public TagConfig deserialize(String name, JsonObject json) {
             Map<ResourceLocation, Set<ResourceLocation>> customTags = safeGet(() -> JsonUtils.deserializeMapSet(json,
                     CUSTOM_TAGS,
                     e -> new ResourceLocation(e.getKey()),
@@ -86,6 +87,7 @@ public class TagConfig extends Config {
                     BLOCK_TAG_INHERITANCE);
 
             return new TagConfig(
+                    name,
                     customTags,
                     tagOwnerships,
                     itemTagInheritanceMode,

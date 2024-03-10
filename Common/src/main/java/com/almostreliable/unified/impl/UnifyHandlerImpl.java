@@ -10,10 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -26,7 +23,7 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     private final Set<Pattern> ignoredRecipeTypes;
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache = new HashMap<>();
 
-    public static List<UnifyHandler> create(List<UnifyConfig> configs, TagMap<Item> tags, TagOwnershipsImpl tagOwnerships) {
+    public static List<UnifyHandler> create(Collection<UnifyConfig> configs, TagMap<Item> tags, TagOwnershipsImpl tagOwnerships) {
         return configs
                 .stream()
                 .map(uc -> UnifyHandlerImpl.create(tags, uc, tagOwnerships))
@@ -60,11 +57,6 @@ public final class UnifyHandlerImpl implements UnifyHandler {
         this.ignoredRecipeTypes = ignoredRecipeTypes;
         this.replacementMap = replacementMap;
         this.recipeViewerHiding = recipeViewerHiding;
-    }
-
-    @Override
-    public String getName() {
-        return "ores"; // TODO
     }
 
     @Override
