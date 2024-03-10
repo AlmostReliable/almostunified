@@ -69,12 +69,7 @@ public final class AlmostUnified {
         tagOwnerships.applyOwnerships(tags);
 
         List<UnifyHandler> unifyHandlers = createAndPrepareUnifySettings(tags, unifyConfigs, tagOwnerships, tagConfig);
-
-        for (var handler : unifyHandlers) {
-            if (handler.hideNonPreferredItemsInRecipeViewers()) {
-                ItemHider.applyHideTags(tags, handler);
-            }
-        }
+        ItemHider.applyHideTags(tags, unifyHandlers);
 
         RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers, dupConfig, debugConfig, unifierRegistry);
     }
