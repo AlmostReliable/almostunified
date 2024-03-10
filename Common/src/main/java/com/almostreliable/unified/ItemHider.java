@@ -21,6 +21,14 @@ public class ItemHider {
     public static final TagKey<Item> HIDE_TAG = TagKey.create(Registries.ITEM,
             new ResourceLocation(BuildConfig.MOD_ID, "hide"));
 
+    public static void applyHideTags(Map<ResourceLocation, Collection<Holder<Item>>> tags, Collection<UnifyHandler> handlers) {
+        for (var handler : handlers) {
+            if (handler.hideNonPreferredItemsInRecipeViewers()) {
+                ItemHider.applyHideTags(tags, handler);
+            }
+        }
+    }
+
     public static void applyHideTags(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyHandler handler) {
         var hidingItems = createHidingItems(handler);
 
