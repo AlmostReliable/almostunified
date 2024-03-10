@@ -42,7 +42,8 @@ public final class StoneStrataLookupImpl implements StoneStrataLookup {
         return stoneStrata.stream().sorted(Comparator.comparingInt(String::length).reversed()).toList();
     }
 
-    public static StoneStrataLookup create(Collection<String> stoneStrataIds, Set<TagKey<Item>> stoneStrataTags, TagMap<Item> tagMap) {
+    public static StoneStrataLookup create(Collection<String> stoneStrataIds, TagMap<Item> tagMap) {
+        var stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(stoneStrataIds);
         var stoneStrataTagMap = tagMap.filtered(stoneStrataTags::contains, item -> true);
         Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
             case FORGE -> "forge:ores/.+";

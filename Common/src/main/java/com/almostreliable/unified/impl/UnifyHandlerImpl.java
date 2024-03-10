@@ -1,6 +1,5 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.config.UnifyConfig;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +15,7 @@ import java.util.regex.Pattern;
 
 public final class UnifyHandlerImpl implements UnifyHandler {
     private final ModPriorities modPriorities;
-    private final ReplacementMap replacementMap;
+    private final UnifyLookup unifyLookup;
     private final boolean recipeViewerHiding;
     private final TagMap<Item> tagMap;
     private final Set<Pattern> ignoredRecipes;
@@ -34,19 +33,13 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     public static UnifyHandler create(TagMap<Item> globalTagMap, UnifyConfig config, TagOwnerships tagOwnerships) {
         var unifyTags = config.getBakedTags();
         var filteredTagMap = globalTagMap.filtered(unifyTags::contains, config::includeItem);
+        var stoneStrata = StoneStrataLookupImpl.create(config.getStoneStrata(), globalTagMap);
 
-        var stoneStrata = StoneStrataLookupImpl.create(
-                config.getStoneStrata(),
-                AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(config.getStoneStrata()),
-                globalTagMap
-        );
-
-        ModPriorities modPriorities = config.getModPriorities();
-        var replacementMap = new ReplacementMapImpl(modPriorities, filteredTagMap, stoneStrata, tagOwnerships);
         return new UnifyHandlerImpl(
                 config.getName(),
-                modPriorities,
-                replacementMap,
+                config.getModPriorities(),
+                stoneStrata,
+                tagOwnerships,
                 filteredTagMap,
                 config.getIgnoredRecipes(),
                 config.getIgnoredRecipeTypes(),
@@ -54,13 +47,13 @@ public final class UnifyHandlerImpl implements UnifyHandler {
         );
     }
 
-    public UnifyHandlerImpl(String name, ModPriorities modPriorities, ReplacementMapImpl replacementMap, TagMap<Item> tagMap, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, boolean recipeViewerHiding) {
+    public UnifyHandlerImpl(String name, ModPriorities modPriorities, StoneStrataLookup stoneStrata, TagOwnerships tagOwnerships, TagMap<Item> tagMap, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, boolean recipeViewerHiding) {
         this.name = name;
         this.modPriorities = modPriorities;
         this.tagMap = tagMap;
         this.ignoredRecipes = ignoredRecipes;
         this.ignoredRecipeTypes = ignoredRecipeTypes;
-        this.replacementMap = replacementMap;
+        this.unifyLookup = new UnifyLookupImpl(modPriorities, tagMap, stoneStrata, tagOwnerships);
         this.recipeViewerHiding = recipeViewerHiding;
     }
 
@@ -114,34 +107,34 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     @Nullable
     @Override
     public TagKey<Item> getPreferredTagForItem(ResourceLocation item) {
-        return replacementMap.getPreferredTagForItem(item);
+        return unifyLookup.getPreferredTagForItem(item);
     }
 
     @Nullable
     @Override
     public ResourceLocation getReplacementForItem(ResourceLocation item) {
-        return replacementMap.getReplacementForItem(item);
+        return unifyLookup.getReplacementForItem(item);
     }
 
     @Nullable
     @Override
     public ResourceLocation getPreferredItemForTag(TagKey<Item> tag) {
-        return replacementMap.getPreferredItemForTag(tag);
+        return unifyLookup.getPreferredItemForTag(tag);
     }
 
     @Nullable
     @Override
     public ResourceLocation getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
-        return replacementMap.getPreferredItemForTag(tag, itemFilter);
+        return unifyLookup.getPreferredItemForTag(tag, itemFilter);
     }
 
     @Override
     public boolean isItemInUnifiedIngredient(Ingredient ingred, ItemStack item) {
-        return replacementMap.isItemInUnifiedIngredient(ingred, item);
+        return unifyLookup.isItemInUnifiedIngredient(ingred, item);
     }
 
     @Override
     public TagOwnerships getTagOwnerships() {
-        return replacementMap.getTagOwnerships();
+        return unifyLookup.getTagOwnerships();
     }
 }

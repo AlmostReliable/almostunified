@@ -20,7 +20,7 @@ public class TieredItemMixin {
     private void unified$repairUnification(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
         if (AlmostUnified
                 .getRuntime()
-                .getReplacementMap()
+                .getUnifyLookup()
                 .isItemInUnifiedIngredient(tier.getRepairIngredient(), repairCandidate)) {
             cir.setReturnValue(true);
         }

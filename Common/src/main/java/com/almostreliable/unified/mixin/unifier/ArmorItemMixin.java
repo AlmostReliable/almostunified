@@ -20,7 +20,7 @@ public class ArmorItemMixin {
     private void unified$repairUnification(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
         if (AlmostUnified
                 .getRuntime()
-                .getReplacementMap()
+                .getUnifyLookup()
                 .isItemInUnifiedIngredient(material.getRepairIngredient(), repairCandidate)) {
             cir.setReturnValue(true);
         }

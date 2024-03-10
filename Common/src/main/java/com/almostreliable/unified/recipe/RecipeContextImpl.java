@@ -1,6 +1,6 @@
 package com.almostreliable.unified.recipe;
 
-import com.almostreliable.unified.api.ReplacementMap;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
@@ -25,10 +25,10 @@ public class RecipeContextImpl implements RecipeContext {
             RecipeConstants.BASE,
             RecipeConstants.INGREDIENT
     );
-    private final ReplacementMap replacementMap;
+    private final UnifyLookup unifyLookup;
 
-    public RecipeContextImpl(ReplacementMap replacementMap) {
-        this.replacementMap = replacementMap;
+    public RecipeContextImpl(UnifyLookup unifyLookup) {
+        this.unifyLookup = unifyLookup;
     }
 
     @Nullable
@@ -38,7 +38,7 @@ public class RecipeContextImpl implements RecipeContext {
             return null;
         }
 
-        return replacementMap.getReplacementForItem(item);
+        return unifyLookup.getReplacementForItem(item);
     }
 
     @Nullable
@@ -48,7 +48,7 @@ public class RecipeContextImpl implements RecipeContext {
             return null;
         }
 
-        return replacementMap.getPreferredItemForTag(tag);
+        return unifyLookup.getPreferredItemForTag(tag);
     }
 
     @Nullable
@@ -58,7 +58,7 @@ public class RecipeContextImpl implements RecipeContext {
             return null;
         }
 
-        return replacementMap.getPreferredTagForItem(item);
+        return unifyLookup.getPreferredTagForItem(item);
     }
 
     @Nullable
@@ -87,7 +87,7 @@ public class RecipeContextImpl implements RecipeContext {
 
             if (object.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
                 var tag = Utils.toItemTag(primitive.getAsString());
-                var ownerTag = replacementMap.getTagOwnerships().getOwner(tag);
+                var ownerTag = unifyLookup.getTagOwnerships().getOwner(tag);
                 if (ownerTag != null) {
                     object.addProperty(RecipeConstants.TAG, ownerTag.location().toString());
                 }
@@ -250,7 +250,7 @@ public class RecipeContextImpl implements RecipeContext {
     public boolean unifyTagInput(JsonObject json) {
         if (json.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
             var tag = Utils.toItemTag(primitive.getAsString());
-            var ownerTag = replacementMap.getTagOwnerships().getOwner(tag);
+            var ownerTag = unifyLookup.getTagOwnerships().getOwner(tag);
             if (ownerTag != null) {
                 json.addProperty(RecipeConstants.TAG, ownerTag.location().toString());
                 return true;

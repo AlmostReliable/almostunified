@@ -4,8 +4,8 @@ import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.impl.ReplacementMapImpl;
 import com.almostreliable.unified.impl.TagMapImpl;
+import com.almostreliable.unified.impl.UnifyLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.recipe.RecipeContextImpl;
 import com.almostreliable.unified.recipe.RecipeJsonImpl;
@@ -93,16 +93,16 @@ public class TestUtils {
                 .build();
     }
 
-    public static ReplacementMap replacementMap() {
-        return new ReplacementMapImpl(TEST_MOD_PRIORITIES, tagMap(), EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
+    public static UnifyLookup unifyLookup() {
+        return new UnifyLookupImpl(TEST_MOD_PRIORITIES, tagMap(), EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
     }
 
-    public static ReplacementMap replacementMap(TagMap<Item> tagMap) {
-        return new ReplacementMapImpl(TEST_MOD_PRIORITIES, tagMap, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
+    public static UnifyLookup unifyLookup(TagMap<Item> tagMap) {
+        return new UnifyLookupImpl(TEST_MOD_PRIORITIES, tagMap, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
     }
 
     public static RecipeContext recipeContext() {
-        return new RecipeContextImpl(replacementMap());
+        return new RecipeContextImpl(unifyLookup());
     }
 
     public static void assertUnify(RecipeUnifier unifier, String jsonActual, String jsonExpected) {

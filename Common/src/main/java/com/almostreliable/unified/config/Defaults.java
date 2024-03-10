@@ -23,7 +23,7 @@ public final class Defaults {
             "andesite"
     );
 
-    public static final Map<String, Collection<String>> REPLACEMENTS = Util.make(() -> {
+    public static final Map<String, Collection<String>> PLACEHOLDERS = Util.make(() -> {
         ImmutableMap.Builder<String, Collection<String>> builder = ImmutableMap.builder();
 
         builder.put("material", List.of(

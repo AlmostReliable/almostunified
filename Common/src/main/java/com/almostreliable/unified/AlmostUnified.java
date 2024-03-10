@@ -1,10 +1,11 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.Replacements;
+import com.almostreliable.unified.api.Placeholders;
 import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.config.*;
+import com.almostreliable.unified.impl.AlmostUnifiedRuntimeImpl;
 import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.almostreliable.unified.impl.UnifyHandlerImpl;
@@ -57,19 +58,19 @@ public final class AlmostUnified {
 
         FileUtils.createGitIgnoreIfNotExists();
         TagConfig tagConfig = Config.load(TagConfig.NAME, new TagConfig.Serializer());
-        ReplacementsConfig replacementsConfig = Config.load(ReplacementsConfig.NAME,
-                new ReplacementsConfig.Serializer());
+        PlaceholdersConfig replacementsConfig = Config.load(PlaceholdersConfig.NAME,
+                new PlaceholdersConfig.Serializer());
         DuplicationConfig dupConfig = Config.load(DuplicationConfig.NAME, new DuplicationConfig.Serializer());
         DebugConfig debugConfig = Config.load(DebugConfig.NAME, new DebugConfig.Serializer());
 
         Collection<UnifyConfig> unifyConfigs = UnifyConfig.safeLoadConfigs();
-        Set<TagKey<Item>> allUnifyTags = allUnifyTags(unifyConfigs, tags, replacementsConfig);
+        Set<TagKey<Item>> allUnifyTags = bakeAndValidateTags(unifyConfigs, tags, replacementsConfig);
 
         TagReloadHandler.applyCustomTags(tagConfig.getCustomTags());
         TagOwnershipsImpl tagOwnerships = new TagOwnershipsImpl(allUnifyTags::contains, tagConfig.getTagOwnerships());
         tagOwnerships.applyOwnerships(tags);
 
-        List<UnifyHandler> unifyHandlers = createAndPrepareUnifySettings(tags, unifyConfigs, tagOwnerships, tagConfig);
+        List<UnifyHandler> unifyHandlers = createAndPrepareUnifyHandlers(tags, unifyConfigs, tagOwnerships, tagConfig);
         TagMap<Item> tagMap = TagMapImpl.compose(unifyHandlers.stream().map(UnifyHandler::getTagMap).toList());
         ItemHider.applyHideTags(tags, unifyHandlers);
 
@@ -81,7 +82,18 @@ public final class AlmostUnified {
                 tagOwnerships);
     }
 
-    private static List<UnifyHandler> createAndPrepareUnifySettings(Map<ResourceLocation, Collection<Holder<Item>>> tags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagConfig tagConfig) {
+    /**
+     * Creates all unify handlers for further unification.
+     * <p>
+     * This method also applies tag inheritance. If tag inheritance was applied, all handlers will be rebuilt due to tag inheritance modifications against vanilla tags.
+     *
+     * @param tags          All existing tags which are used ingame
+     * @param unifyConfigs  All unify configs
+     * @param tagOwnerships All tag ownerships
+     * @param tagConfig     Tag config
+     * @return All unify handlers
+     */
+    private static List<UnifyHandler> createAndPrepareUnifyHandlers(Map<ResourceLocation, Collection<Holder<Item>>> tags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagConfig tagConfig) {
         var globalTagMap = TagMapImpl.createFromItemTags(tags);
         List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, globalTagMap, tagOwnerships);
         var needsRebuild = TagReloadHandler.applyInheritance(tagConfig.getItemTagInheritance(),
@@ -95,7 +107,20 @@ public final class AlmostUnified {
         return unifyHandlers;
     }
 
-    private static Set<TagKey<Item>> allUnifyTags(Collection<UnifyConfig> unifyConfigs, Map<ResourceLocation, Collection<Holder<Item>>> vanillaTags, Replacements replacements) {
+    /**
+     * Bake all tags from unify configs and validate them.
+     * Validating contains:
+     * <ul>
+     * <li>Tag must exist in vanilla tags, which means that the tag is in used by either vanilla or any mods.</li>
+     * <li>Tag must not exist in another unify config. If found, the tag will be skipped.</li>
+     * </ul>
+     *
+     * @param unifyConfigs The unify configs
+     * @param vanillaTags  The vanilla tags
+     * @param placeholders The replacements
+     * @return The baked tags combined from all unify configs
+     */
+    private static Set<TagKey<Item>> bakeAndValidateTags(Collection<UnifyConfig> unifyConfigs, Map<ResourceLocation, Collection<Holder<Item>>> vanillaTags, Placeholders placeholders) {
         Set<TagKey<Item>> result = new HashSet<>();
 
         Map<TagKey<Item>, String> visitedTags = new HashMap<>();
@@ -109,7 +134,9 @@ public final class AlmostUnified {
                 }
 
                 if (visitedTags.containsKey(tag)) {
-                    AlmostUnified.LOG.warn("Baked tag '{}' was already created in unify config '{}'",
+                    AlmostUnified.LOG.warn(
+                            "Tag '{}' from unify config '{}' was already created in unify config '{}'",
+                            config.getName(),
                             tag.location(),
                             visitedTags.get(tag));
                     return false;
@@ -119,7 +146,7 @@ public final class AlmostUnified {
                 return true;
             };
 
-            Set<TagKey<Item>> tags = config.bakeTags(validator, replacements);
+            Set<TagKey<Item>> tags = config.bakeTags(validator, placeholders);
             result.addAll(tags);
         }
 

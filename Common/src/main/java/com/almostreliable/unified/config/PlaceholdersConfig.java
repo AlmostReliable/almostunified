@@ -1,7 +1,7 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.Replacements;
+import com.almostreliable.unified.api.Placeholders;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
-public class ReplacementsConfig extends Config implements Replacements {
+public class PlaceholdersConfig extends Config implements Placeholders {
 
-    public static final String NAME = "replacements";
+    public static final String NAME = "placeholders";
     private final Map<String, Collection<String>> replacements;
 
-    public ReplacementsConfig(String name, Map<String, Collection<String>> replacements) {
+    public PlaceholdersConfig(String name, Map<String, Collection<String>> replacements) {
         super(name);
         this.replacements = replacements;
     }
@@ -71,14 +71,14 @@ public class ReplacementsConfig extends Config implements Replacements {
         return replacements.getOrDefault(key, Collections.emptyList());
     }
 
-    public static class Serializer extends Config.Serializer<ReplacementsConfig> {
+    public static class Serializer extends Config.Serializer<PlaceholdersConfig> {
 
         @Override
-        public ReplacementsConfig deserialize(String name, JsonObject json) {
+        public PlaceholdersConfig deserialize(String name, JsonObject json) {
             //noinspection SizeReplaceableByIsEmpty
             if (json.size() == 0) { // json.isEmpty crashes in prod...
                 setInvalid();
-                return new ReplacementsConfig(name, Defaults.REPLACEMENTS);
+                return new PlaceholdersConfig(name, Defaults.PLACEHOLDERS);
             }
 
             Map<String, Collection<String>> replacements = safeGet(() -> {
@@ -95,13 +95,13 @@ public class ReplacementsConfig extends Config implements Replacements {
                 }
 
                 return builder.build();
-            }, Defaults.REPLACEMENTS);
+            }, Defaults.PLACEHOLDERS);
 
-            return new ReplacementsConfig(name, replacements);
+            return new PlaceholdersConfig(name, replacements);
         }
 
         @Override
-        public JsonObject serialize(ReplacementsConfig src) {
+        public JsonObject serialize(PlaceholdersConfig src) {
             JsonObject json = new JsonObject();
             for (var entry : src.replacements.entrySet()) {
                 json.add(entry.getKey(), JsonUtils.toArray(entry.getValue()));

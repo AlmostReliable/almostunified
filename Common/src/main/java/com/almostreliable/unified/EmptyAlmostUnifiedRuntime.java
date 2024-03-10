@@ -1,10 +1,10 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.api.TagOwnerships;
 import com.almostreliable.unified.api.UnifyHandler;
-import com.almostreliable.unified.impl.CompositeReplacementMap;
+import com.almostreliable.unified.api.UnifyLookup;
+import com.almostreliable.unified.impl.CompositeUnifyLookup;
 import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.google.gson.JsonElement;
@@ -30,8 +30,8 @@ public class EmptyAlmostUnifiedRuntime implements AlmostUnifiedRuntime {
     }
 
     @Override
-    public ReplacementMap getReplacementMap() {
-        return new CompositeReplacementMap(List.of(), getTagOwnerships());
+    public UnifyLookup getUnifyLookup() {
+        return new CompositeUnifyLookup(List.of(), getTagOwnerships());
     }
 
     @Override

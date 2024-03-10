@@ -3,7 +3,7 @@ package com.almostreliable.unified.config;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.Replacements;
+import com.almostreliable.unified.api.Placeholders;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.Gson;
@@ -128,14 +128,14 @@ public class UnifyConfig extends Config {
         return bakedTagsCache;
     }
 
-    public Set<TagKey<Item>> bakeTags(Predicate<TagKey<Item>> tagValidator, Replacements replacements) {
+    public Set<TagKey<Item>> bakeTags(Predicate<TagKey<Item>> tagValidator, Placeholders placeholders) {
         if (bakedTagsCache != null) {
             return bakedTagsCache;
         }
 
         Set<TagKey<Item>> result = new HashSet<>();
         for (var unbakedTag : unbakedTags) {
-            var inflate = replacements.inflate(unbakedTag);
+            var inflate = placeholders.inflate(unbakedTag);
             for (var rl : inflate) {
                 var tag = TagKey.create(Registries.ITEM, rl);
                 if (ignoredTags.contains(tag)) continue;

@@ -92,7 +92,6 @@ public final class TestUtils {
     public static StoneStrataLookup createTestStrataHandler() {
         return StoneStrataLookupImpl.create(
                 List.of(),
-                Set.of(),
                 TagMapImpl.create(Set.of())
         );
     }

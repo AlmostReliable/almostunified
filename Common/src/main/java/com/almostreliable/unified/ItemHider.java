@@ -1,7 +1,7 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.ReplacementMap;
 import com.almostreliable.unified.api.UnifyHandler;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -95,7 +95,7 @@ public class ItemHider {
      * @param item   The item to get the replacement for.
      * @return The replacement for the given item, or the item itself if no replacement is found.
      */
-    private static ResourceLocation getReplacementForItem(ReplacementMap repMap, ResourceLocation item) {
+    private static ResourceLocation getReplacementForItem(UnifyLookup repMap, ResourceLocation item) {
         var replacement = repMap.getReplacementForItem(item);
         if (replacement == null) return item;
         return replacement;

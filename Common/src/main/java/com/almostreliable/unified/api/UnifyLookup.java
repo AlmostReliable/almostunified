@@ -9,7 +9,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
-public interface ReplacementMap {
+public interface UnifyLookup {
     @Nullable
     TagKey<Item> getPreferredTagForItem(ResourceLocation item);
 
