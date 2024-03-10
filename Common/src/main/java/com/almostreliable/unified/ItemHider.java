@@ -1,7 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ReplacementMap;
-import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,8 +21,8 @@ public class ItemHider {
     public static final TagKey<Item> HIDE_TAG = TagKey.create(Registries.ITEM,
             new ResourceLocation(BuildConfig.MOD_ID, "hide"));
 
-    public static void applyHideTags(Map<ResourceLocation, Collection<Holder<Item>>> tags, ReplacementMap replacementMap, TagMap<Item> tagMap) {
-        var hidingItems = createHidingItems(replacementMap, tagMap);
+    public static void applyHideTags(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyHandler handler) {
+        var hidingItems = createHidingItems(handler);
 
         Collection<Holder<Item>> itemsToHide = new HashSet<>(hidingItems.size());
         for (Item hidingItem : hidingItems) {
@@ -37,18 +37,18 @@ public class ItemHider {
         tags.put(HIDE_TAG.location(), itemsToHide);
     }
 
-    public static Set<Item> createHidingItems(ReplacementMap replacementMap, TagMap<Item> tagMap) {
+    public static Set<Item> createHidingItems(UnifyHandler handler) {
         Set<ResourceLocation> hidings = new HashSet<>();
 
-        for (TagKey<Item> tag : tagMap.getTags()) {
-            var itemsByTag = tagMap.getEntriesByTag(tag);
+        for (TagKey<Item> tag : handler.getTagMap().getTags()) {
+            var itemsByTag = handler.getTagMap().getEntriesByTag(tag);
 
             // avoid handling single entries and tags that only contain the same namespace for all items
             if (Utils.allSameNamespace(itemsByTag)) continue;
 
             Set<ResourceLocation> replacements = new HashSet<>();
             for (ResourceLocation item : itemsByTag) {
-                replacements.add(getReplacementForItem(replacementMap, item));
+                replacements.add(getReplacementForItem(handler, item));
             }
 
             Set<ResourceLocation> toHide = new HashSet<>();

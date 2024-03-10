@@ -1,25 +1,24 @@
 package com.almostreliable.unified.api;
 
+import com.almostreliable.unified.api.recipe.RecipeData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-
-import java.util.Collection;
-import java.util.Set;
 
 public interface UnifySettings {
 
+    String getName();
+
     ModPriorities getModPriorities();
 
-    Collection<String> getStoneStrata();
+    default boolean shouldIncludeRecipe(RecipeData recipe) {
+        return shouldIncludeRecipeId(recipe.getId()) && shouldIncludeRecipeType(recipe.getType());
+    }
 
-    boolean shouldIncludeItem(ResourceLocation item);
-
-    boolean shouldIncludeRecipe(ResourceLocation recipe);
+    boolean shouldIncludeRecipeId(ResourceLocation id);
 
     boolean shouldIncludeRecipeType(ResourceLocation type);
 
-    Set<TagKey<Item>> getTags();
-
     void clearCache();
+
+
+    boolean hideNonPreferredItemsInRecipeViewers();
 }

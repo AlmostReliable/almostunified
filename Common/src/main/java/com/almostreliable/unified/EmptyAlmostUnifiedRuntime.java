@@ -12,7 +12,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class EmptyAlmostUnifiedRuntime implements AlmostUnifiedRuntime {
@@ -45,17 +47,7 @@ public class EmptyAlmostUnifiedRuntime implements AlmostUnifiedRuntime {
         }
 
         @Override
-        public Collection<String> getStoneStrata() {
-            return List.of();
-        }
-
-        @Override
-        public boolean shouldIncludeItem(ResourceLocation item) {
-            return false;
-        }
-
-        @Override
-        public boolean shouldIncludeRecipe(ResourceLocation recipe) {
+        public boolean shouldIncludeRecipeId(ResourceLocation id) {
             return false;
         }
 
@@ -64,14 +56,15 @@ public class EmptyAlmostUnifiedRuntime implements AlmostUnifiedRuntime {
             return false;
         }
 
-        @Override
-        public Set<TagKey<Item>> getTags() {
-            return Set.of();
-        }
 
         @Override
         public void clearCache() {
 
+        }
+
+        @Override
+        public boolean hideNonPreferredItemsInRecipeViewers() {
+            return false;
         }
     }
 
