@@ -18,10 +18,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -29,8 +33,8 @@ import java.util.stream.Collectors;
 @SuppressWarnings("UtilityClassWithoutPrivateConstructor")
 public final class AlmostUnified {
 
-    public static final Logger LOG = LogManager.getLogger(BuildConfig.MOD_NAME);
-
+    private static final LoggerFactory.Policy LOGGER_POLICY = new LoggerFactory.Policy();
+    public static final Logger LOG = LoggerFactory.createCustomLogger(LOGGER_POLICY);
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
     @Nullable private static StartupConfig STARTUP_CONFIG;
 
@@ -53,6 +57,7 @@ public final class AlmostUnified {
     }
 
     public static void onTagLoaderReload(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
+        LOGGER_POLICY.reset();
         UnifierRegistry unifierRegistry = new UnifierRegistryImpl();
         PluginManager.instance().registerUnifiers(unifierRegistry);
 
@@ -161,5 +166,16 @@ public final class AlmostUnified {
     public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes) {
         Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
         RUNTIME.run(recipes, getStartupConfig().isServerOnly());
+    }
+
+    private static Layout<? extends Serializable> getLayout(@Nullable Appender appender, Configuration config) {
+        if (appender == null) {
+            return PatternLayout.newBuilder()
+                    .withConfiguration(config)
+                    .withPattern("%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %msg%n")
+                    .build();
+        }
+
+        return appender.getLayout();
     }
 }
