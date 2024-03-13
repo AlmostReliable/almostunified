@@ -21,13 +21,15 @@ public class DebugConfig extends Config {
     public final boolean dumpUnification;
     public final boolean dumpOverview;
     public final boolean dumpRecipes;
+    public final boolean dumpPotentialMissingRecipes;
 
-    public DebugConfig(boolean dumpTagMap, boolean dumpDuplicates, boolean dumpUnification, boolean dumpOverview, boolean dumpRecipes) {
+    public DebugConfig(boolean dumpTagMap, boolean dumpDuplicates, boolean dumpUnification, boolean dumpOverview, boolean dumpRecipes, boolean dumpPotentialMissingRecipes) {
         this.dumpTagMap = dumpTagMap;
         this.dumpDuplicates = dumpDuplicates;
         this.dumpUnification = dumpUnification;
         this.dumpOverview = dumpOverview;
         this.dumpRecipes = dumpRecipes;
+        this.dumpPotentialMissingRecipes = dumpPotentialMissingRecipes;
     }
 
     public void logUnifyTagDump(TagMap<Item> tagMap) {
@@ -71,6 +73,7 @@ public class DebugConfig extends Config {
         public static final String DUMP_UNIFICATION = "dumpUnification";
         public static final String DUMP_OVERVIEW = "dumpOverview";
         public static final String DUMP_RECIPES = "dumpRecipes";
+        public static final String DUMP_POTENTIAL_MISSING_RECIPES = "dumpPotentialMissingRecipes";
 
         @Override
         public DebugConfig deserialize(JsonObject json) {
@@ -79,7 +82,8 @@ public class DebugConfig extends Config {
                     safeGet(() -> json.get(DUMP_DUPLICATES).getAsBoolean(), false),
                     safeGet(() -> json.get(DUMP_UNIFICATION).getAsBoolean(), false),
                     safeGet(() -> json.get(DUMP_OVERVIEW).getAsBoolean(), false),
-                    safeGet(() -> json.get(DUMP_RECIPES).getAsBoolean(), false)
+                    safeGet(() -> json.get(DUMP_RECIPES).getAsBoolean(), false),
+                    safeGet(() -> json.get(DUMP_POTENTIAL_MISSING_RECIPES).getAsBoolean(), false)
             );
         }
 
@@ -91,6 +95,7 @@ public class DebugConfig extends Config {
             json.addProperty(DUMP_UNIFICATION, src.dumpUnification);
             json.addProperty(DUMP_OVERVIEW, src.dumpOverview);
             json.addProperty(DUMP_RECIPES, src.dumpRecipes);
+            json.addProperty(DUMP_POTENTIAL_MISSING_RECIPES, src.dumpPotentialMissingRecipes);
             return json;
         }
     }
