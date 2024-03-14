@@ -53,6 +53,7 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
     @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
         factory.registerForMod(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
+        factory.registerForMod(ModConstants.APPLIED_ENERGISTICS, new AppliedEnergisticsUnifier());
         List.of(
                 ModConstants.ARS_CREO,
                 ModConstants.ARS_ELEMENTAL,
