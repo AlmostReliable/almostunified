@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Added
+- added support for Applied Energistics
+- added new debug file for potentially uncovered recipe types
+
+### Changed
+- reworked and refactored hiding list creation logic
+
 ## [0.8.1] - 2024-03-01
 
 ### Added
