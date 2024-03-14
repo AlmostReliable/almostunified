@@ -55,7 +55,7 @@ public class AlmostREI implements REIClientPlugin {
                     .orElse(false);
             if (reiDisabled) return List.of();
 
-            return EntryIngredients.ofItemStacks(HideHelper.createHidingList(AlmostUnified.getRuntime()));
+            return EntryIngredients.ofItemStacks(HideHelper.getStacksToHide());
         });
     }
 

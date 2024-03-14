@@ -42,7 +42,7 @@ public class AlmostJEI implements IModPlugin {
                 .orElse(false);
         if (jeiDisabled) return;
 
-        Collection<ItemStack> items = HideHelper.createHidingList(AlmostUnified.getRuntime());
+        Collection<ItemStack> items = HideHelper.getStacksToHide();
         if (!items.isEmpty()) {
             jei.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, items);
         }

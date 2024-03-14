@@ -134,11 +134,12 @@ public class TagOwnerships {
     }
 
     /**
-     * Gets all reference tags for all owner tags.
+     * Gets all reference tags for the provided owner tag.
      *
-     * @return A set of all reference tags.
+     * @param tag The owner tag to get the references for.
+     * @return A collection of all reference tags.
      */
-    public Set<UnifyTag<Item>> getRefs() {
-        return refsToOwner.keySet();
+    public Collection<UnifyTag<Item>> getRefsByOwner(UnifyTag<Item> tag) {
+        return ownerToRefs.get(tag);
     }
 }

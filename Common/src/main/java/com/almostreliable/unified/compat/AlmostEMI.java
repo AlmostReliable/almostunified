@@ -45,7 +45,7 @@ public class AlmostEMI implements EmiPlugin {
                 .orElse(false);
         if (emiDisabled) return;
 
-        for (ItemStack item : HideHelper.createHidingList(AlmostUnified.getRuntime())) {
+        for (ItemStack item : HideHelper.getStacksToHide()) {
             registry.removeEmiStacks(EmiStack.of(item));
         }
     }

@@ -7,9 +7,9 @@ import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.MissingRecipesDumper;
 import com.almostreliable.unified.utils.ReplacementMap;
 import com.almostreliable.unified.utils.TagMap;
+import com.almostreliable.unified.utils.UncoveredRecipesDumper;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -56,7 +56,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         dumper.dump(debugConfig.dumpOverview, debugConfig.dumpUnification, debugConfig.dumpDuplicates);
 
         debugConfig.logRecipes(recipes, "recipes_after_unification.txt");
-        MissingRecipesDumper.write(this, debugConfig.dumpPotentialMissingRecipes, recipes);
+
+        if (debugConfig.dumpUncoveredRecipes) {
+            UncoveredRecipesDumper.write(recipes);
+        }
     }
 
     @Override
