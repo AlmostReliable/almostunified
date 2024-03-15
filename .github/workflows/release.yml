@@ -43,7 +43,7 @@ on:
 
 jobs:
   redirect:
-    uses: AlmostReliable/.github/.github/workflows/release-java17.yml@main
+    uses: AlmostReliable/.github/.github/workflows/release-java17-ff.yml@main
     secrets: inherit
     with:
       mod_name: "AlmostUnified" # name used for the output JAR files (use a dash instead of spaces)
