@@ -191,9 +191,7 @@ public final class Defaults {
     }
 
     public static List<String> getIgnoredRecipeTypes(AlmostUnifiedPlatform.Platform platform) {
-        return switch (platform) {
-            default -> List.of("cucumber:shaped_tag");
-        };
+        return List.of("cucumber:shaped_tag");
     }
 
     public static JsonCompare.CompareSettings getDefaultDuplicateRules(AlmostUnifiedPlatform.Platform platform) {
