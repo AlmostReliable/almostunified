@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Fixed
+- fixed `show_notification` recipe key not being ignored by default
+
 ## [0.9.0] - 2024-03-14
 
 ### Added

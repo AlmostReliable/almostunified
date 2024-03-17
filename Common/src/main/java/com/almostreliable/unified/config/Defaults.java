@@ -136,13 +136,7 @@ public final class Defaults {
     }
 
     public static JsonCompare.CompareSettings getDefaultDuplicateRules(AlmostUnifiedPlatform.Platform platform) {
-        JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
-        result.ignoreField(switch (platform) {
-            case FORGE -> "conditions";
-            case FABRIC -> "fabric:load_conditions";
-        });
-        result.ignoreField("group");
-        result.ignoreField("category");
+        JsonCompare.CompareSettings result = getDefaultCompareSettings(platform);
         result.addRule("cookingtime", new JsonCompare.HigherRule());
         result.addRule("energy", new JsonCompare.HigherRule());
         result.addRule("experience", new JsonCompare.HigherRule());
@@ -150,6 +144,16 @@ public final class Defaults {
     }
 
     public static LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> getDefaultDuplicateOverrides(AlmostUnifiedPlatform.Platform platform) {
+        JsonCompare.CompareSettings result = getDefaultCompareSettings(platform);
+        result.ignoreField("pattern");
+        result.ignoreField("key");
+
+        LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> resultMap = new LinkedHashMap<>();
+        resultMap.put(new ResourceLocation("minecraft", "crafting_shaped"), result);
+        return resultMap;
+    }
+
+    private static JsonCompare.CompareSettings getDefaultCompareSettings(AlmostUnifiedPlatform.Platform platform) {
         JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
         result.ignoreField(switch (platform) {
             case FORGE -> "conditions";
@@ -157,10 +161,7 @@ public final class Defaults {
         });
         result.ignoreField("group");
         result.ignoreField("category");
-        result.ignoreField("pattern");
-        result.ignoreField("key");
-        LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> resultMap = new LinkedHashMap<>();
-        resultMap.put(new ResourceLocation("minecraft", "crafting_shaped"), result);
-        return resultMap;
+        result.ignoreField("show_notification");
+        return result;
     }
 }
