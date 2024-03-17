@@ -38,25 +38,32 @@ public final class HideHelper {
             var itemsByTag = tagMap.getEntriesByTag(unifyTag);
             if (Utils.allSameNamespace(itemsByTag)) continue;
 
-            ResourceLocation preferredItem = repMap.getPreferredItemForTag(unifyTag, $ -> true);
-            if (preferredItem == null) continue;
+            // it's not enough to exclude the preferred item from hiding because it would hide stone stratas
+            Set<ResourceLocation> replacements = new HashSet<>();
+            for (ResourceLocation item : itemsByTag) {
+                ResourceLocation replacement = repMap.getReplacementForItem(item);
+                replacements.add(replacement == null ? item : replacement);
+            }
 
-            Set<ResourceLocation> itemsToHide = getItemsToHide(unifyTag, itemsByTag, preferredItem);
-            if (itemsToHide == null) continue;
-            hidingMap.putAll(unifyTag, itemsToHide);
+            Set<ResourceLocation> itemsToHide = getItemsToHide(unifyTag, itemsByTag, replacements);
+            if (itemsToHide != null) {
+                hidingMap.putAll(unifyTag, itemsToHide);
+            }
 
-            Set<ResourceLocation> refItemsToHide = getRefItemsToHide(unifyTag, ownerships, preferredItem);
-            hidingMap.putAll(unifyTag, refItemsToHide);
+            Set<ResourceLocation> refItemsToHide = getRefItemsToHide(unifyTag, ownerships, replacements);
+            if (!refItemsToHide.isEmpty()) {
+                hidingMap.putAll(unifyTag, refItemsToHide);
+            }
         }
 
         return hidingMap;
     }
 
     @Nullable
-    private static Set<ResourceLocation> getItemsToHide(UnifyTag<Item> unifyTag, Set<ResourceLocation> itemsByTag, ResourceLocation preferredItem) {
+    private static Set<ResourceLocation> getItemsToHide(UnifyTag<Item> unifyTag, Set<ResourceLocation> itemsByTag, Set<ResourceLocation> replacements) {
         Set<ResourceLocation> itemsToHide = new HashSet<>();
         for (ResourceLocation item : itemsByTag) {
-            if (!item.equals(preferredItem)) {
+            if (!replacements.contains(item)) {
                 itemsToHide.add(item);
             }
         }
@@ -73,7 +80,7 @@ public final class HideHelper {
         return itemsToHide;
     }
 
-    private static Set<ResourceLocation> getRefItemsToHide(UnifyTag<Item> unifyTag, TagOwnerships ownerships, ResourceLocation preferredItem) {
+    private static Set<ResourceLocation> getRefItemsToHide(UnifyTag<Item> unifyTag, TagOwnerships ownerships, Set<ResourceLocation> replacements) {
         var refTags = ownerships.getRefsByOwner(unifyTag);
         Set<ResourceLocation> refItemsToHide = new HashSet<>();
 
@@ -82,7 +89,7 @@ public final class HideHelper {
 
             BuiltInRegistries.ITEM.getTagOrEmpty(asTagKey).forEach(holder -> {
                 ResourceLocation item = BuiltInRegistries.ITEM.getKey(holder.value());
-                if (item.equals(preferredItem)) return;
+                if (replacements.contains(item)) return;
                 refItemsToHide.add(item);
             });
 

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Fixed
+- fixed automatic hiding of stone strata variants (bug introduced in 0.9.0)
+- fixed a bug where stone stratas were not correctly identified (Fabric only)
+
 ## [0.9.1] - 2024-03-17
 
 ### Added

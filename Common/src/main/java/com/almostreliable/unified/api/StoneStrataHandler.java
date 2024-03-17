@@ -45,7 +45,7 @@ public final class StoneStrataHandler {
         var stoneStrataTagMap = tagMap.filtered(stoneStrataTags::contains, item -> true);
         Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
             case FORGE -> "forge:ores/.+";
-            case FABRIC -> "(c:ores/.+|c:.+_ores)";
+            case FABRIC -> "(c:ores/.+|(minecraft|c):.+_ores)";
         });
         return new StoneStrataHandler(stoneStrataIds, tagMatcher, stoneStrataTagMap);
     }
