@@ -14,6 +14,7 @@ public final class ModConstants {
     public static final String ARS_ELEMENTAL = "ars_elemental";
     public static final String ARS_NOUVEAU = "ars_nouveau";
     public static final String ARS_SCALAES = "ars_scalaes";
+    public static final String BLOOD_MAGIC = "bloodmagic";
     public static final String CYCLIC = "cyclic";
     public static final String ENDER_IO = "enderio";
     public static final String GREGTECH_MODERN = "gtceu";

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning].
 
 ## Unreleased
 
+### Added
+- added support for Blood Magic
+
 ### Fixed
 - fixed `show_notification` recipe key not being ignored by default
 

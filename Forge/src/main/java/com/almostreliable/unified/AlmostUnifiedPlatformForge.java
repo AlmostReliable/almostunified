@@ -60,6 +60,7 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
                 ModConstants.ARS_NOUVEAU,
                 ModConstants.ARS_SCALAES
         ).forEach(modId -> factory.registerForMod(modId, new ArsNouveauRecipeUnifier()));
+        factory.registerForMod(ModConstants.BLOOD_MAGIC, new BloodMagicRecipeUnifier());
         factory.registerForMod(ModConstants.CYCLIC, new CyclicRecipeUnifier());
         factory.registerForMod(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
         factory.registerForMod(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
