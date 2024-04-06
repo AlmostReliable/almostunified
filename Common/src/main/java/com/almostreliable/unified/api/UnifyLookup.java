@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
+// TODO provide direct utility to provide item instead of resourcelocation
 public interface UnifyLookup {
     @Nullable
     TagKey<Item> getPreferredTagForItem(ResourceLocation item);

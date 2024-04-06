@@ -15,6 +15,8 @@ public interface UnifySettings {
 
     boolean shouldIncludeRecipeType(ResourceLocation type);
 
+    boolean shouldUnifyLootTable(ResourceLocation table);
+
     void clearCache();
 
     boolean hideNonPreferredItemsInRecipeViewers();

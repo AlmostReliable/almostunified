@@ -21,6 +21,7 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     private final Set<Pattern> ignoredRecipes;
     private final Set<Pattern> ignoredRecipeTypes;
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache = new HashMap<>();
+    private final Set<Pattern> ignoredLootTables;
     private final String name;
 
     public static List<UnifyHandler> create(Collection<UnifyConfig> configs, TagMap<Item> tags, TagOwnershipsImpl tagOwnerships) {
@@ -43,16 +44,18 @@ public final class UnifyHandlerImpl implements UnifyHandler {
                 filteredTagMap,
                 config.getIgnoredRecipes(),
                 config.getIgnoredRecipeTypes(),
+                config.getIgnoredLootTables(),
                 config.hideNonPreferredItemsInRecipeViewers()
         );
     }
 
-    public UnifyHandlerImpl(String name, ModPriorities modPriorities, StoneStrataLookup stoneStrata, TagOwnerships tagOwnerships, TagMap<Item> tagMap, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, boolean recipeViewerHiding) {
+    public UnifyHandlerImpl(String name, ModPriorities modPriorities, StoneStrataLookup stoneStrata, TagOwnerships tagOwnerships, TagMap<Item> tagMap, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredLootTables, boolean recipeViewerHiding) {
         this.name = name;
         this.modPriorities = modPriorities;
         this.tagMap = tagMap;
         this.ignoredRecipes = ignoredRecipes;
         this.ignoredRecipeTypes = ignoredRecipeTypes;
+        this.ignoredLootTables = ignoredLootTables;
         this.unifyLookup = new UnifyLookupImpl(modPriorities, tagMap, stoneStrata, tagOwnerships);
         this.recipeViewerHiding = recipeViewerHiding;
     }
@@ -82,6 +85,17 @@ public final class UnifyHandlerImpl implements UnifyHandler {
             }
             return true;
         });
+    }
+
+    @Override
+    public boolean shouldUnifyLootTable(ResourceLocation table) {
+        for (Pattern pattern : ignoredLootTables) {
+            if (pattern.matcher(table.toString()).matches()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

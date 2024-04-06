@@ -4,6 +4,10 @@
   "package": "com.almostreliable.unified.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "loot.CompositeEntryBaseMixin",
+    "loot.LootItemMixin",
+    "loot.LootPoolMixin",
+    "loot.LootTableMixin",
     "runtime.RecipeManagerMixin",
     "runtime.TagLoaderMixin",
     "unifier.ArmorItemMixin",
