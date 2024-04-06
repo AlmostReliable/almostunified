@@ -32,7 +32,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
 
     // compile time mods
-    modCompileOnly("mezz.jei:jei-1.20.1-common-api:$jeiVersion") // required for jei plugin // TODO: Re-evaluate version after 1.20.4 release
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion") // required for jei plugin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for rei plugin
 
     // compile time dependencies

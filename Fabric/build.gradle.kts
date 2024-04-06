@@ -35,7 +35,7 @@ dependencies {
     testImplementation(project(":Common", "namedElements"))
 
     // compile time mods
-    modCompileOnly("mezz.jei:jei-1.20.1-fabric-api:$jeiVersion") // required for common jei plugin // TODO re-enable when 1.20.4 is released
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric-api:$jeiVersion") // required for common jei plugin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
 
     // runtime dependencies
