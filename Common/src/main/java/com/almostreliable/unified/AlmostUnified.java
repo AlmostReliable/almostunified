@@ -1,9 +1,6 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.Placeholders;
-import com.almostreliable.unified.api.TagMap;
-import com.almostreliable.unified.api.UnifierRegistry;
-import com.almostreliable.unified.api.UnifyHandler;
+import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.config.*;
 import com.almostreliable.unified.impl.AlmostUnifiedRuntimeImpl;
 import com.almostreliable.unified.impl.TagMapImpl;
@@ -79,6 +76,7 @@ public final class AlmostUnified {
         TagMap<Item> tagMap = TagMapImpl.compose(unifyHandlers.stream().map(UnifyHandler::getTagMap).toList());
         ItemHider.applyHideTags(tags, unifyHandlers);
 
+        logMissingPriorityMods(unifyHandlers);
         RUNTIME = new AlmostUnifiedRuntimeImpl(tagMap,
                 unifyHandlers,
                 dupConfig,
@@ -86,6 +84,21 @@ public final class AlmostUnified {
                 unifierRegistry,
                 tagOwnerships);
     }
+
+    private static void logMissingPriorityMods(List<UnifyHandler> unifyHandlers) {
+        Set<String> mods = unifyHandlers
+                .stream()
+                .map(UnifySettings::getModPriorities)
+                .flatMap(ModPriorities::stream)
+                .collect(Collectors.toSet());
+
+        for (String mod : mods) {
+            if (!AlmostUnifiedPlatform.INSTANCE.isModLoaded(mod)) {
+                LOG.warn("Mod '{}' is not loaded, but used in unify settings", mod);
+            }
+        }
+    }
+
 
     /**
      * Creates all unify handlers for further unification.

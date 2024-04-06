@@ -7,6 +7,8 @@ import net.minecraft.world.item.Item;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public interface ModPriorities extends Iterable<String> {
 
@@ -17,4 +19,8 @@ public interface ModPriorities extends Iterable<String> {
     ResourceLocation findPreferredItemId(TagKey<Item> tag, List<ResourceLocation> items);
 
     void forEachOverride(BiConsumer<TagKey<Item>, String> callback);
+
+    default Stream<String> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
 }
