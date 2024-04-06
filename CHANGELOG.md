@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [1.0.0] - TBD
+
+- Introduce data-driven like unification.
+    - `unify.json` moved into sub-folder `unify` to let the user define different unification rules.
+    - Custom tags, tag ownerships and tag inheritance moved into `tags.json`
+    - `material` config inside `unify` moved into `placeholders.json` to let the user define multiple different
+      placeholders
+    - `reiJeiHide` key in `unify` renamed to `recipeViewerHiding`
+- Plugin system for mods to register their own unifiers
+- Missing mods used in mod priorities will now be logged
+- fixed a bug where stone stratas were not correctly identified (Fabric only)
+- ignore `show_notification` and `category` recipe keys by default
+
 ## [0.7.2] - 2023-11-21
 
 ## Added
