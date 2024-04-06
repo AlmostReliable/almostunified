@@ -11,6 +11,7 @@ val modId: String by project
 val modName: String by project
 val modDescription: String by project
 val modAuthor: String by project
+val modPackage: String by project
 val autoServiceVersion: String by project
 val parchmentVersion: String by project
 val fabricApiVersion: String by project
@@ -103,6 +104,18 @@ subprojects {
     }
 
     tasks {
+        val apiJar = register<Jar>("apiJar") {
+            val remapJar = named<RemapJarTask>("remapJar")
+            archiveClassifier.set("api")
+            dependsOn(remapJar)
+            from(zipTree(remapJar.get().archiveFile))
+            include(modPackage.replace('.', '/') + "/api/**")
+        }
+
+        build {
+            dependsOn(apiJar)
+        }
+
         /**
          * resource processing for defined targets
          * will replace `${key}` with the specified values from the map below
@@ -150,6 +163,11 @@ subprojects {
             register(mpm, MavenPublication::class) {
                 artifactId = base.archivesName.get()
                 from(components["java"])
+
+                val apiJarTask = tasks.named<Jar>("apiJar")
+                artifact(apiJarTask) {
+                    classifier = "api"
+                }
             }
         }
 
