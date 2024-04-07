@@ -24,6 +24,12 @@ public class LootUnification {
             }
 
             Collection<? extends UnifyHandler> unifyHandlers = runtime.getUnifyHandlers();
+
+            boolean enableLootUnification = unifyHandlers.stream().anyMatch(UnifyHandler::enableLootUnification);
+            if (!enableLootUnification) {
+                return;
+            }
+
             for (ResourceLocation tableId : lootDataManager.getKeys(LootDataType.TABLE)) {
                 LootTable table = lootDataManager.getElement(LootDataType.TABLE, tableId);
                 if (table != null) {
@@ -55,7 +61,7 @@ public class LootUnification {
 
         Set<UnifyHandler> modifiedTable = new HashSet<>();
         for (UnifyHandler unifyHandler : unifyHandlers) {
-            if (unifyHandler.shouldUnifyLootTable(tableId)) {
+            if (unifyHandler.enableLootUnification() && unifyHandler.shouldUnifyLootTable(tableId)) {
                 if (lootUnifyHandler.almostunified$unify(unifyHandler)) {
                     modifiedTable.add(unifyHandler);
                 }

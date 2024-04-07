@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 public class UnifyConfig extends Config {
 
+    public static final String ENABLE_LOOT_UNIFICATION = "enableLootUnification";
     private final List<String> modPriorities;
     private final Map<TagKey<Item>, String> priorityOverrides;
     private final List<String> stoneStrata;
@@ -36,6 +37,7 @@ public class UnifyConfig extends Config {
     private final Set<Pattern> ignoredRecipeTypes;
     private final Set<Pattern> ignoredRecipes;
     private final Set<Pattern> ignoredLootTables;
+    private final boolean enableLootUnification;
     private final boolean recipeViewerHiding;
     @Nullable private Set<TagKey<Item>> bakedTagsCache;
 
@@ -100,7 +102,7 @@ public class UnifyConfig extends Config {
         return result;
     }
 
-    public UnifyConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredLootTables, boolean recipeViewerHiding) {
+    public UnifyConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
         super(name);
         this.modPriorities = modPriorities;
         this.priorityOverrides = priorityOverrides;
@@ -111,6 +113,7 @@ public class UnifyConfig extends Config {
         this.ignoredRecipeTypes = ignoredRecipeTypes;
         this.ignoredRecipes = ignoredRecipes;
         this.ignoredLootTables = ignoredLootTables;
+        this.enableLootUnification = enableLootUnification;
         this.recipeViewerHiding = recipeViewerHiding;
     }
 
@@ -173,6 +176,10 @@ public class UnifyConfig extends Config {
         return ignoredLootTables;
     }
 
+    public boolean enableLootUnification() {
+        return enableLootUnification;
+    }
+
     public boolean hideNonPreferredItemsInRecipeViewers() {
         return recipeViewerHiding;
     }
@@ -219,6 +226,9 @@ public class UnifyConfig extends Config {
                     Defaults.getIgnoredRecipeTypes(platform));
             Set<Pattern> ignoredRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
             Set<Pattern> ignoredLootTables = deserializePatterns(json, IGNORED_LOOT_TABLES, List.of());
+            boolean enableLootUnification = safeGet(() -> json
+                    .getAsJsonPrimitive(ENABLE_LOOT_UNIFICATION)
+                    .getAsBoolean(), false);
             boolean recipeViewerHiding = safeGet(() -> json.getAsJsonPrimitive(RECIPE_VIEWER_HIDING).getAsBoolean(),
                     true);
 
@@ -233,6 +243,7 @@ public class UnifyConfig extends Config {
                     ignoredRecipeTypes,
                     ignoredRecipes,
                     ignoredLootTables,
+                    enableLootUnification,
                     recipeViewerHiding
             );
         }
@@ -260,6 +271,7 @@ public class UnifyConfig extends Config {
             serializePatterns(json, IGNORED_RECIPE_TYPES, config.ignoredRecipeTypes);
             serializePatterns(json, IGNORED_RECIPES, config.ignoredRecipes);
             serializePatterns(json, IGNORED_LOOT_TABLES, config.ignoredLootTables);
+            json.addProperty(ENABLE_LOOT_UNIFICATION, config.enableLootUnification);
             json.addProperty(RECIPE_VIEWER_HIDING, config.recipeViewerHiding);
             return json;
         }
