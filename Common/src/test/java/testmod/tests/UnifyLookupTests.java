@@ -5,6 +5,7 @@ import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.impl.UnifyLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import net.minecraft.Util;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UnifyLookupTests {
 
-    private static final TagMap<Item> TAG_MAP = new TagMapImpl.Builder<Item>()
+    private static final TagMap<Item> TAG_MAP = new TagMapImpl.Builder<>(BuiltInRegistries.ITEM)
             .put(TestUtils.itemTag("testmod:ingots/osmium"),
                     "minecraft:osmium_ingot",
                     "mekanism:osmium_ingot",
@@ -152,7 +153,7 @@ public class UnifyLookupTests {
 
     @SimpleGameTest
     public void testItemInUnifiedIngredient() {
-        TagMap<Item> tagMap = new TagMapImpl.Builder<Item>()
+        TagMap<Item> tagMap = new TagMapImpl.Builder<>(BuiltInRegistries.ITEM)
                 .put(TestUtils.itemTag("minecraft:tools"),
                         "minecraft:iron_sword",
                         "minecraft:iron_pickaxe",

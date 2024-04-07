@@ -1,11 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.TagInheritance;
-import com.almostreliable.unified.api.TagMap;
-import com.almostreliable.unified.api.UnifyHandler;
-import com.almostreliable.unified.api.UnifyLookup;
-import com.almostreliable.unified.impl.TagMapImpl;
+import com.almostreliable.unified.api.*;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -57,6 +53,7 @@ public final class TagReloadHandler {
     public static void applyCustomTags(Map<ResourceLocation, Set<ResourceLocation>> customTags) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
 
+        var vanillaTagWrapper = VanillaTagWrapper.of(BuiltInRegistries.ITEM, RAW_ITEM_TAGS);
         Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
 
         for (var entry : customTags.entrySet()) {
@@ -73,20 +70,16 @@ public final class TagReloadHandler {
                 Holder<Item> itemHolder = BuiltInRegistries.ITEM.getHolder(itemKey).orElse(null);
                 if (itemHolder == null) continue;
 
-                ImmutableSet.Builder<Holder<Item>> newHolders = ImmutableSet.builder();
-                var currentHolders = RAW_ITEM_TAGS.get(tag);
+                var currentHolders = vanillaTagWrapper.get(tag);
 
-                if (currentHolders != null) {
+                if (!currentHolders.isEmpty()) {
                     if (currentHolders.contains(itemHolder)) {
                         AlmostUnified.LOG.warn("[CustomTags] Custom tag '{}' already contains item '{}'", tag, itemId);
                         continue;
                     }
-
-                    newHolders.addAll(currentHolders);
                 }
-                newHolders.add(itemHolder);
 
-                RAW_ITEM_TAGS.put(tag, newHolders.build());
+                vanillaTagWrapper.addHolder(tag, itemHolder);
                 changedItemTags.put(tag, itemId);
             }
         }
@@ -98,55 +91,57 @@ public final class TagReloadHandler {
         }
     }
 
-    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, TagMap<Item> globalTagMap, List<UnifyHandler> unifyHandlers) {
+    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, VanillaTagWrapper<Item> vanillaTags, List<UnifyHandler> unifyHandlers) {
         Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
         Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
 
-        Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
-        Multimap<ResourceLocation, ResourceLocation> changedBlockTags = HashMultimap.create();
+        Multimap<UnifyEntry<Item>, ResourceLocation> changedItemTags = HashMultimap.create();
+        Multimap<UnifyEntry<Item>, ResourceLocation> changedBlockTags = HashMultimap.create();
 
         var relations = resolveRelations(unifyHandlers);
         if (relations.isEmpty()) return false;
 
-        var blockTagMap = TagMapImpl.createFromBlockTags(RAW_BLOCK_TAGS);
+        var blockTagMap = VanillaTagWrapper.of(BuiltInRegistries.BLOCK, RAW_BLOCK_TAGS);
 
         for (TagRelation relation : relations) {
             var dominant = relation.dominant;
-            var dominantItemHolder = findDominantItemHolder(relation);
             var dominantBlockHolder = findDominantBlockHolder(blockTagMap, dominant);
 
-            var dominantItemTags = globalTagMap.getTagsByEntry(dominant);
+            var dominantItemTags = vanillaTags
+                    .getTags(dominant)
+                    .stream()
+                    .map(rl -> TagKey.create(Registries.ITEM, rl))
+                    .collect(ImmutableSet.toImmutableSet());
 
             for (var item : relation.items) {
-                if (dominantItemHolder != null) {
-                    var changed = applyItemTags(itemTagInheritance,
-                            globalTagMap,
-                            dominantItemHolder,
-                            dominantItemTags,
-                            item);
-                    changedItemTags.putAll(dominant, changed);
-                }
+                var appliedItemTags = applyItemTags(itemTagInheritance,
+                        vanillaTags,
+                        relation.dominant.asHolder(),
+                        dominantItemTags,
+                        item);
+                changedItemTags.putAll(dominant, appliedItemTags);
+
 
                 if (dominantBlockHolder != null) {
-                    var changed = applyBlockTags(blockTagInheritance,
+                    var appliedBlockTags = applyBlockTags(blockTagInheritance,
                             blockTagMap,
                             dominantBlockHolder,
                             dominantItemTags,
                             item);
-                    changedBlockTags.putAll(dominant, changed);
+                    changedBlockTags.putAll(dominant, appliedBlockTags);
                 }
             }
         }
 
         if (!changedBlockTags.isEmpty()) {
             changedBlockTags.asMap().forEach((dominant, tags) -> {
-                AlmostUnified.LOG.info("[TagInheritance] Added '{}' to block tags {}", dominant, tags);
+                AlmostUnified.LOG.info("[TagInheritance] Added '{}' to block tags {}", dominant.id(), tags);
             });
         }
 
         if (!changedItemTags.isEmpty()) {
             changedItemTags.asMap().forEach((dominant, tags) -> {
-                AlmostUnified.LOG.info("[TagInheritance] Added '{}' to item tags {}", dominant, tags);
+                AlmostUnified.LOG.info("[TagInheritance] Added '{}' to item tags {}", dominant.id(), tags);
             });
             return true;
         }
@@ -173,13 +168,13 @@ public final class TagReloadHandler {
             // avoid handling single entries and tags that only contain the same namespace for all items
             if (Utils.allSameNamespace(itemsByTag)) continue;
 
-            ResourceLocation dominant = repMap.getPreferredItemForTag(unifyTag);
-            if (dominant == null || !BuiltInRegistries.ITEM.containsKey(dominant)) continue;
+            var dominant = repMap.getPreferredItemForTag(unifyTag);
+            if (dominant == null) continue;
 
-            Set<ResourceLocation> items = getValidatedItems(itemsByTag, dominant);
+            Set<UnifyEntry<Item>> items = removeDominantItem(itemsByTag, dominant);
 
             if (items.isEmpty()) continue;
-            relations.add(new TagRelation(unifyTag.location(), dominant, items));
+            relations.add(new TagRelation(unifyTag, dominant, items));
         }
 
         return relations;
@@ -188,15 +183,15 @@ public final class TagReloadHandler {
     /**
      * Returns a set of all items that are not the dominant item and are valid by checking if they are registered.
      *
-     * @param itemIds  The set of all items that are in the tag
+     * @param holders  The set of all items that are in the tag
      * @param dominant The dominant item
      * @return A set of all items that are not the dominant item and are valid
      */
-    private static Set<ResourceLocation> getValidatedItems(Set<ResourceLocation> itemIds, ResourceLocation dominant) {
-        Set<ResourceLocation> result = new HashSet<>(itemIds.size());
-        for (ResourceLocation id : itemIds) {
-            if (!id.equals(dominant) && BuiltInRegistries.ITEM.containsKey(id)) {
-                result.add(id);
+    private static Set<UnifyEntry<Item>> removeDominantItem(Set<UnifyEntry<Item>> holders, UnifyEntry<Item> dominant) {
+        Set<UnifyEntry<Item>> result = new HashSet<>(holders.size());
+        for (var holder : holders) {
+            if (!holder.equals(dominant)) {
+                result.add(holder);
             }
         }
 
@@ -205,77 +200,50 @@ public final class TagReloadHandler {
 
     @SuppressWarnings("StaticVariableUsedBeforeInitialization")
     @Nullable
-    private static Holder<Item> findDominantItemHolder(TagRelation relation) {
-        var tagHolders = RAW_ITEM_TAGS.get(relation.tag);
-        if (tagHolders == null) return null;
-
-        return findDominantHolder(tagHolders, relation.dominant);
-    }
-
-    @SuppressWarnings("StaticVariableUsedBeforeInitialization")
-    @Nullable
-    private static Holder<Block> findDominantBlockHolder(TagMap<Block> tagMap, ResourceLocation dominant) {
-        var blockTags = tagMap.getTagsByEntry(dominant);
+    private static Holder<Block> findDominantBlockHolder(VanillaTagWrapper<Block> tagMap, UnifyEntry<Item> dominant) {
+        var blockTags = tagMap.getTags(dominant.id());
         if (blockTags.isEmpty()) return null;
 
-        var tagHolders = RAW_BLOCK_TAGS.get(blockTags.iterator().next().location());
-        if (tagHolders == null) return null;
-
-        return findDominantHolder(tagHolders, dominant);
+        return BuiltInRegistries.BLOCK.getHolderOrThrow(ResourceKey.create(Registries.BLOCK, dominant.id()));
     }
 
-    @Nullable
-    private static <T> Holder<T> findDominantHolder(Collection<Holder<T>> holders, ResourceLocation dominant) {
-        for (var tagHolder : holders) {
-            var holderKey = tagHolder.unwrapKey();
-            if (holderKey.isPresent() && holderKey.get().location().equals(dominant)) {
-                return tagHolder;
-            }
-        }
-
-        return null;
-    }
-
-    private static Set<ResourceLocation> applyItemTags(TagInheritance<Item> tagInheritance, TagMap<Item> globalTagMap, Holder<Item> dominantItemHolder, Set<TagKey<Item>> dominantItemTags, ResourceLocation item) {
-        var itemTags = globalTagMap.getTagsByEntry(item);
+    private static Set<ResourceLocation> applyItemTags(TagInheritance<Item> tagInheritance, VanillaTagWrapper<Item> tagWrapper, Holder<Item> dominantItemHolder, Set<TagKey<Item>> dominantItemTags, UnifyEntry<Item> item) {
+        var itemTags = tagWrapper.getTags(item);
         Set<ResourceLocation> changed = new HashSet<>();
 
         for (var itemTag : itemTags) {
-            if (!tagInheritance.shouldInherit(itemTag, dominantItemTags)) continue;
-            if (tryUpdatingRawTags(dominantItemHolder, itemTag, RAW_ITEM_TAGS)) {
-                changed.add(itemTag.location());
+            var tag = TagKey.create(Registries.ITEM, itemTag);
+            if (!tagInheritance.shouldInherit(tag, dominantItemTags)) continue;
+            if (tryUpdatingRawTags(dominantItemHolder, tag, tagWrapper)) {
+                changed.add(itemTag);
             }
         }
 
         return changed;
     }
 
-    private static Set<ResourceLocation> applyBlockTags(TagInheritance<Block> tagInheritance, TagMap<Block> blockTagMap, Holder<Block> dominantBlockHolder, Set<TagKey<Item>> dominantItemTags, ResourceLocation item) {
-        var blockTags = blockTagMap.getTagsByEntry(item);
+    private static Set<ResourceLocation> applyBlockTags(TagInheritance<Block> tagInheritance, VanillaTagWrapper<Block> blockTagMap, Holder<Block> dominantBlockHolder, Set<TagKey<Item>> dominantItemTags, UnifyEntry<Item> item) {
+        var blockTags = blockTagMap.getTags(item.id());
         Set<ResourceLocation> changed = new HashSet<>();
 
         for (var blockTag : blockTags) {
-            if (!tagInheritance.shouldInherit(blockTag, dominantItemTags)) continue;
-            if (tryUpdatingRawTags(dominantBlockHolder, blockTag, RAW_BLOCK_TAGS)) {
-                changed.add(blockTag.location());
+            var tag = TagKey.create(Registries.BLOCK, blockTag);
+            if (!tagInheritance.shouldInherit(tag, dominantItemTags)) continue;
+            if (tryUpdatingRawTags(dominantBlockHolder, tag, blockTagMap)) {
+                changed.add(blockTag);
             }
         }
 
         return changed;
     }
 
-    private static <T> boolean tryUpdatingRawTags(Holder<T> dominantHolder, TagKey<T> tag, Map<ResourceLocation, Collection<Holder<T>>> rawTags) {
-        var tagHolders = rawTags.get(tag.location());
-        if (tagHolders == null) return false;
+    private static <T> boolean tryUpdatingRawTags(Holder<T> dominantHolder, TagKey<T> tag, VanillaTagWrapper<T> tagWrapper) {
+        var tagHolders = tagWrapper.get(tag);
         if (tagHolders.contains(dominantHolder)) return false; // already present, no need to add it again
 
-        ImmutableSet.Builder<Holder<T>> newHolders = ImmutableSet.builder();
-        newHolders.addAll(tagHolders);
-        newHolders.add(dominantHolder);
-
-        rawTags.put(tag.location(), newHolders.build());
+        tagWrapper.addHolder(tag.location(), dominantHolder);
         return true;
     }
 
-    private record TagRelation(ResourceLocation tag, ResourceLocation dominant, Set<ResourceLocation> items) {}
+    private record TagRelation(TagKey<Item> tag, UnifyEntry<Item> dominant, Set<UnifyEntry<Item>> items) {}
 }

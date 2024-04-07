@@ -1,6 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.api.UnifyEntry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -47,14 +48,14 @@ public final class Utils {
      * @param ids set of ids
      * @return true if all ids have the same namespace
      */
-    public static boolean allSameNamespace(Set<ResourceLocation> ids) {
+    public static boolean allSameNamespace(Set<UnifyEntry<Item>> ids) {
         if (ids.size() <= 1) return true;
 
         var it = ids.iterator();
-        var namespace = it.next().getNamespace();
+        var namespace = it.next().id().getNamespace();
 
         while (it.hasNext()) {
-            if (!it.next().getNamespace().equals(namespace)) return false;
+            if (!it.next().id().getNamespace().equals(namespace)) return false;
         }
 
         return true;

@@ -2,6 +2,8 @@ package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.config.UnifyConfig;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -25,17 +27,17 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     private final boolean enableLootUnification;
     private final String name;
 
-    public static List<UnifyHandler> create(Collection<UnifyConfig> configs, TagMap<Item> tags, TagOwnershipsImpl tagOwnerships) {
+    public static List<UnifyHandler> create(Collection<UnifyConfig> configs, VanillaTagWrapper<Item> tags, TagOwnershipsImpl tagOwnerships) {
         return configs
                 .stream()
                 .map(uc -> UnifyHandlerImpl.create(tags, uc, tagOwnerships))
                 .toList();
     }
 
-    public static UnifyHandler create(TagMap<Item> globalTagMap, UnifyConfig config, TagOwnerships tagOwnerships) {
+    public static UnifyHandler create(VanillaTagWrapper<Item> tags, UnifyConfig config, TagOwnerships tagOwnerships) {
         var unifyTags = config.getBakedTags();
-        var filteredTagMap = globalTagMap.filtered(unifyTags::contains, config::includeItem);
-        var stoneStrata = StoneStrataLookupImpl.create(config.getStoneStrata(), globalTagMap);
+        var filteredTagMap = tags.createUnifyTagMap(unifyTags::contains, config::includeItem);
+        var stoneStrata = StoneStrataLookupImpl.create(config.getStoneStrata(), tags);
 
         return new UnifyHandlerImpl(
                 config.getName(),
@@ -134,19 +136,43 @@ public final class UnifyHandlerImpl implements UnifyHandler {
 
     @Nullable
     @Override
-    public ResourceLocation getReplacementForItem(ResourceLocation item) {
+    public TagKey<Item> getPreferredTagForItem(Item item) {
+        return unifyLookup.getPreferredTagForItem(item);
+    }
+
+    @Nullable
+    @Override
+    public TagKey<Item> getPreferredTagForItem(Holder<Item> item) {
+        return unifyLookup.getPreferredTagForItem(item);
+    }
+
+    @Nullable
+    @Override
+    public UnifyEntry<Item> getReplacementForItem(ResourceLocation item) {
         return unifyLookup.getReplacementForItem(item);
     }
 
     @Nullable
     @Override
-    public ResourceLocation getPreferredItemForTag(TagKey<Item> tag) {
+    public UnifyEntry<Item> getReplacementForItem(Item item) {
+        return unifyLookup.getReplacementForItem(item);
+    }
+
+    @Nullable
+    @Override
+    public UnifyEntry<Item> getReplacementForItem(Holder<Item> item) {
+        return unifyLookup.getReplacementForItem(item);
+    }
+
+    @Nullable
+    @Override
+    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag) {
         return unifyLookup.getPreferredItemForTag(tag);
     }
 
     @Nullable
     @Override
-    public ResourceLocation getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
         return unifyLookup.getPreferredItemForTag(tag, itemFilter);
     }
 

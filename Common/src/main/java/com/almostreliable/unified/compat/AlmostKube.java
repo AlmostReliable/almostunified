@@ -29,20 +29,28 @@ public final class AlmostKube {
     }
 
     public static ItemStack getReplacementForItem(ItemStack stack) {
-        ResourceLocation replacement = AlmostUnified
+        var entry = AlmostUnified
                 .getRuntime()
                 .getUnifyLookup()
                 .getReplacementForItem(getId(stack));
-        return BuiltInRegistries.ITEM.get(replacement).getDefaultInstance();
+        if (entry == null) {
+            return ItemStack.EMPTY;
+        }
+
+        return entry.value().getDefaultInstance();
     }
 
     public static ItemStack getPreferredItemForTag(ResourceLocation tag) {
         var tagKey = TagKey.create(Registries.ITEM, tag);
-        ResourceLocation item = AlmostUnified
+        var entry = AlmostUnified
                 .getRuntime()
                 .getUnifyLookup()
                 .getPreferredItemForTag(tagKey);
-        return BuiltInRegistries.ITEM.get(item).getDefaultInstance();
+        if (entry == null) {
+            return ItemStack.EMPTY;
+        }
+
+        return entry.value().getDefaultInstance();
     }
 
     public static Set<String> getTags() {
@@ -62,7 +70,7 @@ public final class AlmostKube {
                 .getTagMap()
                 .getEntriesByTag(tagKey)
                 .stream()
-                .map(ResourceLocation::toString)
+                .map(holder -> holder.id().toString())
                 .collect(Collectors.toSet());
     }
 

@@ -2,6 +2,7 @@ package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.AlmostUnifiedLookup;
+import com.almostreliable.unified.api.UnifyEntry;
 import com.google.auto.service.AutoService;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -25,23 +26,23 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     @Override
     public Item getReplacementForItem(ItemLike itemLike) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
-        ResourceLocation replacementId = AlmostUnified.getRuntime().getUnifyLookup().getReplacementForItem(id);
-        if (replacementId == null) {
+        var replacement = AlmostUnified.getRuntime().getUnifyLookup().getReplacementForItem(id);
+        if (replacement == null) {
             return null;
         }
 
-        return BuiltInRegistries.ITEM.getOptional(replacementId).orElse(null);
+        return replacement.value();
     }
 
     @Nullable
     @Override
     public Item getPreferredItemForTag(TagKey<Item> tag) {
-        ResourceLocation itemId = AlmostUnified.getRuntime().getUnifyLookup().getPreferredItemForTag(tag);
-        if (itemId == null) {
+        var replacement = AlmostUnified.getRuntime().getUnifyLookup().getPreferredItemForTag(tag);
+        if (replacement == null) {
             return null;
         }
 
-        return BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
+        return replacement.value();
     }
 
     @Nullable
@@ -53,11 +54,11 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
 
     @Override
     public Set<Item> getPotentialItems(TagKey<Item> tag) {
-        Set<ResourceLocation> entries = AlmostUnified.getRuntime().getTagMap().getEntriesByTag(tag);
+        var entries = AlmostUnified.getRuntime().getTagMap().getEntriesByTag(tag);
 
         return entries
                 .stream()
-                .flatMap(rl -> BuiltInRegistries.ITEM.getOptional(rl).stream())
+                .map(UnifyEntry::value)
                 .collect(Collectors.toSet());
     }
 

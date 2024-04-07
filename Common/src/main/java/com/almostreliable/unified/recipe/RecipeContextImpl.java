@@ -1,5 +1,6 @@
 package com.almostreliable.unified.recipe;
 
+import com.almostreliable.unified.api.UnifyEntry;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeContext;
@@ -38,7 +39,12 @@ public class RecipeContextImpl implements RecipeContext {
             return null;
         }
 
-        return unifyLookup.getReplacementForItem(item);
+        UnifyEntry<Item> entry = unifyLookup.getReplacementForItem(item);
+        if (entry == null) {
+            return null;
+        }
+
+        return entry.id();
     }
 
     @Nullable
@@ -48,7 +54,12 @@ public class RecipeContextImpl implements RecipeContext {
             return null;
         }
 
-        return unifyLookup.getPreferredItemForTag(tag);
+        UnifyEntry<Item> entry = unifyLookup.getPreferredItemForTag(tag);
+        if (entry == null) {
+            return null;
+        }
+
+        return entry.id();
     }
 
     @Nullable

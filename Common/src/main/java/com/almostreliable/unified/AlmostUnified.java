@@ -9,9 +9,11 @@ import com.almostreliable.unified.impl.UnifyHandlerImpl;
 import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
 import com.almostreliable.unified.utils.FileUtils;
 import com.almostreliable.unified.utils.TagReloadHandler;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -112,14 +114,14 @@ public final class AlmostUnified {
      * @return All unify handlers
      */
     private static List<UnifyHandler> createAndPrepareUnifyHandlers(Map<ResourceLocation, Collection<Holder<Item>>> tags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagConfig tagConfig) {
-        var globalTagMap = TagMapImpl.createFromItemTags(tags);
-        List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, globalTagMap, tagOwnerships);
+        var vanillaTagWrapper = VanillaTagWrapper.of(BuiltInRegistries.ITEM, tags);
+        List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, vanillaTagWrapper, tagOwnerships);
         var needsRebuild = TagReloadHandler.applyInheritance(tagConfig.getItemTagInheritance(),
                 tagConfig.getBlockTagInheritance(),
-                globalTagMap,
+                vanillaTagWrapper,
                 unifyHandlers);
         if (needsRebuild) {
-            unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, TagMapImpl.createFromItemTags(tags), tagOwnerships);
+            unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, vanillaTagWrapper, tagOwnerships);
         }
 
         return unifyHandlers;

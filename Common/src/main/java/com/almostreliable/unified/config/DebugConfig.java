@@ -44,7 +44,7 @@ public class DebugConfig extends Config {
                     .map(t -> StringUtils.rightPad(t.location().toString(), 40) + " => " + tagMap
                             .getEntriesByTag(t)
                             .stream()
-                            .map(ResourceLocation::toString)
+                            .map(entry -> entry.id().toString())
                             .sorted()
                             .collect(Collectors.joining(", ")) + "\n")
                     .collect(Collectors.joining()));

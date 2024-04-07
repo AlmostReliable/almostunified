@@ -1,10 +1,7 @@
 package testmod.old;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.api.StoneStrataLookup;
 import com.almostreliable.unified.config.Defaults;
-import com.almostreliable.unified.impl.StoneStrataLookupImpl;
-import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.utils.JsonCompare;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -14,7 +11,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import java.util.List;
-import java.util.Set;
 
 public final class TestUtils {
 
@@ -87,13 +83,6 @@ public final class TestUtils {
 
     public static ResourceLocation mod5RL(String name) {
         return new ResourceLocation(TEST_MOD_5, name);
-    }
-
-    public static StoneStrataLookup createTestStrataHandler() {
-        return StoneStrataLookupImpl.create(
-                List.of(),
-                TagMapImpl.create(Set.of())
-        );
     }
 
 //    public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {

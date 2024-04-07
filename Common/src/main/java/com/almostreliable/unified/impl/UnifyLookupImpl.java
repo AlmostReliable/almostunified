@@ -2,6 +2,7 @@ package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.*;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -12,7 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -55,7 +55,19 @@ public class UnifyLookupImpl implements UnifyLookup {
 
     @Nullable
     @Override
-    public ResourceLocation getReplacementForItem(ResourceLocation item) {
+    public TagKey<Item> getPreferredTagForItem(Item item) {
+        return getPreferredTagForItem(BuiltInRegistries.ITEM.getKey(item));
+    }
+
+    @Nullable
+    @Override
+    public TagKey<Item> getPreferredTagForItem(Holder<Item> item) {
+        return getPreferredTagForItem(item.value());
+    }
+
+    @Nullable
+    @Override
+    public UnifyEntry<Item> getReplacementForItem(ResourceLocation item) {
         var t = getPreferredTagForItem(item);
         if (t == null) {
             return null;
@@ -71,28 +83,40 @@ public class UnifyLookupImpl implements UnifyLookup {
 
     @Nullable
     @Override
-    public ResourceLocation getPreferredItemForTag(TagKey<Item> tag) {
+    public UnifyEntry<Item> getReplacementForItem(Item item) {
+        return getReplacementForItem(BuiltInRegistries.ITEM.getKey(item));
+    }
+
+    @Nullable
+    @Override
+    public UnifyEntry<Item> getReplacementForItem(Holder<Item> item) {
+        return getReplacementForItem(BuiltInRegistries.ITEM.getKey(item.value()));
+    }
+
+    @Nullable
+    @Override
+    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag) {
         return getPreferredItemForTag(tag, i -> true);
     }
 
     @Nullable
     @Override
-    public ResourceLocation getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
         var tagToLookup = tagOwnerships.getOwner(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
         // TODO do we really need a filter way? Maybe have two methods to explicitly check for stone strata
-        List<ResourceLocation> items = tagMap
+        var items = tagMap
                 .getEntriesByTag(tagToLookup)
                 .stream()
-                .filter(itemFilter)
+                .filter(entry -> itemFilter.test(entry.id()))
                 // Helps us to get the clean stone variant first in case of a stone strata tag
-                .sorted(Comparator.comparingInt(value -> value.toString().length()))
+                .sorted(Comparator.comparingInt(value -> value.id().toString().length()))
                 .toList();
 
         if (items.isEmpty()) return null;
 
-        return modPriorities.findPreferredItemId(tagToLookup, items);
+        return modPriorities.findPreferredEntry(tagToLookup, items);
     }
 
     @Override

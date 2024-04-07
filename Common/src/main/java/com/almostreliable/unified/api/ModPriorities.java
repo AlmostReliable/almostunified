@@ -1,6 +1,5 @@
 package com.almostreliable.unified.api;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -16,7 +15,7 @@ public interface ModPriorities extends Iterable<String> {
     String getPriorityOverride(TagKey<Item> tag);
 
     @Nullable
-    ResourceLocation findPreferredItemId(TagKey<Item> tag, List<ResourceLocation> items);
+    UnifyEntry<Item> findPreferredEntry(TagKey<Item> tag, List<UnifyEntry<Item>> items);
 
     void forEachOverride(BiConsumer<TagKey<Item>, String> callback);
 

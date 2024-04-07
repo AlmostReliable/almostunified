@@ -1,10 +1,10 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.UnifyEntry;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ItemHider {
 
@@ -30,39 +29,37 @@ public class ItemHider {
     }
 
     public static void applyHideTags(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyHandler handler) {
-        var hidingItems = createHidingItems(handler);
-
-        Collection<Holder<Item>> itemsToHide = new HashSet<>(hidingItems.size());
-        for (Item hidingItem : hidingItems) {
-            itemsToHide.add(BuiltInRegistries.ITEM.wrapAsHolder(hidingItem));
-        }
+        var holdersToHide = createHidingItems(handler);
 
         Collection<Holder<Item>> existing = tags.get(HIDE_TAG.location());
         if (existing != null) {
-            itemsToHide.addAll(existing);
+            Set<Holder<Item>> merged = new HashSet<>(existing);
+            merged.addAll(holdersToHide);
+            tags.put(HIDE_TAG.location(), merged);
+            return;
         }
 
-        tags.put(HIDE_TAG.location(), itemsToHide);
+        tags.put(HIDE_TAG.location(), holdersToHide);
     }
 
-    public static Set<Item> createHidingItems(UnifyHandler handler) {
-        Set<ResourceLocation> hidings = new HashSet<>();
+    public static Set<Holder<Item>> createHidingItems(UnifyHandler handler) {
+        Set<Holder<Item>> hidings = new HashSet<>();
 
         for (TagKey<Item> tag : handler.getTagMap().getTags()) {
-            var itemsByTag = handler.getTagMap().getEntriesByTag(tag);
+            var entriesByTag = handler.getTagMap().getEntriesByTag(tag);
 
             // avoid handling single entries and tags that only contain the same namespace for all items
-            if (Utils.allSameNamespace(itemsByTag)) continue;
+            if (Utils.allSameNamespace(entriesByTag)) continue;
 
-            Set<ResourceLocation> replacements = new HashSet<>();
-            for (ResourceLocation item : itemsByTag) {
-                replacements.add(getReplacementForItem(handler, item));
+            Set<UnifyEntry<Item>> replacements = new HashSet<>();
+            for (var holder : entriesByTag) {
+                replacements.add(getReplacementForItem(handler, holder));
             }
 
-            Set<ResourceLocation> toHide = new HashSet<>();
-            for (ResourceLocation item : itemsByTag) {
-                if (!replacements.contains(item)) {
-                    toHide.add(item);
+            Set<Holder<Item>> toHide = new HashSet<>();
+            for (var entry : entriesByTag) {
+                if (!replacements.contains(entry)) {
+                    toHide.add(entry.asHolder());
                 }
             }
 
@@ -71,7 +68,7 @@ public class ItemHider {
             AlmostUnified.LOG.info(
                     "[AutoHiding] Hiding {}/{} items for tag '#{}' -> {}",
                     toHide.size(),
-                    itemsByTag.size(),
+                    entriesByTag.size(),
                     tag.location(),
                     toHide
             );
@@ -79,11 +76,7 @@ public class ItemHider {
             hidings.addAll(toHide);
         }
 
-        return idsToItems(hidings);
-    }
-
-    private static Set<Item> idsToItems(Set<ResourceLocation> ids) {
-        return ids.stream().flatMap(id -> BuiltInRegistries.ITEM.getOptional(id).stream()).collect(Collectors.toSet());
+        return hidings;
     }
 
     /**
@@ -92,12 +85,12 @@ public class ItemHider {
      * Returning the item itself is important for stone strata detection.
      *
      * @param repMap The replacement map.
-     * @param item   The item to get the replacement for.
+     * @param entry  The holder to get the replacement for.
      * @return The replacement for the given item, or the item itself if no replacement is found.
      */
-    private static ResourceLocation getReplacementForItem(UnifyLookup repMap, ResourceLocation item) {
-        var replacement = repMap.getReplacementForItem(item);
-        if (replacement == null) return item;
+    private static UnifyEntry<Item> getReplacementForItem(UnifyLookup repMap, UnifyEntry<Item> entry) {
+        var replacement = repMap.getReplacementForItem(entry);
+        if (replacement == null) return entry;
         return replacement;
     }
 }

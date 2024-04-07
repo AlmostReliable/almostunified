@@ -3,6 +3,7 @@ package com.almostreliable.unified.impl;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.StoneStrataLookup;
 import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -42,9 +43,9 @@ public final class StoneStrataLookupImpl implements StoneStrataLookup {
         return stoneStrata.stream().sorted(Comparator.comparingInt(String::length).reversed()).toList();
     }
 
-    public static StoneStrataLookup create(Collection<String> stoneStrataIds, TagMap<Item> tagMap) {
+    public static StoneStrataLookup create(Collection<String> stoneStrataIds, VanillaTagWrapper<Item> tags) {
         var stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(stoneStrataIds);
-        var stoneStrataTagMap = tagMap.filtered(stoneStrataTags::contains, item -> true);
+        var stoneStrataTagMap = tags.createUnifyTagMap(stoneStrataTags::contains, item -> true);
         Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
             case FORGE -> "forge:ores/.+";
             case FABRIC -> "(c:ores/.+|(minecraft|c):.+_ores)";
