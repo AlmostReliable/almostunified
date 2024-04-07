@@ -57,9 +57,11 @@ public class ItemHider {
             }
 
             Set<Holder<Item>> toHide = new HashSet<>();
+            Set<String> toHideIds = new HashSet<>();
             for (var entry : entriesByTag) {
                 if (!replacements.contains(entry)) {
                     toHide.add(entry.asHolder());
+                    toHideIds.add(entry.id().toString());
                 }
             }
 
@@ -70,7 +72,7 @@ public class ItemHider {
                     toHide.size(),
                     entriesByTag.size(),
                     tag.location(),
-                    toHide
+                    toHideIds
             );
 
             hidings.addAll(toHide);
