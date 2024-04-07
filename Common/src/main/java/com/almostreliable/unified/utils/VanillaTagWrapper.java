@@ -79,8 +79,7 @@ public class VanillaTagWrapper<T> {
 
     public Set<ResourceLocation> getTags(ResourceLocation entryId) {
         var key = ResourceKey.create(registry.key(), entryId);
-        Holder.Reference<T> holder = registry.getHolderOrThrow(key);
-        return getTags(holder);
+        return registry.getHolder(key).map(this::getTags).orElse(Set.of());
     }
 
     public Set<ResourceLocation> getTags(UnifyEntry<T> entry) {
