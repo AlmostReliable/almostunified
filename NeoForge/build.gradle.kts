@@ -51,19 +51,19 @@ dependencies {
 
     forgeRuntimeLibrary("org.junit.jupiter:junit-jupiter-api:5.8.1")
 
-     // compile time mods
+    // compile time mods
     modCompileOnly("mezz.jei:jei-$minecraftVersion-neoforge-api:$jeiVersion") { // required for common jei plugin
         isTransitive = false // prevents breaking the forge runtime
     }
-     modCompileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion") // required for common rei plugin
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-neoforge:$reiVersion") // required for common rei plugin
 //     modImplementation("curse.maven:applied-energistics-2-223794:4997094")
 
-     // runtime mods
-     when (neoforgeRecipeViewer) {
-         "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-neoforge:$jeiVersion") { isTransitive = false }
-         "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion")
-         else -> throw GradleException("Invalid forgeRecipeViewer value: $neoforgeRecipeViewer")
-     }
+    // runtime mods
+    when (neoforgeRecipeViewer) {
+        "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-neoforge:$jeiVersion") { isTransitive = false }
+        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion")
+        else -> throw GradleException("Invalid forgeRecipeViewer value: $neoforgeRecipeViewer")
+    }
 
     /**
      * helps to load mods in development through an extra directory

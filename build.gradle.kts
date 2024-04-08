@@ -24,7 +24,7 @@ val githubUser: String by project
 
 plugins {
     id("architectury-plugin") version "3.4-SNAPSHOT"
-    id("dev.architectury.loom") version "1.4.+" apply false
+    id("dev.architectury.loom") version "1.6.+" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     java
     `maven-publish`
@@ -219,11 +219,11 @@ subprojects {
             create("test_client") {
                 name("Testmod Client")
                 client()
+                source(sourceSets.test.get())
                 property("fabric-api.gametest", "true")
                 property("neoforge.gameTestServer", "true")
                 property("neoforge.enabledGameTestNamespaces", "testmod")
                 property("almostlib.gametest.testPackages", "testmod.*")
-                source(sourceSets.test.get())
             }
 
             create("gametest") {
