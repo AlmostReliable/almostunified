@@ -1,6 +1,5 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,35 +21,18 @@ public class UnifyLookupImpl implements UnifyLookup {
     private final TagMap<Item> tagMap;
     private final StoneStrataLookup stoneStrataLookup;
     private final TagOwnerships tagOwnerships;
-    private final Set<ResourceLocation> warnings;
 
     public UnifyLookupImpl(ModPriorities modPriorities, TagMap<Item> tagMap, StoneStrataLookup stoneStrataLookup, TagOwnerships tagOwnerships) {
         this.tagMap = tagMap;
         this.modPriorities = modPriorities;
         this.stoneStrataLookup = stoneStrataLookup;
         this.tagOwnerships = tagOwnerships;
-        this.warnings = new HashSet<>();
     }
 
     @Nullable
     @Override
     public TagKey<Item> getPreferredTagForItem(ResourceLocation item) {
-        var tags = tagMap.getTagsByEntry(item);
-
-        if (tags.isEmpty()) {
-            return null;
-        }
-
-        if (tags.size() > 1 && !warnings.contains(item)) {
-            AlmostUnified.LOG.warn(
-                    "Item '{}' has multiple preferred tags '{}' for recipe replacement. This needs to be manually fixed by the user.",
-                    item,
-                    tags.stream().map(TagKey::location).toList()
-            );
-            warnings.add(item);
-        }
-
-        return tags.iterator().next();
+        return tagMap.getTag(item);
     }
 
     @Nullable

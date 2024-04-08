@@ -67,10 +67,8 @@ public final class StoneStrataLookupImpl implements StoneStrataLookup {
      * fallback variant.
      */
     private String computeStoneStrata(ResourceLocation item) {
-        String strata = stoneStrataTagMap
-                .getTagsByEntry(item)
-                .stream()
-                .findFirst()
+        String strata = Optional
+                .ofNullable(stoneStrataTagMap.getTag(item))
                 .map(TagKey::location)
                 .map(ResourceLocation::toString)
                 .map(s -> {
