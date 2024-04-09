@@ -55,7 +55,8 @@ dependencies {
     modCompileOnly("mezz.jei:jei-$minecraftVersion-neoforge-api:$jeiVersion") { // required for common jei plugin
         isTransitive = false // prevents breaking the forge runtime
     }
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-neoforge:$reiVersion") // required for common rei plugin
+    // TODO go back to API when solved: https://github.com/architectury/architectury-loom/issues/204
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion") // required for common rei plugin
 //     modImplementation("curse.maven:applied-energistics-2-223794:4997094")
 
     // runtime mods
