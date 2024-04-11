@@ -224,6 +224,7 @@ subprojects {
                 property("neoforge.gameTestServer", "true")
                 property("neoforge.enabledGameTestNamespaces", "testmod")
                 property("almostlib.gametest.testPackages", "testmod.*")
+                property("$modId.configDir", rootProject.projectDir.toPath().resolve("testmod_configs").toString())
             }
 
             create("gametest") {
@@ -234,6 +235,7 @@ subprojects {
                 property("neoforge.gameTestServer", "true")
                 property("neoforge.enabledGameTestNamespaces", "testmod")
                 property("almostlib.gametest.testPackages", "testmod.*")
+                property("$modId.configDir", rootProject.projectDir.toPath().resolve("testmod_configs").toString())
             }
 
             forEach {

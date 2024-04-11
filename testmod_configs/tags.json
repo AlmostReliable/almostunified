@@ -1,0 +1,12 @@
+{
+  "customTags": {},
+  "tagOwnerships": {
+    "forge:ores/silver": [
+      "forge:silver_ores"
+    ]
+  },
+  "itemTagInheritanceMode": "ALLOW",
+  "itemTagInheritance": {},
+  "blockTagInheritanceMode": "ALLOW",
+  "blockTagInheritance": {}
+}

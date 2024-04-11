@@ -2,6 +2,7 @@ package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 public class Config {
 
+    private static final String CONFIG_DIR_PROPERTY = BuildConfig.MOD_ID + ".configDir";
     private final String name;
 
     public Config(String name) {
@@ -89,6 +91,11 @@ public class Config {
 
     public static Path createConfigDir() {
         Path p = AlmostUnifiedPlatform.INSTANCE.getConfigPath();
+        String property = System.getProperty(CONFIG_DIR_PROPERTY);
+        if (property != null) {
+            p = Path.of(property);
+        }
+
         try {
             Files.createDirectories(p);
         } catch (IOException e) {

@@ -51,7 +51,7 @@ public class UnifyConfig extends Config {
     }
 
     public static Collection<UnifyConfig> loadConfigs() throws IOException {
-        Path unifyFolder = AlmostUnifiedPlatform.INSTANCE.getConfigPath().resolve("unify");
+        Path unifyFolder = Config.createConfigDir().resolve("unify");
         var jsons = readJsons(unifyFolder);
         if (jsons.isEmpty()) {
             Serializer serializer = new Serializer();

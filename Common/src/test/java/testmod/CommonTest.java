@@ -2,6 +2,7 @@ package testmod;
 
 import testmod.gametest_core.GameTestLoader;
 import testmod.tests.*;
+import testmod.tests.core.OwnershipTests;
 
 public class CommonTest {
 
@@ -15,7 +16,8 @@ public class CommonTest {
                     ShapedRecipeUnifierTests.class,
                     SmithingRecipeUnifierTest.class,
                     GregTechModernRecipeUnifierTests.class,
-                    AdAstraRecipeUnifierTests.class
+                    AdAstraRecipeUnifierTests.class,
+                    OwnershipTests.class
             );
         }
     }

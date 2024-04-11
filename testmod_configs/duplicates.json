@@ -1,0 +1,35 @@
+{
+  "ignoredRecipeTypes": [
+    "cucumber:shaped_tag"
+  ],
+  "ignoredRecipes": [],
+  "defaultDuplicateRules": {
+    "ignoredFields": [
+      "show_notification",
+      "conditions",
+      "category",
+      "group"
+    ],
+    "rules": {
+      "cookingtime": "HigherRule",
+      "energy": "HigherRule",
+      "experience": "HigherRule"
+    },
+    "shouldSanitize": false
+  },
+  "overrideDuplicateRules": {
+    "minecraft:crafting_shaped": {
+      "ignoredFields": [
+        "pattern",
+        "show_notification",
+        "conditions",
+        "category",
+        "key",
+        "group"
+      ],
+      "rules": {},
+      "shouldSanitize": false
+    }
+  },
+  "strictMode": false
+}
