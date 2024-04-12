@@ -68,6 +68,7 @@ public final class AlmostUnified {
         DebugConfig debugConfig = Config.load(DebugConfig.NAME, new DebugConfig.Serializer());
 
         Collection<UnifyConfig> unifyConfigs = UnifyConfig.safeLoadConfigs();
+        logMissingPriorityMods(unifyConfigs);
         Set<TagKey<Item>> allUnifyTags = bakeAndValidateTags(unifyConfigs, tags, replacementsConfig);
 
         TagReloadHandler.applyCustomTags(tagConfig.getCustomTags());
@@ -78,7 +79,6 @@ public final class AlmostUnified {
         TagMap<Item> tagMap = TagMapImpl.compose(unifyHandlers.stream().map(UnifyHandler::getTagMap).toList());
         ItemHider.applyHideTags(tags, unifyHandlers);
 
-        logMissingPriorityMods(unifyHandlers);
         RUNTIME = new AlmostUnifiedRuntimeImpl(tagMap,
                 unifyHandlers,
                 dupConfig,
@@ -87,10 +87,10 @@ public final class AlmostUnified {
                 tagOwnerships);
     }
 
-    private static void logMissingPriorityMods(List<UnifyHandler> unifyHandlers) {
-        Set<String> mods = unifyHandlers
+    private static void logMissingPriorityMods(Collection<UnifyConfig> unifyConfigs) {
+        Set<String> mods = unifyConfigs
                 .stream()
-                .map(UnifySettings::getModPriorities)
+                .map(UnifyConfig::getModPriorities)
                 .flatMap(ModPriorities::stream)
                 .collect(Collectors.toSet());
 

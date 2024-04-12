@@ -5,6 +5,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -15,6 +16,8 @@ public class UnifyEntryImpl<T> implements UnifyEntry<T> {
     private final ResourceKey<T> entryKey;
     @Nullable
     private T value;
+    @Nullable
+    private TagKey<T> tag;
 
     public UnifyEntryImpl(Registry<T> registry, ResourceLocation entryKey) {
         this.entryKey = ResourceKey.create(registry.key(), entryKey);
@@ -49,8 +52,35 @@ public class UnifyEntryImpl<T> implements UnifyEntry<T> {
     }
 
     @Override
+    public boolean isTagBound() {
+        return tag != null;
+    }
+
+    @Override
+    public TagKey<T> tag() {
+        if (tag == null) {
+            throw new IllegalStateException("Tag not bound to " + this);
+        }
+
+        return tag;
+    }
+
+    @Override
+    public UnifyEntry<T> dominantEntry() {
+        return null;
+    }
+
+    @Override
     public Holder<T> asHolder() {
         return registry.getHolderOrThrow(entryKey);
+    }
+
+    public void bindTag(TagKey<T> tag) {
+        if (this.tag != null) {
+            throw new IllegalStateException("Tag already bound to " + this.tag);
+        }
+
+        this.tag = tag;
     }
 
     @Override
@@ -65,5 +95,10 @@ public class UnifyEntryImpl<T> implements UnifyEntry<T> {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "UnifyEntry{" + key() + "}";
     }
 }

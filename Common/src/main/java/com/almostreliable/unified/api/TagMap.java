@@ -11,15 +11,13 @@ public interface TagMap<T> {
 
     int tagSize();
 
-    int itemSize();
-
     Set<UnifyEntry<T>> getEntriesByTag(TagKey<T> tag);
 
     @Nullable
-    TagKey<T> getTag(ResourceLocation entry);
+    UnifyEntry<T> getEntry(ResourceLocation entry);
 
     @Nullable
-    TagKey<T> getTag(Item item);
+    UnifyEntry<T> getEntry(Item item);
 
     Set<TagKey<T>> getTags();
 }

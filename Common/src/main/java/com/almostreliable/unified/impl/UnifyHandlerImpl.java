@@ -39,11 +39,12 @@ public final class UnifyHandlerImpl implements UnifyHandler {
         var filteredTagMap = tags.createUnifyTagMap(unifyTags::contains, config::includeItem);
         var stoneStrata = StoneStrataLookupImpl.create(config.getStoneStrata(), tags);
 
+        var unifyLookup = new UnifyLookupImpl(config.getModPriorities(), filteredTagMap, stoneStrata, tagOwnerships);
+
         return new UnifyHandlerImpl(
                 config.getName(),
                 config.getModPriorities(),
-                stoneStrata,
-                tagOwnerships,
+                unifyLookup,
                 filteredTagMap,
                 config.getIgnoredRecipes(),
                 config.getIgnoredRecipeTypes(),
@@ -53,7 +54,7 @@ public final class UnifyHandlerImpl implements UnifyHandler {
         );
     }
 
-    public UnifyHandlerImpl(String name, ModPriorities modPriorities, StoneStrataLookup stoneStrata, TagOwnerships tagOwnerships, TagMap<Item> tagMap, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
+    public UnifyHandlerImpl(String name, ModPriorities modPriorities, UnifyLookup unifyLookup, TagMap<Item> tagMap, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
         this.name = name;
         this.modPriorities = modPriorities;
         this.tagMap = tagMap;
@@ -61,7 +62,7 @@ public final class UnifyHandlerImpl implements UnifyHandler {
         this.ignoredRecipeTypes = ignoredRecipeTypes;
         this.ignoredLootTables = ignoredLootTables;
         this.enableLootUnification = enableLootUnification;
-        this.unifyLookup = new UnifyLookupImpl(modPriorities, tagMap, stoneStrata, tagOwnerships);
+        this.unifyLookup = unifyLookup;
         this.recipeViewerHiding = recipeViewerHiding;
     }
 

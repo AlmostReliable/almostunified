@@ -32,7 +32,12 @@ public class UnifyLookupImpl implements UnifyLookup {
     @Nullable
     @Override
     public TagKey<Item> getPreferredTagForItem(ResourceLocation item) {
-        return tagMap.getTag(item);
+        UnifyEntry<Item> entry = tagMap.getEntry(item);
+        if (entry == null) {
+            return null;
+        }
+
+        return entry.tag();
     }
 
     @Nullable

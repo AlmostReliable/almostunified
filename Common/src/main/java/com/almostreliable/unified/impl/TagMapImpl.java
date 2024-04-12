@@ -1,6 +1,5 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.api.UnifyEntry;
 import com.google.common.annotations.VisibleForTesting;
@@ -16,8 +15,8 @@ import java.util.*;
 public class TagMapImpl<T> implements TagMap<T> {
 
     private final Map<TagKey<T>, Set<UnifyEntry<T>>> tagsToEntries = new HashMap<>();
-    private final Map<ResourceLocation, TagKey<T>> idEntriesToTag = new HashMap<>();
-    private final Map<Item, TagKey<T>> itemEntriesToTagCache = new HashMap<>();
+    private final Map<ResourceLocation, UnifyEntry<T>> idEntriesToTag = new HashMap<>();
+    private final Map<Item, UnifyEntry<T>> itemEntriesToTagCache = new HashMap<>();
 
     @VisibleForTesting
     public TagMapImpl() {}
@@ -46,27 +45,20 @@ public class TagMapImpl<T> implements TagMap<T> {
     }
 
     @Override
-    public int itemSize() {
-        return idEntriesToTag.size();
-    }
-
-    @Override
     public Set<UnifyEntry<T>> getEntriesByTag(TagKey<T> tag) {
         return Collections.unmodifiableSet(tagsToEntries.getOrDefault(tag, Collections.emptySet()));
     }
 
     @Nullable
     @Override
-    public TagKey<T> getTag(ResourceLocation entry) {
+    public UnifyEntry<T> getEntry(ResourceLocation entry) {
         return idEntriesToTag.get(entry);
     }
 
     @Nullable
     @Override
-    public TagKey<T> getTag(Item item) {
-        return itemEntriesToTagCache.computeIfAbsent(item, i -> {
-            return getTag(BuiltInRegistries.ITEM.getKey(i));
-        });
+    public UnifyEntry<T> getEntry(Item item) {
+        return itemEntriesToTagCache.computeIfAbsent(item, i -> getEntry(BuiltInRegistries.ITEM.getKey(i)));
     }
 
     @Override
@@ -85,17 +77,17 @@ public class TagMapImpl<T> implements TagMap<T> {
      */
     private void put(TagKey<T> tag, UnifyEntry<T> entry) {
         var entriesForTag = tagsToEntries.computeIfAbsent(tag, k -> new HashSet<>());
-        TagKey<T> currentTag = idEntriesToTag.get(entry.id());
-        if (currentTag != null) {
-            AlmostUnified.LOG.warn(
-                    "Item '{}' already has a tag ('#{}') used for unification and can't have multiple tags. This needs to be manually fixed by the user. Further tags will be ignored.",
-                    entry.id(),
-                    currentTag.location());
-            return;
-        }
+
+//        if (currentTag != null) {
+//            AlmostUnified.LOG.warn(
+//                    "Item '{}' already has a tag ('#{}') used for unification and can't have multiple tags. This needs to be manually fixed by the user. Further tags will be ignored.",
+//                    entry.id(),
+//                    currentTag.location());
+//            return;
+//        }
 
         entriesForTag.add(entry);
-        idEntriesToTag.put(entry.id(), tag);
+        idEntriesToTag.put(entry.id(), entry);
     }
 
     public static class Builder<T> {
@@ -142,9 +134,10 @@ public class TagMapImpl<T> implements TagMap<T> {
         public TagMap<T> build() {
             TagMapImpl<T> tagMap = new TagMapImpl<>();
 
-            entries.forEach((tag, holders) -> {
-                holders.forEach(holder -> {
-                    tagMap.put(tag, holder);
+            entries.forEach((tag, unifyEntries) -> {
+                unifyEntries.forEach(entry -> {
+                    tagMap.put(tag, entry);
+                    ((UnifyEntryImpl<T>) entry).bindTag(tag);
                 });
             });
 
