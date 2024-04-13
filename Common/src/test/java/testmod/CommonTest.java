@@ -3,6 +3,7 @@ package testmod;
 import testmod.gametest_core.GameTestLoader;
 import testmod.tests.*;
 import testmod.tests.core.OwnershipTests;
+import testmod.tests.core.TagInheritanceTests;
 
 public class CommonTest {
 
@@ -17,7 +18,8 @@ public class CommonTest {
                     SmithingRecipeUnifierTest.class,
                     GregTechModernRecipeUnifierTests.class,
                     AdAstraRecipeUnifierTests.class,
-                    OwnershipTests.class
+                    OwnershipTests.class,
+                    TagInheritanceTests.class
             );
         }
     }

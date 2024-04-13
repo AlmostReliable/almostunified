@@ -7,5 +7,7 @@ import java.util.Collection;
 
 public interface TagInheritance<T> {
 
+    boolean skipForInheritance(TagKey<Item> unifyEntry);
+
     boolean shouldInherit(TagKey<T> tag, Collection<TagKey<Item>> tags);
 }

@@ -6,7 +6,12 @@
     ]
   },
   "itemTagInheritanceMode": "ALLOW",
-  "itemTagInheritance": {},
+  "itemTagInheritance": {
+    "minecraft:beacon_payment_items": [
+      "c:not_in_use",
+      "forge:ores/silver"
+    ]
+  },
   "blockTagInheritanceMode": "ALLOW",
   "blockTagInheritance": {}
 }

@@ -19,6 +19,21 @@ public class TagInheritanceImpl<T> implements TagInheritance<T> {
     }
 
     @Override
+    public boolean skipForInheritance(TagKey<Item> unifyEntry) {
+        var asLoc = unifyEntry.location().toString();
+        boolean modeResult = mode == Mode.ALLOW;
+        for (Set<Pattern> patterns : inheritance.values()) {
+            for (Pattern pattern : patterns) {
+                if (pattern.matcher(asLoc).matches()) {
+                    return !modeResult;
+                }
+            }
+        }
+
+        return modeResult;
+    }
+
+    @Override
     public boolean shouldInherit(TagKey<T> tag, Collection<TagKey<Item>> tags) {
         var patterns = inheritance.getOrDefault(tag, Set.of());
         boolean result = checkPatterns(tags, patterns);

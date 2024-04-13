@@ -3,7 +3,6 @@ package com.almostreliable.unified.utils;
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.TagInheritance;
 import com.almostreliable.unified.api.UnifyEntry;
-import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -93,11 +92,11 @@ public final class TagReloadHandler {
         }
     }
 
-    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, List<UnifyHandler> unifyHandlers) {
+    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, List<? extends UnifyLookup> unifyHandlers) {
         Multimap<UnifyEntry<Item>, ResourceLocation> changedItemTags = HashMultimap.create();
         Multimap<UnifyEntry<Item>, ResourceLocation> changedBlockTags = HashMultimap.create();
 
-        var relations = resolveRelations(unifyHandlers);
+        var relations = resolveRelations(unifyHandlers, itemTagInheritance, blockTagInheritance);
         if (relations.isEmpty()) return false;
 
         for (TagRelation relation : relations) {
@@ -146,26 +145,30 @@ public final class TagReloadHandler {
         return false;
     }
 
-    private static Set<TagRelation> resolveRelations(List<UnifyHandler> unifyHandlers) {
+    private static Set<TagRelation> resolveRelations(List<? extends UnifyLookup> unifyLookups, TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance) {
         Set<TagRelation> relations = new HashSet<>();
 
-        for (var handler : unifyHandlers) {
-            relations.addAll(resolveRelations(handler, handler));
+        for (var handler : unifyLookups) {
+            relations.addAll(resolveRelations(handler, itemTagInheritance, blockTagInheritance));
         }
 
         return relations;
     }
 
-    private static Set<TagRelation> resolveRelations(UnifyLookup lookup, UnifyLookup repMap) {
+    private static Set<TagRelation> resolveRelations(UnifyLookup lookup, TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance) {
         Set<TagRelation> relations = new HashSet<>();
 
         for (var unifyTag : lookup.getUnifiedTags()) {
+            if (itemTagInheritance.skipForInheritance(unifyTag) && blockTagInheritance.skipForInheritance(unifyTag)) {
+                continue;
+            }
+
             var itemsByTag = lookup.getEntries(unifyTag);
 
             // avoid handling single entries and tags that only contain the same namespace for all items
             if (Utils.allSameNamespace(itemsByTag)) continue;
 
-            var dominant = repMap.getPreferredItemForTag(unifyTag);
+            var dominant = lookup.getPreferredItemForTag(unifyTag);
             if (dominant == null) continue;
 
             Set<UnifyEntry<Item>> items = removeDominantItem(itemsByTag, dominant);
