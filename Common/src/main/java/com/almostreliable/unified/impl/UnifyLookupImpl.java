@@ -22,9 +22,8 @@ public class UnifyLookupImpl implements UnifyLookup {
     private final TagOwnerships tagOwnerships;
     private final Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries;
     private final Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag;
-    private final Map<Item, UnifyEntry<Item>> itemEntriesToTagCache = new HashMap<>();
 
-    public UnifyLookupImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries, Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag, StoneStrataLookup stoneStrataLookup, TagOwnerships tagOwnerships) {
+    private UnifyLookupImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries, Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag, StoneStrataLookup stoneStrataLookup, TagOwnerships tagOwnerships) {
         this.entries = entries;
         this.idEntriesToTag = idEntriesToTag;
         this.modPriorities = modPriorities;
@@ -51,7 +50,7 @@ public class UnifyLookupImpl implements UnifyLookup {
     @Nullable
     @Override
     public UnifyEntry<Item> getEntry(Item item) {
-        return itemEntriesToTagCache.computeIfAbsent(item, i -> getEntry(BuiltInRegistries.ITEM.getKey(i)));
+        return getEntry(BuiltInRegistries.ITEM.getKey(item));
     }
 
     @Nullable
