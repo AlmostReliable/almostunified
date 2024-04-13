@@ -2,7 +2,11 @@ package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.TagOwnerships;
-import com.google.common.collect.*;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -87,23 +91,19 @@ public class TagOwnershipsImpl implements TagOwnerships {
      *
      * @param rawTags The raw tags to apply ownerships to.
      */
-    public void applyOwnerships(Map<ResourceLocation, Collection<Holder<Item>>> rawTags) {
+    public void applyOwnerships(VanillaTagWrapper<Item> rawTags) {
         Multimap<ResourceLocation, ResourceLocation> changedTags = HashMultimap.create();
 
         ownerToRefs.asMap().forEach((owner, refs) -> {
             var rawHolders = rawTags.get(owner.location());
-            if (rawHolders == null) {
+            if (rawHolders.isEmpty()) {
                 AlmostUnified.LOG.warn("[TagOwnerships] Owner tag '#{}' does not exist!", owner.location());
                 return;
             }
 
-            ImmutableSet.Builder<Holder<Item>> holders = ImmutableSet.builder();
-            holders.addAll(rawHolders);
-            boolean changed = false;
-
             for (var ref : refs) {
                 var refHolders = rawTags.get(ref.location());
-                if (refHolders == null) {
+                if (refHolders.isEmpty()) {
                     AlmostUnified.LOG.warn(
                             "[TagOwnerships] Reference tag '#{}' of owner tag '#{}' does not exist!",
                             ref.location(),
@@ -113,14 +113,9 @@ public class TagOwnershipsImpl implements TagOwnerships {
                 }
 
                 for (Holder<Item> holder : refHolders) {
-                    holders.add(holder);
+                    rawTags.addHolder(owner.location(), holder);
                     holder.unwrapKey().ifPresent(key -> changedTags.put(owner.location(), key.location()));
-                    changed = true;
                 }
-            }
-
-            if (changed) {
-                rawTags.put(owner.location(), holders.build());
             }
         });
 

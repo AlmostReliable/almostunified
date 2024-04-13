@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-// TODO make modified tags in vanillaTags map immutable again
 public class VanillaTagWrapper<T> {
 
     private final Registry<T> registry;
@@ -30,20 +29,20 @@ public class VanillaTagWrapper<T> {
     }
 
     public void addHolder(ResourceLocation tag, Holder<T> holder) {
-        Collection<Holder<T>> existingHolders = vanillaTags.get(tag);
-        if (existingHolders == null) {
-            return;
-        }
-
         if (modifiedTags.contains(tag)) {
-            existingHolders.add(holder);
+            vanillaTags.get(tag).add(holder);
             return;
         }
 
-        Set<Holder<T>> newHolders = new HashSet<>(existingHolders);
+        Collection<Holder<T>> existingHolders = vanillaTags.get(tag);
+        Collection<Holder<T>> newHolders = existingHolders == null ? new HashSet<>() : new HashSet<>(existingHolders);
         newHolders.add(holder);
         vanillaTags.put(tag, newHolders);
         modifiedTags.add(tag);
+    }
+
+    public boolean has(TagKey<T> tag) {
+        return vanillaTags.containsKey(tag.location());
     }
 
     public Collection<Holder<T>> get(TagKey<T> tag) {
@@ -89,5 +88,16 @@ public class VanillaTagWrapper<T> {
         for (var entry : vanillaTags.entrySet()) {
             onConsume.accept(TagKey.create(registry.key(), entry.getKey()), entry.getValue());
         }
+    }
+
+    public void seal() {
+        for (ResourceLocation modifiedTag : modifiedTags) {
+            Collection<Holder<T>> holders = vanillaTags.get(modifiedTag);
+            if (holders != null) {
+                vanillaTags.put(modifiedTag, List.copyOf(holders));
+            }
+        }
+
+        modifiedTags.clear();
     }
 }

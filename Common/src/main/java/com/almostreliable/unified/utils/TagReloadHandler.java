@@ -5,7 +5,6 @@ import com.almostreliable.unified.api.TagInheritance;
 import com.almostreliable.unified.api.UnifyEntry;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.api.UnifyLookup;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -24,39 +23,39 @@ import java.util.*;
 public final class TagReloadHandler {
 
     private static final Object LOCK = new Object();
-
-    private static Map<ResourceLocation, Collection<Holder<Item>>> RAW_ITEM_TAGS;
-    private static Map<ResourceLocation, Collection<Holder<Block>>> RAW_BLOCK_TAGS;
+    @Nullable
+    private static VanillaTagWrapper<Item> VANILLA_ITEM_TAGS;
+    @Nullable
+    private static VanillaTagWrapper<Block> VANILLA_BLOCK_TAGS;
 
     private TagReloadHandler() {}
 
     public static void initItemTags(Map<ResourceLocation, Collection<Holder<Item>>> rawItemTags) {
         synchronized (LOCK) {
-            RAW_ITEM_TAGS = rawItemTags;
+            VANILLA_ITEM_TAGS = VanillaTagWrapper.of(BuiltInRegistries.ITEM, rawItemTags);
         }
     }
 
     public static void initBlockTags(Map<ResourceLocation, Collection<Holder<Block>>> rawBlockTags) {
         synchronized (LOCK) {
-            RAW_BLOCK_TAGS = rawBlockTags;
+            VANILLA_BLOCK_TAGS = VanillaTagWrapper.of(BuiltInRegistries.BLOCK, rawBlockTags);
         }
     }
 
     public static void run() {
-        if (RAW_ITEM_TAGS == null || RAW_BLOCK_TAGS == null) {
+        if (VANILLA_ITEM_TAGS == null || VANILLA_BLOCK_TAGS == null) {
             return;
         }
 
-        AlmostUnified.onTagLoaderReload(RAW_ITEM_TAGS);
+        AlmostUnified.onTagLoaderReload(VANILLA_ITEM_TAGS, VANILLA_BLOCK_TAGS);
 
-        RAW_ITEM_TAGS = null;
-        RAW_BLOCK_TAGS = null;
+        VANILLA_ITEM_TAGS.seal();
+        VANILLA_BLOCK_TAGS.seal();
+        VANILLA_ITEM_TAGS = null;
+        VANILLA_BLOCK_TAGS = null;
     }
 
-    public static void applyCustomTags(Map<ResourceLocation, Set<ResourceLocation>> customTags) {
-        Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
-
-        var vanillaTagWrapper = VanillaTagWrapper.of(BuiltInRegistries.ITEM, RAW_ITEM_TAGS);
+    public static void applyCustomTags(Map<ResourceLocation, Set<ResourceLocation>> customTags, VanillaTagWrapper<Item> itemTags) {
         Multimap<ResourceLocation, ResourceLocation> changedItemTags = HashMultimap.create();
 
         for (var entry : customTags.entrySet()) {
@@ -73,7 +72,7 @@ public final class TagReloadHandler {
                 Holder<Item> itemHolder = BuiltInRegistries.ITEM.getHolder(itemKey).orElse(null);
                 if (itemHolder == null) continue;
 
-                var currentHolders = vanillaTagWrapper.get(tag);
+                var currentHolders = itemTags.get(tag);
 
                 if (!currentHolders.isEmpty()) {
                     if (currentHolders.contains(itemHolder)) {
@@ -82,7 +81,7 @@ public final class TagReloadHandler {
                     }
                 }
 
-                vanillaTagWrapper.addHolder(tag, itemHolder);
+                itemTags.addHolder(tag, itemHolder);
                 changedItemTags.put(tag, itemId);
             }
         }
@@ -94,23 +93,18 @@ public final class TagReloadHandler {
         }
     }
 
-    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, VanillaTagWrapper<Item> vanillaTags, List<UnifyHandler> unifyHandlers) {
-        Preconditions.checkNotNull(RAW_ITEM_TAGS, "Item tags were not loaded correctly");
-        Preconditions.checkNotNull(RAW_BLOCK_TAGS, "Block tags were not loaded correctly");
-
+    public static boolean applyInheritance(TagInheritance<Item> itemTagInheritance, TagInheritance<Block> blockTagInheritance, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, List<UnifyHandler> unifyHandlers) {
         Multimap<UnifyEntry<Item>, ResourceLocation> changedItemTags = HashMultimap.create();
         Multimap<UnifyEntry<Item>, ResourceLocation> changedBlockTags = HashMultimap.create();
 
         var relations = resolveRelations(unifyHandlers);
         if (relations.isEmpty()) return false;
 
-        var blockTagMap = VanillaTagWrapper.of(BuiltInRegistries.BLOCK, RAW_BLOCK_TAGS);
-
         for (TagRelation relation : relations) {
             var dominant = relation.dominant;
-            var dominantBlockHolder = findDominantBlockHolder(blockTagMap, dominant);
+            var dominantBlockHolder = findDominantBlockHolder(blockTags, dominant);
 
-            var dominantItemTags = vanillaTags
+            var dominantItemTags = itemTags
                     .getTags(dominant)
                     .stream()
                     .map(rl -> TagKey.create(Registries.ITEM, rl))
@@ -118,7 +112,7 @@ public final class TagReloadHandler {
 
             for (var item : relation.items) {
                 var appliedItemTags = applyItemTags(itemTagInheritance,
-                        vanillaTags,
+                        itemTags,
                         relation.dominant.asHolder(),
                         dominantItemTags,
                         item);
@@ -127,7 +121,7 @@ public final class TagReloadHandler {
 
                 if (dominantBlockHolder != null) {
                     var appliedBlockTags = applyBlockTags(blockTagInheritance,
-                            blockTagMap,
+                            blockTags,
                             dominantBlockHolder,
                             dominantItemTags,
                             item);

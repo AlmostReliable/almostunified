@@ -4,6 +4,7 @@ import com.almostreliable.unified.api.UnifyEntry;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.Utils;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +13,6 @@ import net.minecraft.world.item.Item;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class ItemHider {
@@ -20,7 +20,7 @@ public class ItemHider {
     public static final TagKey<Item> HIDE_TAG = TagKey.create(Registries.ITEM,
             new ResourceLocation(BuildConfig.MOD_ID, "hide"));
 
-    public static void applyHideTags(Map<ResourceLocation, Collection<Holder<Item>>> tags, Collection<UnifyHandler> handlers) {
+    public static void applyHideTags(VanillaTagWrapper<Item> tags, Collection<UnifyHandler> handlers) {
         for (var handler : handlers) {
             if (handler.hideNonPreferredItemsInRecipeViewers()) {
                 ItemHider.applyHideTags(tags, handler);
@@ -28,18 +28,11 @@ public class ItemHider {
         }
     }
 
-    public static void applyHideTags(Map<ResourceLocation, Collection<Holder<Item>>> tags, UnifyHandler handler) {
+    public static void applyHideTags(VanillaTagWrapper<Item> tags, UnifyHandler handler) {
         var holdersToHide = createHidingItems(handler);
-
-        Collection<Holder<Item>> existing = tags.get(HIDE_TAG.location());
-        if (existing != null) {
-            Set<Holder<Item>> merged = new HashSet<>(existing);
-            merged.addAll(holdersToHide);
-            tags.put(HIDE_TAG.location(), merged);
-            return;
+        for (Holder<Item> holder : holdersToHide) {
+            tags.addHolder(HIDE_TAG.location(), holder);
         }
-
-        tags.put(HIDE_TAG.location(), holdersToHide);
     }
 
     public static Set<Holder<Item>> createHidingItems(UnifyHandler handler) {

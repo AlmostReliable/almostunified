@@ -14,11 +14,10 @@ import com.almostreliable.unified.utils.TagReloadHandler;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
@@ -57,7 +56,7 @@ public final class AlmostUnified {
         return STARTUP_CONFIG;
     }
 
-    public static void onTagLoaderReload(Map<ResourceLocation, Collection<Holder<Item>>> tags) {
+    public static void onTagLoaderReload(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
         LOGGER_POLICY.reset();
         UnifierRegistry unifierRegistry = new UnifierRegistryImpl();
         PluginManager.instance().registerUnifiers(unifierRegistry);
@@ -71,14 +70,18 @@ public final class AlmostUnified {
 
         Collection<UnifyConfig> unifyConfigs = UnifyConfig.safeLoadConfigs();
         logMissingPriorityMods(unifyConfigs);
-        Set<TagKey<Item>> allUnifyTags = bakeAndValidateTags(unifyConfigs, tags, replacementsConfig);
+        Set<TagKey<Item>> allUnifyTags = bakeAndValidateTags(unifyConfigs, itemTags, replacementsConfig);
 
-        TagReloadHandler.applyCustomTags(tagConfig.getCustomTags());
+        TagReloadHandler.applyCustomTags(tagConfig.getCustomTags(), itemTags);
         TagOwnershipsImpl tagOwnerships = new TagOwnershipsImpl(allUnifyTags::contains, tagConfig.getTagOwnerships());
-        tagOwnerships.applyOwnerships(tags);
+        tagOwnerships.applyOwnerships(itemTags);
 
-        List<UnifyHandler> unifyHandlers = createAndPrepareUnifyHandlers(tags, unifyConfigs, tagOwnerships, tagConfig);
-        ItemHider.applyHideTags(tags, unifyHandlers);
+        List<UnifyHandler> unifyHandlers = createAndPrepareUnifyHandlers(itemTags,
+                blockTags,
+                unifyConfigs,
+                tagOwnerships,
+                tagConfig);
+        ItemHider.applyHideTags(itemTags, unifyHandlers);
 
         RUNTIME = new AlmostUnifiedRuntimeImpl(
                 unifyHandlers,
@@ -108,21 +111,22 @@ public final class AlmostUnified {
      * <p>
      * This method also applies tag inheritance. If tag inheritance was applied, all handlers will be rebuilt due to tag inheritance modifications against vanilla tags.
      *
-     * @param tags          All existing tags which are used ingame
+     * @param itemTags      All existing item tags which are used ingame
+     * @param blockTags     All existing block tags which are used ingame
      * @param unifyConfigs  All unify configs
      * @param tagOwnerships All tag ownerships
      * @param tagConfig     Tag config
      * @return All unify handlers
      */
-    private static List<UnifyHandler> createAndPrepareUnifyHandlers(Map<ResourceLocation, Collection<Holder<Item>>> tags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagConfig tagConfig) {
-        var vanillaTagWrapper = VanillaTagWrapper.of(BuiltInRegistries.ITEM, tags);
-        List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, vanillaTagWrapper, tagOwnerships);
+    private static List<UnifyHandler> createAndPrepareUnifyHandlers(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagConfig tagConfig) {
+        List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, tagOwnerships);
         var needsRebuild = TagReloadHandler.applyInheritance(tagConfig.getItemTagInheritance(),
                 tagConfig.getBlockTagInheritance(),
-                vanillaTagWrapper,
+                itemTags,
+                blockTags,
                 unifyHandlers);
         if (needsRebuild) {
-            unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, vanillaTagWrapper, tagOwnerships);
+            unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, tagOwnerships);
         }
 
         return unifyHandlers;
@@ -137,11 +141,11 @@ public final class AlmostUnified {
      * </ul>
      *
      * @param unifyConfigs The unify configs
-     * @param vanillaTags  The vanilla tags
+     * @param itemTags     The vanilla tags
      * @param placeholders The replacements
      * @return The baked tags combined from all unify configs
      */
-    private static Set<TagKey<Item>> bakeAndValidateTags(Collection<UnifyConfig> unifyConfigs, Map<ResourceLocation, Collection<Holder<Item>>> vanillaTags, Placeholders placeholders) {
+    private static Set<TagKey<Item>> bakeAndValidateTags(Collection<UnifyConfig> unifyConfigs, VanillaTagWrapper<Item> itemTags, Placeholders placeholders) {
         Set<TagKey<Item>> result = new HashSet<>();
 
         Map<TagKey<Item>, String> visitedTags = new HashMap<>();
@@ -149,7 +153,7 @@ public final class AlmostUnified {
 
         for (UnifyConfig config : unifyConfigs) {
             Predicate<TagKey<Item>> validator = tag -> {
-                if (!vanillaTags.containsKey(tag.location())) {
+                if (!itemTags.has(tag)) {
                     wrongTags.add(tag);
                     return false;
                 }
