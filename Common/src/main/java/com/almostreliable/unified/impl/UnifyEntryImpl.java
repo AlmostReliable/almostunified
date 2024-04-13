@@ -52,22 +52,12 @@ public class UnifyEntryImpl<T> implements UnifyEntry<T> {
     }
 
     @Override
-    public boolean isTagBound() {
-        return tag != null;
-    }
-
-    @Override
     public TagKey<T> tag() {
         if (tag == null) {
             throw new IllegalStateException("Tag not bound to " + this);
         }
 
         return tag;
-    }
-
-    @Override
-    public UnifyEntry<T> dominantEntry() {
-        return null;
     }
 
     @Override

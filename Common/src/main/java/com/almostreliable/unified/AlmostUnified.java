@@ -1,9 +1,11 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.*;
+import com.almostreliable.unified.api.ModPriorities;
+import com.almostreliable.unified.api.Placeholders;
+import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.config.*;
 import com.almostreliable.unified.impl.AlmostUnifiedRuntimeImpl;
-import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.almostreliable.unified.impl.UnifyHandlerImpl;
 import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
@@ -76,10 +78,9 @@ public final class AlmostUnified {
         tagOwnerships.applyOwnerships(tags);
 
         List<UnifyHandler> unifyHandlers = createAndPrepareUnifyHandlers(tags, unifyConfigs, tagOwnerships, tagConfig);
-        TagMap<Item> tagMap = TagMapImpl.compose(unifyHandlers.stream().map(UnifyHandler::getTagMap).toList());
         ItemHider.applyHideTags(tags, unifyHandlers);
 
-        RUNTIME = new AlmostUnifiedRuntimeImpl(tagMap,
+        RUNTIME = new AlmostUnifiedRuntimeImpl(
                 unifyHandlers,
                 dupConfig,
                 debugConfig,

@@ -8,9 +8,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.function.Predicate;
 
 public interface UnifyLookup {
+    Collection<TagKey<Item>> getUnifiedTags();
+
+    Collection<UnifyEntry<Item>> getEntries(TagKey<Item> tag);
+
+    @Nullable
+    UnifyEntry<Item> getEntry(ResourceLocation entry);
+
+    @Nullable
+    UnifyEntry<Item> getEntry(Item item);
+
     @Nullable
     TagKey<Item> getPreferredTagForItem(ResourceLocation item);
 

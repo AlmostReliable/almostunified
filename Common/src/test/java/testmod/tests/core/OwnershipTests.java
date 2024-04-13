@@ -1,5 +1,8 @@
 package testmod.tests.core;
 
+import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.api.UnifyEntry;
+import com.almostreliable.unified.api.UnifyLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +13,7 @@ import testmod.gametest_core.SimpleGameTest;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OwnershipTests {
@@ -22,8 +26,17 @@ public class OwnershipTests {
      */
     @SimpleGameTest
     public void checkSilverOwnerships() {
-        Item item = BuiltInRegistries.ITEM.get(new ResourceLocation("mod_c:silver_ore"));
+        ResourceLocation silverOreId = new ResourceLocation("mod_c:silver_ore");
+        Item item = BuiltInRegistries.ITEM.get(silverOreId);
         Set<TagKey<Item>> itemTags = item.builtInRegistryHolder().tags().collect(Collectors.toSet());
-        assertTrue(itemTags.contains(TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/silver"))));
+        TagKey<Item> silverTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/silver"));
+        assertTrue(itemTags.contains(silverTag));
+
+        UnifyLookup unifyLookup = AlmostUnified.getRuntime().getUnifyLookup();
+        TagKey<Item> unifyTag = unifyLookup.getPreferredTagForItem(silverOreId);
+        assertEquals(silverTag, unifyTag);
+        UnifyEntry<Item> silverOreEntry = unifyLookup.getPreferredItemForTag(silverTag);
+        assertEquals(silverOreId, silverOreEntry.id());
+
     }
 }

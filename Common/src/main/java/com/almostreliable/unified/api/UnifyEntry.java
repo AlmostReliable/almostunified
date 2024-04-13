@@ -12,11 +12,7 @@ public interface UnifyEntry<T> {
 
     T value();
 
-    boolean isTagBound();
-
     TagKey<T> tag();
-
-    UnifyEntry<T> dominantEntry();
 
     Holder<T> asHolder();
 }

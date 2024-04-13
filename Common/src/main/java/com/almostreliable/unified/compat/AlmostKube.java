@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unused")
 public final class AlmostKube {
@@ -54,11 +55,10 @@ public final class AlmostKube {
     }
 
     public static Set<String> getTags() {
-        return AlmostUnified
-                .getRuntime()
-                .getTagMap()
-                .getTags()
-                .stream()
+        return StreamSupport.stream(AlmostUnified
+                        .getRuntime()
+                        .getUnifyLookup()
+                        .getUnifiedTags().spliterator(), false)
                 .map(tag -> tag.location().toString())
                 .collect(Collectors.toSet());
     }
@@ -67,8 +67,8 @@ public final class AlmostKube {
         var tagKey = TagKey.create(Registries.ITEM, tag);
         return AlmostUnified
                 .getRuntime()
-                .getTagMap()
-                .getEntriesByTag(tagKey)
+                .getUnifyLookup()
+                .getEntries(tagKey)
                 .stream()
                 .map(holder -> holder.id().toString())
                 .collect(Collectors.toSet());

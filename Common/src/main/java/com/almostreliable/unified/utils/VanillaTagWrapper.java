@@ -1,8 +1,6 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.api.UnifyEntry;
-import com.almostreliable.unified.impl.TagMapImpl;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -11,7 +9,7 @@ import net.minecraft.tags.TagKey;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Predicate;
+import java.util.function.BiConsumer;
 
 // TODO make modified tags in vanillaTags map immutable again
 public class VanillaTagWrapper<T> {
@@ -29,27 +27,6 @@ public class VanillaTagWrapper<T> {
     public VanillaTagWrapper(Registry<T> registry, Map<ResourceLocation, Collection<Holder<T>>> vanillaTags) {
         this.registry = registry;
         this.vanillaTags = vanillaTags;
-    }
-
-    public TagMap<T> createUnifyTagMap(Predicate<TagKey<T>> tagFilter, Predicate<ResourceLocation> entryFilter) {
-        var builder = new TagMapImpl.Builder<>(registry);
-
-        for (var entry : vanillaTags.entrySet()) {
-            var tag = TagKey.create(registry.key(), entry.getKey());
-            if (!tagFilter.test(tag)) {
-                continue;
-            }
-
-            for (Holder<T> holder : entry.getValue()) {
-                registry.getResourceKey(holder.value()).ifPresent(key -> {
-                    if (entryFilter.test(key.location())) {
-                        builder.put(tag, key.location());
-                    }
-                });
-            }
-        }
-
-        return builder.build();
     }
 
     public void addHolder(ResourceLocation tag, Holder<T> holder) {
@@ -106,5 +83,11 @@ public class VanillaTagWrapper<T> {
 
 
         return map;
+    }
+
+    public void forEach(BiConsumer<TagKey<T>, Collection<Holder<T>>> onConsume) {
+        for (var entry : vanillaTags.entrySet()) {
+            onConsume.accept(TagKey.create(registry.key(), entry.getKey()), entry.getValue());
+        }
     }
 }

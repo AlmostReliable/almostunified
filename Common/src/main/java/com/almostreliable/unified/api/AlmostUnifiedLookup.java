@@ -5,6 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -66,7 +67,7 @@ public interface AlmostUnifiedLookup {
      *
      * @return The configured tags
      */
-    Set<TagKey<Item>> getConfiguredTags();
+    Collection<TagKey<Item>> getAllUnifiedTags();
 
     class Empty implements AlmostUnifiedLookup {
 
@@ -99,7 +100,7 @@ public interface AlmostUnifiedLookup {
         }
 
         @Override
-        public Set<TagKey<Item>> getConfiguredTags() {
+        public Collection<TagKey<Item>> getAllUnifiedTags() {
             return Set.of();
         }
     }

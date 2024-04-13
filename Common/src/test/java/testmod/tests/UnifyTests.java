@@ -1,17 +1,13 @@
 package testmod.tests;
 
 import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.api.UnifyLookup;
-import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.impl.UnifyLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import testmod.gametest_core.SimpleGameTest;
 
@@ -30,13 +26,10 @@ public class UnifyTests {
             "thermal",
             "create"), new HashMap<>());
 
-    private static final TagMap<Item> TAG_MAP = new TagMapImpl.Builder<>(BuiltInRegistries.ITEM)
-            .put(itemTag("testmod:ingots/iron"),
-                    Items.IRON_INGOT)
-            .build();
-
     public static UnifyLookup unifyLookup() {
-        return new UnifyLookupImpl(MOD_PRIORITIES, TAG_MAP, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
+        return new UnifyLookupImpl.Builder()
+                .put(itemTag("testmod:ingots/iron"), Items.IRON_INGOT)
+                .build(MOD_PRIORITIES, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
     }
 
     private static JsonObject json(String str) {

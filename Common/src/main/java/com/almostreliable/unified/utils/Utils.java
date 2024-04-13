@@ -8,7 +8,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.Set;
+import java.util.Collection;
 
 public final class Utils {
     public static final ResourceLocation UNUSED_ID = new ResourceLocation(BuildConfig.MOD_ID, "unused_id");
@@ -48,7 +48,7 @@ public final class Utils {
      * @param ids set of ids
      * @return true if all ids have the same namespace
      */
-    public static boolean allSameNamespace(Set<UnifyEntry<Item>> ids) {
+    public static boolean allSameNamespace(Collection<UnifyEntry<Item>> ids) {
         if (ids.size() <= 1) return true;
 
         var it = ids.iterator();

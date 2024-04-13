@@ -1,10 +1,12 @@
 package testmod;
 
-import com.almostreliable.unified.api.*;
+import com.almostreliable.unified.api.ModPriorities;
+import com.almostreliable.unified.api.StoneStrataLookup;
+import com.almostreliable.unified.api.TagOwnerships;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.impl.UnifyLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.recipe.RecipeContextImpl;
@@ -14,7 +16,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -84,23 +85,16 @@ public class TestUtils {
     }
 
 
-    public static TagMap<Item> tagMap() {
-        return new TagMapImpl.Builder<>(BuiltInRegistries.ITEM)
-                .put(itemTag("testmod:test_tag"),
-                        "minecraft:test_item",
-                        "mekanism:test_item",
-                        "thermal:test_item",
-                        "testmod:test_item")
-                .build();
-    }
-
     public static UnifyLookup unifyLookup() {
-        return new UnifyLookupImpl(TEST_MOD_PRIORITIES, tagMap(), EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
+        return new UnifyLookupImpl.Builder()
+                .put(itemTag("testmod:test_tag"),
+                        new ResourceLocation("minecraft:test_item"),
+                        new ResourceLocation("mekanism:test_item"),
+                        new ResourceLocation("thermal:test_item"),
+                        new ResourceLocation("testmod:test_item"))
+                .build(TEST_MOD_PRIORITIES, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
     }
 
-    public static UnifyLookup unifyLookup(TagMap<Item> tagMap) {
-        return new UnifyLookupImpl(TEST_MOD_PRIORITIES, tagMap, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
-    }
 
     public static RecipeContext recipeContext() {
         return new RecipeContextImpl(unifyLookup());

@@ -1,15 +1,12 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.TagMap;
 import com.almostreliable.unified.api.TagOwnerships;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.impl.CompositeUnifyLookup;
-import com.almostreliable.unified.impl.TagMapImpl;
 import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -22,11 +19,6 @@ public class EmptyAlmostUnifiedRuntime implements AlmostUnifiedRuntime {
     @Override
     public void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
         // no-op
-    }
-
-    @Override
-    public TagMap<Item> getTagMap() {
-        return new TagMapImpl<>();
     }
 
     @Override

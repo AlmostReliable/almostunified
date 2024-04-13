@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
 
     @Override
     public Set<Item> getPotentialItems(TagKey<Item> tag) {
-        var entries = AlmostUnified.getRuntime().getTagMap().getEntriesByTag(tag);
+        var entries = AlmostUnified.getRuntime().getUnifyLookup().getEntries(tag);
 
         return entries
                 .stream()
@@ -63,7 +64,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     }
 
     @Override
-    public Set<TagKey<Item>> getConfiguredTags() {
-        return AlmostUnified.getRuntime().getTagMap().getTags();
+    public Collection<TagKey<Item>> getAllUnifiedTags() {
+        return AlmostUnified.getRuntime().getUnifyLookup().getUnifiedTags();
     }
 }

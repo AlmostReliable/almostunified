@@ -1,7 +1,10 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.*;
+import com.almostreliable.unified.api.TagInheritance;
+import com.almostreliable.unified.api.UnifyEntry;
+import com.almostreliable.unified.api.UnifyHandler;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -153,17 +156,17 @@ public final class TagReloadHandler {
         Set<TagRelation> relations = new HashSet<>();
 
         for (var handler : unifyHandlers) {
-            relations.addAll(resolveRelations(handler.getTagMap(), handler));
+            relations.addAll(resolveRelations(handler, handler));
         }
 
         return relations;
     }
 
-    private static Set<TagRelation> resolveRelations(TagMap<Item> filteredTagMap, UnifyLookup repMap) {
+    private static Set<TagRelation> resolveRelations(UnifyLookup lookup, UnifyLookup repMap) {
         Set<TagRelation> relations = new HashSet<>();
 
-        for (var unifyTag : filteredTagMap.getTags()) {
-            var itemsByTag = filteredTagMap.getEntriesByTag(unifyTag);
+        for (var unifyTag : lookup.getUnifiedTags()) {
+            var itemsByTag = lookup.getEntries(unifyTag);
 
             // avoid handling single entries and tags that only contain the same namespace for all items
             if (Utils.allSameNamespace(itemsByTag)) continue;
@@ -187,7 +190,7 @@ public final class TagReloadHandler {
      * @param dominant The dominant item
      * @return A set of all items that are not the dominant item and are valid
      */
-    private static Set<UnifyEntry<Item>> removeDominantItem(Set<UnifyEntry<Item>> holders, UnifyEntry<Item> dominant) {
+    private static Set<UnifyEntry<Item>> removeDominantItem(Collection<UnifyEntry<Item>> holders, UnifyEntry<Item> dominant) {
         Set<UnifyEntry<Item>> result = new HashSet<>(holders.size());
         for (var holder : holders) {
             if (!holder.equals(dominant)) {

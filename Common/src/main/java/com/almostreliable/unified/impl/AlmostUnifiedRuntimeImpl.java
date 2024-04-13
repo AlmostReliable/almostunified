@@ -1,14 +1,16 @@
 package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.*;
+import com.almostreliable.unified.api.TagOwnerships;
+import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.UnifyHandler;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.config.DuplicationConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -17,7 +19,6 @@ import java.util.Map;
 
 public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
-    private final TagMap<Item> tagMap;
     private final Collection<? extends UnifyHandler> unifyHandlers;
     private final DuplicationConfig duplicationConfig;
     private final DebugConfig debugConfig;
@@ -25,8 +26,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final TagOwnerships tagOwnerships;
     private final UnifyLookup compositeUnifyLookup;
 
-    public AlmostUnifiedRuntimeImpl(TagMap<Item> tagMap, Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig, DebugConfig debugConfig, UnifierRegistry unifierRegistry, TagOwnerships tagOwnerships) {
-        this.tagMap = tagMap;
+    public AlmostUnifiedRuntimeImpl(Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig, DebugConfig debugConfig, UnifierRegistry unifierRegistry, TagOwnerships tagOwnerships) {
         this.unifyHandlers = unifyHandlers;
         this.duplicationConfig = duplicationConfig;
         this.debugConfig = debugConfig;
@@ -38,7 +38,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     @Override
     public void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
         debugConfig.logRecipes(recipes, "recipes_before_unification.txt");
-        debugConfig.logUnifyTagDump(tagMap);
+        debugConfig.logUnifyTagDump(getUnifyLookup());
 
         long startTime = System.currentTimeMillis();
         RecipeTransformer.Result result = new RecipeTransformer(unifierRegistry,
@@ -48,11 +48,6 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         dumper.dump(debugConfig.dumpOverview, debugConfig.dumpUnification, debugConfig.dumpDuplicates);
 
         debugConfig.logRecipes(recipes, "recipes_after_unification.txt");
-    }
-
-    @Override
-    public TagMap<Item> getTagMap() {
-        return tagMap;
     }
 
     @Override

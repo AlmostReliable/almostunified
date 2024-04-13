@@ -1,17 +1,17 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.api.TagMap;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.FileUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class DebugConfig extends Config {
     public static final String NAME = "debug";
@@ -31,18 +31,17 @@ public class DebugConfig extends Config {
         this.dumpRecipes = dumpRecipes;
     }
 
-    public void logUnifyTagDump(TagMap<Item> tagMap) {
+    public void logUnifyTagDump(UnifyLookup lookup) {
         if (!dumpTagMap) {
             return;
         }
 
         FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), "unify_tag_dump.txt", sb -> {
-            sb.append(tagMap
-                    .getTags()
-                    .stream()
+            sb.append(StreamSupport.stream(lookup
+                            .getUnifiedTags().spliterator(), false)
                     .sorted(Comparator.comparing(t -> t.location().toString()))
-                    .map(t -> StringUtils.rightPad(t.location().toString(), 40) + " => " + tagMap
-                            .getEntriesByTag(t)
+                    .map(t -> StringUtils.rightPad(t.location().toString(), 40) + " => " + lookup
+                            .getEntries(t)
                             .stream()
                             .map(entry -> entry.id().toString())
                             .sorted()

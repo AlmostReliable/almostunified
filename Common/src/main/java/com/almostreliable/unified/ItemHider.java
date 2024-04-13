@@ -45,8 +45,8 @@ public class ItemHider {
     public static Set<Holder<Item>> createHidingItems(UnifyHandler handler) {
         Set<Holder<Item>> hidings = new HashSet<>();
 
-        for (TagKey<Item> tag : handler.getTagMap().getTags()) {
-            var entriesByTag = handler.getTagMap().getEntriesByTag(tag);
+        for (TagKey<Item> tag : handler.getUnifiedTags()) {
+            var entriesByTag = handler.getEntries(tag);
 
             // avoid handling single entries and tags that only contain the same namespace for all items
             if (Utils.allSameNamespace(entriesByTag)) continue;

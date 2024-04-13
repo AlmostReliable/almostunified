@@ -1,13 +1,11 @@
 package testmod.tests;
 
-import com.almostreliable.unified.api.TagMap;
-import com.almostreliable.unified.impl.TagMapImpl;
+import com.almostreliable.unified.api.ModPriorities;
+import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.impl.UnifyLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import net.minecraft.Util;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import testmod.TestUtils;
@@ -21,19 +19,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UnifyLookupTests {
 
-    private static final TagMap<Item> TAG_MAP = new TagMapImpl.Builder<>(BuiltInRegistries.ITEM)
-            .put(TestUtils.itemTag("testmod:ingots/osmium"),
-                    "minecraft:osmium_ingot",
-                    "mekanism:osmium_ingot",
-                    "thermal:osmium_ingot")
-            .put(TestUtils.itemTag("testmod:ingots/cobalt"),
-                    "minecraft:cobalt_ingot",
-                    "thermal:cobalt_ingot")
-            .put(TestUtils.itemTag("testmod:ingots/electrum"),
-                    "mekanism:electrum_ingot",
-                    "create:electrum_ingot",
-                    "thermal:electrum_ingot")
-            .build();
+    private UnifyLookup createLookup(ModPriorities modPriorities) {
+        return new UnifyLookupImpl.Builder()
+                .put(TestUtils.itemTag("testmod:ingots/osmium"),
+                        new ResourceLocation("minecraft:osmium_ingot"),
+                        new ResourceLocation("mekanism:osmium_ingot"),
+                        new ResourceLocation("thermal:osmium_ingot"))
+                .put(TestUtils.itemTag("testmod:ingots/cobalt"),
+                        new ResourceLocation("minecraft:cobalt_ingot"),
+                        new ResourceLocation("thermal:cobalt_ingot"))
+                .put(TestUtils.itemTag("testmod:ingots/electrum"),
+                        new ResourceLocation("mekanism:electrum_ingot"),
+                        new ResourceLocation("create:electrum_ingot"),
+                        new ResourceLocation("thermal:electrum_ingot"))
+                .build(modPriorities, TestUtils.EMPTY_STRATA_LOOKUP, TestUtils.EMPTY_TAG_OWNERSHIPS);
+    }
 
     @SimpleGameTest
     public void testPreferredItemForTag() {
@@ -43,20 +43,18 @@ public class UnifyLookupTests {
                 new HashMap<>()
         );
 
-        var rm = new UnifyLookupImpl(modPriorities,
-                TAG_MAP,
-                TestUtils.EMPTY_STRATA_LOOKUP,
-                TestUtils.EMPTY_TAG_OWNERSHIPS);
+        var rm = createLookup(modPriorities);
+
 
         assertEquals(new ResourceLocation("mekanism:osmium_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/osmium")),
+                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
                 "Osmium ingot from mekanism should be preferred");
 
         assertNull(rm.getPreferredItemForTag(TestUtils.itemTag("testmod:not_exist/osmium")),
                 "Tag not found should return null");
 
         assertEquals(new ResourceLocation("thermal:cobalt_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/cobalt")),
+                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
                 "Cobalt ingot from mekanism should be preferred");
 
         assertNull(rm.getPreferredItemForTag(TestUtils.itemTag("testmod:not_exist/cobalt")),
@@ -66,10 +64,10 @@ public class UnifyLookupTests {
         // After that `getPreferredItemForTag` should return the thermal ingot, as AE2 still does not have one.
         modList.remove("mekanism");
         assertEquals(new ResourceLocation("thermal:osmium_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/osmium")),
+                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
                 "Osmium ingot from thermal should now be preferred");
         assertEquals(new ResourceLocation("thermal:cobalt_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/cobalt")),
+                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
                 "Cobalt ingot from thermal should be preferred");
     }
 
@@ -81,18 +79,15 @@ public class UnifyLookupTests {
                         m -> m.put(TestUtils.itemTag("testmod:ingots/electrum"), "create"))
         );
 
-        var rm = new UnifyLookupImpl(modPriorities,
-                TAG_MAP,
-                TestUtils.EMPTY_STRATA_LOOKUP,
-                TestUtils.EMPTY_TAG_OWNERSHIPS);
+        var rm = createLookup(modPriorities);
 
         assertEquals(new ResourceLocation("create:electrum_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/electrum")),
+                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/electrum")).id(),
                 "Electrum ingot from create should be preferred as it is overridden by priorities");
 
         // but for osmium it's the default behavior
         assertEquals(new ResourceLocation("mekanism:osmium_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/osmium")),
+                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
                 "Osmium ingot from mekanism should be preferred");
     }
 
@@ -103,11 +98,7 @@ public class UnifyLookupTests {
                 new HashMap<>()
         );
 
-        var rm = new UnifyLookupImpl(modPriorities,
-                TAG_MAP,
-                TestUtils.EMPTY_STRATA_LOOKUP,
-                TestUtils.EMPTY_TAG_OWNERSHIPS);
-
+        var rm = createLookup(modPriorities);
 
         assertEquals(TestUtils.itemTag("testmod:ingots/osmium"),
                 rm.getPreferredTagForItem(new ResourceLocation("mekanism:osmium_ingot")));
@@ -126,43 +117,35 @@ public class UnifyLookupTests {
                 new HashMap<>()
         );
 
-        var rm = new UnifyLookupImpl(modPriorities,
-                TAG_MAP,
-                TestUtils.EMPTY_STRATA_LOOKUP,
-                TestUtils.EMPTY_TAG_OWNERSHIPS);
+        var rm = createLookup(modPriorities);
 
         assertEquals(new ResourceLocation("mekanism:osmium_ingot"),
-                rm.getReplacementForItem(new ResourceLocation("mekanism:osmium_ingot")));
+                rm.getReplacementForItem(new ResourceLocation("mekanism:osmium_ingot")).id());
         assertEquals(new ResourceLocation("mekanism:osmium_ingot"),
-                rm.getReplacementForItem(new ResourceLocation("minecraft:osmium_ingot")));
+                rm.getReplacementForItem(new ResourceLocation("minecraft:osmium_ingot")).id());
         assertEquals(new ResourceLocation("mekanism:osmium_ingot"),
-                rm.getReplacementForItem(new ResourceLocation("thermal:osmium_ingot")));
+                rm.getReplacementForItem(new ResourceLocation("thermal:osmium_ingot")).id());
 
         assertEquals(new ResourceLocation("thermal:cobalt_ingot"),
-                rm.getReplacementForItem(new ResourceLocation("thermal:cobalt_ingot")));
+                rm.getReplacementForItem(new ResourceLocation("thermal:cobalt_ingot")).id());
         assertEquals(new ResourceLocation("thermal:cobalt_ingot"),
-                rm.getReplacementForItem(new ResourceLocation("minecraft:cobalt_ingot")));
+                rm.getReplacementForItem(new ResourceLocation("minecraft:cobalt_ingot")).id());
 
         assertEquals(new ResourceLocation("mekanism:electrum_ingot"),
-                rm.getReplacementForItem(new ResourceLocation("create:electrum_ingot")));
+                rm.getReplacementForItem(new ResourceLocation("create:electrum_ingot")).id());
         assertEquals(new ResourceLocation("mekanism:electrum_ingot"),
-                rm.getReplacementForItem(new ResourceLocation("mekanism:electrum_ingot")));
+                rm.getReplacementForItem(new ResourceLocation("mekanism:electrum_ingot")).id());
         assertEquals(new ResourceLocation("mekanism:electrum_ingot"),
-                rm.getReplacementForItem(new ResourceLocation("thermal:electrum_ingot")));
+                rm.getReplacementForItem(new ResourceLocation("thermal:electrum_ingot")).id());
     }
 
     @SimpleGameTest
     public void testItemInUnifiedIngredient() {
-        TagMap<Item> tagMap = new TagMapImpl.Builder<>(BuiltInRegistries.ITEM)
-                .put(TestUtils.itemTag("minecraft:tools"),
-                        "minecraft:iron_sword",
-                        "minecraft:iron_pickaxe",
-                        "minecraft:iron_shovel")
-                .build();
-        var rm = new UnifyLookupImpl(TestUtils.EMPTY_MOD_PRIORITIES,
-                tagMap,
-                TestUtils.EMPTY_STRATA_LOOKUP,
-                TestUtils.EMPTY_TAG_OWNERSHIPS);
+        var rm = new UnifyLookupImpl.Builder()
+                .put(TestUtils.itemTag("minecraft:tools"), Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL)
+                .build(TestUtils.EMPTY_MOD_PRIORITIES,
+                        TestUtils.EMPTY_STRATA_LOOKUP,
+                        TestUtils.EMPTY_TAG_OWNERSHIPS);
 
         Ingredient ingredient = Ingredient.of(Items.IRON_SWORD);
 

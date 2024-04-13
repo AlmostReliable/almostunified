@@ -19,7 +19,6 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     private final ModPriorities modPriorities;
     private final UnifyLookup unifyLookup;
     private final boolean recipeViewerHiding;
-    private final TagMap<Item> tagMap;
     private final Set<Pattern> ignoredRecipes;
     private final Set<Pattern> ignoredRecipeTypes;
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache = new HashMap<>();
@@ -35,17 +34,30 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     }
 
     public static UnifyHandler create(VanillaTagWrapper<Item> tags, UnifyConfig config, TagOwnerships tagOwnerships) {
+        var modPriorities = config.getModPriorities();
         var unifyTags = config.getBakedTags();
-        var filteredTagMap = tags.createUnifyTagMap(unifyTags::contains, config::includeItem);
         var stoneStrata = StoneStrataLookupImpl.create(config.getStoneStrata(), tags);
 
-        var unifyLookup = new UnifyLookupImpl(config.getModPriorities(), filteredTagMap, stoneStrata, tagOwnerships);
+        var lookupBuilder = new UnifyLookupImpl.Builder();
+        tags.forEach((tag, holders) -> {
+            if (!unifyTags.contains(tag)) {
+                return;
+            }
+
+            for (Holder<Item> holder : holders) {
+                holder.unwrapKey().ifPresent(key -> {
+                    var id = key.location();
+                    if (config.includeItem(id)) {
+                        lookupBuilder.put(tag, id);
+                    }
+                });
+            }
+        });
 
         return new UnifyHandlerImpl(
                 config.getName(),
-                config.getModPriorities(),
-                unifyLookup,
-                filteredTagMap,
+                modPriorities,
+                lookupBuilder.build(modPriorities, stoneStrata, tagOwnerships),
                 config.getIgnoredRecipes(),
                 config.getIgnoredRecipeTypes(),
                 config.getIgnoredLootTables(),
@@ -54,10 +66,9 @@ public final class UnifyHandlerImpl implements UnifyHandler {
         );
     }
 
-    public UnifyHandlerImpl(String name, ModPriorities modPriorities, UnifyLookup unifyLookup, TagMap<Item> tagMap, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
+    public UnifyHandlerImpl(String name, ModPriorities modPriorities, UnifyLookup unifyLookup, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
         this.name = name;
         this.modPriorities = modPriorities;
-        this.tagMap = tagMap;
         this.ignoredRecipes = ignoredRecipes;
         this.ignoredRecipeTypes = ignoredRecipeTypes;
         this.ignoredLootTables = ignoredLootTables;
@@ -115,11 +126,6 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     }
 
     @Override
-    public TagMap<Item> getTagMap() {
-        return tagMap;
-    }
-
-    @Override
     public boolean hideNonPreferredItemsInRecipeViewers() {
         return recipeViewerHiding;
     }
@@ -127,6 +133,28 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Collection<TagKey<Item>> getUnifiedTags() {
+        return unifyLookup.getUnifiedTags();
+    }
+
+    @Override
+    public Collection<UnifyEntry<Item>> getEntries(TagKey<Item> tag) {
+        return unifyLookup.getEntries(tag);
+    }
+
+    @Nullable
+    @Override
+    public UnifyEntry<Item> getEntry(ResourceLocation entry) {
+        return unifyLookup.getEntry(entry);
+    }
+
+    @Nullable
+    @Override
+    public UnifyEntry<Item> getEntry(Item item) {
+        return unifyLookup.getEntry(item);
     }
 
     @Nullable
@@ -186,4 +214,5 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     public TagOwnerships getTagOwnerships() {
         return unifyLookup.getTagOwnerships();
     }
+
 }
