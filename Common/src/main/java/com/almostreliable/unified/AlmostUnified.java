@@ -6,6 +6,7 @@ import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.config.*;
 import com.almostreliable.unified.impl.AlmostUnifiedRuntimeImpl;
+import com.almostreliable.unified.impl.TagInheritance;
 import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.almostreliable.unified.impl.UnifyHandlerImpl;
 import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
@@ -80,15 +81,10 @@ public final class AlmostUnified {
                 blockTags,
                 unifyConfigs,
                 tagOwnerships,
-                tagConfig);
+                tagConfig.getTagInheritance());
         ItemHider.applyHideTags(itemTags, unifyHandlers);
 
-        RUNTIME = new AlmostUnifiedRuntimeImpl(
-                unifyHandlers,
-                dupConfig,
-                debugConfig,
-                unifierRegistry,
-                tagOwnerships);
+        RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers, dupConfig, debugConfig, unifierRegistry, tagOwnerships);
     }
 
     private static void logMissingPriorityMods(Collection<UnifyConfig> unifyConfigs) {
@@ -111,20 +107,16 @@ public final class AlmostUnified {
      * <p>
      * This method also applies tag inheritance. If tag inheritance was applied, all handlers will be rebuilt due to tag inheritance modifications against vanilla tags.
      *
-     * @param itemTags      All existing item tags which are used ingame
-     * @param blockTags     All existing block tags which are used ingame
-     * @param unifyConfigs  All unify configs
-     * @param tagOwnerships All tag ownerships
-     * @param tagConfig     Tag config
+     * @param itemTags       All existing item tags which are used ingame
+     * @param blockTags      All existing block tags which are used ingame
+     * @param unifyConfigs   All unify configs
+     * @param tagOwnerships  All tag ownerships
+     * @param tagInheritance Tag inheritance data
      * @return All unify handlers
      */
-    private static List<UnifyHandler> createAndPrepareUnifyHandlers(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagConfig tagConfig) {
+    private static List<UnifyHandler> createAndPrepareUnifyHandlers(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagInheritance tagInheritance) {
         List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, tagOwnerships);
-        var needsRebuild = TagReloadHandler.applyInheritance(tagConfig.getItemTagInheritance(),
-                tagConfig.getBlockTagInheritance(),
-                itemTags,
-                blockTags,
-                unifyHandlers);
+        var needsRebuild = tagInheritance.apply(itemTags, blockTags, unifyHandlers);
         if (needsRebuild) {
             unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, tagOwnerships);
         }
@@ -159,8 +151,7 @@ public final class AlmostUnified {
                 }
 
                 if (visitedTags.containsKey(tag)) {
-                    AlmostUnified.LOG.warn(
-                            "Tag '{}' from unify config '{}' was already created in unify config '{}'",
+                    AlmostUnified.LOG.warn("Tag '{}' from unify config '{}' was already created in unify config '{}'",
                             config.getName(),
                             tag.location(),
                             visitedTags.get(tag));
@@ -190,7 +181,8 @@ public final class AlmostUnified {
 
     private static Layout<? extends Serializable> getLayout(@Nullable Appender appender, Configuration config) {
         if (appender == null) {
-            return PatternLayout.newBuilder()
+            return PatternLayout
+                    .newBuilder()
                     .withConfiguration(config)
                     .withPattern("%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %msg%n")
                     .build();

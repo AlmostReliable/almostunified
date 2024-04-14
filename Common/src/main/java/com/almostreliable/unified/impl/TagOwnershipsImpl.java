@@ -113,7 +113,7 @@ public class TagOwnershipsImpl implements TagOwnerships {
                 }
 
                 for (Holder<Item> holder : refHolders) {
-                    rawTags.addHolder(owner.location(), holder);
+                    rawTags.add(owner.location(), holder);
                     holder.unwrapKey().ifPresent(key -> changedTags.put(owner.location(), key.location()));
                 }
             }

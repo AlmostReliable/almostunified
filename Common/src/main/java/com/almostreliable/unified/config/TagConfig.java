@@ -1,7 +1,6 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.api.TagInheritance;
-import com.almostreliable.unified.impl.TagInheritanceImpl;
+import com.almostreliable.unified.impl.TagInheritance;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -24,12 +23,12 @@ public class TagConfig extends Config {
     public static final String NAME = "tags";
     private final Map<ResourceLocation, Set<ResourceLocation>> customTags;
     private final Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships;
-    private final TagInheritanceImpl.Mode itemTagInheritanceMode;
+    private final TagInheritance.Mode itemTagInheritanceMode;
     private final Map<TagKey<Item>, Set<Pattern>> itemTagInheritance;
-    private final TagInheritanceImpl.Mode blockTagInheritanceMode;
+    private final TagInheritance.Mode blockTagInheritanceMode;
     private final Map<TagKey<Block>, Set<Pattern>> blockTagInheritance;
 
-    public TagConfig(String name, Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships, TagInheritanceImpl.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritanceImpl.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance) {
+    public TagConfig(String name, Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships, TagInheritance.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritance.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance) {
         super(name);
         this.customTags = customTags;
         this.tagOwnerships = tagOwnerships;
@@ -39,12 +38,11 @@ public class TagConfig extends Config {
         this.blockTagInheritance = blockTagInheritance;
     }
 
-    public TagInheritance<Item> getItemTagInheritance() {
-        return new TagInheritanceImpl<>(itemTagInheritanceMode, itemTagInheritance);
-    }
-
-    public TagInheritance<Block> getBlockTagInheritance() {
-        return new TagInheritanceImpl<>(blockTagInheritanceMode, blockTagInheritance);
+    public TagInheritance getTagInheritance() {
+        return new TagInheritance(itemTagInheritanceMode,
+                itemTagInheritance,
+                blockTagInheritanceMode,
+                blockTagInheritance);
     }
 
     public Map<ResourceLocation, Set<ResourceLocation>> getCustomTags() {
@@ -75,12 +73,12 @@ public class TagConfig extends Config {
                     e -> new ResourceLocation(e.getKey()),
                     ResourceLocation::new), new HashMap<>());
 
-            TagInheritanceImpl.Mode itemTagInheritanceMode = deserializeTagInheritanceMode(json,
+            TagInheritance.Mode itemTagInheritanceMode = deserializeTagInheritanceMode(json,
                     ITEM_TAG_INHERITANCE_MODE);
             Map<TagKey<Item>, Set<Pattern>> itemTagInheritance = deserializePatternsForLocations(Registries.ITEM,
                     json,
                     ITEM_TAG_INHERITANCE);
-            TagInheritanceImpl.Mode blockTagInheritanceMode = deserializeTagInheritanceMode(json,
+            TagInheritance.Mode blockTagInheritanceMode = deserializeTagInheritanceMode(json,
                     BLOCK_TAG_INHERITANCE_MODE);
             Map<TagKey<Block>, Set<Pattern>> blockTagInheritance = deserializePatternsForLocations(Registries.BLOCK,
                     json,
@@ -162,11 +160,11 @@ public class TagConfig extends Config {
         }
 
 
-        private TagInheritanceImpl.Mode deserializeTagInheritanceMode(JsonObject json, String key) {
-            return safeGet(() -> TagInheritanceImpl.Mode.valueOf(json
+        private TagInheritance.Mode deserializeTagInheritanceMode(JsonObject json, String key) {
+            return safeGet(() -> TagInheritance.Mode.valueOf(json
                     .getAsJsonPrimitive(key)
                     .getAsString()
-                    .toUpperCase()), TagInheritanceImpl.Mode.ALLOW);
+                    .toUpperCase()), TagInheritance.Mode.ALLOW);
         }
     }
 }

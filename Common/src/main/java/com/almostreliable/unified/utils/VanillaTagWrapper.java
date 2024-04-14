@@ -11,6 +11,14 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 
+/**
+ * Base wrapper to store vanilla tags and their holders. The wrapper allows to add new tags and holders to a tag.
+ * By default, the holder collection for each tag is immutable. When attempting to modify the collection it will be copied and marked as modified.
+ * <p>
+ * After all operations are done, the vanilla tags should be sealed with {@link VanillaTagWrapper#seal()} to prevent further changes.
+ *
+ * @param <T>
+ */
 public class VanillaTagWrapper<T> {
 
     private final Registry<T> registry;
@@ -28,7 +36,7 @@ public class VanillaTagWrapper<T> {
         this.vanillaTags = vanillaTags;
     }
 
-    public void addHolder(ResourceLocation tag, Holder<T> holder) {
+    public void add(ResourceLocation tag, Holder<T> holder) {
         if (modifiedTags.contains(tag)) {
             vanillaTags.get(tag).add(holder);
             return;
@@ -80,7 +88,6 @@ public class VanillaTagWrapper<T> {
             }
         }
 
-
         return map;
     }
 
@@ -99,5 +106,6 @@ public class VanillaTagWrapper<T> {
         }
 
         modifiedTags.clear();
+        holdersToTags = null;
     }
 }

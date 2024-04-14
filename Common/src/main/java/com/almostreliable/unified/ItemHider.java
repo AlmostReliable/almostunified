@@ -31,7 +31,7 @@ public class ItemHider {
     public static void applyHideTags(VanillaTagWrapper<Item> tags, UnifyHandler handler) {
         var holdersToHide = createHidingItems(handler);
         for (Holder<Item> holder : holdersToHide) {
-            tags.addHolder(HIDE_TAG.location(), holder);
+            tags.add(HIDE_TAG.location(), holder);
         }
     }
 
