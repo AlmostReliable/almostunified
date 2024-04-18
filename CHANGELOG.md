@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.9.3] - 2024-04-18
+
+### Added
+
+- added support for Alloy Forgery
+
 ## [0.9.2] - 2024-03-17
 
 ### Fixed
@@ -128,6 +134,8 @@ Initial 1.20.1 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+
+[0.9.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.3
 [0.9.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.2
 [0.9.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.1
 [0.9.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.0
