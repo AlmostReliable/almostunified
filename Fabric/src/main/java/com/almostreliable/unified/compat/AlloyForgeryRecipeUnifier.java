@@ -14,10 +14,10 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nullable;
 
 public class AlloyForgeryRecipeUnifier implements RecipeUnifier {
+
     @Override
     public void collectUnifier(RecipeUnifierBuilder builder) {
         builder.put(RecipeConstants.OUTPUT, this::replaceTagOutput);
-
     }
 
     @Nullable
