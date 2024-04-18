@@ -44,6 +44,7 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
     @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
         factory.registerForMod(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
+        factory.registerForMod(ModConstants.ALLOY_FORGERY, new AlloyForgeryRecipeUnifier());
         factory.registerForMod(ModConstants.APPLIED_ENERGISTICS, new AppliedEnergisticsUnifier());
         factory.registerForMod(ModConstants.AMETHYST_IMBUEMENT, new AmethystImbuementRecipeUnifier());
         factory.registerForMod(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
