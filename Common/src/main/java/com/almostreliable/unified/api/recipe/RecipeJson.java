@@ -6,10 +6,6 @@ import javax.annotation.Nullable;
 
 public interface RecipeJson extends RecipeData {
 
-    boolean changed();
-
-    void markChanged();
-
     @Nullable
     JsonElement getProperty(String key);
 

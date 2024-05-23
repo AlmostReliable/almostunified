@@ -174,8 +174,8 @@ public class RecipeContextImpl implements RecipeContext {
     @Override
     public void unifyInputs(RecipeJson recipe, String recipeKey) {
         var element = recipe.getProperty(recipeKey);
-        if (element != null && unifyBasicInput(element)) {
-            recipe.markChanged();
+        if (element != null) {
+            unifyBasicInput(element);
         }
     }
 
@@ -292,15 +292,12 @@ public class RecipeContextImpl implements RecipeContext {
             var replacement = createOutputReplacement(primitive);
             if (replacement != null) {
                 recipe.setProperty(recipeKey, replacement);
-                recipe.markChanged();
             }
 
             return;
         }
 
-        if (unifyBasicOutput(element, unifyTagToItems, nestedLookupKeys)) {
-            recipe.markChanged();
-        }
+        unifyBasicOutput(element, unifyTagToItems, nestedLookupKeys);
     }
 
     @Override

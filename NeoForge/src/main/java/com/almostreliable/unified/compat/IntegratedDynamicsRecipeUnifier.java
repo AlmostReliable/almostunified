@@ -55,8 +55,6 @@ public class IntegratedDynamicsRecipeUnifier implements RecipeUnifier {
             return;
         }
 
-        if (context.unifyBasicOutput(items, true, RecipeConstants.ITEM)) {
-            recipe.markChanged();
-        }
+        context.unifyBasicOutput(items, true, RecipeConstants.ITEM);
     }
 }

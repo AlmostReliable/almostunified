@@ -5,12 +5,12 @@ import com.almostreliable.unified.api.StoneStrataLookup;
 import com.almostreliable.unified.api.TagOwnerships;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.recipe.RecipeContext;
-import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.impl.UnifyLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.recipe.RecipeContextImpl;
 import com.almostreliable.unified.recipe.RecipeJsonImpl;
+import com.almostreliable.unified.recipe.RecipeLink;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -72,8 +72,13 @@ public class TestUtils {
         }
     };
 
-    public static RecipeJson recipe(JsonObject json) {
-        return new RecipeJsonImpl(new ResourceLocation("test"), json);
+    public static RecipeLink recipe(String jsonStr) {
+        var json = json(jsonStr);
+        return new RecipeLink(new ResourceLocation("test"), json);
+    }
+
+    public static RecipeLink recipe(JsonObject json) {
+        return new RecipeLink(new ResourceLocation("test"), json);
     }
 
     public static JsonObject json(String json) {
@@ -101,25 +106,25 @@ public class TestUtils {
     }
 
     public static void assertUnify(RecipeUnifier unifier, String jsonActual, String jsonExpected) {
-        var actual = TestUtils.json(jsonActual);
-
-        var recipe = TestUtils.recipe(actual);
-        unifier.unifyItems(recipeContext(), recipe);
-        assertTrue(recipe.changed());
+        var recipe = TestUtils.recipe(jsonActual);
+        JsonObject copy = recipe.getOriginal().deepCopy();
+        var json = new RecipeJsonImpl(recipe.getId(), copy);
+        unifier.unifyItems(recipeContext(), json);
+        assertNotEquals(recipe.getOriginal(), copy);
 
         var expected = TestUtils.json(jsonExpected);
-        assertJson(expected, actual);
+        assertJson(expected, copy);
     }
 
-    public static void assertNoUnify(RecipeUnifier unifier, String json) {
-        var actual = TestUtils.json(json);
+    public static void assertNoUnify(RecipeUnifier unifier, String jsonStr) {
+        var recipe = TestUtils.recipe(jsonStr);
+        JsonObject copy = recipe.getOriginal().deepCopy();
+        var json = new RecipeJsonImpl(recipe.getId(), copy);
+        unifier.unifyItems(recipeContext(), json);
+        assertEquals(recipe.getOriginal(), copy);
 
-        var recipe = TestUtils.recipe(actual);
-        unifier.unifyItems(recipeContext(), recipe);
-        assertFalse(recipe.changed());
-
-        var expected = TestUtils.json(json);
-        assertJson(expected, actual);
+        var expected = TestUtils.json(jsonStr);
+        assertJson(expected, copy);
     }
 
     public static void assertJson(JsonObject expected, JsonObject actual) {

@@ -9,7 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 public class GregTechModernRecipeUnifier implements RecipeUnifier {
 
@@ -30,7 +30,7 @@ public class GregTechModernRecipeUnifier implements RecipeUnifier {
                 json -> context.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
     }
 
-    public void doUnify(RecipeJson recipe, String key, Function<JsonObject, Boolean> callback) {
+    public void doUnify(RecipeJson recipe, String key, Consumer<JsonObject> callback) {
         JsonElement property = recipe.getProperty(key);
         if (property == null) {
             return;
@@ -41,8 +41,8 @@ public class GregTechModernRecipeUnifier implements RecipeUnifier {
         }
 
         for (JsonElement element : arr) {
-            if (element.getAsJsonObject().get(CONTENT) instanceof JsonObject content && callback.apply(content)) {
-                recipe.markChanged();
+            if (element.getAsJsonObject().get(CONTENT) instanceof JsonObject content) {
+                callback.accept(content);
             }
         }
     }

@@ -200,8 +200,8 @@ public class RecipeTransformer {
      */
     public void unifyRecipe(RecipeLink recipe) {
         try {
-            JsonObject maybeUnified = recipe.getOriginal().deepCopy(); // TODO remove later and store different
-            RecipeJson json = new RecipeJsonImpl(recipe.getId(), maybeUnified);
+            JsonObject recipeCopy = recipe.getOriginal().deepCopy();
+            RecipeJson json = new RecipeJsonImpl(recipe.getId(), recipeCopy);
 
             for (var handler : unifyHandlers) {
                 if (!handler.shouldIncludeRecipe(recipe)) {
@@ -213,8 +213,8 @@ public class RecipeTransformer {
                 unifier.unifyItems(ctx, json);
             }
 
-            if (json.changed()) {
-                recipe.setUnified(maybeUnified);
+            if (!recipe.getOriginal().equals(recipeCopy)) {
+                recipe.setUnified(recipeCopy);
             }
 
             propertiesLogger.log(recipe.getType(), recipe.getOriginal());

@@ -27,15 +27,12 @@ public class ArsNouveauRecipeUnifier implements RecipeUnifier {
 
         for (JsonElement element : array) {
             if (context.unifyBasicInput(element)) {
-                recipe.markChanged();
                 continue;
             }
 
             if (element instanceof JsonObject obj) {
                 JsonElement inner = obj.get(RecipeConstants.ITEM);
-                if (context.unifyBasicInput(inner)) {
-                    recipe.markChanged();
-                }
+                context.unifyBasicInput(inner);
             }
         }
     }

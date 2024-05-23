@@ -5,17 +5,13 @@ import com.almostreliable.unified.compat.ArsNouveauRecipeUnifier;
 import testmod.TestUtils;
 import testmod.gametest_core.SimpleGameTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static testmod.TestUtils.recipeContext;
-
 public class ArsNouveauRecipeTests {
 
     public static final RecipeUnifier UNIFIER = new ArsNouveauRecipeUnifier();
 
     @SimpleGameTest
     public void testPedestalItems() {
-        var actual = TestUtils.json("""
+        TestUtils.assertUnify(UNIFIER, """
                 {
                   "type": "ars_nouveau:enchanting_apparatus",
                   "keepNbtOfReagent": false,
@@ -40,13 +36,7 @@ public class ArsNouveauRecipeTests {
                   ],
                   "sourceCost": 0
                 }
-                """);
-
-        var recipe = TestUtils.recipe(actual);
-        UNIFIER.unifyItems(recipeContext(), recipe);
-        assertTrue(recipe.changed());
-
-        var expected = TestUtils.json("""
+                """, """
                 {
                   "type": "ars_nouveau:enchanting_apparatus",
                   "keepNbtOfReagent": false,
@@ -72,12 +62,11 @@ public class ArsNouveauRecipeTests {
                   "sourceCost": 0
                 }
                 """);
-        assertEquals(expected, actual);
     }
 
     @SimpleGameTest
     public void testPedestalItemsNested() {
-        var actual = TestUtils.json("""
+        TestUtils.assertUnify(UNIFIER, """
                 {
                   "type": "ars_nouveau:reactive_enchantment",
                   "pedestalItems": [
@@ -99,13 +88,7 @@ public class ArsNouveauRecipeTests {
                   ],
                   "sourceCost": 3000
                 }
-                """);
-
-        var recipe = TestUtils.recipe(actual);
-        UNIFIER.unifyItems(recipeContext(), recipe);
-        assertTrue(recipe.changed());
-
-        var expected = TestUtils.json("""
+                """, """
                 {
                   "type": "ars_nouveau:reactive_enchantment",
                   "pedestalItems": [
@@ -128,13 +111,12 @@ public class ArsNouveauRecipeTests {
                   "sourceCost": 3000
                 }
                 """);
-        assertEquals(expected, actual);
     }
 
 
     @SimpleGameTest
     public void testInputItemsNested() {
-        var actual = TestUtils.json("""
+        TestUtils.assertUnify(UNIFIER, """
                 {
                   "type": "ars_nouveau:glyph",
                   "count": 1,
@@ -153,13 +135,7 @@ public class ArsNouveauRecipeTests {
                   ],
                   "output": "ars_nouveau:glyph_bounce"
                 }
-                """);
-
-        var recipe = TestUtils.recipe(actual);
-        UNIFIER.unifyItems(recipeContext(), recipe);
-        assertTrue(recipe.changed());
-
-        var expected = TestUtils.json("""
+                """, """
                 {
                   "type": "ars_nouveau:glyph",
                   "count": 1,
@@ -179,6 +155,5 @@ public class ArsNouveauRecipeTests {
                   "output": "ars_nouveau:glyph_bounce"
                 }
                 """);
-        assertEquals(expected, actual);
     }
 }

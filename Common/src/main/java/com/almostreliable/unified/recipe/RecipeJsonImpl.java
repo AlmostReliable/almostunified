@@ -12,7 +12,6 @@ public class RecipeJsonImpl implements RecipeJson {
 
     private final ResourceLocation id;
     private final JsonObject json;
-    private boolean changed;
 
     public RecipeJsonImpl(ResourceLocation id, JsonObject json) {
         this.id = id;
@@ -38,16 +37,6 @@ public class RecipeJsonImpl implements RecipeJson {
         return json.has(property);
     }
 
-    @Override
-    public boolean changed() {
-        return changed;
-    }
-
-    @Override
-    public void markChanged() {
-        changed = true;
-    }
-
     @Nullable
     @Override
     public JsonElement getProperty(String key) {
@@ -58,6 +47,5 @@ public class RecipeJsonImpl implements RecipeJson {
     public void setProperty(String key, JsonElement value) {
         Objects.requireNonNull(value, "value cannot be null");
         json.add(key, value);
-        markChanged();
     }
 }
