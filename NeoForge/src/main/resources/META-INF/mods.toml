@@ -26,3 +26,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "$modId-common.mixins.json"
+
+[[mixins]]
+config = "$modId-neoforge.mixins.json"

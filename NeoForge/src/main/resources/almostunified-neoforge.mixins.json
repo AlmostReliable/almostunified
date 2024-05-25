@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "com.almostreliable.unified.mixin.neoforge",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "OreConfigurationAccessor",
+    "ServerLifecycleHooksMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
