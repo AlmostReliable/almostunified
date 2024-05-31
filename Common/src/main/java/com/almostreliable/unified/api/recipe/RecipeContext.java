@@ -1,34 +1,16 @@
 package com.almostreliable.unified.api.recipe;
 
+import com.almostreliable.unified.api.UnifyLookup;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 
 public interface RecipeContext {
 
-    @Nullable
-    ResourceLocation getReplacementForItem(@Nullable ResourceLocation item);
-
-    @Nullable
-    ResourceLocation getPreferredItemForTag(@Nullable TagKey<Item> tag);
-
-    @Nullable
-    TagKey<Item> getPreferredTagForItem(@Nullable ResourceLocation item);
-
-    @Nullable
-    JsonElement createIngredientReplacement(@Nullable JsonElement element);
-
-    @Nullable
-    JsonElement createResultReplacement(@Nullable JsonElement element);
-
-    @Nullable
-    JsonElement createResultReplacement(@Nullable JsonElement element, boolean includeTagCheck, String... lookupKeys);
+    UnifyLookup getLookup();
 
     void unifyInputs(RecipeJson recipe, String recipeKey);
 

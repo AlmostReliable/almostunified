@@ -219,8 +219,7 @@ public class RecipeTransformer {
 
             propertiesLogger.log(recipe.getType(), recipe.getOriginal());
         } catch (Exception e) {
-            AlmostUnified.LOG.warn("Error unifying recipe '{}': {}", recipe.getId(), e.getMessage());
-            e.printStackTrace();
+            AlmostUnified.LOG.error("Error unifying recipe '{}'", recipe.getId(), e);
         }
     }
 
