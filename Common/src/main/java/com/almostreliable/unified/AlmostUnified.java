@@ -80,7 +80,12 @@ public final class AlmostUnified {
                 tagConfig.getTagInheritance());
         ItemHider.applyHideTags(itemTags, unifyHandlers);
 
-        RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers, dupConfig, debugConfig, unifierRegistry, tagOwnerships);
+        RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers,
+                dupConfig,
+                debugConfig,
+                unifierRegistry,
+                tagOwnerships,
+                replacementsConfig);
     }
 
     private static void logMissingPriorityMods(Collection<UnifyConfig> unifyConfigs) {

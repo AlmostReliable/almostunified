@@ -13,4 +13,6 @@ public interface AlmostUnifiedRuntime {
     UnifyHandler getUnifyHandler(String name);
 
     TagOwnerships getTagOwnerships();
+
+    Placeholders getPlaceholders();
 }

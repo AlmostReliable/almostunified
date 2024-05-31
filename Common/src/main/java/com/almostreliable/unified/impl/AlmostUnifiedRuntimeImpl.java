@@ -21,14 +21,16 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
     private final DebugConfig debugConfig;
     private final UnifierRegistry unifierRegistry;
     private final TagOwnerships tagOwnerships;
+    private final Placeholders placeholders;
     private final UnifyLookup compositeUnifyLookup;
 
-    public AlmostUnifiedRuntimeImpl(Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig, DebugConfig debugConfig, UnifierRegistry unifierRegistry, TagOwnerships tagOwnerships) {
+    public AlmostUnifiedRuntimeImpl(Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig, DebugConfig debugConfig, UnifierRegistry unifierRegistry, TagOwnerships tagOwnerships, Placeholders placeholders) {
         this.unifyHandlers = unifyHandlers;
         this.duplicationConfig = duplicationConfig;
         this.debugConfig = debugConfig;
         this.unifierRegistry = unifierRegistry;
         this.tagOwnerships = tagOwnerships;
+        this.placeholders = placeholders;
         this.compositeUnifyLookup = new CompositeUnifyLookup(unifyHandlers, tagOwnerships);
     }
 
@@ -72,5 +74,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
     @Override
     public TagOwnerships getTagOwnerships() {
         return tagOwnerships;
+    }
+
+    @Override
+    public Placeholders getPlaceholders() {
+        return placeholders;
     }
 }
