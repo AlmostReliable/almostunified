@@ -34,12 +34,12 @@ public final class TestUtils {
     private TestUtils() {}
 
     public static JsonCompare.CompareSettings getDefaultCompareSettings() {
-        return Defaults.getDefaultDuplicateRules(AlmostUnifiedPlatform.Platform.FORGE);
+        return Defaults.getDefaultDuplicateRules(AlmostUnifiedPlatform.Platform.NEO_FORGE);
     }
 
     public static JsonCompare.CompareSettings getDefaultShapedCompareSettings() {
         return Defaults
-                .getDefaultDuplicateOverrides(AlmostUnifiedPlatform.Platform.FORGE)
+                .getDefaultDuplicateOverrides(AlmostUnifiedPlatform.Platform.NEO_FORGE)
                 .get(new ResourceLocation("crafting_shaped"));
     }
 

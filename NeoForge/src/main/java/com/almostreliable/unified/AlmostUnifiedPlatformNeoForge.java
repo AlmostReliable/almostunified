@@ -26,7 +26,7 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
 
     @Override
     public Platform getPlatform() {
-        return Platform.FORGE;
+        return Platform.NEO_FORGE;
     }
 
     @Override

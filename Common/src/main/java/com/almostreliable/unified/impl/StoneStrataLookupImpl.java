@@ -72,7 +72,7 @@ public final class StoneStrataLookupImpl implements StoneStrataLookup {
         });
 
         Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
-            case FORGE -> "forge:ores/.+";
+            case NEO_FORGE -> "forge:ores/.+";
             case FABRIC -> "(c:ores/.+|(minecraft|c):.+_ores)";
         });
         return new StoneStrataLookupImpl(stoneStrataIds, tagMatcher, itemToStoneStrata);

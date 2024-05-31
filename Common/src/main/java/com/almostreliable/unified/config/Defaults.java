@@ -133,7 +133,7 @@ public final class Defaults {
 
     public static List<String> getModPriorities(AlmostUnifiedPlatform.Platform platform) {
         return switch (platform) {
-            case FORGE -> List.of(
+            case NEO_FORGE -> List.of(
                     "minecraft",
                     "kubejs",
                     "crafttweaker",
@@ -156,7 +156,7 @@ public final class Defaults {
 
     public static List<String> getTags(AlmostUnifiedPlatform.Platform platform) {
         return switch (platform) {
-            case FORGE -> List.of(
+            case NEO_FORGE -> List.of(
                     "forge:nuggets/{material}",
                     "forge:dusts/{material}",
                     "forge:gears/{material}",
@@ -215,7 +215,7 @@ public final class Defaults {
     private static JsonCompare.CompareSettings getDefaultCompareSettings(AlmostUnifiedPlatform.Platform platform) {
         JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
         result.ignoreField(switch (platform) {
-            case FORGE -> "conditions";
+            case NEO_FORGE -> "conditions";
             case FABRIC -> "fabric:load_conditions";
         });
         result.ignoreField("group");

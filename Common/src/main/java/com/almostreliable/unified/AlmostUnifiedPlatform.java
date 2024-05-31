@@ -45,7 +45,7 @@ public interface AlmostUnifiedPlatform {
     }
 
     enum Platform {
-        FORGE,
+        NEO_FORGE,
         FABRIC
     }
 }
