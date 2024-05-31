@@ -35,7 +35,7 @@ public class OwnershipTests {
         UnifyLookup unifyLookup = AlmostUnifiedLookup.INSTANCE.getRuntimeOrThrow().getUnifyLookup();
         TagKey<Item> unifyTag = unifyLookup.getPreferredTagForItem(silverOreId);
         assertEquals(silverTag, unifyTag);
-        UnifyEntry<Item> silverOreEntry = unifyLookup.getPreferredItemForTag(silverTag);
+        UnifyEntry<Item> silverOreEntry = unifyLookup.getPreferredEntryForTag(silverTag);
         assertEquals(silverOreId, silverOreEntry.id());
 
     }

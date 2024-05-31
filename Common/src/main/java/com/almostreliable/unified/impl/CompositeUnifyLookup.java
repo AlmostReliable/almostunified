@@ -157,9 +157,9 @@ public class CompositeUnifyLookup implements UnifyLookup {
     }
 
     @Override
-    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag) {
+    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag) {
         for (var unifyLookup : unifyLookups) {
-            var result = unifyLookup.getPreferredItemForTag(tag);
+            var result = unifyLookup.getPreferredEntryForTag(tag);
             if (result != null) {
                 return result;
             }
@@ -169,9 +169,9 @@ public class CompositeUnifyLookup implements UnifyLookup {
     }
 
     @Override
-    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
         for (var unifyLookup : unifyLookups) {
-            var result = unifyLookup.getPreferredItemForTag(tag, itemFilter);
+            var result = unifyLookup.getPreferredEntryForTag(tag, itemFilter);
             if (result != null) {
                 return result;
             }
@@ -181,9 +181,9 @@ public class CompositeUnifyLookup implements UnifyLookup {
     }
 
     @Override
-    public boolean isItemInUnifiedIngredient(Ingredient ingred, ItemStack item) {
+    public boolean isItemInUnifiedIngredient(Ingredient ingredient, ItemStack item) {
         for (var unifyLookup : unifyLookups) {
-            if (unifyLookup.isItemInUnifiedIngredient(ingred, item)) {
+            if (unifyLookup.isItemInUnifiedIngredient(ingredient, item)) {
                 return true;
             }
         }

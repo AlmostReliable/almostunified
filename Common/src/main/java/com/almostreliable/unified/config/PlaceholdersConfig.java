@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class PlaceholdersConfig extends Config implements Placeholders {
 
@@ -69,6 +70,11 @@ public class PlaceholdersConfig extends Config implements Placeholders {
     @Override
     public Collection<String> getValues(String key) {
         return replacements.getOrDefault(key, Collections.emptyList());
+    }
+
+    @Override
+    public void forEach(BiConsumer<String, Collection<String>> consumer) {
+        replacements.forEach(consumer);
     }
 
     public static class Serializer extends Config.Serializer<PlaceholdersConfig> {

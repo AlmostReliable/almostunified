@@ -47,27 +47,27 @@ public class UnifyLookupTests {
 
 
         assertEquals(new ResourceLocation("mekanism:osmium_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
+                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
                 "Osmium ingot from mekanism should be preferred");
 
-        assertNull(rm.getPreferredItemForTag(TestUtils.itemTag("testmod:not_exist/osmium")),
+        assertNull(rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:not_exist/osmium")),
                 "Tag not found should return null");
 
         assertEquals(new ResourceLocation("thermal:cobalt_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
+                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
                 "Cobalt ingot from mekanism should be preferred");
 
-        assertNull(rm.getPreferredItemForTag(TestUtils.itemTag("testmod:not_exist/cobalt")),
+        assertNull(rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:not_exist/cobalt")),
                 "Tag not found should return null");
 
         // Now we remove mekanism from modList.
         // After that `getPreferredItemForTag` should return the thermal ingot, as AE2 still does not have one.
         modList.remove("mekanism");
         assertEquals(new ResourceLocation("thermal:osmium_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
+                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
                 "Osmium ingot from thermal should now be preferred");
         assertEquals(new ResourceLocation("thermal:cobalt_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
+                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
                 "Cobalt ingot from thermal should be preferred");
     }
 
@@ -82,12 +82,12 @@ public class UnifyLookupTests {
         var rm = createLookup(modPriorities);
 
         assertEquals(new ResourceLocation("create:electrum_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/electrum")).id(),
+                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/electrum")).id(),
                 "Electrum ingot from create should be preferred as it is overridden by priorities");
 
         // but for osmium it's the default behavior
         assertEquals(new ResourceLocation("mekanism:osmium_ingot"),
-                rm.getPreferredItemForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
+                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
                 "Osmium ingot from mekanism should be preferred");
     }
 

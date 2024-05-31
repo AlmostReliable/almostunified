@@ -61,7 +61,7 @@ public class UnifyEntryImpl<T> implements UnifyEntry<T> {
     }
 
     @Override
-    public Holder<T> asHolder() {
+    public Holder.Reference<T> asHolderOrThrow() {
         return registry.getHolderOrThrow(entryKey);
     }
 

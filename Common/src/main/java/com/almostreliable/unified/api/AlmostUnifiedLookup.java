@@ -17,6 +17,11 @@ public interface AlmostUnifiedLookup {
 
     AlmostUnifiedRuntime getRuntimeOrThrow();
 
+    /**
+     * Get the core runtime from AlmostUnified. Runtime is available as soon minecraft reads the tags.
+     *
+     * @return The runtime
+     */
     @Nullable
     AlmostUnifiedRuntime getRuntime();
 

@@ -195,7 +195,7 @@ public class RecipeContextImpl implements RecipeContext {
 
         if (unifyTagToItems && json.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
             var tag = TagKey.create(Registries.ITEM, new ResourceLocation(primitive.getAsString()));
-            var entry = getLookup().getPreferredItemForTag(tag);
+            var entry = getLookup().getPreferredEntryForTag(tag);
             if (entry != null) {
                 json.remove(RecipeConstants.TAG);
                 json.addProperty(RecipeConstants.ITEM, entry.id().toString());

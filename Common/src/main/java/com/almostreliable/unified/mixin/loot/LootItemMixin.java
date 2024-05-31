@@ -21,7 +21,7 @@ public class LootItemMixin implements LootUnifyHandler {
             return false;
         }
 
-        this.item = replacement.asHolder();
+        this.item = replacement.asHolderOrThrow();
         return true;
     }
 }

@@ -195,19 +195,19 @@ public final class UnifyHandlerImpl implements UnifyHandler {
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag) {
-        return unifyLookup.getPreferredItemForTag(tag);
+    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag) {
+        return unifyLookup.getPreferredEntryForTag(tag);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
-        return unifyLookup.getPreferredItemForTag(tag, itemFilter);
+    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+        return unifyLookup.getPreferredEntryForTag(tag, itemFilter);
     }
 
     @Override
-    public boolean isItemInUnifiedIngredient(Ingredient ingred, ItemStack item) {
-        return unifyLookup.isItemInUnifiedIngredient(ingred, item);
+    public boolean isItemInUnifiedIngredient(Ingredient ingredient, ItemStack item) {
+        return unifyLookup.isItemInUnifiedIngredient(ingredient, item);
     }
 
     @Override

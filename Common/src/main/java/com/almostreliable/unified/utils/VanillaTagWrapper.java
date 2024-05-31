@@ -67,7 +67,7 @@ public class VanillaTagWrapper<T> {
     }
 
     public Set<ResourceLocation> getTags(UnifyEntry<T> entry) {
-        return getTags(entry.asHolder());
+        return getTags(entry.asHolderOrThrow());
     }
 
     public Set<ResourceLocation> getTags(Holder<T> holder) {

@@ -42,7 +42,7 @@ public final class AlmostKube {
 
     public static ItemStack getPreferredItemForTag(ResourceLocation tag) {
         var tagKey = TagKey.create(Registries.ITEM, tag);
-        var entry = AlmostUnifiedLookup.INSTANCE.getRuntimeOrThrow().getUnifyLookup().getPreferredItemForTag(tagKey);
+        var entry = AlmostUnifiedLookup.INSTANCE.getRuntimeOrThrow().getUnifyLookup().getPreferredEntryForTag(tagKey);
         if (entry == null) {
             return ItemStack.EMPTY;
         }

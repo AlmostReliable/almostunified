@@ -14,5 +14,5 @@ public interface UnifyEntry<T> {
 
     TagKey<T> tag();
 
-    Holder<T> asHolder();
+    Holder.Reference<T> asHolderOrThrow();
 }

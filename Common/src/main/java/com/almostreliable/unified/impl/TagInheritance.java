@@ -40,7 +40,7 @@ public class TagInheritance {
 
         for (var relation : relations) {
             var dominant = relation.dominant;
-            var dominantItemHolder = dominant.asHolder();
+            var dominantItemHolder = dominant.asHolderOrThrow();
             var dominantBlockHolder = findDominantBlockHolder(blockTags, dominant);
 
             var dominantItemTags = itemTags
@@ -143,7 +143,7 @@ public class TagInheritance {
                 // avoid handling single entries and tags that only contain the same namespace for all items
                 if (Utils.allSameNamespace(itemsByTag)) continue;
 
-                var dominant = lookup.getPreferredItemForTag(unifyTag);
+                var dominant = lookup.getPreferredEntryForTag(unifyTag);
                 if (dominant == null) continue;
 
                 var items = removeDominantItem(itemsByTag, dominant);

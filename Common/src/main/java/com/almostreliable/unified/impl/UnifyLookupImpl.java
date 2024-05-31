@@ -86,10 +86,10 @@ public class UnifyLookupImpl implements UnifyLookup {
 
         if (stoneStrataLookup.isStoneStrataTag(t)) {
             String stone = stoneStrataLookup.getStoneStrata(item);
-            return getPreferredItemForTag(t, i -> stone.equals(stoneStrataLookup.getStoneStrata(i)));
+            return getPreferredEntryForTag(t, i -> stone.equals(stoneStrataLookup.getStoneStrata(i)));
         }
 
-        return getPreferredItemForTag(t);
+        return getPreferredEntryForTag(t);
     }
 
     @Nullable
@@ -106,13 +106,13 @@ public class UnifyLookupImpl implements UnifyLookup {
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag) {
-        return getPreferredItemForTag(tag, i -> true);
+    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag) {
+        return getPreferredEntryForTag(tag, i -> true);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getPreferredItemForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
         var tagToLookup = tagOwnerships.getOwner(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
@@ -130,10 +130,10 @@ public class UnifyLookupImpl implements UnifyLookup {
     }
 
     @Override
-    public boolean isItemInUnifiedIngredient(Ingredient ingred, ItemStack item) {
+    public boolean isItemInUnifiedIngredient(Ingredient ingredient, ItemStack item) {
         Set<TagKey<Item>> checkedTags = new HashSet<>();
 
-        for (ItemStack ingredItem : ingred.getItems()) {
+        for (ItemStack ingredItem : ingredient.getItems()) {
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(ingredItem.getItem());
 
             var preferredTag = getPreferredTagForItem(itemId);

@@ -64,7 +64,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
             return null;
         }
 
-        var replacement = runtime.getUnifyLookup().getPreferredItemForTag(tag);
+        var replacement = runtime.getUnifyLookup().getPreferredEntryForTag(tag);
         if (replacement == null) {
             return null;
         }
