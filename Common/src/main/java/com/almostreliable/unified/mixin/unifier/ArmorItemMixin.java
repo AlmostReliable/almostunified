@@ -1,6 +1,6 @@
 package com.almostreliable.unified.mixin.unifier;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.api.AlmostUnifiedLookup;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
@@ -18,8 +18,8 @@ public class ArmorItemMixin {
 
     @Inject(method = "isValidRepairItem", at = @At("HEAD"), cancellable = true)
     private void unified$repairUnification(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
-        if (AlmostUnified
-                .getRuntime()
+        if (AlmostUnifiedLookup.INSTANCE
+                .getRuntimeOrThrow()
                 .getUnifyLookup()
                 .isItemInUnifiedIngredient(material.getRepairIngredient(), repairCandidate)) {
             cir.setReturnValue(true);

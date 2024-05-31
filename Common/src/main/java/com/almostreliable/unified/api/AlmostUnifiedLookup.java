@@ -15,6 +15,11 @@ public interface AlmostUnifiedLookup {
 
     boolean isLoaded();
 
+    AlmostUnifiedRuntime getRuntimeOrThrow();
+
+    @Nullable
+    AlmostUnifiedRuntime getRuntime();
+
     /**
      * Returns the replacement item for a given {@link ItemLike}. Will return null if no configured
      * tag exists that includes the item.
@@ -74,6 +79,17 @@ public interface AlmostUnifiedLookup {
         @Override
         public boolean isLoaded() {
             return false;
+        }
+
+        @Override
+        public AlmostUnifiedRuntime getRuntimeOrThrow() {
+            throw new IllegalStateException("The runtime is not loaded");
+        }
+
+        @Nullable
+        @Override
+        public AlmostUnifiedRuntime getRuntime() {
+            return null;
         }
 
         @Nullable

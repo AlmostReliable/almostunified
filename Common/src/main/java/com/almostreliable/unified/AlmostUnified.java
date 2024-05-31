@@ -1,14 +1,12 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.Placeholders;
-import com.almostreliable.unified.api.UnifierRegistry;
-import com.almostreliable.unified.api.UnifyHandler;
+import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.config.*;
 import com.almostreliable.unified.impl.AlmostUnifiedRuntimeImpl;
 import com.almostreliable.unified.impl.TagInheritance;
 import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.almostreliable.unified.impl.UnifyHandlerImpl;
+import com.almostreliable.unified.recipe.RecipeUnifyHandler;
 import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
 import com.almostreliable.unified.utils.FileUtils;
 import com.almostreliable.unified.utils.TagReloadHandler;
@@ -43,10 +41,8 @@ public final class AlmostUnified {
         return RUNTIME != null;
     }
 
-    public static AlmostUnifiedRuntime getRuntime() {
-        if (RUNTIME == null) {
-            return new EmptyAlmostUnifiedRuntime();
-        }
+    @Nullable
+    static AlmostUnifiedRuntime getRuntime() {
         return RUNTIME;
     }
 
@@ -176,7 +172,12 @@ public final class AlmostUnified {
 
     public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes) {
         Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
-        RUNTIME.run(recipes, getStartupConfig().isServerOnly());
+        if (RUNTIME instanceof RecipeUnifyHandler handler) {
+            handler.run(recipes, getStartupConfig().isServerOnly());
+        } else {
+            AlmostUnified.LOG.error(
+                    "Internal error. Implementation of given AlmostUnifiedRuntime does not implement RecipeUnifyHandler!");
+        }
     }
 
     private static Layout<? extends Serializable> getLayout(@Nullable Appender appender, Configuration config) {

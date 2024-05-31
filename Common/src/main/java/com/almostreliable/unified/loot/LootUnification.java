@@ -1,8 +1,8 @@
 package com.almostreliable.unified.loot;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.AlmostUnifiedRuntime;
-import com.almostreliable.unified.EmptyAlmostUnifiedRuntime;
+import com.almostreliable.unified.api.AlmostUnifiedLookup;
+import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import com.almostreliable.unified.api.UnifyHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootDataManager;
@@ -18,8 +18,8 @@ public class LootUnification {
 
     public static void unifyLoot(LootDataManager lootDataManager) {
         try {
-            AlmostUnifiedRuntime runtime = AlmostUnified.getRuntime();
-            if (runtime instanceof EmptyAlmostUnifiedRuntime) {
+            AlmostUnifiedRuntime runtime = AlmostUnifiedLookup.INSTANCE.getRuntime();
+            if (runtime == null) {
                 return;
             }
 
@@ -45,8 +45,8 @@ public class LootUnification {
 
     public static void unifyLoot(ResourceLocation tableId, LootTable table) {
         try {
-            AlmostUnifiedRuntime runtime = AlmostUnified.getRuntime();
-            if (runtime instanceof EmptyAlmostUnifiedRuntime) {
+            AlmostUnifiedRuntime runtime = AlmostUnifiedLookup.INSTANCE.getRuntime();
+            if (runtime == null) {
                 return;
             }
 

@@ -1,14 +1,11 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.TagOwnerships;
-import com.almostreliable.unified.api.UnifierRegistry;
-import com.almostreliable.unified.api.UnifyHandler;
-import com.almostreliable.unified.api.UnifyLookup;
+import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.config.DuplicationConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
+import com.almostreliable.unified.recipe.RecipeUnifyHandler;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,7 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
+public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, RecipeUnifyHandler {
 
     private final Collection<? extends UnifyHandler> unifyHandlers;
     private final DuplicationConfig duplicationConfig;

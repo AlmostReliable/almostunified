@@ -1,6 +1,6 @@
 package testmod.tests.core;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.api.AlmostUnifiedLookup;
 import com.almostreliable.unified.api.UnifyEntry;
 import com.almostreliable.unified.api.UnifyLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,7 +32,7 @@ public class OwnershipTests {
         TagKey<Item> silverTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/silver"));
         assertTrue(itemTags.contains(silverTag));
 
-        UnifyLookup unifyLookup = AlmostUnified.getRuntime().getUnifyLookup();
+        UnifyLookup unifyLookup = AlmostUnifiedLookup.INSTANCE.getRuntimeOrThrow().getUnifyLookup();
         TagKey<Item> unifyTag = unifyLookup.getPreferredTagForItem(silverOreId);
         assertEquals(silverTag, unifyTag);
         UnifyEntry<Item> silverOreEntry = unifyLookup.getPreferredItemForTag(silverTag);

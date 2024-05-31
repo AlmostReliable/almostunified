@@ -2,6 +2,7 @@ package com.almostreliable.unified.worldgen;
 
 import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.api.AlmostUnifiedLookup;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.mixin.neoforge.OreConfigurationAccessor;
 import net.minecraft.core.Holder;
@@ -32,7 +33,7 @@ public class WorldGenUnifier {
     }
 
     public void process() {
-        var lookup = AlmostUnified.getRuntime().getUnifyLookup();
+        var lookup = AlmostUnifiedLookup.INSTANCE.getRuntimeOrThrow().getUnifyLookup();
         cfRegistry.holders().forEach(holder -> {
             switch (handleConfiguredFeature(lookup, holder)) {
                 case SAME -> {
