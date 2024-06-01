@@ -1,9 +1,13 @@
 {
   "modPriorities": [
+    "testmod",
     "minecraft",
     "mod_c",
     "mod_b",
     "mod_a",
+    "meka_fake",
+    "ie_fake",
+    "thermal_fake",
     "create",
     "thermal",
     "immersiveengineering",
@@ -39,6 +43,6 @@
   ],
   "ignoredRecipes": [],
   "ignoredLootTables": [],
-  "enableLootUnification": false,
+  "enableLootUnification": true,
   "recipeViewerHiding": true
 }

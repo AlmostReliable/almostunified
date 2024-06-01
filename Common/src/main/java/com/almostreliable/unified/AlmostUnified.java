@@ -6,6 +6,7 @@ import com.almostreliable.unified.impl.AlmostUnifiedRuntimeImpl;
 import com.almostreliable.unified.impl.TagInheritance;
 import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.almostreliable.unified.impl.UnifyHandlerImpl;
+import com.almostreliable.unified.loot.LootUnification;
 import com.almostreliable.unified.recipe.RecipeUnifyHandler;
 import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
 import com.almostreliable.unified.utils.FileUtils;
@@ -13,6 +14,7 @@ import com.almostreliable.unified.utils.TagReloadHandler;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -175,7 +177,7 @@ public final class AlmostUnified {
         return result;
     }
 
-    public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes) {
+    public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes, HolderLookup.Provider registries) {
         Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
         if (RUNTIME instanceof RecipeUnifyHandler handler) {
             handler.run(recipes, getStartupConfig().isServerOnly());
@@ -183,6 +185,8 @@ public final class AlmostUnified {
             AlmostUnified.LOG.error(
                     "Internal error. Implementation of given AlmostUnifiedRuntime does not implement RecipeUnifyHandler!");
         }
+
+        LootUnification.unifyLoot(RUNTIME, registries);
     }
 
     private static Layout<? extends Serializable> getLayout(@Nullable Appender appender, Configuration config) {

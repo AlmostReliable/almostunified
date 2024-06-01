@@ -19,7 +19,8 @@ public class CommonTest {
                     GregTechModernRecipeUnifierTests.class,
                     AdAstraRecipeUnifierTests.class,
                     OwnershipTests.class,
-                    TagInheritanceTests.class
+                    TagInheritanceTests.class,
+                    LootUnificationTests.class
             );
         }
     }

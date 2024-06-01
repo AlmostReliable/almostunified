@@ -9,7 +9,6 @@
     "loot.LootItemMixin",
     "loot.LootPoolMixin",
     "loot.LootTableMixin",
-    "loot.ReloadableServerRegistriesMixin",
     "runtime.RecipeManagerMixin",
     "runtime.TagLoaderMixin",
     "unifier.ArmorItemMixin",
