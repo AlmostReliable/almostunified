@@ -4,9 +4,8 @@ import com.almostreliable.unified.AlmostUnified;
 import com.almostreliable.unified.api.AlmostUnifiedLookup;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import com.almostreliable.unified.api.UnifyHandler;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.loot.LootDataManager;
-import net.minecraft.world.level.storage.loot.LootDataType;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.Collection;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class LootUnification {
 
-    public static void unifyLoot(LootDataManager lootDataManager) {
+    public static void unifyLoot(Registry<LootTable> lootTableRegistry) {
         try {
             AlmostUnifiedRuntime runtime = AlmostUnifiedLookup.INSTANCE.getRuntime();
             if (runtime == null) {
@@ -30,34 +29,15 @@ public class LootUnification {
                 return;
             }
 
-            for (ResourceLocation tableId : lootDataManager.getKeys(LootDataType.TABLE)) {
-                LootTable table = lootDataManager.getElement(LootDataType.TABLE, tableId);
-                if (table != null) {
-                    unifyLoot(tableId, table, unifyHandlers);
-                }
-
-
-            }
+            lootTableRegistry.holders().forEach(holder -> unifyLoot(holder, unifyHandlers));
         } catch (Exception e) {
             AlmostUnified.LOG.error("Failed to unify loot", e);
         }
     }
 
-    public static void unifyLoot(ResourceLocation tableId, LootTable table) {
-        try {
-            AlmostUnifiedRuntime runtime = AlmostUnifiedLookup.INSTANCE.getRuntime();
-            if (runtime == null) {
-                return;
-            }
-
-            unifyLoot(tableId, table, runtime.getUnifyHandlers());
-        } catch (Exception e) {
-            AlmostUnified.LOG.error("Failed to unify loot", e);
-        }
-    }
-
-    private static void unifyLoot(ResourceLocation tableId, LootTable table, Collection<? extends UnifyHandler> unifyHandlers) {
-        LootUnifyHandler lootUnifyHandler = LootUnifyHandler.cast(table);
+    private static void unifyLoot(Holder.Reference<LootTable> lootTableHolder, Collection<? extends UnifyHandler> unifyHandlers) {
+        LootUnifyHandler lootUnifyHandler = LootUnifyHandler.cast(lootTableHolder.value());
+        var tableId = lootTableHolder.key().location();
 
         Set<UnifyHandler> modifiedTable = new HashSet<>();
         for (UnifyHandler unifyHandler : unifyHandlers) {

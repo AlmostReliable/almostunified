@@ -3,8 +3,10 @@ package testmod.gametest_core.mixin;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,7 +18,7 @@ import java.util.List;
 public class ItemTooltipMixin {
 
     @Inject(method = "getTooltipLines", at = @At("TAIL"))
-    private void auTest$injectTagsToItem(Player player, TooltipFlag tooltipFlag, CallbackInfoReturnable<List<Component>> cir) {
+    private void auTest$injectTagsToItem(Item.TooltipContext tooltipContext, @Nullable Player player, TooltipFlag tooltipFlag, CallbackInfoReturnable<List<Component>> cir) {
         var stack = (ItemStack) (Object) this;
         List<Component> l = cir.getReturnValue();
         l.add(Component.literal("---------------"));

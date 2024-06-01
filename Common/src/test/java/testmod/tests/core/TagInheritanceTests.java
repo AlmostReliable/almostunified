@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.BeaconMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import testmod.gametest_core.AlmostGameTestHelper;
@@ -22,7 +23,7 @@ public class TagInheritanceTests {
         BlockPos pos = new BlockPos(1, 2, 1);
         helper.setBlock(pos, Blocks.BEACON);
         BeaconBlockEntity be = helper.getBlockEntity(pos, BeaconBlockEntity.class);
-        Player player = helper.makeMockPlayer();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         var menu = (BeaconMenu) be.createMenu(42, player.getInventory(), player);
         assert menu != null;
         Slot slot = menu.getSlot(0);

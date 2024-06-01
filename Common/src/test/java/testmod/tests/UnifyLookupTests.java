@@ -142,7 +142,7 @@ public class UnifyLookupTests {
     @SimpleGameTest
     public void testItemInUnifiedIngredient() {
         var rm = new UnifyLookupImpl.Builder()
-                .put(TestUtils.itemTag("minecraft:tools"), Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL)
+                .put(TestUtils.itemTag("c:tools"), Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL)
                 .build(TestUtils.EMPTY_MOD_PRIORITIES,
                         TestUtils.EMPTY_STRATA_LOOKUP,
                         TestUtils.EMPTY_TAG_OWNERSHIPS);

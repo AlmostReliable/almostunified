@@ -2,20 +2,16 @@ package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
-import com.almostreliable.unified.loot.LootUnification;
 import com.almostreliable.unified.recipe.ClientRecipeTracker;
 import com.almostreliable.unified.utils.Utils;
 import com.almostreliable.unified.worldgen.WorldGenBiomeModifier;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.objectweb.asm.Type;
@@ -32,11 +28,6 @@ public class AlmostUnifiedForge {
         }
 
         eventBus.addListener(this::onCommonSetup);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onUnifyLootTable);
-    }
-
-    private void onUnifyLootTable(LootTableLoadEvent event) {
-        LootUnification.unifyLoot(event.getName(), event.getTable());
     }
 
     private void onRegisterClientSyncRecipe(RegisterEvent event) {

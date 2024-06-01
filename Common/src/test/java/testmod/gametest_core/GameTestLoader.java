@@ -63,16 +63,20 @@ public class GameTestLoader {
             template = "testmod:empty_test_structure";
         }
 
-        var test = new TestFunction(gametest.batch(),
+        var test = new TestFunction(
+                gametest.batch(),
                 createTestName(method),
                 template,
                 StructureUtils.getRotationForRotationSteps(gametest.rotationSteps()),
                 gametest.timeoutTicks(),
                 gametest.setupTicks(),
                 gametest.required(),
-                gametest.requiredSuccesses(),
+                gametest.manualOnly(),
                 gametest.attempts(),
-                consumer);
+                gametest.requiredSuccesses(),
+                gametest.skyAccess(),
+                consumer
+        );
 
         GameTestRegistryAccessor.TEST_FUNCTIONS().add(test);
         GameTestRegistryAccessor.TEST_CLASS_NAMES().add(method.getDeclaringClass().getSimpleName());
@@ -91,8 +95,10 @@ public class GameTestLoader {
                 100,
                 0,
                 true,
-                1,
+                false,
                 gametest.attempts(),
+                1,
+                false,
                 consumer);
 
         GameTestRegistryAccessor.TEST_FUNCTIONS().add(test);

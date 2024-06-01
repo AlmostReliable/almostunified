@@ -16,7 +16,6 @@ val autoServiceVersion: String by project
 val parchmentVersion: String by project
 val fabricApiVersion: String by project
 val neoforgeVersion: String by project
-val forgeVersion: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
 val githubRepo: String by project
@@ -121,7 +120,7 @@ subprojects {
          * will replace `${key}` with the specified values from the map below
          */
         processResources {
-            val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
+            val resourceTargets = listOf("META-INF/neoforge.mods.toml", "pack.mcmeta", "fabric.mod.json")
 
             val replaceProperties = mapOf(
                 "version" to project.version as String,
@@ -133,10 +132,6 @@ subprojects {
                 "modDescription" to modDescription,
                 "fabricApiVersion" to fabricApiVersion,
                 "neoforgeVersion" to neoforgeVersion,
-                "forgeVersion" to forgeVersion,
-                // use major version for FML only because wrong Forge version error message
-                // is way better than FML error message
-                "forgeFMLVersion" to forgeVersion.substringBefore("."),
                 "jeiVersion" to jeiVersion,
                 "reiVersion" to reiVersion,
                 "githubUser" to githubUser,

@@ -5,6 +5,7 @@ import com.almostreliable.unified.recipe.RecipeLink;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -91,14 +92,8 @@ public class DuplicationConfig extends Config {
             JsonCompare.CompareSettings defaultRules = safeGet(() -> createCompareSet(json.getAsJsonObject(
                             DEFAULT_DUPLICATE_RULES)),
                     Defaults.getDefaultDuplicateRules(platform));
-            LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules = safeGet(() -> json
-                    .getAsJsonObject(OVERRIDE_DUPLICATE_RULES)
-                    .entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(entry -> new ResourceLocation(entry.getKey()),
-                            entry -> createCompareSet(entry.getValue().getAsJsonObject()),
-                            (a, b) -> b,
-                            LinkedHashMap::new)), Defaults.getDefaultDuplicateOverrides(platform));
+            LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules = safeGet(() -> getOverrideRules(
+                    json), Defaults.getDefaultDuplicateOverrides(platform));
             boolean strictMode = safeGet(() -> json.get(STRICT_MODE).getAsBoolean(), false);
 
             return new DuplicationConfig(name,
@@ -107,6 +102,20 @@ public class DuplicationConfig extends Config {
                     ignoreRecipeTypes,
                     ignoreRecipes,
                     strictMode);
+        }
+
+        // Extracted as method because `safeGet` couldn't cast the type... Seems to be an old SDK bug :-)
+        // https://bugs.openjdk.org/browse/JDK-8324860
+        @NotNull
+        private LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> getOverrideRules(JsonObject json) {
+            return json
+                    .getAsJsonObject(OVERRIDE_DUPLICATE_RULES)
+                    .entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(entry -> new ResourceLocation(entry.getKey()),
+                            entry -> createCompareSet(entry.getValue().getAsJsonObject()),
+                            (a, b) -> b,
+                            LinkedHashMap::new));
         }
 
         private JsonCompare.CompareSettings createCompareSet(JsonObject rules) {

@@ -37,7 +37,7 @@ public interface GameTestRegistryAccessor {
     }
 
     @Accessor("LAST_FAILED_TESTS")
-    static Collection<TestFunction> LAST_FAILED_TESTS() {
+    static Set<TestFunction> LAST_FAILED_TESTS() {
         throw new MixinException("Mixin failed to apply");
     }
 }
