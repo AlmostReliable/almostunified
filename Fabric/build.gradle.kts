@@ -2,6 +2,8 @@ val minecraftVersion: String by project
 val fabricLoaderVersion: String by project
 val fabricApiVersion: String by project
 val fabricRecipeViewer: String by project
+val enableRuntimeRecipeViewer: String by project
+val jeiMcVersion: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
 
@@ -35,17 +37,19 @@ dependencies {
     testImplementation(project(":Common", "namedElements"))
 
     // compile time mods
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric-api:$jeiVersion") // required for common jei plugin
+    modCompileOnly("mezz.jei:jei-$jeiMcVersion-fabric-api:$jeiVersion") // required for common jei plugin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
 
     // runtime dependencies
-    modLocalRuntime(
-        when (fabricRecipeViewer) {
-            "jei" -> "mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion"
-            "rei" -> "me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion"
-            else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
-        }
-    )
+    if(enableRuntimeRecipeViewer == "true") {
+        modLocalRuntime(
+            when (fabricRecipeViewer) {
+                "jei" -> "mezz.jei:jei-$jeiMcVersion-fabric:$jeiVersion"
+                "rei" -> "me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion"
+                else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
+            }
+        )
+    }
 }
 
 /**
