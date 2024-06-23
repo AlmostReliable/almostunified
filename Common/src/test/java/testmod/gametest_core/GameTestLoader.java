@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class GameTestLoader {
 
-    public static final String ENABLED_NAMESPACES = "almostlib.gametest.testPackages";
+    public static final String ENABLED_NAMESPACES = BuildConfig.MOD_ID + ".gametest.testPackages";
 
     @Nullable
     private static List<Pattern> ENABLED_MODS;
@@ -33,7 +33,7 @@ public class GameTestLoader {
             try {
                 instance = providerClass.getConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
+                    NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
 
@@ -184,7 +184,7 @@ public class GameTestLoader {
                             "Unsupported parameter type. Parameter must extend " + GameTestHelper.class.getName());
                 }
 
-                //noinspection CastToIncompatibleInterface
+                // noinspection CastToIncompatibleInterface
                 AlmostGameTestHelper almostHelper = new AlmostGameTestHelper(((GameTestHelperAccessor) testHelper).getTestInfo());
                 method.invoke(instance, almostHelper);
                 return;

@@ -219,7 +219,7 @@ subprojects {
                 property("fabric-api.gametest", "true")
                 property("neoforge.gameTestServer", "true")
                 property("neoforge.enabledGameTestNamespaces", "testmod")
-                property("almostlib.gametest.testPackages", "testmod.*")
+                property("$modId.gametest.testPackages", "testmod.*")
                 property("$modId.configDir", rootProject.projectDir.toPath().resolve("testmod_configs").toString())
             }
 
@@ -230,7 +230,7 @@ subprojects {
                 property("fabric-api.gametest", "true")
                 property("neoforge.gameTestServer", "true")
                 property("neoforge.enabledGameTestNamespaces", "testmod")
-                property("almostlib.gametest.testPackages", "testmod.*")
+                property("$modId.gametest.testPackages", "testmod.*")
                 property("$modId.configDir", rootProject.projectDir.toPath().resolve("testmod_configs").toString())
             }
 
