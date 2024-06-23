@@ -4,7 +4,6 @@ val modPackage: String by project
 val modId: String by project
 val modName: String by project
 val fabricLoaderVersion: String by project
-val jeiMcVersion: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
 
@@ -32,7 +31,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
 
     // compile time mods
-    modCompileOnly("mezz.jei:jei-$jeiMcVersion-common-api:$jeiVersion") // required for jei plugin
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion") // required for jei plugin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for rei plugin
 
     // compile time dependencies

@@ -4,7 +4,6 @@ val junitVersion: String by project
 val neoforgeVersion: String by project
 val neoforgeRecipeViewer: String by project
 val enableRuntimeRecipeViewer: String by project
-val jeiMcVersion: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
 
@@ -54,17 +53,16 @@ dependencies {
     forgeRuntimeLibrary("org.junit.jupiter:junit-jupiter-api:$junitVersion")
 
     // compile time mods
-    modCompileOnly("mezz.jei:jei-$jeiMcVersion-neoforge-api:$jeiVersion") { // required for common jei plugin
+    modCompileOnly("mezz.jei:jei-$minecraftVersion-neoforge-api:$jeiVersion") { // required for common jei plugin
         isTransitive = false // prevents breaking the forge runtime
     }
     // TODO go back to API when solved: https://github.com/architectury/architectury-loom/issues/204
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion") // required for common rei plugin
-//     modImplementation("curse.maven:applied-energistics-2-223794:4997094")
 
-    if(enableRuntimeRecipeViewer == "true") {
+    if (enableRuntimeRecipeViewer == "true") {
         // runtime mods
         when (neoforgeRecipeViewer) {
-            "jei" -> modLocalRuntime("mezz.jei:jei-$jeiMcVersion-neoforge:$jeiVersion") { isTransitive = false }
+            "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-neoforge:$jeiVersion") { isTransitive = false }
             "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion")
             else -> throw GradleException("Invalid forgeRecipeViewer value: $neoforgeRecipeViewer")
         }
