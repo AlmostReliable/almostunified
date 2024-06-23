@@ -26,10 +26,10 @@ public class OwnershipTests {
      */
     @SimpleGameTest
     public void checkSilverOwnerships() {
-        ResourceLocation silverOreId = new ResourceLocation("mod_c:silver_ore");
+        ResourceLocation silverOreId = ResourceLocation.parse("mod_c:silver_ore");
         Item item = BuiltInRegistries.ITEM.get(silverOreId);
         Set<TagKey<Item>> itemTags = item.builtInRegistryHolder().tags().collect(Collectors.toSet());
-        TagKey<Item> silverTag = TagKey.create(Registries.ITEM, new ResourceLocation("forge:ores/silver"));
+        TagKey<Item> silverTag = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ores/silver"));
         assertTrue(itemTags.contains(silverTag));
 
         UnifyLookup unifyLookup = AlmostUnifiedLookup.INSTANCE.getRuntimeOrThrow().getUnifyLookup();

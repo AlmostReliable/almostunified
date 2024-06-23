@@ -7,7 +7,6 @@ import com.almostreliable.unified.utils.Utils;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -18,7 +17,7 @@ import java.util.Set;
 public class ItemHider {
 
     public static final TagKey<Item> HIDE_TAG = TagKey.create(Registries.ITEM,
-            new ResourceLocation(BuildConfig.MOD_ID, "hide"));
+            Utils.getRL("hide"));
 
     public static void applyHideTags(VanillaTagWrapper<Item> tags, Collection<UnifyHandler> handlers) {
         for (var handler : handlers) {

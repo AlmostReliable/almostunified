@@ -54,7 +54,7 @@ public class RecipeTransformer {
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
 
-        ResourceLocation fcLocation = new ResourceLocation("forge:conditional");
+        ResourceLocation fcLocation = ResourceLocation.parse("forge:conditional");
         byType.forEach((type, recipeLinks) -> {
             if (type.equals(fcLocation)) {
                 recipeLinks.forEach(recipeLink -> handleForgeConditionals(recipeLink).ifPresent(json -> recipes.put(

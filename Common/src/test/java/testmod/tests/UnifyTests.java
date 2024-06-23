@@ -18,7 +18,7 @@ import static testmod.TestUtils.*;
 
 public class UnifyTests {
 
-    private static final ResourceLocation TEST_ID = new ResourceLocation("testmod", "test_recipe");
+    private static final ResourceLocation TEST_ID = ResourceLocation.fromNamespaceAndPath("testmod", "test_recipe");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static final ModPriorities MOD_PRIORITIES = new ModPrioritiesImpl(List.of("minecraft",

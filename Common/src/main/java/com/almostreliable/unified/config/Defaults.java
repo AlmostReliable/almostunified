@@ -208,7 +208,7 @@ public final class Defaults {
         result.ignoreField("key");
 
         LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> resultMap = new LinkedHashMap<>();
-        resultMap.put(new ResourceLocation("minecraft", "crafting_shaped"), result);
+        resultMap.put(ResourceLocation.withDefaultNamespace("crafting_shaped"), result);
         return resultMap;
     }
 

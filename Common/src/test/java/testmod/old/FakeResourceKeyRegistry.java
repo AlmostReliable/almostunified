@@ -13,10 +13,10 @@ public class FakeResourceKeyRegistry {
         try {
             Constructor<?> c = ResourceKey.class.getDeclaredConstructor(ResourceLocation.class, ResourceLocation.class);
             c.setAccessible(true);
-            return (ResourceKey<Registry<T>>) c.newInstance(new ResourceLocation("test_registry"),
-                    new ResourceLocation(name));
+            return (ResourceKey<Registry<T>>) c.newInstance(ResourceLocation.withDefaultNamespace("test_registry"),
+                    ResourceLocation.parse(name));
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
-                 IllegalAccessException e) {
+                IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }

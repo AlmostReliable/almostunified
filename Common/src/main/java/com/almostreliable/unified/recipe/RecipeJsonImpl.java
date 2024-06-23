@@ -26,7 +26,7 @@ public class RecipeJsonImpl implements RecipeJson {
     @Override
     public ResourceLocation getType() {
         try {
-            return new ResourceLocation(json.get("type").getAsString());
+            return ResourceLocation.parse(json.get("type").getAsString());
         } catch (Exception e) {
             throw new IllegalArgumentException("Could not detect recipe type");
         }

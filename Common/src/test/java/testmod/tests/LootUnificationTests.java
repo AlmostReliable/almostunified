@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class LootUnificationTests {
 
     private Block getBlock(String name) {
-        return BuiltInRegistries.BLOCK.getOptional(new ResourceLocation(name)).orElseThrow();
+        return BuiltInRegistries.BLOCK.getOptional(ResourceLocation.parse(name)).orElseThrow();
     }
 
     /**

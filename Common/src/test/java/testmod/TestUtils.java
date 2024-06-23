@@ -74,11 +74,11 @@ public class TestUtils {
 
     public static RecipeLink recipe(String jsonStr) {
         var json = json(jsonStr);
-        return new RecipeLink(new ResourceLocation("test"), json);
+        return new RecipeLink(ResourceLocation.parse("test"), json);
     }
 
     public static RecipeLink recipe(JsonObject json) {
-        return new RecipeLink(new ResourceLocation("test"), json);
+        return new RecipeLink(ResourceLocation.parse("test"), json);
     }
 
     public static JsonObject json(String json) {
@@ -86,17 +86,17 @@ public class TestUtils {
     }
 
     public static TagKey<Item> itemTag(String s) {
-        return TagKey.create(Registries.ITEM, new ResourceLocation(s));
+        return TagKey.create(Registries.ITEM, ResourceLocation.parse(s));
     }
 
 
     public static UnifyLookup unifyLookup() {
         return new UnifyLookupImpl.Builder()
                 .put(itemTag("testmod:test_tag"),
-                        new ResourceLocation("minecraft:test_item"),
-                        new ResourceLocation("mekanism:test_item"),
-                        new ResourceLocation("thermal:test_item"),
-                        new ResourceLocation("testmod:test_item"))
+                        ResourceLocation.parse("minecraft:test_item"),
+                        ResourceLocation.parse("mekanism:test_item"),
+                        ResourceLocation.parse("thermal:test_item"),
+                        ResourceLocation.parse("testmod:test_item"))
                 .build(TEST_MOD_PRIORITIES, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
     }
 

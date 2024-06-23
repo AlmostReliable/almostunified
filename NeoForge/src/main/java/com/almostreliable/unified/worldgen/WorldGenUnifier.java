@@ -1,10 +1,10 @@
 package com.almostreliable.unified.worldgen;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.api.AlmostUnifiedLookup;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.mixin.neoforge.OreConfigurationAccessor;
+import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 public class WorldGenUnifier {
-    public static final ResourceLocation UNKNOWN_FEATURE_ID = new ResourceLocation(
-            BuildConfig.MOD_ID, "unknown_feature_id");
+    public static final ResourceLocation UNKNOWN_FEATURE_ID = Utils.getRL("unknown_feature_id");
     private final Registry<ConfiguredFeature<?, ?>> cfRegistry;
     private final Set<Holder.Reference<ConfiguredFeature<?, ?>>> featuresToRemove = new HashSet<>();
 

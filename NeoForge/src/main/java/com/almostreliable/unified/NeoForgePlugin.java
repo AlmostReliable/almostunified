@@ -5,6 +5,7 @@ import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.*;
+import com.almostreliable.unified.utils.Utils;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
 
     @Override
     public ResourceLocation getPluginId() {
-        return new ResourceLocation(BuildConfig.MOD_ID, "neoforge");
+        return Utils.getRL("neoforge");
     }
 
     @Override

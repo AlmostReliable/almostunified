@@ -71,7 +71,7 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
     public Set<TagKey<Item>> getStoneStrataTags(Collection<String> stoneStrataIds) {
         return stoneStrataIds
                 .stream()
-                .map(id -> new ResourceLocation("forge", "ores_in_ground/" + id))
+                .map(id -> ResourceLocation.fromNamespaceAndPath("forge", "ores_in_ground/" + id))
                 .map(id -> TagKey.create(Registries.ITEM, id))
                 .collect(Collectors.toSet());
     }

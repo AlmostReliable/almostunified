@@ -1,6 +1,5 @@
 package com.almostreliable.unified.recipe;
 
-import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.utils.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
@@ -211,7 +210,11 @@ public record ClientRecipeTracker(String namespace, Map<ResourceLocation, Client
             int flag = Integer.parseInt(split[0]);
             boolean isUnified = (flag & UNIFIED_FLAG) != 0;
             boolean isDuplicate = (flag & DUPLICATE_FLAG) != 0;
-            return new ClientRecipeLink(new ResourceLocation(namespace, split[1]), isUnified, isDuplicate);
+            return new ClientRecipeLink(
+                    ResourceLocation.fromNamespaceAndPath(namespace, split[1]),
+                    isUnified,
+                    isDuplicate
+            );
         }
     }
 
@@ -238,7 +241,7 @@ public record ClientRecipeTracker(String namespace, Map<ResourceLocation, Client
                 json.addProperty("type", ID.toString());
                 json.addProperty(NAMESPACE, namespace);
                 json.add(RECIPES, recipes);
-                result.put(new ResourceLocation(BuildConfig.MOD_ID, namespace), json);
+                result.put(Utils.getRL(namespace), json);
             });
             return result;
         }

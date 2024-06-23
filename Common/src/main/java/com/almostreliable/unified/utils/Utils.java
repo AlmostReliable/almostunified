@@ -10,7 +10,7 @@ import net.minecraft.world.item.Item;
 import java.util.Collection;
 
 public final class Utils {
-    public static final ResourceLocation UNUSED_ID = new ResourceLocation(BuildConfig.MOD_ID, "unused_id");
+    public static final ResourceLocation UNUSED_ID = getRL("unused_id");
     public static final TagKey<Item> UNUSED_TAG = TagKey.create(Registries.ITEM, UNUSED_ID);
 
     private Utils() {}
@@ -21,7 +21,7 @@ public final class Utils {
     }
 
     public static ResourceLocation getRL(String path) {
-        return new ResourceLocation(BuildConfig.MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(BuildConfig.MOD_ID, path);
     }
 
     public static String prefix(String path) {

@@ -208,7 +208,7 @@ public class UnifyConfig extends Config {
 
             Map<TagKey<Item>, String> priorityOverrides = safeGet(() -> JsonUtils.deserializeMap(json,
                     PRIORITY_OVERRIDES,
-                    e -> TagKey.create(Registries.ITEM, new ResourceLocation(e.getKey())),
+                    e -> TagKey.create(Registries.ITEM, ResourceLocation.parse(e.getKey())),
                     e -> e.getValue().getAsString()), new HashMap<>());
 
             List<String> stoneStrata = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(STONE_STRATA)),
@@ -218,7 +218,7 @@ public class UnifyConfig extends Config {
             Set<TagKey<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
                     .stream()
-                    .map(s -> TagKey.create(Registries.ITEM, new ResourceLocation(s)))
+                    .map(s -> TagKey.create(Registries.ITEM, ResourceLocation.parse(s)))
                     .collect(Collectors.toSet()), new HashSet<>());
             Set<Pattern> ignoredItems = deserializePatterns(json, IGNORED_ITEMS, List.of());
             Set<Pattern> ignoredRecipeTypes = deserializePatterns(json,

@@ -6,13 +6,14 @@ import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.AdAstraRecipeUnifier;
 import com.almostreliable.unified.compat.GregTechModernRecipeUnifier;
+import com.almostreliable.unified.utils.Utils;
 import net.minecraft.resources.ResourceLocation;
 
 @AlmostUnifiedNeoPlugin
 public class CommonPlugin implements AlmostUnifiedPlugin {
     @Override
     public ResourceLocation getPluginId() {
-        return new ResourceLocation(BuildConfig.MOD_ID, "common");
+        return Utils.getRL("common");
     }
 
     @Override

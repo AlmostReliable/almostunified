@@ -108,7 +108,7 @@ public class RecipeContextImpl implements RecipeContext {
     @Override
     public boolean unifyItemInput(JsonObject json) {
         if (json.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {
-            ResourceLocation item = new ResourceLocation(primitive.getAsString());
+            ResourceLocation item = ResourceLocation.parse(primitive.getAsString());
             var tag = getLookup().getPreferredTagForItem(item);
             if (tag != null) {
                 json.remove(RecipeConstants.ITEM);
@@ -123,7 +123,7 @@ public class RecipeContextImpl implements RecipeContext {
     @Override
     public boolean unifyTagInput(JsonObject json) {
         if (json.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
-            var tag = TagKey.create(Registries.ITEM, new ResourceLocation(primitive.getAsString()));
+            var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(primitive.getAsString()));
             var ownerTag = unifyLookup.getTagOwnerships().getOwner(tag);
             if (ownerTag != null) {
                 json.addProperty(RecipeConstants.TAG, ownerTag.location().toString());
@@ -194,7 +194,7 @@ public class RecipeContextImpl implements RecipeContext {
         }
 
         if (unifyTagToItems && json.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
-            var tag = TagKey.create(Registries.ITEM, new ResourceLocation(primitive.getAsString()));
+            var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(primitive.getAsString()));
             var entry = getLookup().getPreferredEntryForTag(tag);
             if (entry != null) {
                 json.remove(RecipeConstants.TAG);
@@ -247,7 +247,7 @@ public class RecipeContextImpl implements RecipeContext {
     @Override
     @Nullable
     public JsonPrimitive createOutputReplacement(JsonPrimitive primitive) {
-        ResourceLocation item = new ResourceLocation(primitive.getAsString());
+        ResourceLocation item = ResourceLocation.parse(primitive.getAsString());
         var entry = getLookup().getReplacementForItem(item);
         if (entry == null || entry.id().equals(item)) {
             return null;

@@ -65,13 +65,13 @@ public class TagConfig extends Config {
         public TagConfig deserialize(String name, JsonObject json) {
             Map<ResourceLocation, Set<ResourceLocation>> customTags = safeGet(() -> JsonUtils.deserializeMapSet(json,
                     CUSTOM_TAGS,
-                    e -> new ResourceLocation(e.getKey()),
-                    ResourceLocation::new), new HashMap<>());
+                    e -> ResourceLocation.parse(e.getKey()),
+                    ResourceLocation::parse), new HashMap<>());
 
             Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships = safeGet(() -> JsonUtils.deserializeMapSet(json,
                     TAG_OWNERSHIPS,
-                    e -> new ResourceLocation(e.getKey()),
-                    ResourceLocation::new), new HashMap<>());
+                    e -> ResourceLocation.parse(e.getKey()),
+                    ResourceLocation::parse), new HashMap<>());
 
             TagInheritance.Mode itemTagInheritanceMode = deserializeTagInheritanceMode(json,
                     ITEM_TAG_INHERITANCE_MODE);
@@ -150,7 +150,7 @@ public class TagConfig extends Config {
         private <T> Map<TagKey<T>, Set<Pattern>> unsafeDeserializePatternsForLocations(ResourceKey<Registry<T>> registry, JsonObject rawConfigJson, String baseKey) {
             return JsonUtils.deserializeMapSet(rawConfigJson,
                     baseKey,
-                    e -> TagKey.create(registry, new ResourceLocation(e.getKey())),
+                    e -> TagKey.create(registry, ResourceLocation.parse(e.getKey())),
                     Pattern::compile);
         }
 

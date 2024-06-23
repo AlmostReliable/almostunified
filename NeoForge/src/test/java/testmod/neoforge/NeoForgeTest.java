@@ -29,11 +29,11 @@ public class NeoForgeTest {
     }
 
     private static void registerItem(String str, Item item) {
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(str), item);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.parse(str), item);
     }
 
     private static void registerBlock(String str, Block block) {
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(str), block);
+        Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.parse(str), block);
     }
 
     public void onRegistry(RegisterEvent event) {

@@ -112,7 +112,7 @@ public class DuplicationConfig extends Config {
                     .getAsJsonObject(OVERRIDE_DUPLICATE_RULES)
                     .entrySet()
                     .stream()
-                    .collect(Collectors.toMap(entry -> new ResourceLocation(entry.getKey()),
+                    .collect(Collectors.toMap(entry -> ResourceLocation.parse(entry.getKey()),
                             entry -> createCompareSet(entry.getValue().getAsJsonObject()),
                             (a, b) -> b,
                             LinkedHashMap::new));

@@ -8,8 +8,8 @@ import java.util.List;
 public class SmithingRecipeUnifier implements RecipeUnifier {
 
     public static final SmithingRecipeUnifier INSTANCE = new SmithingRecipeUnifier();
-    public static final ResourceLocation TRANSFORM_TYPE = new ResourceLocation("smithing_transform");
-    public static final ResourceLocation TRIM_TYPE = new ResourceLocation("smithing_trim");
+    public static final ResourceLocation TRANSFORM_TYPE = ResourceLocation.withDefaultNamespace("smithing_transform");
+    public static final ResourceLocation TRIM_TYPE = ResourceLocation.withDefaultNamespace("smithing_trim");
     public static final String ADDITION_PROPERTY = "addition";
     public static final String BASE_PROPERTY = "base";
     public static final String TEMPLATE_PROPERTY = "template";

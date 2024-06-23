@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class GameTestLoader {
 
-    public static final String ENABLED_NAMESPACES = BuildConfig.MOD_ID + ".gametest.testPackages";
+    public static final String ENABLED_NAMESPACES = "almostunified.gametest.testPackages";
 
     @Nullable
     private static List<Pattern> ENABLED_MODS;

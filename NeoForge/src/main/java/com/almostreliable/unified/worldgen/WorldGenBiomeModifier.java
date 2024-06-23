@@ -1,7 +1,7 @@
 package com.almostreliable.unified.worldgen;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.utils.Utils;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 public class WorldGenBiomeModifier implements BiomeModifier {
 
     public static final MapCodec<BiomeModifier> CODEC = MapCodec.unit(WorldGenBiomeModifier::new);
-    public static final ResourceLocation UNKNOWN_BIOME_ID = new ResourceLocation(
-            BuildConfig.MOD_ID, "unknown_biome_id");
+    public static final ResourceLocation UNKNOWN_BIOME_ID = Utils.getRL("unknown_biome_id");
 
     public static void bindUnifier(WorldGenBiomeModifier modifier, RegistryAccess registryAccess) {
         if (AlmostUnified.getStartupConfig().allowWorldGenUnification()) {

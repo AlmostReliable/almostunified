@@ -40,7 +40,7 @@ public final class TestUtils {
     public static JsonCompare.CompareSettings getDefaultShapedCompareSettings() {
         return Defaults
                 .getDefaultDuplicateOverrides(AlmostUnifiedPlatform.Platform.NEO_FORGE)
-                .get(new ResourceLocation("crafting_shaped"));
+                .get(ResourceLocation.withDefaultNamespace("crafting_shaped"));
     }
 
     public static final ResourceKey<Registry<Item>> FAKE_ITEM_REGISTRY = FakeResourceKeyRegistry.create("item");
@@ -62,27 +62,27 @@ public final class TestUtils {
      * @return a TagKey for the given name
      */
     public static TagKey<Item> tag(String name) {
-        return TagKey.create(Registries.ITEM, new ResourceLocation(name));
+        return TagKey.create(Registries.ITEM, ResourceLocation.parse(name));
     }
 
     public static ResourceLocation mod1RL(String name) {
-        return new ResourceLocation(TEST_MOD_1, name);
+        return ResourceLocation.fromNamespaceAndPath(TEST_MOD_1, name);
     }
 
     public static ResourceLocation mod2RL(String name) {
-        return new ResourceLocation(TEST_MOD_2, name);
+        return ResourceLocation.fromNamespaceAndPath(TEST_MOD_2, name);
     }
 
     public static ResourceLocation mod3RL(String name) {
-        return new ResourceLocation(TEST_MOD_3, name);
+        return ResourceLocation.fromNamespaceAndPath(TEST_MOD_3, name);
     }
 
     public static ResourceLocation mod4RL(String name) {
-        return new ResourceLocation(TEST_MOD_4, name);
+        return ResourceLocation.fromNamespaceAndPath(TEST_MOD_4, name);
     }
 
     public static ResourceLocation mod5RL(String name) {
-        return new ResourceLocation(TEST_MOD_5, name);
+        return ResourceLocation.fromNamespaceAndPath(TEST_MOD_5, name);
     }
 
 //    public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {

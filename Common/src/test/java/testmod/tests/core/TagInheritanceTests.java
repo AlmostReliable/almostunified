@@ -31,13 +31,13 @@ public class TagInheritanceTests {
         assertFalse(slot.mayPlace(Items.STICK.getDefaultInstance()));
 
         // Both mod a and mod b silver should be placeable because of default set through `tags` json
-        var mod_a_silver = BuiltInRegistries.ITEM.get(new ResourceLocation("mod_a:silver_ore"));
+        var mod_a_silver = BuiltInRegistries.ITEM.get(ResourceLocation.parse("mod_a:silver_ore"));
         assertTrue(slot.mayPlace(mod_a_silver.getDefaultInstance()));
-        var mod_b_silver = BuiltInRegistries.ITEM.get(new ResourceLocation("mod_b:silver_ore"));
+        var mod_b_silver = BuiltInRegistries.ITEM.get(ResourceLocation.parse("mod_b:silver_ore"));
         assertTrue(slot.mayPlace(mod_b_silver.getDefaultInstance()));
 
         // mod c silver should be placeable because of tag inheritance
-        var mod_c_silver = BuiltInRegistries.ITEM.get(new ResourceLocation("mod_c:silver_ore"));
+        var mod_c_silver = BuiltInRegistries.ITEM.get(ResourceLocation.parse("mod_c:silver_ore"));
         assertTrue(slot.mayPlace(mod_c_silver.getDefaultInstance()));
     }
 }
