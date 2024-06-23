@@ -1,6 +1,5 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.UnifierRegistry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -33,8 +32,6 @@ public interface AlmostUnifiedPlatform {
     Path getConfigPath();
 
     Path getLogPath();
-
-    void bindRecipeHandlers(UnifierRegistry factory);
 
     Set<TagKey<Item>> getStoneStrataTags(Collection<String> stoneStrataIds);
 

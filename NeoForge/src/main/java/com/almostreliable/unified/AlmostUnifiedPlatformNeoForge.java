@@ -1,8 +1,5 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.api.UnifierRegistry;
-import com.almostreliable.unified.compat.*;
 import com.google.auto.service.AutoService;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +14,6 @@ import net.neoforged.fml.loading.moddiscovery.ModInfo;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,21 +46,6 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
     @Override
     public Path getLogPath() {
         return FMLPaths.GAMEDIR.get().resolve("logs").resolve(BuildConfig.MOD_ID);
-    }
-
-    @Override
-    public void bindRecipeHandlers(UnifierRegistry factory) {
-        List.of(
-                ModConstants.ARS_CREO,
-                ModConstants.ARS_ELEMENTAL,
-                ModConstants.ARS_NOUVEAU,
-                ModConstants.ARS_SCALAES
-        ).forEach(modId -> factory.registerForMod(modId, new ArsNouveauRecipeUnifier()));
-        factory.registerForMod(ModConstants.CYCLIC, new CyclicRecipeUnifier());
-        factory.registerForMod(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
-        factory.registerForMod(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
-        factory.registerForMod(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
-        factory.registerForMod(ModConstants.MEKANISM, new MekanismRecipeUnifier());
     }
 
     @Override
