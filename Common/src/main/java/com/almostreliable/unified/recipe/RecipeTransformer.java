@@ -54,6 +54,7 @@ public class RecipeTransformer {
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
 
+        // TODO: remove
         ResourceLocation fcLocation = ResourceLocation.parse("forge:conditional");
         byType.forEach((type, recipeLinks) -> {
             if (type.equals(fcLocation)) {

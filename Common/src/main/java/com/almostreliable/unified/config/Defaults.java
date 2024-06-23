@@ -215,7 +215,7 @@ public final class Defaults {
     private static JsonCompare.CompareSettings getDefaultCompareSettings(AlmostUnifiedPlatform.Platform platform) {
         JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
         result.ignoreField(switch (platform) {
-            case NEO_FORGE -> "conditions";
+            case NEO_FORGE -> "conditions"; // TODO: update to new key
             case FABRIC -> "fabric:load_conditions";
         });
         result.ignoreField("group");
