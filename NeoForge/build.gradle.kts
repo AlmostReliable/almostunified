@@ -51,7 +51,7 @@ dependencies {
     shadowCommon(project(":Common", "transformProductionNeoForge")) { isTransitive = false }
     testImplementation(project(":Common", "namedElements"))
 
-    forgeRuntimeLibrary("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    forgeRuntimeLibrary("org.junit.jupiter:junit-jupiter-api:$junitVersion")
 
     // compile time mods
     modCompileOnly("mezz.jei:jei-$jeiMcVersion-neoforge-api:$jeiVersion") { // required for common jei plugin

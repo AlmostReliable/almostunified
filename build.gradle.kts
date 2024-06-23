@@ -13,6 +13,7 @@ val modDescription: String by project
 val modAuthor: String by project
 val modPackage: String by project
 val autoServiceVersion: String by project
+val junitVersion: String by project
 val parchmentVersion: String by project
 val fabricApiVersion: String by project
 val neoforgeVersion: String by project
@@ -99,7 +100,7 @@ subprojects {
          */
         compileOnly(testCompileOnly("com.google.auto.service:auto-service:$autoServiceVersion")!!)
         annotationProcessor(testAnnotationProcessor("com.google.auto.service:auto-service:$autoServiceVersion")!!)
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     }
 
     tasks {

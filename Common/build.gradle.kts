@@ -3,7 +3,6 @@ val minecraftVersion: String by project
 val modPackage: String by project
 val modId: String by project
 val modName: String by project
-val junitVersion: String by project
 val fabricLoaderVersion: String by project
 val jeiMcVersion: String by project
 val jeiVersion: String by project
