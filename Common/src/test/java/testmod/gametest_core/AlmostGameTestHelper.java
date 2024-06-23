@@ -1,9 +1,12 @@
 package testmod.gametest_core;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
@@ -51,5 +54,17 @@ public class AlmostGameTestHelper extends GameTestHelper {
             task.run();
             succeed();
         });
+    }
+
+    /**
+     * Returns the {@link Holder} for the given {@link ResourceKey}.
+     *
+     * @param key The {@link ResourceKey} of the entry.
+     * @param <T> The type of the entry.
+     * @return The {@link Holder} for the given {@link ResourceKey}.
+     */
+    public <T> Holder<T> getHolder(ResourceKey<T> key) {
+        Registry<T> registry = getLevel().registryAccess().registryOrThrow(key.registryKey());
+        return registry.getHolderOrThrow(key);
     }
 }

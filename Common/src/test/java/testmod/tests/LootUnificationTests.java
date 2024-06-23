@@ -44,7 +44,7 @@ public class LootUnificationTests {
         testDrop(helper, player, pickaxe, positions.removeFirst(), "thermal_fake:osmium_ore", "testmod:osmium_ingot");
 
         ItemStack pickaxe2 = new ItemStack(Items.DIAMOND_PICKAXE);
-        pickaxe2.enchant(Enchantments.SILK_TOUCH, 1);
+        pickaxe2.enchant(helper.getHolder(Enchantments.SILK_TOUCH), 1);
         testDrop(helper, player, pickaxe2, positions.removeFirst(), "testmod:osmium_ore", "testmod:osmium_ore");
         testDrop(helper, player, pickaxe2, positions.removeFirst(), "meka_fake:osmium_ore", "testmod:osmium_ore");
         testDrop(helper, player, pickaxe2, positions.removeFirst(), "ie_fake:osmium_ore", "testmod:osmium_ore");
