@@ -7,7 +7,8 @@ val enableRuntimeRecipeViewer: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
 
-val extraModsPrefix = "extra-mods"
+val common by configurations
+val shadowCommon by configurations
 
 plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -17,16 +18,6 @@ architectury {
     platformSetupLoomIde()
     neoForge()
 }
-
-repositories {
-    flatDir {
-        name = extraModsPrefix
-        dir(file("$extraModsPrefix-$minecraftVersion"))
-    }
-}
-
-val common by configurations
-val shadowCommon by configurations
 
 loom {
     // load the test mod manually because NeoForge always uses main by default
