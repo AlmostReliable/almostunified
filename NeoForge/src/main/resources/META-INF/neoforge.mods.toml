@@ -10,14 +10,14 @@ displayName = "${modName}"
 authors = "${modAuthor}"
 description = '''${modDescription}'''
 
-[[dependencies.${modId}]]
+[[dependencies."${modId}"]]
 modId = "neoforge"
 type = "required"
 versionRange = "[${neoforgeVersion},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${modId}]]
+[[dependencies."${modId}"]]
 modId = "minecraft"
 type = "required"
 versionRange = "[${minecraftVersion},)"
