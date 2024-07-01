@@ -92,8 +92,7 @@ subprojects {
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
         "mappings"(loom.layered {
             officialMojangMappings()
-            // parchment("org.parchmentmc.data:parchment-$minecraftVersion:$parchmentVersion@zip") // TODO re-enable when 1.21 Parchment is released
-            parchment("org.parchmentmc.data:parchment-1.20.6:$parchmentVersion@zip")
+            parchment("org.parchmentmc.data:parchment-$minecraftVersion:$parchmentVersion@zip")
         })
 
         /**
