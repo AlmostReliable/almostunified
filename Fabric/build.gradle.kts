@@ -6,6 +6,9 @@ val enableRuntimeRecipeViewer: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
 
+val common by configurations
+val shadowCommon by configurations
+
 plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
@@ -21,9 +24,6 @@ loom {
         println("Access widener enabled for project ${project.name}. Access widener path: ${loom.accessWidenerPath.get()}")
     }
 }
-
-val common by configurations
-val shadowCommon by configurations
 
 dependencies {
     // loader

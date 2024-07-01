@@ -1,5 +1,4 @@
 val minecraftVersion: String by project
-val modId: String by project
 val junitVersion: String by project
 val neoforgeVersion: String by project
 val neoforgeRecipeViewer: String by project
@@ -27,9 +26,6 @@ loom {
             sourceSet(project(":Common").sourceSets.test.get())
         }
     }
-}
-configurations.forEach {
-    println(it)
 }
 
 dependencies {

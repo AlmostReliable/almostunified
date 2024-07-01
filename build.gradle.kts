@@ -23,7 +23,7 @@ val githubRepo: String by project
 val githubUser: String by project
 
 plugins {
-    id("architectury-plugin") version "3.4-SNAPSHOT"
+    id("architectury-plugin") version "3.4.+"
     id("dev.architectury.loom") version "1.6.+" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     java
@@ -71,11 +71,10 @@ subprojects {
     }
 
     repositories {
-        maven("https://www.cursemaven.com")
+        maven("https://maven.neoforged.net/releases")
         maven("https://maven.parchmentmc.org") // Parchment
         maven("https://maven.shedaniel.me") // REI
         maven("https://maven.blamejared.com/") // JEI
-        maven("https://maven.neoforged.net/releases")
         mavenLocal()
     }
 
@@ -121,7 +120,7 @@ subprojects {
          * will replace `${key}` with the specified values from the map below
          */
         processResources {
-            val resourceTargets = listOf("META-INF/neoforge.mods.toml", "pack.mcmeta", "fabric.mod.json")
+            val resourceTargets = listOf("META-INF/neoforge.mods.toml", "fabric.mod.json", "pack.mcmeta")
 
             val replaceProperties = mapOf(
                 "version" to project.version as String,

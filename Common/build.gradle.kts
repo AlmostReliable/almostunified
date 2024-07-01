@@ -45,9 +45,3 @@ buildConfig {
     packageName(modPackage)
     useJavaOutput()
 }
-
-//tasks {
-//    withType<Test> {
-//        useJUnitPlatform()
-//    }
-//}

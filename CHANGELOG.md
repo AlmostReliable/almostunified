@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## [1.0.0] - TBD
+## Unreleased
 
 - Introduce data-driven like unification.
     - `unify.json` moved into sub-folder `unify` to let the user define different unification rules.
