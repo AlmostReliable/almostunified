@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 @AlmostUnifiedNeoPlugin
 public class CommonPlugin implements AlmostUnifiedPlugin {
+
     @Override
     public ResourceLocation getPluginId() {
         return Utils.getRL("common");
@@ -18,7 +19,7 @@ public class CommonPlugin implements AlmostUnifiedPlugin {
 
     @Override
     public void registerUnifiers(UnifierRegistry registry) {
-        registry.registerForMod(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
-        registry.registerForMod(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
+        registry.registerForModId(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
+        registry.registerForModId(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
     }
 }

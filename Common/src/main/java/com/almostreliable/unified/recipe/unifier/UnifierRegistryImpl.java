@@ -10,19 +10,29 @@ import java.util.Map;
 
 public class UnifierRegistryImpl implements UnifierRegistry {
 
-    private final Map<ResourceLocation, RecipeUnifier> transformersByType = new HashMap<>();
-    private final Map<String, RecipeUnifier> transformersByModId = new HashMap<>();
+    private final Map<ResourceLocation, RecipeUnifier> unifiersByType = new HashMap<>();
+    private final Map<String, RecipeUnifier> unifiersByModId = new HashMap<>();
+
+    @Override
+    public void registerForRecipeType(ResourceLocation recipeType, RecipeUnifier unifier) {
+        unifiersByType.put(recipeType, unifier);
+    }
+
+    @Override
+    public void registerForModId(String modId, RecipeUnifier unifier) {
+        unifiersByModId.put(modId, unifier);
+    }
 
     @Override
     public RecipeUnifier getUnifier(RecipeData recipeData) {
         // TODO move the type and modid thing into plugin
         var type = recipeData.getType();
-        var byType = transformersByType.get(type);
+        var byType = unifiersByType.get(type);
         if (byType != null) {
             return byType;
         }
 
-        var byMod = transformersByModId.get(type.getNamespace());
+        var byMod = unifiersByModId.get(type.getNamespace());
         if (byMod != null) {
             return byMod;
         }
@@ -37,15 +47,5 @@ public class UnifierRegistryImpl implements UnifierRegistry {
         }
 
         return GenericRecipeUnifier.INSTANCE;
-    }
-
-    @Override
-    public void registerForType(ResourceLocation type, RecipeUnifier transformer) {
-        transformersByType.put(type, transformer);
-    }
-
-    @Override
-    public void registerForMod(String mod, RecipeUnifier transformer) {
-        transformersByModId.put(mod, transformer);
     }
 }

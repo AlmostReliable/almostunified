@@ -25,11 +25,11 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
                 ModConstants.ARS_ELEMENTAL,
                 ModConstants.ARS_NOUVEAU,
                 ModConstants.ARS_SCALAES
-        ).forEach(modId -> registry.registerForMod(modId, new ArsNouveauRecipeUnifier()));
-        registry.registerForMod(ModConstants.CYCLIC, new CyclicRecipeUnifier());
-        registry.registerForMod(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
-        registry.registerForMod(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
-        registry.registerForMod(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
-        registry.registerForMod(ModConstants.MEKANISM, new MekanismRecipeUnifier());
+        ).forEach(modId -> registry.registerForModId(modId, new ArsNouveauRecipeUnifier()));
+        registry.registerForModId(ModConstants.CYCLIC, new CyclicRecipeUnifier());
+        registry.registerForModId(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
+        registry.registerForModId(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
+        registry.registerForModId(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
+        registry.registerForModId(ModConstants.MEKANISM, new MekanismRecipeUnifier());
     }
 }

@@ -5,9 +5,10 @@ import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import net.minecraft.resources.ResourceLocation;
 
 public interface UnifierRegistry {
+
+    void registerForRecipeType(ResourceLocation recipeType, RecipeUnifier unifier);
+
+    void registerForModId(String modId, RecipeUnifier unifier);
+
     RecipeUnifier getUnifier(RecipeData recipeData);
-
-    void registerForType(ResourceLocation type, RecipeUnifier transformer);
-
-    void registerForMod(String mod, RecipeUnifier transformer);
 }

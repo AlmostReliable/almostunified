@@ -18,7 +18,7 @@ public class FabricPlugin implements AlmostUnifiedPlugin {
 
     @Override
     public void registerUnifiers(UnifierRegistry registry) {
-        registry.registerForMod(ModConstants.AMETHYST_IMBUEMENT, new AmethystImbuementRecipeUnifier());
-        registry.registerForMod(ModConstants.MODERN_INDUSTRIALIZATION, new ModernIndustrializationRecipeUnifier());
+        registry.registerForModId(ModConstants.AMETHYST_IMBUEMENT, new AmethystImbuementRecipeUnifier());
+        registry.registerForModId(ModConstants.MODERN_INDUSTRIALIZATION, new ModernIndustrializationRecipeUnifier());
     }
 }
