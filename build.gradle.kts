@@ -24,7 +24,7 @@ val githubUser: String by project
 
 plugins {
     id("architectury-plugin") version "3.4.+"
-    id("dev.architectury.loom") version "1.6.+" apply false
+    id("dev.architectury.loom") version "1.7.+" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     java
     `maven-publish`
