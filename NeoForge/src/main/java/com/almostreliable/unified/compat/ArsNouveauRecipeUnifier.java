@@ -11,13 +11,15 @@ import com.google.gson.JsonObject;
 
 public class ArsNouveauRecipeUnifier implements RecipeUnifier {
 
+    private static final String PEDESTAL_ITEMS = "pedestalItems";
+    private static final String REAGENT = "reagent";
+
     @Override
     public void unifyItems(RecipeContext context, RecipeJson recipe) {
         GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
-        context.unifyInputs(recipe, RecipeConstants.REAGENT);
-        unifyItemInputs(context, recipe, RecipeConstants.PEDESTAL_ITEMS);
+        context.unifyInputs(recipe, REAGENT);
+        unifyItemInputs(context, recipe, PEDESTAL_ITEMS);
         unifyItemInputs(context, recipe, RecipeConstants.INPUT_ITEMS);
-
     }
 
     public void unifyItemInputs(RecipeContext context, RecipeJson recipe, String key) {

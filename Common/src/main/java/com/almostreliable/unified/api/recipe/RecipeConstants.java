@@ -1,56 +1,26 @@
 package com.almostreliable.unified.api.recipe;
 
-public final class RecipeConstants {
-    // common inputs
-    public static final String ITEM = "item";
-    public static final String TAG = "tag";
-    public static final String INPUT = "input";
-    public static final String INPUTS = "inputs";
-    public static final String INGREDIENT = "ingredient";
-    public static final String INGREDIENTS = "ingredients";
-    public static final String INPUT_ITEMS = "inputItems";
-    public static final String CATALYST = "catalyst";
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
+public interface RecipeConstants {
 
-    // common outputs
-    public static final String OUTPUT = "output";
-    public static final String OUTPUTS = "outputs";
-    public static final String RESULT = "result";
-    public static final String RESULTS = "results";
-    public static final String OUTPUT_ITEMS = "outputItems";
+    // inputs
+    String ITEM = "item";
+    String TAG = "tag";
+    String INPUT = "input";
+    String INPUTS = "inputs";
+    String INGREDIENT = "ingredient";
+    String INGREDIENTS = "ingredients";
+    String INPUT_ITEMS = "inputItems";
+    String CATALYST = "catalyst";
+
+    // outputs
+    String OUTPUT = "output";
+    String OUTPUTS = "outputs";
+    String RESULT = "result";
+    String RESULTS = "results";
+    String OUTPUT_ITEMS = "outputItems";
 
     // inner keys
-    public static final String VALUE = "value";
-    public static final String BASE = "base";
-
-    // ars nouveau
-    public static final String PEDESTAL_ITEMS = "pedestalItems";
-    public static final String REAGENT = "reagent";
-
-    // gregtech modern
-    public static final String TICK_INPUTS = "tickInputs";
-    public static final String TICK_OUTPUTS = "tickOutputs";
-
-    // immersive engineering
-    public static final String INPUT_0 = "input0";
-    public static final String INPUT_1 = "input1";
-    public static final String ADDITIVES = "additives";
-    public static final String SECONDARIES = "secondaries";
-    public static final String SLAG = "slag";
-
-    // mekanism
-    public static final String MAIN_INPUT = "mainInput";
-    public static final String MAIN_OUTPUT = "mainOutput";
-    public static final String ITEM_INPUT = "itemInput";
-    public static final String ITEM_OUTPUT = "itemOutput";
-    public static final String SECONDARY_OUTPUT = "secondaryOutput";
-    public static final String EXTRA_INPUT = "extraInput";
-
-    // modern industrialization
-    public static final String ITEM_INPUTS = "item_inputs";
-    public static final String ITEM_OUTPUTS = "item_outputs";
-
-    // cyclic
-    public static final String BONUS = "bonus";
-
-    private RecipeConstants() {}
+    String VALUE = "value";
+    String BASE = "base";
 }

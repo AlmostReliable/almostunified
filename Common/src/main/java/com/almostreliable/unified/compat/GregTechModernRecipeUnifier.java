@@ -13,6 +13,8 @@ import java.util.function.Consumer;
 
 public class GregTechModernRecipeUnifier implements RecipeUnifier {
 
+    private static final String TICK_INPUTS = "tickInputs";
+    private static final String TICK_OUTPUTS = "tickOutputs";
     private static final String CONTENT = "content";
 
     @Override
@@ -20,13 +22,13 @@ public class GregTechModernRecipeUnifier implements RecipeUnifier {
         GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
 
         doUnify(recipe, RecipeConstants.INPUTS, context::unifyBasicInput);
-        doUnify(recipe, RecipeConstants.TICK_INPUTS, context::unifyBasicInput);
+        doUnify(recipe, TICK_INPUTS, context::unifyBasicInput);
 
         doUnify(recipe,
                 RecipeConstants.OUTPUTS,
                 json -> context.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
         doUnify(recipe,
-                RecipeConstants.TICK_OUTPUTS,
+                TICK_OUTPUTS,
                 json -> context.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
     }
 

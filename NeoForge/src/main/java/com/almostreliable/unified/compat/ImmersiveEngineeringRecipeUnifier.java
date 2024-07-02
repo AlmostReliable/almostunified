@@ -12,7 +12,12 @@ import java.util.List;
 
 public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
 
+    private static final String INPUT_0 = "input0";
+    private static final String INPUT_1 = "input1";
+    private static final String ADDITIVES = "additives";
     private static final String BASE_INGREDIENT = "base_ingredient";
+    private static final String SECONDARIES = "secondaries";
+    private static final String SLAG = "slag";
 
     @Override
     public void unifyItems(RecipeContext context, RecipeJson recipe) {
@@ -20,12 +25,12 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
 
         List.of(
                 // alloy recipes, refinery
-                RecipeConstants.INPUT_0,
-                RecipeConstants.INPUT_1,
+                INPUT_0,
+                INPUT_1,
                 // arc furnace, squeezer, cloche, coke oven, fermenter, fertilizer, metal_press
                 RecipeConstants.INPUT,
                 // arc furnace
-                RecipeConstants.ADDITIVES,
+                ADDITIVES,
                 // refinery
                 RecipeConstants.CATALYST
         ).forEach(key -> unifyInputs(context, recipe, key));
@@ -34,7 +39,7 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
                 RecipeConstants.RESULT,
                 RecipeConstants.RESULTS,
                 // arc furnace
-                RecipeConstants.SLAG
+                SLAG
         ).forEach(key -> context.unifyOutputs(recipe, key, true, RecipeConstants.ITEM, BASE_INGREDIENT));
 
         unifySecondaries(context, recipe);
@@ -51,7 +56,7 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
     }
 
     public void unifySecondaries(RecipeContext context, RecipeJson recipe) {
-        JsonElement secondaries = recipe.getProperty(RecipeConstants.SECONDARIES);
+        JsonElement secondaries = recipe.getProperty(SECONDARIES);
         if (secondaries == null) {
             return;
         }
