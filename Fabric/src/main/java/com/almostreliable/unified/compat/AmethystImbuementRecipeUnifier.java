@@ -7,7 +7,6 @@ import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 
 import java.util.List;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class AmethystImbuementRecipeUnifier implements RecipeUnifier {
     @Override
     public void unifyItems(RecipeContext context, RecipeJson recipe) {

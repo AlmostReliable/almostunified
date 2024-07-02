@@ -11,4 +11,4 @@ pluginManagement {
 val modName: String by extra
 val minecraftVersion: String by extra
 rootProject.name = "$modName-$minecraftVersion"
-include("Common", "NeoForge")
+include("Common", "NeoForge", "Fabric")

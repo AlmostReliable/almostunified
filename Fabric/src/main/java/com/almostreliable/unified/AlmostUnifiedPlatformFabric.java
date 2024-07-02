@@ -1,11 +1,5 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.api.UnifierRegistry;
-import com.almostreliable.unified.compat.AdAstraRecipeUnifier;
-import com.almostreliable.unified.compat.AmethystImbuementRecipeUnifier;
-import com.almostreliable.unified.compat.GregTechModernRecipeUnifier;
-import com.almostreliable.unified.compat.ModernIndustrializationRecipeUnifier;
 import com.google.auto.service.AutoService;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;

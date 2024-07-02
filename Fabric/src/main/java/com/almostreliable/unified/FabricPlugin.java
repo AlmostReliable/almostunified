@@ -6,12 +6,14 @@ import com.almostreliable.unified.api.UnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.AmethystImbuementRecipeUnifier;
 import com.almostreliable.unified.compat.ModernIndustrializationRecipeUnifier;
+import com.almostreliable.unified.utils.Utils;
 import net.minecraft.resources.ResourceLocation;
 
 public class FabricPlugin implements AlmostUnifiedPlugin {
+
     @Override
     public ResourceLocation getPluginId() {
-        return new ResourceLocation(BuildConfig.MOD_ID, "fabric");
+        return Utils.getRL("fabric");
     }
 
     @Override
