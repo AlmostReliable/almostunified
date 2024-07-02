@@ -59,10 +59,12 @@ public class RecipeLink implements RecipeData {
         return null;
     }
 
+    @Override
     public ResourceLocation getId() {
         return id;
     }
 
+    @Override
     public ResourceLocation getType() {
         return type;
     }
