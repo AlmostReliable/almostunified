@@ -31,17 +31,17 @@ public class AlmostUnifiedForge {
     }
 
     private void onRegisterClientSyncRecipe(RegisterEvent event) {
-        if (event.getRegistryKey().equals(Registries.RECIPE_SERIALIZER)) {
+        if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
             Registry.register(BuiltInRegistries.RECIPE_SERIALIZER,
                     ClientRecipeTracker.ID,
                     ClientRecipeTracker.SERIALIZER);
         }
 
-        if (event.getRegistryKey().equals(Registries.RECIPE_TYPE)) {
+        if (event.getRegistryKey() == Registries.RECIPE_TYPE) {
             Registry.register(BuiltInRegistries.RECIPE_TYPE, ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
         }
 
-        if (event.getRegistryKey().equals(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS)) {
+        if (event.getRegistryKey() == NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS) {
             Registry.register(NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS, Utils.getRL("worldgen_unification"),
                     WorldGenBiomeModifier.CODEC);
         }
