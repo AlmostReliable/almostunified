@@ -36,6 +36,7 @@ public final class AlmostUnified {
 
     private static final LoggerFactory.Policy LOGGER_POLICY = new LoggerFactory.Policy();
     public static final Logger LOG = LoggerFactory.createCustomLogger(LOGGER_POLICY);
+
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
     @Nullable private static StartupConfig STARTUP_CONFIG;
 

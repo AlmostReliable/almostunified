@@ -7,6 +7,7 @@ public interface AlmostUnifiedRuntime {
 
     /**
      * Get a composed unify lookup from all existing unify handlers.
+     *
      * @return The unify lookup
      */
     UnifyLookup getUnifyLookup();

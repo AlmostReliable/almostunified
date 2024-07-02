@@ -224,7 +224,7 @@ public class TagInheritance {
         public boolean shouldInherit(TagKey<T> inheritanceTag, Collection<TagKey<Item>> dominantItemTags) {
             var patterns = inheritance.getOrDefault(inheritanceTag, Set.of());
             boolean result = checkPatterns(dominantItemTags, patterns);
-            //noinspection SimplifiableConditionalExpression
+            // noinspection SimplifiableConditionalExpression
             return mode == Mode.ALLOW ? result : !result;
         }
 

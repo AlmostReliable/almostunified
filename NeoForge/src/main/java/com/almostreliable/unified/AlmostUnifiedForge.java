@@ -89,14 +89,15 @@ public class AlmostUnifiedForge {
         try {
             Class<?> pluginClass = Class.forName(className);
             if (AlmostUnifiedPlugin.class.isAssignableFrom(pluginClass)) {
-                //noinspection unchecked
+                // noinspection unchecked
                 return (Class<AlmostUnifiedPlugin>) pluginClass;
             }
 
-            AlmostUnified.LOG.error("Failed to load AlmostUnified plugin: " + className + " does not implement " +
-                                    AlmostUnifiedPlugin.class.getName());
+            AlmostUnified.LOG.error("Failed to load AlmostUnified plugin: {} does not implement {}",
+                    className,
+                    AlmostUnifiedPlugin.class.getName());
         } catch (ClassNotFoundException e) {
-            AlmostUnified.LOG.error("Failed to load AlmostUnified plugin: " + className, e);
+            AlmostUnified.LOG.error("Failed to load AlmostUnified plugin: {}", className, e);
             return null;
         }
 
