@@ -7,7 +7,7 @@ import com.almostreliable.unified.api.recipe.RecipeUnifierBuilder;
 public class AdAstraRecipeUnifier implements RecipeUnifier {
     @Override
     public void collectUnifier(RecipeUnifierBuilder builder) {
-        builder.put("output", (json, ctx) -> {
+        builder.put("result", (json, ctx) -> {
             return ctx.createResultReplacement(json, false, RecipeConstants.ITEM, "id");
         });
     }
