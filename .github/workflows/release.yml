@@ -52,6 +52,7 @@ jobs:
       dependencies: | # can be removed if there are no dependencies
         jei(optional){curseforge:238222}{modrinth:u6dRKJwZ}
         rei(optional){curseforge:310111}{modrinth:nfn13YXA}
+        kubejs(optional){curseforge:238086}{modrinth:umyGl7zF}
       target_version: ${{ github.event.inputs.target_version }}
       update_type: ${{ github.event.inputs.update_type }}
       release_type: ${{ github.event.inputs.release_type }}
