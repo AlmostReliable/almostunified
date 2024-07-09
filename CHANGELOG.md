@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Fixed
+- fixed Ad Astra outputs not being unified
+
 ## [0.9.3] - 2024-04-18
 
 ### Added
