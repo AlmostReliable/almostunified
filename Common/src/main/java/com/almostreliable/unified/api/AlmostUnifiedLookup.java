@@ -9,21 +9,54 @@ import java.util.Collection;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+/**
+ * The core interface for the Almost Unified api.
+ * <p>
+ * Use this to obtain an instance of the runtime or to lookup
+ * replacement items.
+ */
 public interface AlmostUnifiedLookup {
 
+    /**
+     * The default instance of the Almost Unified lookup.
+     * <p>
+     * If unavailable, it will return an empty lookup instance which
+     * only returns empty default values for each method.
+     */
     AlmostUnifiedLookup INSTANCE = ServiceLoader.load(AlmostUnifiedLookup.class).findFirst().orElseGet(Empty::new);
 
+    /**
+     * Returns whether the Almost Unified runtime is loaded
+     * and ready to be used.
+     *
+     * @return True if the runtime is loaded, false otherwise.
+     */
     boolean isRuntimeLoaded();
 
-    AlmostUnifiedRuntime getRuntimeOrThrow();
-
     /**
-     * Get the core runtime from AlmostUnified. Runtime is available as soon minecraft reads the tags.
+     * Returns the instance of the Almost Unified runtime or null
+     * if the runtime is not loaded.
+     * <p>
+     * This can be used if you are not sure whether the runtime is loaded.
+     * <p>
+     * If you are sure whether the runtime is loaded, use {@link #getRuntimeOrThrow()}.
      *
-     * @return The runtime
+     * @return The Almost Unified runtime or null if the runtime is not loaded.
      */
     @Nullable
     AlmostUnifiedRuntime getRuntime();
+
+    /**
+     * Returns the instance of the Almost Unified runtime or throws
+     * an exception if the runtime is not loaded.
+     * <p>
+     * This can be used if you are sure whether the runtime is loaded.
+     * <p>
+     * If you are not sure whether the runtime is loaded, use {@link #getRuntime()}.
+     *
+     * @return The Almost Unified runtime.
+     */
+    AlmostUnifiedRuntime getRuntimeOrThrow();
 
     /**
      * Returns the replacement item for a given {@link ItemLike}. Will return null if no configured

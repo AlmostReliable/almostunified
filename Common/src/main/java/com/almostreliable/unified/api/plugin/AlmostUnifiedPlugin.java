@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 public interface AlmostUnifiedPlugin {
 
     /**
-     * Returns the unique identifier of the plugin.
+     * Returns the identifier of the plugin.
      * <p>
      * If your mod has multiple plugins for different modules, make
      * sure they are unique.
