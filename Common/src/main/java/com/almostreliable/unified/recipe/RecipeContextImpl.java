@@ -18,7 +18,7 @@ import java.util.List;
 @SuppressWarnings("SameParameterValue")
 public class RecipeContextImpl implements RecipeContext {
 
-    private final List<String> defaultInputDepthLookups = List.of(
+    private static final List<String> DEFAULT_INPUT_DEPTH_LOOKUPS = List.of(
             RecipeConstants.VALUE,
             RecipeConstants.BASE,
             RecipeConstants.INGREDIENT
@@ -64,7 +64,7 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Override
     public boolean unifyBasicInput(JsonElement jsonElement) {
-        return unifyBasicInput(jsonElement, defaultInputDepthLookups);
+        return unifyBasicInput(jsonElement, DEFAULT_INPUT_DEPTH_LOOKUPS);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Override
     public boolean unifySimpleInputs(JsonArray json) {
-        return unifySimpleInputs(json, defaultInputDepthLookups);
+        return unifySimpleInputs(json, DEFAULT_INPUT_DEPTH_LOOKUPS);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class RecipeContextImpl implements RecipeContext {
 
     @Override
     public boolean unifySimpleInputs(JsonObject json) {
-        return unifySimpleInputs(json, defaultInputDepthLookups);
+        return unifySimpleInputs(json, DEFAULT_INPUT_DEPTH_LOOKUPS);
     }
 
     @Override
