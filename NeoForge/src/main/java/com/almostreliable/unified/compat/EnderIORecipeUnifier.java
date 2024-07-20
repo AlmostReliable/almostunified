@@ -8,7 +8,7 @@ import com.almostreliable.unified.api.recipe.RecipeUnifier;
 public class EnderIORecipeUnifier implements RecipeUnifier {
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
+    public void unify(RecipeContext context, RecipeJson recipe) {
         context.unifyOutputs(recipe, RecipeConstants.ITEM);
     }
 }

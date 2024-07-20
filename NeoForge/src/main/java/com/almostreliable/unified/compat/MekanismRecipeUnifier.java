@@ -15,8 +15,8 @@ public class MekanismRecipeUnifier implements RecipeUnifier {
     private static final String SECONDARY_OUTPUT = "secondaryOutput";
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
+    public void unify(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
 
         context.unifyInputs(recipe, MAIN_INPUT);
         context.unifyInputs(recipe, ITEM_INPUT);

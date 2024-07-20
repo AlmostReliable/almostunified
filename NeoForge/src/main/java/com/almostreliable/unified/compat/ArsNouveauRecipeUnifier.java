@@ -15,8 +15,8 @@ public class ArsNouveauRecipeUnifier implements RecipeUnifier {
     private static final String REAGENT = "reagent";
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
+    public void unify(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
         context.unifyInputs(recipe, REAGENT);
         unifyItemInputs(context, recipe, PEDESTAL_ITEMS);
         unifyItemInputs(context, recipe, RecipeConstants.INPUT_ITEMS);

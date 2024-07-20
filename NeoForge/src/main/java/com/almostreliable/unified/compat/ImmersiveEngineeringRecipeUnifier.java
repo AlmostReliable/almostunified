@@ -20,8 +20,8 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
     private static final String SLAG = "slag";
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
+    public void unify(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
 
         List.of(
                 // alloy recipes, refinery

@@ -1,12 +1,11 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.api.recipe.RecipeJson;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class RecipeJsonImpl implements RecipeJson {
 
@@ -33,8 +32,8 @@ public class RecipeJsonImpl implements RecipeJson {
     }
 
     @Override
-    public boolean hasProperty(String property) {
-        return json.has(property);
+    public boolean hasProperty(String key) {
+        return json.has(key);
     }
 
     @Nullable
@@ -45,7 +44,7 @@ public class RecipeJsonImpl implements RecipeJson {
 
     @Override
     public void setProperty(String key, JsonElement value) {
-        Objects.requireNonNull(value, "value cannot be null");
+        Preconditions.checkNotNull(value, "value cannot be null");
         json.add(key, value);
     }
 }

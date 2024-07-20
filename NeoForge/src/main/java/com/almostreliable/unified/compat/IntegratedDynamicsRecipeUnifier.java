@@ -15,8 +15,8 @@ public class IntegratedDynamicsRecipeUnifier implements RecipeUnifier {
     private static final String ITEMS = "items";
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
+    public void unify(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
 
         unifyItemInput(context, recipe);
         context.unifyOutputs(recipe, RecipeConstants.RESULT, true, ITEMS);

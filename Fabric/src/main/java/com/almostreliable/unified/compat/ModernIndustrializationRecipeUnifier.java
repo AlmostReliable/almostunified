@@ -11,8 +11,8 @@ public class ModernIndustrializationRecipeUnifier implements RecipeUnifier {
     private static final String ITEM_OUTPUTS = "item_outputs";
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
+    public void unify(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
         context.unifyInputs(recipe, ITEM_INPUTS);
         context.unifyOutputs(recipe, ITEM_OUTPUTS);
     }

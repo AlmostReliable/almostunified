@@ -9,8 +9,8 @@ import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 public class AdAstraRecipeUnifier implements RecipeUnifier {
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
+    public void unify(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
         context.unifyOutputs(recipe, RecipeConstants.RESULT, false, RecipeConstants.ITEM, "id");
     }
 }

@@ -9,8 +9,8 @@ import java.util.List;
 
 public class AmethystImbuementRecipeUnifier implements RecipeUnifier {
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
+    public void unify(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
 
         context.unifyInputs(recipe,
                 List.of("imbueA",

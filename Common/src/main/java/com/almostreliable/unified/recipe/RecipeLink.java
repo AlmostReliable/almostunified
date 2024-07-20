@@ -2,13 +2,13 @@ package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.api.recipe.RecipeData;
 import com.almostreliable.unified.utils.JsonCompare;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,8 +70,8 @@ public class RecipeLink implements RecipeData {
     }
 
     @Override
-    public boolean hasProperty(String property) {
-        return getOriginal().has(property);
+    public boolean hasProperty(String key) {
+        return getOriginal().has(key);
     }
 
     public JsonObject getOriginal() {
@@ -88,7 +88,7 @@ public class RecipeLink implements RecipeData {
     }
 
     private void updateDuplicateLink(@Nullable DuplicateLink duplicateLink) {
-        Objects.requireNonNull(duplicateLink);
+        Preconditions.checkNotNull(duplicateLink);
         if (hasDuplicateLink() && getDuplicateLink() != duplicateLink) {
             throw new IllegalStateException("Recipe is already linked to " + getDuplicateLink());
         }
@@ -107,7 +107,7 @@ public class RecipeLink implements RecipeData {
     }
 
     void setUnified(JsonObject json) {
-        Objects.requireNonNull(json);
+        Preconditions.checkNotNull(json);
         if (isUnified()) {
             throw new IllegalStateException("Recipe already unified");
         }
@@ -183,7 +183,7 @@ public class RecipeLink implements RecipeData {
         }
 
         private void updateMaster(RecipeLink master) {
-            Objects.requireNonNull(master);
+            Preconditions.checkNotNull(master);
             addDuplicate(master);
             this.currentMaster = master;
         }

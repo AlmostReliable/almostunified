@@ -11,8 +11,8 @@ public class ShapedRecipeUnifier implements RecipeUnifier {
     public static final String KEY_PROPERTY = "key";
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
+    public void unify(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
 
         if (recipe.getProperty(KEY_PROPERTY) instanceof JsonObject json) {
             for (var e : json.entrySet()) {

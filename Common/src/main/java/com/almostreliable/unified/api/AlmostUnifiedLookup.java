@@ -13,7 +13,7 @@ public interface AlmostUnifiedLookup {
 
     AlmostUnifiedLookup INSTANCE = ServiceLoader.load(AlmostUnifiedLookup.class).findFirst().orElseGet(Empty::new);
 
-    boolean isLoaded();
+    boolean isRuntimeLoaded();
 
     AlmostUnifiedRuntime getRuntimeOrThrow();
 
@@ -77,24 +77,24 @@ public interface AlmostUnifiedLookup {
      *
      * @return The configured tags
      */
-    Collection<TagKey<Item>> getAllUnifiedTags();
+    Collection<TagKey<Item>> getUnifiedTags();
 
     class Empty implements AlmostUnifiedLookup {
 
         @Override
-        public boolean isLoaded() {
+        public boolean isRuntimeLoaded() {
             return false;
-        }
-
-        @Override
-        public AlmostUnifiedRuntime getRuntimeOrThrow() {
-            throw new IllegalStateException("The runtime is not loaded");
         }
 
         @Nullable
         @Override
         public AlmostUnifiedRuntime getRuntime() {
             return null;
+        }
+
+        @Override
+        public AlmostUnifiedRuntime getRuntimeOrThrow() {
+            throw new IllegalStateException("runtime is not loaded");
         }
 
         @Nullable
@@ -121,7 +121,7 @@ public interface AlmostUnifiedLookup {
         }
 
         @Override
-        public Collection<TagKey<Item>> getAllUnifiedTags() {
+        public Collection<TagKey<Item>> getUnifiedTags() {
             return Set.of();
         }
     }

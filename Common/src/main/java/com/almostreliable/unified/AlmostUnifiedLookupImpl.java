@@ -19,8 +19,14 @@ import java.util.stream.Collectors;
 public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
 
     @Override
-    public boolean isLoaded() {
+    public boolean isRuntimeLoaded() {
         return AlmostUnified.isRuntimeLoaded();
+    }
+
+    @Nullable
+    @Override
+    public AlmostUnifiedRuntime getRuntime() {
+        return AlmostUnified.getRuntime();
     }
 
     @Override
@@ -31,12 +37,6 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
         }
 
         return runtime;
-    }
-
-    @Nullable
-    @Override
-    public AlmostUnifiedRuntime getRuntime() {
-        return AlmostUnified.getRuntime();
     }
 
     @Nullable
@@ -99,7 +99,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     }
 
     @Override
-    public Collection<TagKey<Item>> getAllUnifiedTags() {
+    public Collection<TagKey<Item>> getUnifiedTags() {
         AlmostUnifiedRuntime runtime = getRuntime();
         if (runtime == null) {
             return Set.of();

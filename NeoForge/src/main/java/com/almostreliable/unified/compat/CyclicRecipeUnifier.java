@@ -9,7 +9,7 @@ public class CyclicRecipeUnifier implements RecipeUnifier {
     private static final String BONUS = "bonus";
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
+    public void unify(RecipeContext context, RecipeJson recipe) {
         context.unifyOutputs(recipe, BONUS);
     }
 }

@@ -18,8 +18,8 @@ public class GregTechModernRecipeUnifier implements RecipeUnifier {
     private static final String CONTENT = "content";
 
     @Override
-    public void unifyItems(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyItems(context, recipe);
+    public void unify(RecipeContext context, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
 
         doUnify(recipe, RecipeConstants.INPUTS, context::unifyBasicInput);
         doUnify(recipe, TICK_INPUTS, context::unifyBasicInput);

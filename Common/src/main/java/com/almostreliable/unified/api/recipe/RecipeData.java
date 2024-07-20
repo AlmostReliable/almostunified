@@ -8,5 +8,5 @@ public interface RecipeData {
 
     ResourceLocation getType();
 
-    boolean hasProperty(String property);
+    boolean hasProperty(String key);
 }

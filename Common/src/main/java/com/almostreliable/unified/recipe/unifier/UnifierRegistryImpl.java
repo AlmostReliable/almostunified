@@ -10,12 +10,12 @@ import java.util.Map;
 
 public class UnifierRegistryImpl implements UnifierRegistry {
 
-    private final Map<ResourceLocation, RecipeUnifier> unifiersByType = new HashMap<>();
+    private final Map<ResourceLocation, RecipeUnifier> unifiersByRecipeType = new HashMap<>();
     private final Map<String, RecipeUnifier> unifiersByModId = new HashMap<>();
 
     @Override
     public void registerForRecipeType(ResourceLocation recipeType, RecipeUnifier unifier) {
-        unifiersByType.put(recipeType, unifier);
+        unifiersByRecipeType.put(recipeType, unifier);
     }
 
     @Override
@@ -25,9 +25,8 @@ public class UnifierRegistryImpl implements UnifierRegistry {
 
     @Override
     public RecipeUnifier getUnifier(RecipeData recipeData) {
-        // TODO move the type and modid thing into plugin
         var type = recipeData.getType();
-        var byType = unifiersByType.get(type);
+        var byType = unifiersByRecipeType.get(type);
         if (byType != null) {
             return byType;
         }

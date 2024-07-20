@@ -211,7 +211,7 @@ public class RecipeTransformer {
 
                 RecipeContextImpl ctx = new RecipeContextImpl(handler);
                 RecipeUnifier unifier = factory.getUnifier(recipe);
-                unifier.unifyItems(ctx, json);
+                unifier.unify(ctx, json);
             }
 
             if (!recipe.getOriginal().equals(recipeCopy)) {

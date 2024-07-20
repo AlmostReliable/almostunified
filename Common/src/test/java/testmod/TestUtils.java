@@ -109,7 +109,7 @@ public class TestUtils {
         var recipe = TestUtils.recipe(jsonActual);
         JsonObject copy = recipe.getOriginal().deepCopy();
         var json = new RecipeJsonImpl(recipe.getId(), copy);
-        unifier.unifyItems(recipeContext(), json);
+        unifier.unify(recipeContext(), json);
         assertNotEquals(recipe.getOriginal(), copy);
 
         var expected = TestUtils.json(jsonExpected);
@@ -120,7 +120,7 @@ public class TestUtils {
         var recipe = TestUtils.recipe(jsonStr);
         JsonObject copy = recipe.getOriginal().deepCopy();
         var json = new RecipeJsonImpl(recipe.getId(), copy);
-        unifier.unifyItems(recipeContext(), json);
+        unifier.unify(recipeContext(), json);
         assertEquals(recipe.getOriginal(), copy);
 
         var expected = TestUtils.json(jsonStr);
