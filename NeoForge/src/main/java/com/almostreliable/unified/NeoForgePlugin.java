@@ -1,7 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.*;
@@ -19,7 +19,7 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
     }
 
     @Override
-    public void registerUnifiers(UnifierRegistry registry) {
+    public void registerRecipeUnifiers(RecipeUnifierRegistry registry) {
         List.of(
                 ModConstants.ARS_CREO,
                 ModConstants.ARS_ELEMENTAL,

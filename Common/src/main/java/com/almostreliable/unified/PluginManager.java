@@ -1,6 +1,6 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import net.minecraft.resources.ResourceLocation;
 
@@ -56,7 +56,7 @@ public class PluginManager {
         pluginManager = new PluginManager(p);
     }
 
-    public void registerUnifiers(UnifierRegistry registry) {
+    public void registerUnifiers(RecipeUnifierRegistry registry) {
         forEachPlugin(p -> p.registerUnifiers(registry));
     }
 

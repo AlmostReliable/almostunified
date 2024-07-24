@@ -19,16 +19,16 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
     private final Collection<? extends UnifyHandler> unifyHandlers;
     private final DuplicationConfig duplicationConfig;
     private final DebugConfig debugConfig;
-    private final UnifierRegistry unifierRegistry;
+    private final RecipeUnifierRegistry recipeUnifierRegistry;
     private final TagOwnerships tagOwnerships;
     private final Placeholders placeholders;
     private final UnifyLookup compositeUnifyLookup;
 
-    public AlmostUnifiedRuntimeImpl(Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig, DebugConfig debugConfig, UnifierRegistry unifierRegistry, TagOwnerships tagOwnerships, Placeholders placeholders) {
+    public AlmostUnifiedRuntimeImpl(Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig, DebugConfig debugConfig, RecipeUnifierRegistry recipeUnifierRegistry, TagOwnerships tagOwnerships, Placeholders placeholders) {
         this.unifyHandlers = unifyHandlers;
         this.duplicationConfig = duplicationConfig;
         this.debugConfig = debugConfig;
-        this.unifierRegistry = unifierRegistry;
+        this.recipeUnifierRegistry = recipeUnifierRegistry;
         this.tagOwnerships = tagOwnerships;
         this.placeholders = placeholders;
         this.compositeUnifyLookup = new CompositeUnifyLookup(unifyHandlers, tagOwnerships);
@@ -40,7 +40,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         debugConfig.logUnifyTagDump(getUnifyLookup());
 
         long startTime = System.currentTimeMillis();
-        RecipeTransformer.Result result = new RecipeTransformer(unifierRegistry,
+        RecipeTransformer.Result result = new RecipeTransformer(recipeUnifierRegistry,
                 unifyHandlers,
                 duplicationConfig).transformRecipes(recipes, skipClientTracking);
         RecipeDumper dumper = new RecipeDumper(result, startTime, System.currentTimeMillis());

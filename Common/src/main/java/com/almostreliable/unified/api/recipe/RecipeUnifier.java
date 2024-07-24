@@ -1,6 +1,6 @@
 package com.almostreliable.unified.api.recipe;
 
-import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 
@@ -15,7 +15,7 @@ import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
  * Unifiers can either be registered per recipe type or per mod id. Registering a custom unifier will
  * disable the default unifiers such as {@link GenericRecipeUnifier}.
  * <p>
- * Registration is handled in {@link UnifierRegistry} which can be obtained in your {@link AlmostUnifiedPlugin}.
+ * Registration is handled in {@link RecipeUnifierRegistry} which can be obtained in your {@link AlmostUnifiedPlugin}.
  */
 public interface RecipeUnifier {
 

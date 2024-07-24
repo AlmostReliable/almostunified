@@ -1,6 +1,6 @@
 package com.almostreliable.unified.api.plugin;
 
-import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,6 +17,9 @@ public interface AlmostUnifiedPlugin {
      * <p>
      * If your mod has multiple plugins for different modules, make
      * sure they are unique.
+     * <p>
+     * If you register a recipe unifier although Almost Unified already
+     * ships a recipe unifier for your recipes, yours will take precedence.
      *
      * @return the plugin id
      */
@@ -25,7 +28,7 @@ public interface AlmostUnifiedPlugin {
     /**
      * Allows registration of custom {@link RecipeUnifier}s.
      *
-     * @param registry the {@link UnifierRegistry} to register with
+     * @param registry the {@link RecipeUnifierRegistry} to register with
      */
-    default void registerUnifiers(UnifierRegistry registry) {}
+    default void registerRecipeUnifiers(RecipeUnifierRegistry registry) {}
 }

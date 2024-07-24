@@ -2,7 +2,7 @@ package com.almostreliable.unified;
 
 
 import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.AmethystImbuementRecipeUnifier;
 import com.almostreliable.unified.compat.ModernIndustrializationRecipeUnifier;
@@ -17,7 +17,7 @@ public class FabricPlugin implements AlmostUnifiedPlugin {
     }
 
     @Override
-    public void registerUnifiers(UnifierRegistry registry) {
+    public void registerRecipeUnifiers(RecipeUnifierRegistry registry) {
         registry.registerForModId(ModConstants.AMETHYST_IMBUEMENT, new AmethystImbuementRecipeUnifier());
         registry.registerForModId(ModConstants.MODERN_INDUSTRIALIZATION, new ModernIndustrializationRecipeUnifier());
     }

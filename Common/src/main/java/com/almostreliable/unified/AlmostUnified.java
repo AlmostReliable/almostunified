@@ -8,7 +8,7 @@ import com.almostreliable.unified.impl.TagOwnershipsImpl;
 import com.almostreliable.unified.impl.UnifyHandlerImpl;
 import com.almostreliable.unified.loot.LootUnification;
 import com.almostreliable.unified.recipe.RecipeUnifyHandler;
-import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
+import com.almostreliable.unified.recipe.unifier.RecipeUnifierRegistryImpl;
 import com.almostreliable.unified.utils.FileUtils;
 import com.almostreliable.unified.utils.TagReloadHandler;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
@@ -58,8 +58,9 @@ public final class AlmostUnified {
 
     public static void onTagLoaderReload(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
         LOGGER_POLICY.reset();
-        UnifierRegistry unifierRegistry = new UnifierRegistryImpl();
-        PluginManager.instance().registerUnifiers(unifierRegistry);
+
+        RecipeUnifierRegistry recipeUnifierRegistry = new RecipeUnifierRegistryImpl();
+        PluginManager.instance().registerRecipeUnifiers(recipeUnifierRegistry);
 
         FileUtils.createGitIgnoreIfNotExists();
         TagConfig tagConfig = Config.load(TagConfig.NAME, new TagConfig.Serializer());
@@ -86,7 +87,7 @@ public final class AlmostUnified {
         RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers,
                 dupConfig,
                 debugConfig,
-                unifierRegistry,
+                recipeUnifierRegistry,
                 tagOwnerships,
                 replacementsConfig);
     }

@@ -1,7 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.AdAstraRecipeUnifier;
@@ -18,7 +18,7 @@ public class CommonPlugin implements AlmostUnifiedPlugin {
     }
 
     @Override
-    public void registerUnifiers(UnifierRegistry registry) {
+    public void registerRecipeUnifiers(RecipeUnifierRegistry registry) {
         registry.registerForModId(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
         registry.registerForModId(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
     }

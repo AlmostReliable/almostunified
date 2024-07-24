@@ -1,14 +1,14 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.UnifierRegistry;
+import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.UnifySettings;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.config.DuplicationConfig;
-import com.almostreliable.unified.recipe.unifier.UnifierRegistryImpl;
+import com.almostreliable.unified.recipe.unifier.RecipeUnifierRegistryImpl;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.JsonQuery;
 import com.almostreliable.unified.utils.RecipeTypePropertiesLogger;
@@ -27,12 +27,12 @@ import java.util.stream.Collectors;
 
 public class RecipeTransformer {
 
-    private final UnifierRegistry factory;
+    private final RecipeUnifierRegistry factory;
     private final Collection<? extends UnifyHandler> unifyHandlers;
     private final DuplicationConfig duplicationConfig;
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(UnifierRegistry factory, Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig) {
+    public RecipeTransformer(RecipeUnifierRegistry factory, Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig) {
         this.factory = factory;
         this.unifyHandlers = unifyHandlers;
         this.duplicationConfig = duplicationConfig;
@@ -195,7 +195,7 @@ public class RecipeTransformer {
 
     /**
      * Unifies a single recipe link. This method will modify the recipe link in-place.
-     * {@link UnifierRegistryImpl} will apply multiple unification's onto the recipe.
+     * {@link RecipeUnifierRegistryImpl} will apply multiple unification's onto the recipe.
      *
      * @param recipe The recipe link to unify.
      */
@@ -210,7 +210,7 @@ public class RecipeTransformer {
                 }
 
                 RecipeContextImpl ctx = new RecipeContextImpl(handler);
-                RecipeUnifier unifier = factory.getUnifier(recipe);
+                RecipeUnifier unifier = factory.getRecipeUnifier(recipe);
                 unifier.unify(ctx, json);
             }
 
