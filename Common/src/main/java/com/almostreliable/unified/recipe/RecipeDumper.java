@@ -1,6 +1,5 @@
 package com.almostreliable.unified.recipe;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.utils.FileUtils;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
@@ -29,21 +28,21 @@ public class RecipeDumper {
         String last = "# Last execution: " + format.format(new Date(startTime));
 
         if (dumpOverview) {
-            FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), "overview_dump.txt", sb -> {
+            FileUtils.writeLog("overview_dump.txt", sb -> {
                 sb.append(last).append("\n");
                 dumpOverview(sb);
             });
         }
 
         if (dumpUnify) {
-            FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), "unify_dump.txt", sb -> {
+            FileUtils.writeLog("unify_dump.txt", sb -> {
                 sb.append(last).append("\n");
                 dumpUnifyRecipes(sb);
             });
         }
 
         if (dumpDuplicate) {
-            FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), "duplicates_dump.txt", sb -> {
+            FileUtils.writeLog("duplicates_dump.txt", sb -> {
                 sb.append(last).append("\n");
                 dumpDuplicates(sb);
             });

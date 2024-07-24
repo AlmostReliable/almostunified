@@ -1,10 +1,8 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +32,6 @@ public class RecipeTypePropertiesLogger {
             props.forEach(property -> sb.append("    ").append(property).append("\n"));
         });
 
-        Path path = AlmostUnifiedPlatform.INSTANCE.getLogPath();
-        FileUtils.write(path, "debug_recipe_properties.txt", stringBuilder -> sb.append(sb));
+        FileUtils.writeLog("debug_recipe_properties.txt", stringBuilder -> sb.append(sb));
     }
 }

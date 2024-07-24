@@ -1,6 +1,5 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.FileUtils;
 import com.google.gson.JsonElement;
@@ -11,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class DebugConfig extends Config {
     public static final String NAME = "debug";
@@ -36,9 +34,8 @@ public class DebugConfig extends Config {
             return;
         }
 
-        FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), "unify_tag_dump.txt", sb -> {
-            sb.append(StreamSupport.stream(lookup
-                            .getUnifiedTags().spliterator(), false)
+        FileUtils.writeLog("unify_tag_dump.txt", sb -> {
+            sb.append(lookup.getUnifiedTags().stream()
                     .sorted(Comparator.comparing(t -> t.location().toString()))
                     .map(t -> StringUtils.rightPad(t.location().toString(), 40) + " => " + lookup
                             .getEntries(t)
@@ -55,13 +52,14 @@ public class DebugConfig extends Config {
             return;
         }
 
-        FileUtils.write(AlmostUnifiedPlatform.INSTANCE.getLogPath(),
+        FileUtils.writeLog(
                 filename,
                 sb -> recipes.forEach((key, value) -> sb
                         .append(key.toString())
                         .append(" [JSON]:")
                         .append(value.toString())
-                        .append("\n")));
+                        .append("\n"))
+        );
     }
 
     public static class Serializer extends Config.Serializer<DebugConfig> {
