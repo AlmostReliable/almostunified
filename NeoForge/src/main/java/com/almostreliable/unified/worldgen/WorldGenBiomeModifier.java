@@ -26,7 +26,7 @@ public class WorldGenBiomeModifier implements BiomeModifier {
     public static final ResourceLocation UNKNOWN_BIOME_ID = Utils.getRL("unknown_biome_id");
 
     public static void bindUnifier(WorldGenBiomeModifier modifier, RegistryAccess registryAccess) {
-        if (AlmostUnified.getStartupConfig().allowWorldGenUnification()) {
+        if (AlmostUnified.STARTUP_CONFIG.allowWorldGenUnification()) {
             WorldGenUnifier unifier = new WorldGenUnifier(registryAccess);
             unifier.process();
             modifier.unifier = unifier;

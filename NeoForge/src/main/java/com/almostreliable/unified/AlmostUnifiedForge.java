@@ -23,7 +23,7 @@ import java.util.*;
 public class AlmostUnifiedForge {
 
     public AlmostUnifiedForge(IEventBus eventBus) {
-        if (!AlmostUnified.getStartupConfig().isServerOnly()) {
+        if (!AlmostUnified.STARTUP_CONFIG.isServerOnly()) {
             eventBus.addListener(this::onRegisterClientSyncRecipe);
         }
 

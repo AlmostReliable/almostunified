@@ -34,22 +34,11 @@ public final class AlmostUnified {
     public static final StartupConfig STARTUP_CONFIG = Config.load(StartupConfig.NAME, new StartupConfig.Serializer());
 
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
-    @Nullable private static StartupConfig STARTUP_CONFIG;
 
-    public static boolean isRuntimeLoaded() {
-        return RUNTIME != null;
-    }
-
+    @SuppressWarnings("StaticVariableUsedBeforeInitialization")
     @Nullable
     static AlmostUnifiedRuntime getRuntime() {
         return RUNTIME;
-    }
-
-    public static StartupConfig getStartupConfig() {
-        if (STARTUP_CONFIG == null) {
-            STARTUP_CONFIG = Config.load(StartupConfig.NAME, new StartupConfig.Serializer());
-        }
-        return STARTUP_CONFIG;
     }
 
     public static void onTagLoaderReload(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
@@ -178,7 +167,7 @@ public final class AlmostUnified {
     public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes, HolderLookup.Provider registries) {
         Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
         if (RUNTIME instanceof RecipeUnifyHandler handler) {
-            handler.run(recipes, getStartupConfig().isServerOnly());
+            handler.run(recipes, STARTUP_CONFIG.isServerOnly());
         } else {
             AlmostUnified.LOGGER.error(
                     "Internal error. Implementation of given AlmostUnifiedRuntime does not implement RecipeUnifyHandler!");

@@ -20,7 +20,7 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
 
     @Override
     public boolean isRuntimeLoaded() {
-        return AlmostUnified.isRuntimeLoaded();
+        return getRuntime() != null;
     }
 
     @Nullable
