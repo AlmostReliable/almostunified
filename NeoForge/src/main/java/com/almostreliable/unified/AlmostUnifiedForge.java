@@ -23,51 +23,58 @@ import java.util.*;
 public class AlmostUnifiedForge {
 
     public AlmostUnifiedForge(IEventBus eventBus) {
-        if (!AlmostUnified.STARTUP_CONFIG.isServerOnly()) {
-            eventBus.addListener(this::onRegisterClientSyncRecipe);
-        }
-
+        eventBus.addListener(this::onRegisterEvent);
         eventBus.addListener(this::onCommonSetup);
     }
 
-    private void onRegisterClientSyncRecipe(RegisterEvent event) {
+    private void onRegisterEvent(RegisterEvent event) {
+        if (AlmostUnified.STARTUP_CONFIG.allowWorldGenUnification() &&
+            event.getRegistryKey() == NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS) {
+            Registry.register(
+                    NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS,
+                    Utils.getRL("worldgen_unification"),
+                    WorldGenBiomeModifier.CODEC
+            );
+        }
+
+        if (!AlmostUnified.STARTUP_CONFIG.isServerOnly()) return;
+
         if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
-            Registry.register(BuiltInRegistries.RECIPE_SERIALIZER,
+            Registry.register(
+                    BuiltInRegistries.RECIPE_SERIALIZER,
                     ClientRecipeTracker.ID,
-                    ClientRecipeTracker.SERIALIZER);
+                    ClientRecipeTracker.SERIALIZER
+            );
         }
 
         if (event.getRegistryKey() == Registries.RECIPE_TYPE) {
             Registry.register(BuiltInRegistries.RECIPE_TYPE, ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
         }
-
-        if (event.getRegistryKey() == NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS) {
-            Registry.register(NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS, Utils.getRL("worldgen_unification"),
-                    WorldGenBiomeModifier.CODEC);
-        }
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> PluginManager.initialize(getPlugins()));
+        event.enqueueWork(AlmostUnifiedForge::initializePluginManager);
     }
 
-    private Collection<AlmostUnifiedPlugin> getPlugins() {
-        Collection<Class<AlmostUnifiedPlugin>> pluginClasses = getPluginClasses();
+    private static void initializePluginManager() {
         List<AlmostUnifiedPlugin> plugins = new ArrayList<>();
-        try {
-            for (Class<AlmostUnifiedPlugin> pluginClass : pluginClasses) {
+        Collection<Class<AlmostUnifiedPlugin>> pluginClasses = getPluginClasses();
+
+        for (var pluginClass : pluginClasses) {
+            try {
                 plugins.add(pluginClass.getConstructor().newInstance());
+            } catch (Exception e) {
+                AlmostUnified.LOGGER.error("Failed to load plugin {}.", pluginClass.getName(), e);
             }
-        } catch (Exception e) {
-            AlmostUnified.LOGGER.error("Failed to create plugin, while loading it: ", e);
         }
 
-        return plugins;
+        PluginManager.init(plugins);
     }
 
-    private Collection<Class<AlmostUnifiedPlugin>> getPluginClasses() {
+    private static Collection<Class<AlmostUnifiedPlugin>> getPluginClasses() {
         Set<Class<AlmostUnifiedPlugin>> pluginClasses = new HashSet<>();
         Type type = Type.getType(AlmostUnifiedNeoPlugin.class);
+
         for (var data : ModList.get().getAllScanData()) {
             for (var annotation : data.getAnnotations()) {
                 if (!annotation.annotationType().equals(type)) {
@@ -85,7 +92,7 @@ public class AlmostUnifiedForge {
     }
 
     @Nullable
-    private Class<AlmostUnifiedPlugin> getPluginClass(String className) {
+    private static Class<AlmostUnifiedPlugin> getPluginClass(String className) {
         try {
             Class<?> pluginClass = Class.forName(className);
             if (AlmostUnifiedPlugin.class.isAssignableFrom(pluginClass)) {
@@ -93,11 +100,13 @@ public class AlmostUnifiedForge {
                 return (Class<AlmostUnifiedPlugin>) pluginClass;
             }
 
-            AlmostUnified.LOGGER.error("Failed to load AlmostUnified plugin: {} does not implement {}",
+            AlmostUnified.LOGGER.error(
+                    "Plugin {} does not implement {}.",
                     className,
-                    AlmostUnifiedPlugin.class.getName());
+                    AlmostUnifiedPlugin.class.getName()
+            );
         } catch (ClassNotFoundException e) {
-            AlmostUnified.LOGGER.error("Failed to load AlmostUnified plugin: {}", className, e);
+            AlmostUnified.LOGGER.error("Failed to load plugin {}.", className, e);
             return null;
         }
 

@@ -4,7 +4,6 @@ import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.recipe.ClientRecipeTracker;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 
@@ -16,9 +15,11 @@ public class AlmostUnifiedFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         if (!AlmostUnified.STARTUP_CONFIG.isServerOnly()) {
-            Registry.register(BuiltInRegistries.RECIPE_SERIALIZER,
+            Registry.register(
+                    BuiltInRegistries.RECIPE_SERIALIZER,
                     ClientRecipeTracker.ID,
-                    ClientRecipeTracker.SERIALIZER);
+                    ClientRecipeTracker.SERIALIZER
+            );
             Registry.register(BuiltInRegistries.RECIPE_TYPE, ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
         }
 
@@ -27,16 +28,21 @@ public class AlmostUnifiedFabric implements ModInitializer {
 
     private static void initializePluginManager() {
         List<AlmostUnifiedPlugin> plugins = new ArrayList<>();
-        for (EntrypointContainer<AlmostUnifiedPlugin> entries : FabricLoader
-                .getInstance()
-                .getEntrypointContainers(BuildConfig.MOD_ID, AlmostUnifiedPlugin.class)) {
+        var entrypointContainers = FabricLoader.getInstance()
+                .getEntrypointContainers(BuildConfig.MOD_ID, AlmostUnifiedPlugin.class);
+
+        for (var entrypointContainer : entrypointContainers) {
             try {
-                plugins.add(entries.getEntrypoint());
+                plugins.add(entrypointContainer.getEntrypoint());
             } catch (Exception e) {
-                AlmostUnified.LOGGER.error("Failed to create AlmostUnified plugin, while loading it: ", e);
+                AlmostUnified.LOGGER.error(
+                        "Failed to load plugin for mod {}.",
+                        entrypointContainer.getProvider().getMetadata().getName(),
+                        e
+                );
             }
         }
 
-        PluginManager.initialize(plugins);
+        PluginManager.init(plugins);
     }
 }
