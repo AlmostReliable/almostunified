@@ -11,31 +11,31 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class PluginManager {
+public final class PluginManager {
 
-    @Nullable
-    private static PluginManager pluginManager;
+    @Nullable private static PluginManager INSTANCE;
     private final List<AlmostUnifiedPlugin> plugins;
 
     private PluginManager(List<AlmostUnifiedPlugin> plugins) {
         this.plugins = plugins;
     }
 
+    @SuppressWarnings("StaticVariableUsedBeforeInitialization")
     public static PluginManager instance() {
-        if (pluginManager == null) {
-            throw new IllegalStateException("PluginManager is not initialized");
+        if (INSTANCE == null) {
+            throw new IllegalStateException("PluginManager is not initialized.");
         }
 
-        return pluginManager;
+        return INSTANCE;
     }
 
-    static void initialize(Collection<AlmostUnifiedPlugin> plugins) {
-        if (pluginManager != null) {
-            throw new IllegalStateException("PluginManager is already initialized");
+    static void init(Collection<AlmostUnifiedPlugin> plugins) {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("PluginManager is already initialized.");
         }
 
-        var p = new ArrayList<>(plugins);
-        p.sort((a, b) -> {
+        var sortedPlugins = new ArrayList<>(plugins);
+        sortedPlugins.sort((a, b) -> {
             if (a.getPluginId().getNamespace().equals(BuildConfig.MOD_ID)) {
                 return -1;
             }
@@ -47,28 +47,29 @@ public class PluginManager {
             return a.getPluginId().compareTo(b.getPluginId());
         });
 
-        String ids = p
+        String ids = sortedPlugins
                 .stream()
                 .map(AlmostUnifiedPlugin::getPluginId)
                 .map(ResourceLocation::toString)
                 .collect(Collectors.joining(", "));
-        AlmostUnified.LOGGER.info("Loaded AlmostUnified plugins: " + ids);
-        pluginManager = new PluginManager(p);
+        AlmostUnified.LOGGER.info("Loaded plugins: {}", ids);
+
+        INSTANCE = new PluginManager(sortedPlugins);
     }
 
-    public void registerUnifiers(RecipeUnifierRegistry registry) {
-        forEachPlugin(p -> p.registerUnifiers(registry));
+    public void registerRecipeUnifiers(RecipeUnifierRegistry registry) {
+        forEachPlugin(plugin -> plugin.registerRecipeUnifiers(registry));
     }
 
     public void forEachPlugin(Consumer<AlmostUnifiedPlugin> consumer) {
         var it = plugins.listIterator();
         while (it.hasNext()) {
-            AlmostUnifiedPlugin p = it.next();
+            AlmostUnifiedPlugin plugin = it.next();
             try {
-                consumer.accept(p);
-            } catch (Exception t) {
+                consumer.accept(plugin);
+            } catch (Exception e) {
                 it.remove();
-                AlmostUnified.LOGGER.error("Failed to process plugin " + p.getPluginId() + ", removing it", t);
+                AlmostUnified.LOGGER.error("Failed to process plugin {}, removing it.", plugin.getPluginId(), e);
             }
         }
     }
