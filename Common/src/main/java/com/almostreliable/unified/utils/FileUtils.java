@@ -27,7 +27,7 @@ public final class FileUtils {
                     StandardOpenOption.TRUNCATE_EXISTING,
                     StandardOpenOption.WRITE);
         } catch (IOException e) {
-            AlmostUnified.LOG.warn("Dump couldn't be written '{}': {}", fileName, e.getMessage());
+            AlmostUnified.LOGGER.warn("Dump couldn't be written '{}': {}", fileName, e.getMessage());
             e.printStackTrace();
         }
     }

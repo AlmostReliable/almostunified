@@ -32,7 +32,7 @@ public class TagLoaderMixin {
                 TagReloadHandler.initItemTags(tags);
                 TagReloadHandler.run();
             } catch (Exception e) {
-                AlmostUnified.LOG.error(e.getMessage(), e);
+                AlmostUnified.LOGGER.error(e.getMessage(), e);
             }
         }
         if (directory.equals("tags/blocks")) {
@@ -41,7 +41,7 @@ public class TagLoaderMixin {
                 TagReloadHandler.initBlockTags(tags);
                 TagReloadHandler.run();
             } catch (Exception e) {
-                AlmostUnified.LOG.error(e.getMessage(), e);
+                AlmostUnified.LOGGER.error(e.getMessage(), e);
             }
         }
     }

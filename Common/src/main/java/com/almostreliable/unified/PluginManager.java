@@ -52,7 +52,7 @@ public class PluginManager {
                 .map(AlmostUnifiedPlugin::getPluginId)
                 .map(ResourceLocation::toString)
                 .collect(Collectors.joining(", "));
-        AlmostUnified.LOG.info("Loaded AlmostUnified plugins: " + ids);
+        AlmostUnified.LOGGER.info("Loaded AlmostUnified plugins: " + ids);
         pluginManager = new PluginManager(p);
     }
 
@@ -68,7 +68,7 @@ public class PluginManager {
                 consumer.accept(p);
             } catch (Exception t) {
                 it.remove();
-                AlmostUnified.LOG.error("Failed to process plugin " + p.getPluginId() + ", removing it", t);
+                AlmostUnified.LOGGER.error("Failed to process plugin " + p.getPluginId() + ", removing it", t);
             }
         }
     }

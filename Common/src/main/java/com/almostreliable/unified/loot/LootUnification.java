@@ -30,7 +30,7 @@ public class LootUnification {
                     .listElements()
                     .forEach(holder -> unifyLoot(holder.value(), holder.key().location(), unifyHandlers));
         } catch (Exception e) {
-            AlmostUnified.LOG.error("Failed to unify loot", e);
+            AlmostUnified.LOGGER.error("Failed to unify loot", e);
         }
     }
 
@@ -47,7 +47,7 @@ public class LootUnification {
         }
 
         if (!modifiedTable.isEmpty()) {
-            AlmostUnified.LOG.info("Loot table '{}' was unified by: {}",
+            AlmostUnified.LOGGER.info("Loot table '{}' was unified by: {}",
                     tableId,
                     modifiedTable.stream().map(UnifyHandler::getName).collect(
                             Collectors.joining(", ")));

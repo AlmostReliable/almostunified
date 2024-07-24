@@ -49,7 +49,7 @@ public final class ModPrioritiesImpl implements ModPriorities {
         if (priorityOverride != null) {
             var entry = findItemByNamespace(items, priorityOverride);
             if (entry != null) return entry;
-            AlmostUnified.LOG.warn(
+            AlmostUnified.LOGGER.warn(
                     "Priority override mod '{}' for tag '{}' does not contain a valid item. Falling back to default priority.",
                     priorityOverride,
                     tag.location());

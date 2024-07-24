@@ -23,7 +23,7 @@ public class ServerLifecycleHooksMixin {
                     WorldGenBiomeModifier.bindUnifier(wgbm, registryAccess);
                 } catch (Exception e) {
                     var id = biomeModifiers.getKey(bm);
-                    AlmostUnified.LOG.error("Failed to bind registry access to biome modifier " + id, e);
+                    AlmostUnified.LOGGER.error("Failed to bind registry access to biome modifier " + id, e);
                 }
             }
         }

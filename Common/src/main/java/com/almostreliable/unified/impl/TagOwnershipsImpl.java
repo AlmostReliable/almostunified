@@ -55,7 +55,7 @@ public class TagOwnershipsImpl implements TagOwnerships {
                 TagKey<Item> ref = TagKey.create(Registries.ITEM, rawRef);
 
                 if (!enabledTagsFilter.test(owner)) {
-                    AlmostUnified.LOG.warn(
+                    AlmostUnified.LOGGER.warn(
                             "[TagOwnerships] Owner tag '#{}' is not present in the unify tag list!",
                             owner.location()
                     );
@@ -63,7 +63,7 @@ public class TagOwnershipsImpl implements TagOwnerships {
                 }
 
                 if (enabledTagsFilter.test(ref)) {
-                    AlmostUnified.LOG.warn(
+                    AlmostUnified.LOGGER.warn(
                             "[TagOwnerships] Reference tag '#{}' of owner tag '#{}' is present in the unify tag list!",
                             ref.location(),
                             owner.location()
@@ -97,14 +97,14 @@ public class TagOwnershipsImpl implements TagOwnerships {
         ownerToRefs.asMap().forEach((owner, refs) -> {
             var rawHolders = rawTags.get(owner.location());
             if (rawHolders.isEmpty()) {
-                AlmostUnified.LOG.warn("[TagOwnerships] Owner tag '#{}' does not exist!", owner.location());
+                AlmostUnified.LOGGER.warn("[TagOwnerships] Owner tag '#{}' does not exist!", owner.location());
                 return;
             }
 
             for (var ref : refs) {
                 var refHolders = rawTags.get(ref.location());
                 if (refHolders.isEmpty()) {
-                    AlmostUnified.LOG.warn(
+                    AlmostUnified.LOGGER.warn(
                             "[TagOwnerships] Reference tag '#{}' of owner tag '#{}' does not exist!",
                             ref.location(),
                             owner.location()
@@ -121,7 +121,7 @@ public class TagOwnershipsImpl implements TagOwnerships {
 
         if (!changedTags.isEmpty()) {
             changedTags.asMap().forEach((tag, items) -> {
-                AlmostUnified.LOG.info("[TagOwnerships] Modified tag '#{}', added {}", tag, items);
+                AlmostUnified.LOGGER.info("[TagOwnerships] Modified tag '#{}', added {}", tag, items);
             });
         }
     }

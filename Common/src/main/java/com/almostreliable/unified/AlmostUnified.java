@@ -20,13 +20,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import javax.annotation.Nullable;
-import java.io.Serializable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -35,7 +30,8 @@ import java.util.stream.Collectors;
 public final class AlmostUnified {
 
     private static final LoggerFactory.Policy LOGGER_POLICY = new LoggerFactory.Policy();
-    public static final Logger LOG = LoggerFactory.createCustomLogger(LOGGER_POLICY);
+    public static final Logger LOGGER = LoggerFactory.createCustomLogger(LOGGER_POLICY);
+    public static final StartupConfig STARTUP_CONFIG = Config.load(StartupConfig.NAME, new StartupConfig.Serializer());
 
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
     @Nullable private static StartupConfig STARTUP_CONFIG;
@@ -101,7 +97,7 @@ public final class AlmostUnified {
 
         for (String mod : mods) {
             if (!AlmostUnifiedPlatform.INSTANCE.isModLoaded(mod)) {
-                LOG.warn("Mod '{}' is not loaded, but used in unify settings", mod);
+                LOGGER.warn("Mod '{}' is not loaded, but used in unify settings", mod);
             }
         }
     }
@@ -156,7 +152,7 @@ public final class AlmostUnified {
                 }
 
                 if (visitedTags.containsKey(tag)) {
-                    AlmostUnified.LOG.warn("Tag '{}' from unify config '{}' was already created in unify config '{}'",
+                    AlmostUnified.LOGGER.warn("Tag '{}' from unify config '{}' was already created in unify config '{}'",
                             config.getName(),
                             tag.location(),
                             visitedTags.get(tag));
@@ -172,7 +168,7 @@ public final class AlmostUnified {
         }
 
         if (!wrongTags.isEmpty()) {
-            AlmostUnified.LOG.warn("The following tags are invalid or not in use and will be ignored: {}",
+            AlmostUnified.LOGGER.warn("The following tags are invalid or not in use and will be ignored: {}",
                     wrongTags.stream().map(TagKey::location).collect(Collectors.toList()));
         }
 
@@ -184,22 +180,10 @@ public final class AlmostUnified {
         if (RUNTIME instanceof RecipeUnifyHandler handler) {
             handler.run(recipes, getStartupConfig().isServerOnly());
         } else {
-            AlmostUnified.LOG.error(
+            AlmostUnified.LOGGER.error(
                     "Internal error. Implementation of given AlmostUnifiedRuntime does not implement RecipeUnifyHandler!");
         }
 
         LootUnification.unifyLoot(RUNTIME, registries);
-    }
-
-    private static Layout<? extends Serializable> getLayout(@Nullable Appender appender, Configuration config) {
-        if (appender == null) {
-            return PatternLayout
-                    .newBuilder()
-                    .withConfiguration(config)
-                    .withPattern("%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %msg%n")
-                    .build();
-        }
-
-        return appender.getLayout();
     }
 }

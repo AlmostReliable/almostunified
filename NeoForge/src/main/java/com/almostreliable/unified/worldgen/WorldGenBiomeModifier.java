@@ -61,7 +61,7 @@ public class WorldGenBiomeModifier implements BiomeModifier {
         }
 
         if (!removedFeatures.isEmpty()) {
-            AlmostUnified.LOG.info("[WorldGen] Removed features from Biome {}:",
+            AlmostUnified.LOGGER.info("[WorldGen] Removed features from Biome {}:",
                     biome.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_BIOME_ID));
             removedFeatures.forEach((decoration, features) -> {
                 String ids = features
@@ -70,7 +70,7 @@ public class WorldGenBiomeModifier implements BiomeModifier {
                         .map(ResourceLocation::toString)
                         .collect(Collectors.joining(", "));
 
-                AlmostUnified.LOG.info("[WorldGen]\t{}: {}", decoration.getName(), ids);
+                AlmostUnified.LOGGER.info("[WorldGen]\t{}: {}", decoration.getName(), ids);
             });
         }
     }

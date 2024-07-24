@@ -45,7 +45,7 @@ public class UnifyConfig extends Config {
         try {
             return loadConfigs();
         } catch (IOException e) {
-            AlmostUnified.LOG.error("Could not load configs", e);
+            AlmostUnified.LOGGER.error("Could not load configs", e);
             return List.of();
         }
     }
@@ -67,7 +67,7 @@ public class UnifyConfig extends Config {
             Serializer serializer = new Serializer();
             var config = serializer.deserialize(name, json);
             if (serializer.isInvalid()) {
-                AlmostUnified.LOG.warn("Unify config not found or invalid. Creating new config: {}", name);
+                AlmostUnified.LOGGER.warn("Unify config not found or invalid. Creating new config: {}", name);
                 save(unifyFolder.resolve(config.getName() + ".json"), config, serializer);
             }
 
@@ -92,11 +92,11 @@ public class UnifyConfig extends Config {
                     var jsonObject = gson.fromJson(content, JsonObject.class);
                     result.put(fileName, jsonObject);
                 } catch (Throwable e) {
-                    AlmostUnified.LOG.error("Could not load json from file {}.json: ", fileName, e);
+                    AlmostUnified.LOGGER.error("Could not load json from file {}.json: ", fileName, e);
                 }
             }
         } catch (Throwable e) {
-            AlmostUnified.LOG.error("Could not load jsons: ", e);
+            AlmostUnified.LOGGER.error("Could not load jsons: ", e);
         }
 
         return result;

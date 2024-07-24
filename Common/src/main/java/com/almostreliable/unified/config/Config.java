@@ -34,11 +34,11 @@ public class Config {
     }
 
     public static <T extends Config> T load(String name, Serializer<T> serializer) {
-        AlmostUnified.LOG.info("Loading config: {}", name);
+        AlmostUnified.LOGGER.info("Loading config: {}", name);
         JsonObject json = safeLoadJson(name);
         T config = serializer.deserialize(name, json);
         if (serializer.isInvalid()) {
-            AlmostUnified.LOG.warn("Config not found or invalid. Creating new config: {}", config.getName());
+            AlmostUnified.LOGGER.warn("Config not found or invalid. Creating new config: {}", config.getName());
             save(config, serializer);
         }
 
@@ -64,18 +64,18 @@ public class Config {
                     StandardOpenOption.CREATE,
                     StandardOpenOption.WRITE);
         } catch (IOException e) {
-            AlmostUnified.LOG.error(e);
+            AlmostUnified.LOGGER.error(e);
         }
     }
 
     private static void backupConfig(String name, Path p) {
-        AlmostUnified.LOG.warn("Config {} is invalid. Backing up and recreating.", name);
+        AlmostUnified.LOGGER.warn("Config {} is invalid. Backing up and recreating.", name);
         Path backupPath = p.resolveSibling(p.getFileName() + ".bak");
         try {
             Files.deleteIfExists(backupPath);
             Files.move(p, backupPath);
         } catch (IOException e) {
-            AlmostUnified.LOG.error("Could not backup config file", e);
+            AlmostUnified.LOGGER.error("Could not backup config file", e);
         }
     }
 
@@ -84,7 +84,7 @@ public class Config {
         try (BufferedReader reader = Files.newBufferedReader(buildPath(p, file))) {
             return new Gson().fromJson(reader, JsonObject.class);
         } catch (Exception ex) {
-            AlmostUnified.LOG.warn(ex);
+            AlmostUnified.LOGGER.warn(ex);
         }
         return new JsonObject();
     }
@@ -99,7 +99,7 @@ public class Config {
         try {
             Files.createDirectories(p);
         } catch (IOException e) {
-            AlmostUnified.LOG.error("Failed to create config directory", e);
+            AlmostUnified.LOGGER.error("Failed to create config directory", e);
         }
         return p;
     }

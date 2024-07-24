@@ -62,13 +62,13 @@ public class TagInheritance {
 
         if (!changedBlockTags.isEmpty()) {
             changedBlockTags.asMap().forEach((dominant, tags) -> {
-                AlmostUnified.LOG.info("[TagInheritance] Added '{}' to block tags {}", dominant.id(), tags);
+                AlmostUnified.LOGGER.info("[TagInheritance] Added '{}' to block tags {}", dominant.id(), tags);
             });
         }
 
         if (!changedItemTags.isEmpty()) {
             changedItemTags.asMap().forEach((dominant, tags) -> {
-                AlmostUnified.LOG.info("[TagInheritance] Added '{}' to item tags {}", dominant.id(), tags);
+                AlmostUnified.LOGGER.info("[TagInheritance] Added '{}' to item tags {}", dominant.id(), tags);
             });
             return true;
         }

@@ -27,7 +27,7 @@ public class RecipeManagerMixin {
         try {
             AlmostUnified.onRecipeManagerReload(recipes, registries);
         } catch (Exception e) {
-            AlmostUnified.LOG.error(e.getMessage(), e);
+            AlmostUnified.LOGGER.error(e.getMessage(), e);
         }
     }
 }

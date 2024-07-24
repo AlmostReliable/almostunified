@@ -53,7 +53,7 @@ public class PlaceholdersConfig extends Config implements Placeholders {
         }
 
         if (!invalid.isEmpty()) {
-            AlmostUnified.LOG.warn(
+            AlmostUnified.LOGGER.warn(
                     "The following input '{}' could not be parsed into a ResourceLocation. Reason could be missing placeholder or invalid characters. Skipping. Generated values: {}",
                     str,
                     invalid);
@@ -81,7 +81,7 @@ public class PlaceholdersConfig extends Config implements Placeholders {
 
         @Override
         public PlaceholdersConfig deserialize(String name, JsonObject json) {
-            //noinspection SizeReplaceableByIsEmpty
+            // noinspection SizeReplaceableByIsEmpty
             if (json.size() == 0) { // json.isEmpty crashes in prod...
                 setInvalid();
                 return new PlaceholdersConfig(name, Defaults.PLACEHOLDERS);

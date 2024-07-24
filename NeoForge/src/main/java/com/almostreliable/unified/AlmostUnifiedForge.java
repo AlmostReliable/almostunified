@@ -59,7 +59,7 @@ public class AlmostUnifiedForge {
                 plugins.add(pluginClass.getConstructor().newInstance());
             }
         } catch (Exception e) {
-            AlmostUnified.LOG.error("Failed to create plugin, while loading it: ", e);
+            AlmostUnified.LOGGER.error("Failed to create plugin, while loading it: ", e);
         }
 
         return plugins;
@@ -93,11 +93,11 @@ public class AlmostUnifiedForge {
                 return (Class<AlmostUnifiedPlugin>) pluginClass;
             }
 
-            AlmostUnified.LOG.error("Failed to load AlmostUnified plugin: {} does not implement {}",
+            AlmostUnified.LOGGER.error("Failed to load AlmostUnified plugin: {} does not implement {}",
                     className,
                     AlmostUnifiedPlugin.class.getName());
         } catch (ClassNotFoundException e) {
-            AlmostUnified.LOG.error("Failed to load AlmostUnified plugin: {}", className, e);
+            AlmostUnified.LOGGER.error("Failed to load AlmostUnified plugin: {}", className, e);
             return null;
         }
 
