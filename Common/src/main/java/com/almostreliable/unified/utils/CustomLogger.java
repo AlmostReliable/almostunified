@@ -1,5 +1,6 @@
-package com.almostreliable.unified;
+package com.almostreliable.unified.utils;
 
+import com.almostreliable.unified.BuildConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -19,15 +20,21 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class LoggerFactory {
+public final class CustomLogger {
 
-    private static final String BACKUP_FILE = "au-backup.log.gz";
-    private static final String FILE = "au.log";
+    private static final String BACKUP_FILE = BuildConfig.MOD_ID + "-backup.log.gz";
+    private static final String FILE = BuildConfig.MOD_ID + ".log";
     private static final String LOG_PATH = "logs/" + BuildConfig.MOD_ID;
 
-    public static Logger createCustomLogger(TriggeringPolicy policy) {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
+    private CustomLogger() {}
+
+    public static Logger create(TriggeringPolicy policy) {
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        Configuration config = ctx.getConfiguration();
+
+        PathCondition[] conditions = { IfFileName.createNameCondition(BACKUP_FILE, null) };
+        var deleteAction = DeleteAction.createDeleteAction(LOG_PATH, false, 1, false, null, conditions, null, config);
+        var strategy = DefaultRolloverStrategy.newBuilder().withCustomActions(new Action[]{ deleteAction }).build();
 
         var layout = PatternLayout
                 .newBuilder()
@@ -36,10 +43,6 @@ public class LoggerFactory {
                 .withPattern("[%d{HH:mm:ss.SSS}] [%level]: %minecraftFormatting{%msg{nolookup}}{strip}%n%xEx")
                 .build();
 
-        PathCondition[] conditions = { IfFileName.createNameCondition(BACKUP_FILE, null), };
-        var deleteAction = DeleteAction.createDeleteAction(LOG_PATH, false, 1, false, null, conditions, null, config);
-        var strategy = DefaultRolloverStrategy.newBuilder().withCustomActions(new Action[]{ deleteAction }).build();
-
         var fileAppender = RollingRandomAccessFileAppender
                 .newBuilder()
                 .withAppend(true)
@@ -47,23 +50,21 @@ public class LoggerFactory {
                 .withFilePattern(LOG_PATH + "/" + BACKUP_FILE)
                 .withStrategy(strategy)
                 .withPolicy(policy)
-                .setName(BuildConfig.MOD_NAME + "File")
+                .setName(BuildConfig.MOD_NAME + " File")
                 .setLayout(layout)
                 .setConfiguration(config)
                 .build();
+
         fileAppender.start();
 
         LoggerConfig loggerConfig = new LoggerConfig(BuildConfig.MOD_NAME, null, false);
         loggerConfig.addAppender(fileAppender, null, null);
 
-        Optional
-                .ofNullable(config.getAppenders().get("Console")) // stdout for neoforge
+        Optional.ofNullable(config.getAppenders().get("Console")) // stdout for neoforge
                 .ifPresent(a -> loggerConfig.addAppender(a, null, null));
-        Optional
-                .ofNullable(config.getAppenders().get("SysOut")) // stdout for fabric
+        Optional.ofNullable(config.getAppenders().get("SysOut")) // stdout for fabric
                 .ifPresent(a -> loggerConfig.addAppender(a, null, null));
-        Optional
-                .ofNullable(config.getAppenders().get("ServerGuiConsole"))
+        Optional.ofNullable(config.getAppenders().get("ServerGuiConsole"))
                 .ifPresent(a -> loggerConfig.addAppender(a, null, null));
 
         config.addLogger(BuildConfig.MOD_NAME, loggerConfig);
@@ -72,12 +73,10 @@ public class LoggerFactory {
 
     public static class Policy implements TriggeringPolicy {
 
-        private boolean shouldReset = false;
+        private boolean shouldReset;
 
         @Override
-        public void initialize(RollingFileManager manager) {
-
-        }
+        public void initialize(RollingFileManager manager) {}
 
         @Override
         public boolean isTriggeringEvent(LogEvent logEvent) {

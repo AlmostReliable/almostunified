@@ -9,6 +9,7 @@ import com.almostreliable.unified.impl.UnifyHandlerImpl;
 import com.almostreliable.unified.loot.LootUnification;
 import com.almostreliable.unified.recipe.RecipeUnifyHandler;
 import com.almostreliable.unified.recipe.unifier.RecipeUnifierRegistryImpl;
+import com.almostreliable.unified.utils.CustomLogger;
 import com.almostreliable.unified.utils.FileUtils;
 import com.almostreliable.unified.utils.TagReloadHandler;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
@@ -29,8 +30,8 @@ import java.util.stream.Collectors;
 @SuppressWarnings("UtilityClassWithoutPrivateConstructor")
 public final class AlmostUnified {
 
-    private static final LoggerFactory.Policy LOGGER_POLICY = new LoggerFactory.Policy();
-    public static final Logger LOGGER = LoggerFactory.createCustomLogger(LOGGER_POLICY);
+    private static final CustomLogger.Policy LOGGER_POLICY = new CustomLogger.Policy();
+    public static final Logger LOGGER = CustomLogger.create(LOGGER_POLICY);
     public static final StartupConfig STARTUP_CONFIG = Config.load(StartupConfig.NAME, new StartupConfig.Serializer());
 
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
