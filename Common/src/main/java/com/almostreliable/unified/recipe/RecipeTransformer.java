@@ -48,7 +48,7 @@ public class RecipeTransformer {
      */
     public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
         Stopwatch transformationTimer = Stopwatch.createStarted();
-        AlmostUnified.LOGGER.warn("Recipe count: " + recipes.size());
+        AlmostUnified.LOGGER.info("Recipe count: {}", recipes.size());
 
         ClientRecipeTracker.RawBuilder tracker = skipClientTracking ? null : new ClientRecipeTracker.RawBuilder();
         Result result = new Result();
@@ -67,8 +67,11 @@ public class RecipeTransformer {
             result.addAll(recipeLinks);
         });
 
-        AlmostUnified.LOGGER.warn(
-                "Recipe count afterwards: " + recipes.size() + " (done in " + transformationTimer.stop() + ")");
+        AlmostUnified.LOGGER.info(
+                "Recipe count afterwards: {} (done in {})",
+                recipes.size(),
+                transformationTimer.stop()
+        );
 
         unifyHandlers.forEach(UnifySettings::clearCache);
         duplicateConfig.clearCache();

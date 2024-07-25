@@ -28,7 +28,7 @@ public final class CustomLogger {
 
     private CustomLogger() {}
 
-    public static Logger create(TriggeringPolicy policy) {
+    public static Logger create() {
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
 
@@ -49,7 +49,7 @@ public final class CustomLogger {
                 .withFileName(LOG_PATH + "/" + FILE)
                 .withFilePattern(LOG_PATH + "/" + BACKUP_FILE)
                 .withStrategy(strategy)
-                .withPolicy(policy)
+                .withPolicy(new Policy())
                 .setName(BuildConfig.MOD_NAME + " File")
                 .setLayout(layout)
                 .setConfiguration(config)
@@ -60,36 +60,31 @@ public final class CustomLogger {
         LoggerConfig loggerConfig = new LoggerConfig(BuildConfig.MOD_NAME, null, false);
         loggerConfig.addAppender(fileAppender, null, null);
 
-        Optional.ofNullable(config.getAppenders().get("Console")) // stdout for neoforge
+        Optional.ofNullable(config.getAppenders().get("Console")) // latest.log for neoforge
                 .ifPresent(a -> loggerConfig.addAppender(a, null, null));
-        Optional.ofNullable(config.getAppenders().get("SysOut")) // stdout for fabric
+        Optional.ofNullable(config.getAppenders().get("SysOut")) // latest.log for fabric
                 .ifPresent(a -> loggerConfig.addAppender(a, null, null));
-        Optional.ofNullable(config.getAppenders().get("ServerGuiConsole"))
+        Optional.ofNullable(config.getAppenders().get("ServerGuiConsole")) // game console
                 .ifPresent(a -> loggerConfig.addAppender(a, null, null));
 
         config.addLogger(BuildConfig.MOD_NAME, loggerConfig);
         return LogManager.getLogger(BuildConfig.MOD_NAME);
     }
 
-    public static class Policy implements TriggeringPolicy {
+    private static class Policy implements TriggeringPolicy {
 
-        private boolean shouldReset;
+        private boolean reset = true;
 
         @Override
         public void initialize(RollingFileManager manager) {}
 
         @Override
         public boolean isTriggeringEvent(LogEvent logEvent) {
-            if (shouldReset) {
-                shouldReset = false;
+            if (reset) {
+                reset = false;
                 return true;
             }
-
             return false;
-        }
-
-        public void reset() {
-            shouldReset = true;
         }
     }
 }

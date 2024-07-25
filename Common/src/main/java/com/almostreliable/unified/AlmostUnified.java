@@ -27,23 +27,21 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("UtilityClassWithoutPrivateConstructor")
+@SuppressWarnings({ "UtilityClassWithoutPrivateConstructor", "StaticVariableUsedBeforeInitialization" })
 public final class AlmostUnified {
 
-    private static final CustomLogger.Policy LOGGER_POLICY = new CustomLogger.Policy();
-    public static final Logger LOGGER = CustomLogger.create(LOGGER_POLICY);
+    public static final Logger LOGGER = CustomLogger.create();
     public static final StartupConfig STARTUP_CONFIG = Config.load(StartupConfig.NAME, StartupConfig.SERIALIZER);
 
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
 
-    @SuppressWarnings("StaticVariableUsedBeforeInitialization")
     @Nullable
     static AlmostUnifiedRuntime getRuntime() {
         return RUNTIME;
     }
 
     public static void onTagLoaderReload(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
-        LOGGER_POLICY.reset();
+        LOGGER.warn("Reload detected. Reconstructing runtime.");
 
         RecipeUnifierRegistry recipeUnifierRegistry = new RecipeUnifierRegistryImpl();
         PluginManager.instance().registerRecipeUnifiers(recipeUnifierRegistry);
