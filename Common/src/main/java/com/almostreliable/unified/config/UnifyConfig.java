@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public final class UnifyConfig extends Config {
 
-    private static final String SUB_FOLDER = "unify";
+    private static final String SUB_FOLDER = "unification";
 
     private final List<String> modPriorities;
     private final Map<TagKey<Item>, String> priorityOverrides;
