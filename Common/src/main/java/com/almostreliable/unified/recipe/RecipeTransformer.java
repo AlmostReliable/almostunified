@@ -7,7 +7,7 @@ import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.UnifySettings;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.config.DuplicationConfig;
+import com.almostreliable.unified.config.DuplicateConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeUnifierRegistryImpl;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.JsonQuery;
@@ -29,13 +29,13 @@ public class RecipeTransformer {
 
     private final RecipeUnifierRegistry factory;
     private final Collection<? extends UnifyHandler> unifyHandlers;
-    private final DuplicationConfig duplicationConfig;
+    private final DuplicateConfig duplicateConfig;
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(RecipeUnifierRegistry factory, Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig) {
+    public RecipeTransformer(RecipeUnifierRegistry factory, Collection<? extends UnifyHandler> unifyHandlers, DuplicateConfig duplicateConfig) {
         this.factory = factory;
         this.unifyHandlers = unifyHandlers;
-        this.duplicationConfig = duplicationConfig;
+        this.duplicateConfig = duplicateConfig;
     }
 
     /**
@@ -71,7 +71,7 @@ public class RecipeTransformer {
                 "Recipe count afterwards: " + recipes.size() + " (done in " + transformationTimer.stop() + ")");
 
         unifyHandlers.forEach(UnifySettings::clearCache);
-        duplicationConfig.clearCache();
+        duplicateConfig.clearCache();
 
         if (tracker != null) recipes.putAll(tracker.compute());
         return result;
@@ -117,7 +117,7 @@ public class RecipeTransformer {
      */
     private void transformRecipes(List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> allRecipes, @Nullable ClientRecipeTracker.RawBuilder tracker) {
         var unified = unifyRecipes(recipeLinks, r -> allRecipes.put(r.getId(), r.getUnified()));
-        var duplicates = handleDuplicates(duplicationConfig.isStrictMode() ? recipeLinks : unified, recipeLinks);
+        var duplicates = handleDuplicates(duplicateConfig.isStrictMode() ? recipeLinks : unified, recipeLinks);
         duplicates
                 .stream()
                 .flatMap(d -> d.getRecipesWithoutMaster().stream())
@@ -152,11 +152,11 @@ public class RecipeTransformer {
     }
 
     private boolean handleDuplicate(RecipeLink curRecipe, List<RecipeLink> recipes) {
-        if (duplicationConfig.shouldIgnoreRecipe(curRecipe)) {
+        if (duplicateConfig.shouldIgnoreRecipe(curRecipe)) {
             return false;
         }
 
-        JsonCompare.CompareSettings compareSettings = duplicationConfig.getCompareSettings(curRecipe.getType());
+        JsonCompare.CompareSettings compareSettings = duplicateConfig.getCompareSettings(curRecipe.getType());
         boolean foundDuplicate = false;
         for (RecipeLink recipeLink : recipes) {
             if (!curRecipe.getType().equals(recipeLink.getType())) {
@@ -164,7 +164,7 @@ public class RecipeTransformer {
                         "Recipe types do not match for " + curRecipe.getId() + " and " + recipeLink.getId());
             }
 
-            if (recipeLink == curRecipe || duplicationConfig.shouldIgnoreRecipe(recipeLink)) {
+            if (recipeLink == curRecipe || duplicateConfig.shouldIgnoreRecipe(recipeLink)) {
                 continue;
             }
 

@@ -6,7 +6,6 @@ import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.Placeholders;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.utils.JsonUtils;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -25,9 +23,10 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class UnifyConfig extends Config {
+public final class UnifyConfig extends Config {
 
-    public static final String ENABLE_LOOT_UNIFICATION = "enableLootUnification";
+    private static final String SUB_FOLDER = "unify";
+
     private final List<String> modPriorities;
     private final Map<TagKey<Item>, String> priorityOverrides;
     private final List<String> stoneStrata;
@@ -41,34 +40,37 @@ public class UnifyConfig extends Config {
     private final boolean recipeViewerHiding;
     @Nullable private Set<TagKey<Item>> bakedTagsCache;
 
+    @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
     public static Collection<UnifyConfig> safeLoadConfigs() {
         try {
             return loadConfigs();
-        } catch (IOException e) {
-            AlmostUnified.LOGGER.error("Could not load configs", e);
+        } catch (Exception e) {
+            AlmostUnified.LOGGER.error("Could not load unify configs.", e);
             return List.of();
         }
     }
 
-    public static Collection<UnifyConfig> loadConfigs() throws IOException {
-        Path unifyFolder = Config.createConfigDir().resolve("unify");
-        var jsons = readJsons(unifyFolder);
+    private static Collection<UnifyConfig> loadConfigs() throws IOException {
+        Path subFolder = createConfigDir().resolve(SUB_FOLDER);
+
+        var jsons = readJsons(subFolder);
         if (jsons.isEmpty()) {
-            Serializer serializer = new Serializer();
-            UnifyConfig defaultConfig = serializer.deserialize("materials", new JsonObject());
-            Config.save(unifyFolder.resolve("materials.json"), defaultConfig, serializer);
+            String name = "materials";
+            UnifySerializer serializer = new UnifySerializer(name);
+            UnifyConfig defaultConfig = serializer.deserialize(new JsonObject());
+            save(subFolder.resolve(name + ".json"), defaultConfig, serializer);
             return List.of(defaultConfig);
         }
 
         Collection<UnifyConfig> configs = new ArrayList<>();
         for (var entry : jsons.entrySet()) {
-            var name = entry.getKey();
-            var json = entry.getValue();
-            Serializer serializer = new Serializer();
-            var config = serializer.deserialize(name, json);
+            String name = entry.getKey();
+            JsonObject json = entry.getValue();
+
+            UnifySerializer serializer = new UnifySerializer(name);
+            var config = serializer.deserialize(json);
             if (serializer.isInvalid()) {
-                AlmostUnified.LOGGER.warn("Unify config not found or invalid. Creating new config: {}", name);
-                save(unifyFolder.resolve(config.getName() + ".json"), config, serializer);
+                save(subFolder.resolve(name + ".json"), config, serializer);
             }
 
             configs.add(config);
@@ -77,32 +79,24 @@ public class UnifyConfig extends Config {
         return configs;
     }
 
-    public static Map<String, JsonObject> readJsons(Path directory) {
-        Map<String, JsonObject> result = new HashMap<>();
-        Gson gson = new Gson();
+    private static Map<String, JsonObject> readJsons(Path subFolder) throws IOException {
+        Files.createDirectories(subFolder);
+        var files = FileUtils.listFiles(subFolder.toFile(), new String[]{ "json" }, false);
 
-        try {
-            Files.createDirectories(directory);
-            var files = FileUtils.listFiles(directory.toFile(), new String[]{ "json" }, false);
-
-            for (var file : files) {
-                var fileName = FilenameUtils.getBaseName(file.getName());
-                try {
-                    var content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-                    var jsonObject = gson.fromJson(content, JsonObject.class);
-                    result.put(fileName, jsonObject);
-                } catch (Throwable e) {
-                    AlmostUnified.LOGGER.error("Could not load json from file {}.json: ", fileName, e);
-                }
+        Map<String, JsonObject> jsons = new HashMap<>();
+        for (var file : files) {
+            String fileName = FilenameUtils.getBaseName(file.getName());
+            try {
+                jsons.put(fileName, JsonUtils.readFromFile(file.toPath(), JsonObject.class));
+            } catch (Throwable e) {
+                AlmostUnified.LOGGER.error("Unify config '{}.json' could not be loaded.", fileName, e);
             }
-        } catch (Throwable e) {
-            AlmostUnified.LOGGER.error("Could not load jsons: ", e);
         }
 
-        return result;
+        return jsons;
     }
 
-    public UnifyConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
+    private UnifyConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
         super(name);
         this.modPriorities = modPriorities;
         this.priorityOverrides = priorityOverrides;
@@ -184,22 +178,28 @@ public class UnifyConfig extends Config {
         return recipeViewerHiding;
     }
 
-    public static class Serializer extends Config.Serializer<UnifyConfig> {
+    public static final class UnifySerializer extends Config.Serializer<UnifyConfig> {
 
-        public static final String MOD_PRIORITIES = "modPriorities";
-        public static final String STONE_STRATA = "stoneStrata";
-        public static final String TAGS = "tags";
-        public static final String MATERIALS = "materials";
-        public static final String PRIORITY_OVERRIDES = "priorityOverrides";
-        public static final String IGNORED_TAGS = "ignoredTags";
-        public static final String IGNORED_ITEMS = "ignoredItems";
-        public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
-        public static final String IGNORED_RECIPES = "ignoredRecipes";
-        public static final String IGNORED_LOOT_TABLES = "ignoredLootTables";
-        public static final String RECIPE_VIEWER_HIDING = "recipeViewerHiding";
+        private static final String MOD_PRIORITIES = "modPriorities";
+        private static final String STONE_STRATA = "stoneStrata";
+        private static final String TAGS = "tags";
+        private static final String PRIORITY_OVERRIDES = "priorityOverrides";
+        private static final String IGNORED_TAGS = "ignoredTags";
+        private static final String IGNORED_ITEMS = "ignoredItems";
+        private static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
+        private static final String IGNORED_RECIPES = "ignoredRecipes";
+        private static final String IGNORED_LOOT_TABLES = "ignoredLootTables";
+        private static final String RECIPE_VIEWER_HIDING = "recipeViewerHiding";
+        private static final String ENABLE_LOOT_UNIFICATION = "enableLootUnification";
+
+        private final String name;
+
+        private UnifySerializer(String name) {
+            this.name = name;
+        }
 
         @Override
-        public UnifyConfig deserialize(String name, JsonObject json) {
+        public UnifyConfig handleDeserialization(JsonObject json) {
             var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
 
             // Mod priorities

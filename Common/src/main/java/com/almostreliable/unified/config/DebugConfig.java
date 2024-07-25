@@ -11,8 +11,10 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DebugConfig extends Config {
+public final class DebugConfig extends Config {
+
     public static final String NAME = "debug";
+    public static final DebugSerializer SERIALIZER = new DebugSerializer();
 
     public final boolean dumpTagMap;
     public final boolean dumpDuplicates;
@@ -20,8 +22,8 @@ public class DebugConfig extends Config {
     public final boolean dumpOverview;
     public final boolean dumpRecipes;
 
-    public DebugConfig(String name, boolean dumpTagMap, boolean dumpDuplicates, boolean dumpUnification, boolean dumpOverview, boolean dumpRecipes) {
-        super(name);
+    private DebugConfig(boolean dumpTagMap, boolean dumpDuplicates, boolean dumpUnification, boolean dumpOverview, boolean dumpRecipes) {
+        super(NAME);
         this.dumpTagMap = dumpTagMap;
         this.dumpDuplicates = dumpDuplicates;
         this.dumpUnification = dumpUnification;
@@ -62,18 +64,19 @@ public class DebugConfig extends Config {
         );
     }
 
-    public static class Serializer extends Config.Serializer<DebugConfig> {
+    public static final class DebugSerializer extends Config.Serializer<DebugConfig> {
 
-        public static final String DUMP_TAG_MAP = "dumpTagMap";
-        public static final String DUMP_DUPLICATES = "dumpDuplicates";
-        public static final String DUMP_UNIFICATION = "dumpUnification";
-        public static final String DUMP_OVERVIEW = "dumpOverview";
-        public static final String DUMP_RECIPES = "dumpRecipes";
+        private static final String DUMP_TAG_MAP = "dumpTagMap";
+        private static final String DUMP_DUPLICATES = "dumpDuplicates";
+        private static final String DUMP_UNIFICATION = "dumpUnification";
+        private static final String DUMP_OVERVIEW = "dumpOverview";
+        private static final String DUMP_RECIPES = "dumpRecipes";
+
+        private DebugSerializer() {}
 
         @Override
-        public DebugConfig deserialize(String name, JsonObject json) {
+        public DebugConfig handleDeserialization(JsonObject json) {
             return new DebugConfig(
-                    name,
                     safeGet(() -> json.get(DUMP_TAG_MAP).getAsBoolean(), false),
                     safeGet(() -> json.get(DUMP_DUPLICATES).getAsBoolean(), false),
                     safeGet(() -> json.get(DUMP_UNIFICATION).getAsBoolean(), false),
@@ -83,13 +86,13 @@ public class DebugConfig extends Config {
         }
 
         @Override
-        public JsonObject serialize(DebugConfig src) {
+        public JsonObject serialize(DebugConfig config) {
             JsonObject json = new JsonObject();
-            json.addProperty(DUMP_TAG_MAP, src.dumpTagMap);
-            json.addProperty(DUMP_DUPLICATES, src.dumpDuplicates);
-            json.addProperty(DUMP_UNIFICATION, src.dumpUnification);
-            json.addProperty(DUMP_OVERVIEW, src.dumpOverview);
-            json.addProperty(DUMP_RECIPES, src.dumpRecipes);
+            json.addProperty(DUMP_TAG_MAP, config.dumpTagMap);
+            json.addProperty(DUMP_DUPLICATES, config.dumpDuplicates);
+            json.addProperty(DUMP_UNIFICATION, config.dumpUnification);
+            json.addProperty(DUMP_OVERVIEW, config.dumpOverview);
+            json.addProperty(DUMP_RECIPES, config.dumpRecipes);
             return json;
         }
     }

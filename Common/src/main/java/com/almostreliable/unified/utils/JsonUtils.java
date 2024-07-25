@@ -1,11 +1,12 @@
 package com.almostreliable.unified.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 
 import javax.annotation.Nullable;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,26 @@ import java.util.stream.StreamSupport;
 
 public final class JsonUtils {
 
+    private static final Gson GSON = new Gson();
+
     private JsonUtils() {}
+
+    public static <T extends JsonElement> T readFromFile(Path path, Class<T> clazz) throws IOException {
+        BufferedReader reader = Files.newBufferedReader(path);
+        return GSON.fromJson(reader, clazz);
+    }
+
+    public static <T extends JsonElement> T safeReadFromFile(Path path, T defaultValue) {
+        try {
+            return readFromFile(path, Utils.cast(defaultValue.getClass()));
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    public static <T extends JsonElement> T readFromString(String jsonString, Class<T> clazz) {
+        return GSON.fromJson(jsonString, clazz);
+    }
 
     public static JsonArray arrayOrSelf(@Nullable JsonElement element) {
         if (element == null) {

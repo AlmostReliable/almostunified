@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,7 +24,7 @@ public class Config {
     private static final String CONFIG_DIR_PROPERTY = BuildConfig.MOD_ID + ".configDir";
     private final String name;
 
-    public Config(String name) {
+    Config(String name) {
         this.name = name;
     }
 
@@ -33,120 +32,117 @@ public class Config {
         return name;
     }
 
+    @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
     public static <T extends Config> T load(String name, Serializer<T> serializer) {
-        AlmostUnified.LOGGER.info("Loading config: {}", name);
-        JsonObject json = safeLoadJson(name);
-        T config = serializer.deserialize(name, json);
+        AlmostUnified.LOGGER.info("Loading config '{}.json'.", name);
+
+        JsonObject json = JsonUtils.safeReadFromFile(buildPath(createConfigDir(), name), new JsonObject());
+        T config = serializer.deserialize(json);
+
         if (serializer.isInvalid()) {
-            AlmostUnified.LOGGER.warn("Config not found or invalid. Creating new config: {}", config.getName());
-            save(config, serializer);
+            save(buildPath(createConfigDir(), config.getName()), config, serializer);
         }
 
         return config;
     }
 
-    public static <T extends Config> void save(T config, Serializer<T> serializer) {
-        Path filePath = buildPath(createConfigDir(), config.getName());
-        save(filePath, config, serializer);
+    static Path createConfigDir() {
+        Path path = AlmostUnifiedPlatform.INSTANCE.getConfigPath();
+        String property = System.getProperty(CONFIG_DIR_PROPERTY);
+        if (property != null) {
+            path = Path.of(property);
+        }
+
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            AlmostUnified.LOGGER.error("Failed to create config directory.", e);
+        }
+
+        return path;
     }
 
-    public static <T extends Config> void save(Path p, T config, Serializer<T> serializer) {
-        if (Files.exists(p)) {
-            backupConfig(config.getName(), p);
+    static <T extends Config> void save(Path path, T config, Serializer<T> serializer) {
+        if (Files.exists(path)) {
+            backupConfig(path);
+        } else {
+            AlmostUnified.LOGGER.warn("Config '{}.json' not found. Creating default config.", config.getName());
         }
 
         JsonObject json = serializer.serialize(config);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonString = gson.toJson(json);
         try {
-            Files.writeString(p,
+            Files.writeString(
+                    path,
                     jsonString,
                     StandardOpenOption.CREATE,
-                    StandardOpenOption.WRITE);
+                    StandardOpenOption.WRITE
+            );
         } catch (IOException e) {
-            AlmostUnified.LOGGER.error(e);
+            AlmostUnified.LOGGER.error("Failed to save config '{}'.", config.getName(), e);
         }
     }
 
-    private static void backupConfig(String name, Path p) {
-        AlmostUnified.LOGGER.warn("Config {} is invalid. Backing up and recreating.", name);
-        Path backupPath = p.resolveSibling(p.getFileName() + ".bak");
+    private static void backupConfig(Path path) {
+        AlmostUnified.LOGGER.warn("Config '{}' is invalid. Backing up and recreating.", path.getFileName());
+
+        Path backupPath = path.resolveSibling(path.getFileName() + ".bak");
         try {
             Files.deleteIfExists(backupPath);
-            Files.move(p, backupPath);
+            Files.move(path, backupPath);
         } catch (IOException e) {
-            AlmostUnified.LOGGER.error("Could not backup config file", e);
+            AlmostUnified.LOGGER.error("Config '{}' could not be backed up.", path.getFileName(), e);
         }
     }
 
-    public static JsonObject safeLoadJson(String file) {
-        Path p = createConfigDir();
-        try (BufferedReader reader = Files.newBufferedReader(buildPath(p, file))) {
-            return new Gson().fromJson(reader, JsonObject.class);
-        } catch (Exception ex) {
-            AlmostUnified.LOGGER.warn(ex);
-        }
-        return new JsonObject();
-    }
-
-    public static Path createConfigDir() {
-        Path p = AlmostUnifiedPlatform.INSTANCE.getConfigPath();
-        String property = System.getProperty(CONFIG_DIR_PROPERTY);
-        if (property != null) {
-            p = Path.of(property);
-        }
-
-        try {
-            Files.createDirectories(p);
-        } catch (IOException e) {
-            AlmostUnified.LOGGER.error("Failed to create config directory", e);
-        }
-        return p;
-    }
-
-    private static Path buildPath(Path p, String name) {
-        return p.resolve(name + ".json");
+    private static Path buildPath(Path path, String name) {
+        return path.resolve(name + ".json");
     }
 
     public abstract static class Serializer<T extends Config> {
-        private boolean valid = true;
 
-        protected void setInvalid() {
-            this.valid = false;
+        private boolean valid;
+
+        T deserialize(JsonObject json) {
+            valid = true;
+            return handleDeserialization(json);
         }
 
-        public boolean isInvalid() {
-            return !valid;
-        }
+        abstract T handleDeserialization(JsonObject json);
 
-        public <V> V safeGet(Supplier<V> supplier, V defaultValue) {
+        abstract JsonObject serialize(T config);
+
+        <V> V safeGet(Supplier<V> supplier, V defaultValue) {
             try {
                 return supplier.get();
             } catch (Exception e) {
                 setInvalid();
+                return defaultValue;
             }
-            return defaultValue;
         }
 
-        protected Set<Pattern> deserializePatterns(JsonObject json, String configKey, List<String> defaultValue) {
-            return safeGet(() -> JsonUtils
+        void setInvalid() {
+            this.valid = false;
+        }
+
+        boolean isInvalid() {
+            return !valid;
+        }
+
+        Set<Pattern> deserializePatterns(JsonObject json, String configKey, List<String> defaultValue) {
+            return safeGet(
+                    () -> JsonUtils
                             .toList(json.getAsJsonArray(configKey))
                             .stream()
                             .map(Pattern::compile)
                             .collect(Collectors.toSet()),
-                    new HashSet<>(defaultValue.stream().map(Pattern::compile).toList()));
+                    new HashSet<>(defaultValue.stream().map(Pattern::compile).toList())
+            );
         }
 
-        protected void serializePatterns(JsonObject json, String configKey, Set<Pattern> patterns) {
-            json.add(configKey,
-                    JsonUtils.toArray(patterns
-                            .stream()
-                            .map(Pattern::pattern)
-                            .toList()));
+        void serializePatterns(JsonObject json, String configKey, Set<Pattern> patterns) {
+            json.add(configKey, JsonUtils.toArray(patterns.stream().map(Pattern::pattern).toList()));
         }
-
-        public abstract T deserialize(String name, JsonObject json);
-
-        public abstract JsonObject serialize(T src);
     }
 }

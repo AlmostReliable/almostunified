@@ -1,24 +1,35 @@
 package testmod.tests;
 
-import com.almostreliable.unified.config.PlaceholdersConfig;
+import com.almostreliable.unified.config.PlaceholderConfig;
+import com.almostreliable.unified.utils.JsonUtils;
+import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import testmod.gametest_core.SimpleGameTest;
-
-import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReplacementsTests {
+
+    private static final JsonObject INFLATE_PLACEHOLDERS = JsonUtils.readFromString("""
+            {
+                "type": [
+                    "gems",
+                    "rods",
+                    "raw_materials"
+                ],
+                "material": [
+                    "iron",
+                    "gold"
+                ]
+            }
+            """, JsonObject.class);
+
     @SimpleGameTest
     public void testInflate() {
-        var placeholders = new PlaceholdersConfig("placeholders", Map.of("material",
-                Set.of("iron", "gold"),
-                "type",
-                Set.of("gems", "rods", "raw_materials")));
+        var placeholderConfig = PlaceholderConfig.SERIALIZER.handleDeserialization(INFLATE_PLACEHOLDERS);
+        var result = placeholderConfig.inflate("c:{type}/{material}");
 
-        var result = placeholders.inflate("c:{type}/{material}");
         assertEquals(6, result.size());
         assertTrue(result.contains(ResourceLocation.tryParse("c:gems/iron")));
         assertTrue(result.contains(ResourceLocation.tryParse("c:gems/gold")));

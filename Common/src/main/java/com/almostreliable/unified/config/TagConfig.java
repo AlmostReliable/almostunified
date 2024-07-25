@@ -18,9 +18,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class TagConfig extends Config {
+public final class TagConfig extends Config {
 
     public static final String NAME = "tags";
+    public static final TagSerializer SERIALIZER = new TagSerializer();
+
     private final Map<ResourceLocation, Set<ResourceLocation>> customTags;
     private final Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships;
     private final TagInheritance.Mode itemTagInheritanceMode;
@@ -28,8 +30,8 @@ public class TagConfig extends Config {
     private final TagInheritance.Mode blockTagInheritanceMode;
     private final Map<TagKey<Block>, Set<Pattern>> blockTagInheritance;
 
-    public TagConfig(String name, Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships, TagInheritance.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritance.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance) {
-        super(name);
+    private TagConfig(Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships, TagInheritance.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritance.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance) {
+        super(NAME);
         this.customTags = customTags;
         this.tagOwnerships = tagOwnerships;
         this.itemTagInheritanceMode = itemTagInheritanceMode;
@@ -53,16 +55,19 @@ public class TagConfig extends Config {
         return Collections.unmodifiableMap(tagOwnerships);
     }
 
-    public static class Serializer extends Config.Serializer<TagConfig> {
-        public static final String CUSTOM_TAGS = "customTags";
-        public static final String TAG_OWNERSHIPS = "tagOwnerships";
-        public static final String ITEM_TAG_INHERITANCE_MODE = "itemTagInheritanceMode";
-        public static final String ITEM_TAG_INHERITANCE = "itemTagInheritance";
-        public static final String BLOCK_TAG_INHERITANCE_MODE = "blockTagInheritanceMode";
-        public static final String BLOCK_TAG_INHERITANCE = "blockTagInheritance";
+    public static final class TagSerializer extends Config.Serializer<TagConfig> {
+
+        private static final String CUSTOM_TAGS = "customTags";
+        private static final String TAG_OWNERSHIPS = "tagOwnerships";
+        private static final String ITEM_TAG_INHERITANCE_MODE = "itemTagInheritanceMode";
+        private static final String ITEM_TAG_INHERITANCE = "itemTagInheritance";
+        private static final String BLOCK_TAG_INHERITANCE_MODE = "blockTagInheritanceMode";
+        private static final String BLOCK_TAG_INHERITANCE = "blockTagInheritance";
+
+        private TagSerializer() {}
 
         @Override
-        public TagConfig deserialize(String name, JsonObject json) {
+        public TagConfig handleDeserialization(JsonObject json) {
             Map<ResourceLocation, Set<ResourceLocation>> customTags = safeGet(() -> JsonUtils.deserializeMapSet(json,
                     CUSTOM_TAGS,
                     e -> ResourceLocation.parse(e.getKey()),
@@ -85,7 +90,6 @@ public class TagConfig extends Config {
                     BLOCK_TAG_INHERITANCE);
 
             return new TagConfig(
-                    name,
                     customTags,
                     tagOwnerships,
                     itemTagInheritanceMode,

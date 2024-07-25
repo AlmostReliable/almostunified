@@ -11,8 +11,10 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class DuplicationConfig extends Config {
+public final class DuplicateConfig extends Config {
+
     public static final String NAME = "duplicates";
+    public static final DuplicateSerializer SERIALIZER = new DuplicateSerializer();
 
     private final JsonCompare.CompareSettings defaultRules;
     private final LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules;
@@ -21,8 +23,8 @@ public class DuplicationConfig extends Config {
     private final boolean strictMode;
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
 
-    public DuplicationConfig(String name, JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipes, boolean strictMode) {
-        super(name);
+    private DuplicateConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipes, boolean strictMode) {
+        super(NAME);
         this.defaultRules = defaultRules;
         this.overrideRules = overrideRules;
         this.ignoreRecipeTypes = ignoreRecipeTypes;
@@ -74,15 +76,18 @@ public class DuplicationConfig extends Config {
         ignoredRecipeTypesCache.clear();
     }
 
-    public static class Serializer extends Config.Serializer<DuplicationConfig> {
-        public static final String DEFAULT_DUPLICATE_RULES = "defaultDuplicateRules";
-        public static final String OVERRIDE_DUPLICATE_RULES = "overrideDuplicateRules";
-        public static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
-        public static final String IGNORED_RECIPES = "ignoredRecipes";
-        public static final String STRICT_MODE = "strictMode";
+    public static final class DuplicateSerializer extends Config.Serializer<DuplicateConfig> {
+
+        private static final String DEFAULT_DUPLICATE_RULES = "defaultDuplicateRules";
+        private static final String OVERRIDE_DUPLICATE_RULES = "overrideDuplicateRules";
+        private static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
+        private static final String IGNORED_RECIPES = "ignoredRecipes";
+        private static final String STRICT_MODE = "strictMode";
+
+        private DuplicateSerializer() {}
 
         @Override
-        public DuplicationConfig deserialize(String name, JsonObject json) {
+        public DuplicateConfig handleDeserialization(JsonObject json) {
             var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
             Set<Pattern> ignoreRecipeTypes = deserializePatterns(json,
                     IGNORED_RECIPE_TYPES,
@@ -96,12 +101,13 @@ public class DuplicationConfig extends Config {
                     json), Defaults.getDefaultDuplicateOverrides(platform));
             boolean strictMode = safeGet(() -> json.get(STRICT_MODE).getAsBoolean(), false);
 
-            return new DuplicationConfig(name,
+            return new DuplicateConfig(
                     defaultRules,
                     overrideRules,
                     ignoreRecipeTypes,
                     ignoreRecipes,
-                    strictMode);
+                    strictMode
+            );
         }
 
         // Extracted as method because `safeGet` couldn't cast the type... Seems to be an old SDK bug :-)
@@ -125,7 +131,7 @@ public class DuplicationConfig extends Config {
         }
 
         @Override
-        public JsonObject serialize(DuplicationConfig config) {
+        public JsonObject serialize(DuplicateConfig config) {
             JsonObject json = new JsonObject();
 
             serializePatterns(json, IGNORED_RECIPE_TYPES, config.ignoreRecipeTypes);

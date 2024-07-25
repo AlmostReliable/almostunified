@@ -2,7 +2,7 @@ package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.config.DebugConfig;
-import com.almostreliable.unified.config.DuplicationConfig;
+import com.almostreliable.unified.config.DuplicateConfig;
 import com.almostreliable.unified.recipe.RecipeDumper;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.RecipeUnifyHandler;
@@ -17,16 +17,16 @@ import java.util.Map;
 public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, RecipeUnifyHandler {
 
     private final Collection<? extends UnifyHandler> unifyHandlers;
-    private final DuplicationConfig duplicationConfig;
+    private final DuplicateConfig duplicateConfig;
     private final DebugConfig debugConfig;
     private final RecipeUnifierRegistry recipeUnifierRegistry;
     private final TagOwnerships tagOwnerships;
     private final Placeholders placeholders;
     private final UnifyLookup compositeUnifyLookup;
 
-    public AlmostUnifiedRuntimeImpl(Collection<? extends UnifyHandler> unifyHandlers, DuplicationConfig duplicationConfig, DebugConfig debugConfig, RecipeUnifierRegistry recipeUnifierRegistry, TagOwnerships tagOwnerships, Placeholders placeholders) {
+    public AlmostUnifiedRuntimeImpl(Collection<? extends UnifyHandler> unifyHandlers, DuplicateConfig duplicateConfig, DebugConfig debugConfig, RecipeUnifierRegistry recipeUnifierRegistry, TagOwnerships tagOwnerships, Placeholders placeholders) {
         this.unifyHandlers = unifyHandlers;
-        this.duplicationConfig = duplicationConfig;
+        this.duplicateConfig = duplicateConfig;
         this.debugConfig = debugConfig;
         this.recipeUnifierRegistry = recipeUnifierRegistry;
         this.tagOwnerships = tagOwnerships;
@@ -42,7 +42,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         long startTime = System.currentTimeMillis();
         RecipeTransformer.Result result = new RecipeTransformer(recipeUnifierRegistry,
                 unifyHandlers,
-                duplicationConfig).transformRecipes(recipes, skipClientTracking);
+                duplicateConfig).transformRecipes(recipes, skipClientTracking);
         RecipeDumper dumper = new RecipeDumper(result, startTime, System.currentTimeMillis());
         dumper.dump(debugConfig.dumpOverview, debugConfig.dumpUnification, debugConfig.dumpDuplicates);
 

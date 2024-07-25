@@ -32,7 +32,7 @@ public final class AlmostUnified {
 
     private static final CustomLogger.Policy LOGGER_POLICY = new CustomLogger.Policy();
     public static final Logger LOGGER = CustomLogger.create(LOGGER_POLICY);
-    public static final StartupConfig STARTUP_CONFIG = Config.load(StartupConfig.NAME, new StartupConfig.Serializer());
+    public static final StartupConfig STARTUP_CONFIG = Config.load(StartupConfig.NAME, StartupConfig.SERIALIZER);
 
     @Nullable private static AlmostUnifiedRuntime RUNTIME;
 
@@ -47,17 +47,17 @@ public final class AlmostUnified {
 
         RecipeUnifierRegistry recipeUnifierRegistry = new RecipeUnifierRegistryImpl();
         PluginManager.instance().registerRecipeUnifiers(recipeUnifierRegistry);
+        // TODO: add plugin support for registering config defaults
 
-        FileUtils.createGitIgnoreIfNotExists();
-        TagConfig tagConfig = Config.load(TagConfig.NAME, new TagConfig.Serializer());
-        PlaceholdersConfig replacementsConfig = Config.load(PlaceholdersConfig.NAME,
-                new PlaceholdersConfig.Serializer());
-        DuplicationConfig dupConfig = Config.load(DuplicationConfig.NAME, new DuplicationConfig.Serializer());
-        DebugConfig debugConfig = Config.load(DebugConfig.NAME, new DebugConfig.Serializer());
+        FileUtils.createGitIgnore();
+        var tagConfig = Config.load(TagConfig.NAME, TagConfig.SERIALIZER);
+        var placeholderConfig = Config.load(PlaceholderConfig.NAME, PlaceholderConfig.SERIALIZER);
+        var duplicateConfig = Config.load(DuplicateConfig.NAME, DuplicateConfig.SERIALIZER);
+        var debugConfig = Config.load(DebugConfig.NAME, DebugConfig.SERIALIZER);
 
-        Collection<UnifyConfig> unifyConfigs = UnifyConfig.safeLoadConfigs();
+        var unifyConfigs = UnifyConfig.safeLoadConfigs();
         logMissingPriorityMods(unifyConfigs);
-        Set<TagKey<Item>> allUnifyTags = bakeAndValidateTags(unifyConfigs, itemTags, replacementsConfig);
+        var allUnifyTags = bakeAndValidateTags(unifyConfigs, itemTags, placeholderConfig);
 
         TagReloadHandler.applyCustomTags(tagConfig.getCustomTags(), itemTags);
         TagOwnershipsImpl tagOwnerships = new TagOwnershipsImpl(allUnifyTags::contains, tagConfig.getTagOwnerships());
@@ -71,11 +71,11 @@ public final class AlmostUnified {
         ItemHider.applyHideTags(itemTags, unifyHandlers);
 
         RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers,
-                dupConfig,
+                duplicateConfig,
                 debugConfig,
                 recipeUnifierRegistry,
                 tagOwnerships,
-                replacementsConfig);
+                placeholderConfig);
     }
 
     private static void logMissingPriorityMods(Collection<UnifyConfig> unifyConfigs) {
@@ -142,7 +142,7 @@ public final class AlmostUnified {
                 }
 
                 if (visitedTags.containsKey(tag)) {
-                    AlmostUnified.LOGGER.warn("Tag '{}' from unify config '{}' was already created in unify config '{}'",
+                    LOGGER.warn("Tag '{}' from unify config '{}' was already created in unify config '{}'",
                             config.getName(),
                             tag.location(),
                             visitedTags.get(tag));
@@ -158,7 +158,7 @@ public final class AlmostUnified {
         }
 
         if (!wrongTags.isEmpty()) {
-            AlmostUnified.LOGGER.warn("The following tags are invalid or not in use and will be ignored: {}",
+            LOGGER.warn("The following tags are invalid or not in use and will be ignored: {}",
                     wrongTags.stream().map(TagKey::location).collect(Collectors.toList()));
         }
 
@@ -170,7 +170,7 @@ public final class AlmostUnified {
         if (RUNTIME instanceof RecipeUnifyHandler handler) {
             handler.run(recipes, STARTUP_CONFIG.isServerOnly());
         } else {
-            AlmostUnified.LOGGER.error(
+            LOGGER.error(
                     "Internal error. Implementation of given AlmostUnifiedRuntime does not implement RecipeUnifyHandler!");
         }
 

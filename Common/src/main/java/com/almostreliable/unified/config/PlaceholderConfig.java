@@ -12,13 +12,15 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public class PlaceholdersConfig extends Config implements Placeholders {
+public final class PlaceholderConfig extends Config implements Placeholders {
 
     public static final String NAME = "placeholders";
+    public static final PlaceholderSerializer SERIALIZER = new PlaceholderSerializer();
+
     private final Map<String, Collection<String>> replacements;
 
-    public PlaceholdersConfig(String name, Map<String, Collection<String>> replacements) {
-        super(name);
+    private PlaceholderConfig(Map<String, Collection<String>> replacements) {
+        super(NAME);
         this.replacements = replacements;
     }
 
@@ -33,6 +35,7 @@ public class PlaceholdersConfig extends Config implements Placeholders {
         return result;
     }
 
+    @Override
     public Collection<ResourceLocation> inflate(String str) {
         Collection<String> inputs = new HashSet<>();
         inputs.add(str);
@@ -77,14 +80,16 @@ public class PlaceholdersConfig extends Config implements Placeholders {
         replacements.forEach(consumer);
     }
 
-    public static class Serializer extends Config.Serializer<PlaceholdersConfig> {
+    public static final class PlaceholderSerializer extends Config.Serializer<PlaceholderConfig> {
+
+        private PlaceholderSerializer() {}
 
         @Override
-        public PlaceholdersConfig deserialize(String name, JsonObject json) {
+        public PlaceholderConfig handleDeserialization(JsonObject json) {
             // noinspection SizeReplaceableByIsEmpty
             if (json.size() == 0) { // json.isEmpty crashes in prod...
                 setInvalid();
-                return new PlaceholdersConfig(name, Defaults.PLACEHOLDERS);
+                return new PlaceholderConfig(Defaults.PLACEHOLDERS);
             }
 
             Map<String, Collection<String>> replacements = safeGet(() -> {
@@ -103,13 +108,13 @@ public class PlaceholdersConfig extends Config implements Placeholders {
                 return builder.build();
             }, Defaults.PLACEHOLDERS);
 
-            return new PlaceholdersConfig(name, replacements);
+            return new PlaceholderConfig(replacements);
         }
 
         @Override
-        public JsonObject serialize(PlaceholdersConfig src) {
+        public JsonObject serialize(PlaceholderConfig config) {
             JsonObject json = new JsonObject();
-            for (var entry : src.replacements.entrySet()) {
+            for (var entry : config.replacements.entrySet()) {
                 json.add(entry.getKey(), JsonUtils.toArray(entry.getValue()));
             }
 
