@@ -28,8 +28,7 @@ public class AlmostUnifiedForge {
     }
 
     private void onRegisterEvent(RegisterEvent event) {
-        if (AlmostUnified.STARTUP_CONFIG.allowWorldGenUnification() &&
-            event.getRegistryKey() == NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS) {
+        if (event.getRegistryKey() == NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS) {
             Registry.register(
                     NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS,
                     Utils.getRL("worldgen_unification"),
