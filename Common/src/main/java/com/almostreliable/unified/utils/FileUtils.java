@@ -16,7 +16,7 @@ public final class FileUtils {
 
     public static void createGitIgnore() {
         Path path = AlmostUnifiedPlatform.INSTANCE.getConfigPath();
-        if (!Files.exists(path) || !Files.isDirectory(path)) {
+        if (!Files.exists(path.resolve(".gitignore"))) {
             write(path, ".gitignore", sb -> sb.append(DebugConfig.NAME).append(".json").append("\n"));
         }
     }
