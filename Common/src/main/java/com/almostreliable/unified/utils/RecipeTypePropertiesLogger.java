@@ -32,6 +32,6 @@ public class RecipeTypePropertiesLogger {
             props.forEach(property -> sb.append("    ").append(property).append("\n"));
         });
 
-        FileUtils.writeLog("debug_recipe_properties.txt", stringBuilder -> sb.append(sb));
+        FileUtils.writeDebugLog("debug_recipe_properties.txt", stringBuilder -> sb.append(sb));
     }
 }

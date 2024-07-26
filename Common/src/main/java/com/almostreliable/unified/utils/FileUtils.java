@@ -21,8 +21,8 @@ public final class FileUtils {
         }
     }
 
-    public static void writeLog(String fileName, Consumer<StringBuilder> callback) {
-        write(AlmostUnifiedPlatform.INSTANCE.getLogPath(), fileName, callback);
+    public static void writeDebugLog(String fileName, Consumer<StringBuilder> callback) {
+        write(AlmostUnifiedPlatform.INSTANCE.getDebugLogPath(), fileName, callback);
     }
 
     private static void write(Path path, String fileName, Consumer<StringBuilder> callback) {

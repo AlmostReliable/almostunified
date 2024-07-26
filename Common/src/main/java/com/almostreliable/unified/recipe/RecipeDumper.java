@@ -28,21 +28,21 @@ public class RecipeDumper {
         String last = "# Last execution: " + format.format(new Date(startTime));
 
         if (dumpOverview) {
-            FileUtils.writeLog("overview_dump.txt", sb -> {
+            FileUtils.writeDebugLog("overview_dump.txt", sb -> {
                 sb.append(last).append("\n");
                 dumpOverview(sb);
             });
         }
 
         if (dumpUnify) {
-            FileUtils.writeLog("unify_dump.txt", sb -> {
+            FileUtils.writeDebugLog("unify_dump.txt", sb -> {
                 sb.append(last).append("\n");
                 dumpUnifyRecipes(sb);
             });
         }
 
         if (dumpDuplicate) {
-            FileUtils.writeLog("duplicates_dump.txt", sb -> {
+            FileUtils.writeDebugLog("duplicates_dump.txt", sb -> {
                 sb.append(last).append("\n");
                 dumpDuplicates(sb);
             });

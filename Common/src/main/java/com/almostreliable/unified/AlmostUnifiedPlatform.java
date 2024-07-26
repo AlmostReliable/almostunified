@@ -33,7 +33,7 @@ public interface AlmostUnifiedPlatform {
 
     Path getConfigPath();
 
-    Path getLogPath();
+    Path getDebugLogPath();
 
     Set<TagKey<Item>> getStoneStrataTags(Collection<String> stoneStrataIds);
 

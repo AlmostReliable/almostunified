@@ -34,8 +34,8 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
     }
 
     @Override
-    public Path getLogPath() {
-        return FabricLoader.getInstance().getGameDir().resolve("logs").resolve(BuildConfig.MOD_ID);
+    public Path getDebugLogPath() {
+        return FabricLoader.getInstance().getGameDir().resolve("logs").resolve(BuildConfig.MOD_ID).resolve("debug");
     }
 
     @Override

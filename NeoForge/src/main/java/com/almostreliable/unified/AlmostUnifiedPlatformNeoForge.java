@@ -44,8 +44,8 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
     }
 
     @Override
-    public Path getLogPath() {
-        return FMLPaths.GAMEDIR.get().resolve("logs").resolve(BuildConfig.MOD_ID);
+    public Path getDebugLogPath() {
+        return FMLPaths.GAMEDIR.get().resolve("logs").resolve(BuildConfig.MOD_ID).resolve("debug");
     }
 
     @Override
