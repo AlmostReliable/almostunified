@@ -20,9 +20,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 @Mod(BuildConfig.MOD_ID)
-public class AlmostUnifiedForge {
+public class AlmostUnifiedNeoForge {
 
-    public AlmostUnifiedForge(IEventBus eventBus) {
+    public AlmostUnifiedNeoForge(IEventBus eventBus) {
         eventBus.addListener(this::onRegisterEvent);
         eventBus.addListener(this::onCommonSetup);
     }
@@ -52,7 +52,7 @@ public class AlmostUnifiedForge {
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(AlmostUnifiedForge::initializePluginManager);
+        event.enqueueWork(AlmostUnifiedNeoForge::initializePluginManager);
     }
 
     private static void initializePluginManager() {
