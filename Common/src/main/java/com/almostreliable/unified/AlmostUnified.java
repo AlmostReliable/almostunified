@@ -43,19 +43,18 @@ public final class AlmostUnified {
     public static void onTagLoaderReload(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
         LOGGER.warn("Reload detected. Reconstructing runtime.");
 
-        RecipeUnifierRegistry recipeUnifierRegistry = new RecipeUnifierRegistryImpl();
-        PluginManager.instance().registerRecipeUnifiers(recipeUnifierRegistry);
-        // TODO: add plugin support for registering config defaults
-
         FileUtils.createGitIgnore();
         var tagConfig = Config.load(TagConfig.NAME, TagConfig.SERIALIZER);
         var placeholderConfig = Config.load(PlaceholderConfig.NAME, PlaceholderConfig.SERIALIZER);
         var duplicateConfig = Config.load(DuplicateConfig.NAME, DuplicateConfig.SERIALIZER);
-        var debugConfig = Config.load(DebugConfig.NAME, DebugConfig.SERIALIZER);
 
         var unifyConfigs = UnifyConfig.safeLoadConfigs();
         logMissingPriorityMods(unifyConfigs);
         var allUnifyTags = bakeAndValidateTags(unifyConfigs, itemTags, placeholderConfig);
+
+        RecipeUnifierRegistry recipeUnifierRegistry = new RecipeUnifierRegistryImpl();
+        PluginManager.instance().registerRecipeUnifiers(recipeUnifierRegistry);
+        // TODO: add plugin support for registering config defaults
 
         TagReloadHandler.applyCustomTags(tagConfig.getCustomTags(), itemTags);
         TagOwnershipsImpl tagOwnerships = new TagOwnershipsImpl(allUnifyTags::contains, tagConfig.getTagOwnerships());
@@ -70,7 +69,6 @@ public final class AlmostUnified {
 
         RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers,
                 duplicateConfig,
-                debugConfig,
                 recipeUnifierRegistry,
                 tagOwnerships,
                 placeholderConfig);

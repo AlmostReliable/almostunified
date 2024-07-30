@@ -264,10 +264,6 @@ public class RecipeTransformer {
             return Collections.unmodifiableCollection(duplicatesByType.get(type));
         }
 
-        public int getRecipeCount() {
-            return allRecipesByType.size();
-        }
-
         public int getUnifiedRecipeCount() {
             return unifiedRecipesByType.size();
         }
