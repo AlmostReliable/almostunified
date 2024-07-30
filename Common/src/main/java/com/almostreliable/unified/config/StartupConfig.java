@@ -27,8 +27,8 @@ public final class StartupConfig extends Config {
 
     public static final class StartupSerializer extends Config.Serializer<StartupConfig> {
 
-        private static final String SERVER_ONLY = "serverOnly";
-        private static final String WORLD_GEN_UNIFICATION = "worldGenUnification";
+        private static final String SERVER_ONLY = "server_only";
+        private static final String WORLD_GEN_UNIFICATION = "world_gen_unification";
 
         private StartupSerializer() {}
 

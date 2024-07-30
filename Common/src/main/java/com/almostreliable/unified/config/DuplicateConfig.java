@@ -78,11 +78,11 @@ public final class DuplicateConfig extends Config {
 
     public static final class DuplicateSerializer extends Config.Serializer<DuplicateConfig> {
 
-        private static final String DEFAULT_DUPLICATE_RULES = "defaultDuplicateRules";
-        private static final String OVERRIDE_DUPLICATE_RULES = "overrideDuplicateRules";
-        private static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
-        private static final String IGNORED_RECIPES = "ignoredRecipes";
-        private static final String STRICT_MODE = "strictMode";
+        private static final String DEFAULT_DUPLICATE_RULES = "default_duplicate_rules";
+        private static final String OVERRIDE_DUPLICATE_RULES = "override_duplicate_rules";
+        private static final String IGNORED_RECIPE_TYPES = "ignored_recipe_types";
+        private static final String IGNORED_RECIPES = "ignored_recipes";
+        private static final String STRICT_MODE = "strict_mode";
 
         private DuplicateSerializer() {}
 

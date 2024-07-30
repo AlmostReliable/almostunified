@@ -180,17 +180,17 @@ public final class UnifyConfig extends Config {
 
     public static final class UnifySerializer extends Config.Serializer<UnifyConfig> {
 
-        private static final String MOD_PRIORITIES = "modPriorities";
-        private static final String STONE_STRATA = "stoneStrata";
+        private static final String MOD_PRIORITIES = "mod_priorities";
+        private static final String STONE_STRATA = "stone_strata";
         private static final String TAGS = "tags";
-        private static final String PRIORITY_OVERRIDES = "priorityOverrides";
-        private static final String IGNORED_TAGS = "ignoredTags";
-        private static final String IGNORED_ITEMS = "ignoredItems";
-        private static final String IGNORED_RECIPE_TYPES = "ignoredRecipeTypes";
-        private static final String IGNORED_RECIPES = "ignoredRecipes";
-        private static final String IGNORED_LOOT_TABLES = "ignoredLootTables";
-        private static final String RECIPE_VIEWER_HIDING = "recipeViewerHiding";
-        private static final String ENABLE_LOOT_UNIFICATION = "enableLootUnification";
+        private static final String PRIORITY_OVERRIDES = "priority_overrides";
+        private static final String IGNORED_TAGS = "ignored_tags";
+        private static final String IGNORED_ITEMS = "ignored_items";
+        private static final String IGNORED_RECIPE_TYPES = "ignored_recipe_types";
+        private static final String IGNORED_RECIPES = "ignored_recipes";
+        private static final String IGNORED_LOOT_TABLES = "ignored_loot_tables";
+        private static final String RECIPE_VIEWER_HIDING = "recipe_viewer_hiding";
+        private static final String ENABLE_LOOT_UNIFICATION = "enable_loot_unification";
 
         private final String name;
 

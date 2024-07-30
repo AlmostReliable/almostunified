@@ -44,11 +44,11 @@ public final class DebugConfig extends Config {
 
     public static final class DebugSerializer extends Config.Serializer<DebugConfig> {
 
-        private static final String DUMP_DUPLICATES = "dumpDuplicates";
-        private static final String DUMP_OVERVIEW = "dumpOverview";
-        private static final String DUMP_RECIPES = "dumpRecipes";
-        private static final String DUMP_TAGS = "dumpTags";
-        private static final String DUMP_UNIFICATION = "dumpUnification";
+        private static final String DUMP_DUPLICATES = "dump_duplicates";
+        private static final String DUMP_OVERVIEW = "dump_overview";
+        private static final String DUMP_RECIPES = "dump_recipes";
+        private static final String DUMP_TAGS = "dump_tags";
+        private static final String DUMP_UNIFICATION = "dump_unification";
 
         private DebugSerializer() {}
 

@@ -1,5 +1,5 @@
 {
-  "modPriorities": [
+  "mod_priorities": [
     "testmod",
     "minecraft",
     "mod_c",
@@ -13,7 +13,7 @@
     "immersiveengineering",
     "mekanism"
   ],
-  "stoneStrata": [
+  "stone_strata": [
     "stone",
     "nether",
     "deepslate",
@@ -35,14 +35,14 @@
     "c:storage_blocks/{material}",
     "c:wires/{material}"
   ],
-  "priorityOverrides": {},
-  "ignoredTags": [],
-  "ignoredItems": [],
-  "ignoredRecipeTypes": [
+  "priority_overrides": {},
+  "ignored_tags": [],
+  "ignored_items": [],
+  "ignored_recipe_types": [
     "cucumber:shaped_tag"
   ],
-  "ignoredRecipes": [],
-  "ignoredLootTables": [],
-  "enableLootUnification": true,
-  "recipeViewerHiding": true
+  "ignored_recipes": [],
+  "ignored_loot_tables": [],
+  "enable_loot_unification": true,
+  "recipe_viewer_hiding": true
 }

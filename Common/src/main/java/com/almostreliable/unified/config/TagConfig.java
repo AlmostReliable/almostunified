@@ -57,12 +57,12 @@ public final class TagConfig extends Config {
 
     public static final class TagSerializer extends Config.Serializer<TagConfig> {
 
-        private static final String CUSTOM_TAGS = "customTags";
-        private static final String TAG_OWNERSHIPS = "tagOwnerships";
-        private static final String ITEM_TAG_INHERITANCE_MODE = "itemTagInheritanceMode";
-        private static final String ITEM_TAG_INHERITANCE = "itemTagInheritance";
-        private static final String BLOCK_TAG_INHERITANCE_MODE = "blockTagInheritanceMode";
-        private static final String BLOCK_TAG_INHERITANCE = "blockTagInheritance";
+        private static final String CUSTOM_TAGS = "custom_tags";
+        private static final String TAG_OWNERSHIPS = "tag_ownerships";
+        private static final String ITEM_TAG_INHERITANCE_MODE = "item_tag_inheritance_mode";
+        private static final String ITEM_TAG_INHERITANCE = "item_tag_inheritance";
+        private static final String BLOCK_TAG_INHERITANCE_MODE = "block_tag_inheritance_mode";
+        private static final String BLOCK_TAG_INHERITANCE = "block_tag_inheritance";
 
         private TagSerializer() {}
 
