@@ -166,8 +166,7 @@ public final class AlmostUnified {
         if (RUNTIME instanceof RecipeUnifyHandler handler) {
             handler.run(recipes, STARTUP_CONFIG.isServerOnly());
         } else {
-            LOGGER.error(
-                    "Internal error. Implementation of given AlmostUnifiedRuntime does not implement RecipeUnifyHandler!");
+            throw new IllegalStateException("Runtime is not a RecipeUnifyHandler");
         }
 
         LootUnification.unifyLoot(RUNTIME, registries);
