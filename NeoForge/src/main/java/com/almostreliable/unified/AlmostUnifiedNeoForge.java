@@ -36,7 +36,7 @@ public class AlmostUnifiedNeoForge {
             );
         }
 
-        if (!AlmostUnified.STARTUP_CONFIG.isServerOnly()) return;
+        if (AlmostUnified.STARTUP_CONFIG.isServerOnly()) return;
 
         if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
             Registry.register(

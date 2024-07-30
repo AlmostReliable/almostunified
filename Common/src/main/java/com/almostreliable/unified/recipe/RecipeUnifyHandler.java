@@ -7,5 +7,5 @@ import java.util.Map;
 
 public interface RecipeUnifyHandler {
 
-    void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking);
+    void run(Map<ResourceLocation, JsonElement> recipes);
 }

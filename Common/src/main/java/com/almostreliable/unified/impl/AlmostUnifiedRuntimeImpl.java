@@ -29,12 +29,12 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
     }
 
     @Override
-    public void run(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
+    public void run(Map<ResourceLocation, JsonElement> recipes) {
         DebugHandler debugHandler = DebugHandler.onRunStart(recipes, compositeUnifyLookup);
 
         debugHandler.measure(() -> {
             var transformer = new RecipeTransformer(recipeUnifierRegistry, unifyHandlers);
-            return transformer.transformRecipes(recipes, skipClientTracking);
+            return transformer.transformRecipes(recipes);
         });
 
         debugHandler.onRunEnd(recipes);

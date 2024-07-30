@@ -159,7 +159,7 @@ public final class AlmostUnified {
     public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes, HolderLookup.Provider registries) {
         Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
         if (RUNTIME instanceof RecipeUnifyHandler handler) {
-            handler.run(recipes, STARTUP_CONFIG.isServerOnly());
+            handler.run(recipes);
         } else {
             throw new IllegalStateException("Runtime is not a RecipeUnifyHandler");
         }

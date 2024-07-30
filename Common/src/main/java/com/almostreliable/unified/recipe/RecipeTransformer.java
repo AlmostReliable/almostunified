@@ -43,15 +43,14 @@ public class RecipeTransformer {
      * Transforms a map of recipes. This method will modify the map in-place. Part of the transformation is to unify recipes with the given {@link UnifyLookup}.
      * After unification, recipes will be checked for duplicates. All duplicates will be removed from the map.
      *
-     * @param recipes            The map of recipes to transform.
-     * @param skipClientTracking Whether to skip client tracking for the recipes.
+     * @param recipes The map of recipes to transform.
      * @return The result of the transformation.
      */
-    public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes, boolean skipClientTracking) {
+    public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes) {
         Stopwatch transformationTimer = Stopwatch.createStarted();
         AlmostUnified.LOGGER.info("Recipe count: {}", recipes.size());
 
-        ClientRecipeTracker.RawBuilder tracker = skipClientTracking ? null : new ClientRecipeTracker.RawBuilder();
+        var tracker = AlmostUnified.STARTUP_CONFIG.isServerOnly() ? null : new ClientRecipeTracker.RawBuilder();
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
 
