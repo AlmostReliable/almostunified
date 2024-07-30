@@ -7,6 +7,7 @@ import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.UnifySettings;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.DuplicateConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeUnifierRegistryImpl;
 import com.almostreliable.unified.utils.JsonCompare;
@@ -32,10 +33,10 @@ public class RecipeTransformer {
     private final DuplicateConfig duplicateConfig;
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(RecipeUnifierRegistry factory, Collection<? extends UnifyHandler> unifyHandlers, DuplicateConfig duplicateConfig) {
+    public RecipeTransformer(RecipeUnifierRegistry factory, Collection<? extends UnifyHandler> unifyHandlers) {
         this.factory = factory;
         this.unifyHandlers = unifyHandlers;
-        this.duplicateConfig = duplicateConfig;
+        this.duplicateConfig = Config.load(DuplicateConfig.NAME, DuplicateConfig.SERIALIZER);
     }
 
     /**

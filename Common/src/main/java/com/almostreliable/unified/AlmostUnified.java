@@ -46,7 +46,6 @@ public final class AlmostUnified {
         FileUtils.createGitIgnore();
         var tagConfig = Config.load(TagConfig.NAME, TagConfig.SERIALIZER);
         var placeholderConfig = Config.load(PlaceholderConfig.NAME, PlaceholderConfig.SERIALIZER);
-        var duplicateConfig = Config.load(DuplicateConfig.NAME, DuplicateConfig.SERIALIZER);
 
         var unifyConfigs = UnifyConfig.safeLoadConfigs();
         logMissingPriorityMods(unifyConfigs);
@@ -67,11 +66,7 @@ public final class AlmostUnified {
                 tagConfig.getTagInheritance());
         ItemHider.applyHideTags(itemTags, unifyHandlers);
 
-        RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers,
-                duplicateConfig,
-                recipeUnifierRegistry,
-                tagOwnerships,
-                placeholderConfig);
+        RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers, recipeUnifierRegistry, tagOwnerships, placeholderConfig);
     }
 
     private static void logMissingPriorityMods(Collection<UnifyConfig> unifyConfigs) {
