@@ -100,9 +100,9 @@ public final class Defaults {
             "c:nuggets/{material}",
             "c:ores/{material}",
             "c:plates/{material}",
-            "c:raw_blocks/{material}",
             "c:raw_materials/{material}",
             "c:rods/{material}",
+            "c:storage_blocks/raw_{material}",
             "c:storage_blocks/{material}",
             "c:wires/{material}"
     );
