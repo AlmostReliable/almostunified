@@ -26,7 +26,7 @@ public class ArsNouveauRecipeTests {
                       "item": "testmod:test_item"
                     },
                     {
-                      "tag": "forge:glass"
+                      "tag": "c:glass"
                     }
                   ],
                   "reagent": [
@@ -51,7 +51,7 @@ public class ArsNouveauRecipeTests {
                       "tag": "testmod:test_tag"
                     },
                     {
-                      "tag": "forge:glass"
+                      "tag": "c:glass"
                     }
                   ],
                   "reagent": [
@@ -82,7 +82,7 @@ public class ArsNouveauRecipeTests {
                     },
                     {
                       "item": {
-                        "tag": "forge:storage_blocks/source"
+                        "tag": "c:storage_blocks/source"
                       }
                     }
                   ],
@@ -104,7 +104,7 @@ public class ArsNouveauRecipeTests {
                     },
                     {
                       "item": {
-                        "tag": "forge:storage_blocks/source"
+                        "tag": "c:storage_blocks/source"
                       }
                     }
                   ],

@@ -14,13 +14,15 @@ import java.util.Map;
 @SuppressWarnings("SpellCheckingInspection")
 public final class Defaults {
 
-    public static final List<String> STONE_STRATA = List.of(
+    private Defaults() {}
+
+    public static final List<String> STONE_STRATAS = List.of(
             "stone",
-            "nether",
+            "andesite",
             "deepslate",
-            "granite",
             "diorite",
-            "andesite"
+            "granite",
+            "nether"
     );
 
     public static final Map<String, Collection<String>> PLACEHOLDERS = Util.make(() -> {
@@ -34,11 +36,8 @@ public final class Defaults {
                 "bitumen",
                 "brass",
                 "bronze",
-                "charcoal",
                 "chrome",
                 "cinnabar",
-                "coal",
-                "coal_coke",
                 "cobalt",
                 "constantan",
                 "copper",
@@ -79,58 +78,6 @@ public final class Defaults {
         return builder.build();
     });
 
-    public static final List<String> MATERIALS = List.of(
-            "aeternium",
-            "aluminum",
-            "amber",
-            "apatite",
-            "bitumen",
-            "brass",
-            "bronze",
-            "charcoal",
-            "chrome",
-            "cinnabar",
-            "coal",
-            "coal_coke",
-            "cobalt",
-            "constantan",
-            "copper",
-            "diamond",
-            "electrum",
-            "elementium",
-            "emerald",
-            "enderium",
-            "fluorite",
-            "gold",
-            "graphite",
-            "invar",
-            "iridium",
-            "iron",
-            "lapis",
-            "lead",
-            "lumium",
-            "mithril",
-            "netherite",
-            "nickel",
-            "obsidian",
-            "osmium",
-            "peridot",
-            "platinum",
-            "potassium_nitrate",
-            "ruby",
-            "sapphire",
-            "signalum",
-            "silver",
-            "steel",
-            "sulfur",
-            "tin",
-            "tungsten",
-            "uranium",
-            "zinc"
-    );
-
-    private Defaults() {}
-
     public static List<String> getModPriorities(AlmostUnifiedPlatform.Platform platform) {
         return switch (platform) {
             case NEO_FORGE -> List.of(
@@ -154,45 +101,22 @@ public final class Defaults {
         };
     }
 
-    public static List<String> getTags(AlmostUnifiedPlatform.Platform platform) {
-        return switch (platform) {
-            case NEO_FORGE -> List.of(
-                    "forge:nuggets/{material}",
-                    "forge:dusts/{material}",
-                    "forge:gears/{material}",
-                    "forge:gems/{material}",
-                    "forge:ingots/{material}",
-                    "forge:raw_materials/{material}",
-                    "forge:ores/{material}",
-                    "forge:plates/{material}",
-                    "forge:rods/{material}",
-                    "forge:wires/{material}",
-                    "forge:storage_blocks/{material}",
-                    "forge:storage_blocks/raw_{material}"
-            );
-            case FABRIC -> List.of(
-                    "c:{material}_nuggets",
-                    "c:{material}_dusts",
-                    "c:{material}_gears",
-                    "c:{material}_gems",
-                    "c:{material}_ingots",
-                    "c:{material}_raw_materials",
-                    "c:{material}_ores",
-                    "c:{material}_plates",
-                    "c:{material}_rods",
-                    "c:{material}_blocks",
-                    "c:{material}_wires",
-                    "c:{material}_storage_blocks",
-                    "c:raw_{material}_ores",
-                    "c:raw_{material}_blocks",
-                    "c:raw_{material}_storage_blocks"
-            );
-        };
-    }
+    public static final List<String> TAGS = List.of(
+            "c:dusts/{material}",
+            "c:gears/{material}",
+            "c:gems/{material}",
+            "c:ingots/{material}",
+            "c:nuggets/{material}",
+            "c:ores/{material}",
+            "c:plates/{material}",
+            "c:raw_blocks/{material}",
+            "c:raw_materials/{material}",
+            "c:rods/{material}",
+            "c:storage_blocks/{material}",
+            "c:wires/{material}"
+    );
 
-    public static List<String> getIgnoredRecipeTypes(AlmostUnifiedPlatform.Platform platform) {
-        return List.of("cucumber:shaped_tag");
-    }
+    public static final List<String> IGNORED_RECIPE_TYPES = List.of("cucumber:shaped_tag");
 
     public static JsonCompare.CompareSettings getDefaultDuplicateRules(AlmostUnifiedPlatform.Platform platform) {
         JsonCompare.CompareSettings result = getDefaultCompareSettings(platform);

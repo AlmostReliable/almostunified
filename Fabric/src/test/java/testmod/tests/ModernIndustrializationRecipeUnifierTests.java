@@ -113,7 +113,7 @@ public class ModernIndustrializationRecipeUnifierTests {
                   "eu": 8,
                   "duration": 200,
                   "item_inputs": {
-                    "tag": "forge:plates/steel",
+                    "tag": "c:plates/steel",
                     "amount": 8
                   },
                   "fluid_inputs": {

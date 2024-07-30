@@ -1,14 +1,13 @@
 package testmod.old.recipe;
 
 
-
 // TODO I BROKE THEM! NEED TO FIX
 public class RecipeContextImplTest {
     public static String mekaTest = """
             {
                 "type": "mekanism:combining",
-                "mainInput": { "amount": 8, "ingredient": { "tag": "forge:raw_materials/tin" } },
-                "extraInput": { "ingredient": { "tag": "forge:cobblestone/normal" } },
+                "mainInput": { "amount": 8, "ingredient": { "tag": "c:raw_materials/tin" } },
+                "extraInput": { "ingredient": { "tag": "c:cobblestone/normal" } },
                 "output": { "item": "mekanism:tin_ore" }
             }
             """;

@@ -20,16 +20,16 @@ public class OwnershipTests {
 
     /**
      * See `tags.json` test config.
-     * mod_a:silver_ore and mod_b:silver_ore both have the tag `forge:ores/silver`, while mod_c:silver_ore only has the `forge:silver_ores` tag.
+     * mod_a:silver_ore and mod_b:silver_ore both have the tag `c:ores/silver`, while mod_c:silver_ore only has the `c:silver_ores` tag.
      * <p>
-     * Through the ownership system, we tell AU that `forge:ores/silver` should own `forge:silver_ores`. Which will result into mod_c:silver_ore is now part of `forge:ores/silver`
+     * Through the ownership system, we tell AU that `c:ores/silver` should own `c:silver_ores`. Which will result into mod_c:silver_ore is now part of `c:ores/silver`
      */
     @SimpleGameTest
     public void checkSilverOwnerships() {
         ResourceLocation silverOreId = ResourceLocation.parse("mod_c:silver_ore");
         Item item = BuiltInRegistries.ITEM.get(silverOreId);
         Set<TagKey<Item>> itemTags = item.builtInRegistryHolder().tags().collect(Collectors.toSet());
-        TagKey<Item> silverTag = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ores/silver"));
+        TagKey<Item> silverTag = TagKey.create(Registries.ITEM, ResourceLocation.parse("c:ores/silver"));
         assertTrue(itemTags.contains(silverTag));
 
         UnifyLookup unifyLookup = AlmostUnifiedLookup.INSTANCE.getRuntimeOrThrow().getUnifyLookup();

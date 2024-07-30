@@ -1,15 +1,15 @@
 {
   "customTags": {},
   "tagOwnerships": {
-    "forge:ores/silver": [
-      "forge:silver_ores"
+    "c:ores/silver": [
+      "c:silver_ores"
     ]
   },
   "itemTagInheritanceMode": "ALLOW",
   "itemTagInheritance": {
     "minecraft:beacon_payment_items": [
       "c:not_in_use",
-      "forge:ores/silver"
+      "c:ores/silver"
     ]
   },
   "blockTagInheritanceMode": "ALLOW",

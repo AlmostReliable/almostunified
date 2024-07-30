@@ -210,11 +210,11 @@ public class TagInheritance {
          * <pre>
          * {@code {
          *     "minecraft:beacon_payment_items": [
-         *          "forge:ores/silver"
+         *          "c:ores/silver"
          *     ]
          * }}
          * </pre>
-         * "minecraft:beacon_payment_items" would be the inheritance tag and "forge:ores/silver" would be one of the dominant item tags.
+         * "minecraft:beacon_payment_items" would be the inheritance tag and "c:ores/silver" would be one of the dominant item tags.
          * If mode is {@code DENY}, the check would be inverted.
          *
          * @param inheritanceTag   The inheritance tag

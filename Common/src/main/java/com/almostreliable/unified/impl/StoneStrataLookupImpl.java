@@ -1,15 +1,16 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.StoneStrataLookup;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public final class StoneStrataLookupImpl implements StoneStrataLookup {
 
@@ -44,7 +45,11 @@ public final class StoneStrataLookupImpl implements StoneStrataLookup {
     }
 
     public static StoneStrataLookup create(Collection<String> stoneStrataIds, VanillaTagWrapper<Item> tags) {
-        var stoneStrataTags = AlmostUnifiedPlatform.INSTANCE.getStoneStrataTags(stoneStrataIds);
+        var stoneStrataTags = stoneStrataIds
+                .stream()
+                .map(id -> ResourceLocation.fromNamespaceAndPath("c", "ores_in_ground/" + id))
+                .map(id -> TagKey.create(Registries.ITEM, id))
+                .collect(Collectors.toSet());
 
         Map<ResourceLocation, TagKey<Item>> itemToTag = new HashMap<>();
         for (TagKey<Item> sst : stoneStrataTags) {
@@ -65,16 +70,13 @@ public final class StoneStrataLookupImpl implements StoneStrataLookup {
         itemToTag.forEach((item, tag) -> {
             // TODO custom handler somehow?
             String tagStr = tag.location().toString();
-            int i = tagStr.lastIndexOf('/'); // forge:ores_in_ground/stone -> stone
+            int i = tagStr.lastIndexOf('/'); // c:ores_in_ground/stone -> stone
             if (i > 0) {
                 itemToStoneStrata.put(item, tagStr.substring(i + 1));
             }
         });
 
-        Pattern tagMatcher = Pattern.compile(switch (AlmostUnifiedPlatform.INSTANCE.getPlatform()) {
-            case NEO_FORGE -> "forge:ores/.+";
-            case FABRIC -> "(c:ores/.+|(minecraft|c):.+_ores)";
-        });
+        Pattern tagMatcher = Pattern.compile("(c:ores/.+|(minecraft|c):.+_ores)");
         return new StoneStrataLookupImpl(stoneStrataIds, tagMatcher, itemToStoneStrata);
     }
 

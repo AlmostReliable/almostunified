@@ -212,8 +212,8 @@ public final class UnifyConfig extends Config {
                     e -> e.getValue().getAsString()), new HashMap<>());
 
             List<String> stoneStrata = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(STONE_STRATA)),
-                    Defaults.STONE_STRATA);
-            List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.getTags(platform));
+                    Defaults.STONE_STRATAS);
+            List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.TAGS);
 
             Set<TagKey<Item>> ignoredTags = safeGet(() -> JsonUtils
                     .toList(json.getAsJsonArray(IGNORED_TAGS))
@@ -221,9 +221,11 @@ public final class UnifyConfig extends Config {
                     .map(s -> TagKey.create(Registries.ITEM, ResourceLocation.parse(s)))
                     .collect(Collectors.toSet()), new HashSet<>());
             Set<Pattern> ignoredItems = deserializePatterns(json, IGNORED_ITEMS, List.of());
-            Set<Pattern> ignoredRecipeTypes = deserializePatterns(json,
+            Set<Pattern> ignoredRecipeTypes = deserializePatterns(
+                    json,
                     IGNORED_RECIPE_TYPES,
-                    Defaults.getIgnoredRecipeTypes(platform));
+                    Defaults.IGNORED_RECIPE_TYPES
+            );
             Set<Pattern> ignoredRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
             Set<Pattern> ignoredLootTables = deserializePatterns(json, IGNORED_LOOT_TABLES, List.of());
             boolean enableLootUnification = safeGet(() -> json

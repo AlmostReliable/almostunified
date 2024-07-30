@@ -89,9 +89,11 @@ public final class DuplicateConfig extends Config {
         @Override
         public DuplicateConfig handleDeserialization(JsonObject json) {
             var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
-            Set<Pattern> ignoreRecipeTypes = deserializePatterns(json,
+            Set<Pattern> ignoreRecipeTypes = deserializePatterns(
+                    json,
                     IGNORED_RECIPE_TYPES,
-                    Defaults.getIgnoredRecipeTypes(platform));
+                    Defaults.IGNORED_RECIPE_TYPES
+            );
             Set<Pattern> ignoreRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
 
             JsonCompare.CompareSettings defaultRules = safeGet(() -> createCompareSet(json.getAsJsonObject(

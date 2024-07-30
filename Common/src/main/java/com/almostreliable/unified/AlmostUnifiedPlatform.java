@@ -1,12 +1,7 @@
 package com.almostreliable.unified;
 
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.ServiceLoader;
-import java.util.Set;
 
 public interface AlmostUnifiedPlatform {
 
@@ -34,8 +29,6 @@ public interface AlmostUnifiedPlatform {
     Path getConfigPath();
 
     Path getDebugLogPath();
-
-    Set<TagKey<Item>> getStoneStrataTags(Collection<String> stoneStrataIds);
 
     enum Platform {
         NEO_FORGE,

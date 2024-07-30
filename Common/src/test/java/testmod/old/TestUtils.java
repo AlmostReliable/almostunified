@@ -44,10 +44,10 @@ public final class TestUtils {
     }
 
     public static final ResourceKey<Registry<Item>> FAKE_ITEM_REGISTRY = FakeResourceKeyRegistry.create("item");
-    public static final TagKey<Item> BRONZE_ORES_TAG = tag("forge:ores/bronze");
-    public static final TagKey<Item> INVAR_ORES_TAG = tag("forge:ores/invar");
-    public static final TagKey<Item> TIN_ORES_TAG = tag("forge:ores/tin");
-    public static final TagKey<Item> SILVER_ORES_TAG = tag("forge:ores/silver");
+    public static final TagKey<Item> BRONZE_ORES_TAG = tag("c:ores/bronze");
+    public static final TagKey<Item> INVAR_ORES_TAG = tag("c:ores/invar");
+    public static final TagKey<Item> TIN_ORES_TAG = tag("c:ores/tin");
+    public static final TagKey<Item> SILVER_ORES_TAG = tag("c:ores/silver");
     public static final List<TagKey<Item>> TEST_ALLOWED_TAGS = List.of(
             BRONZE_ORES_TAG,
             INVAR_ORES_TAG,
@@ -136,7 +136,7 @@ public final class TestUtils {
                   ],
                   "key": {
                     "i": {
-                      "tag": "forge:raw_materials/iron"
+                      "tag": "c:raw_materials/iron"
                     },
                     "k": {
                       "item": "minecraft:carrot"
@@ -155,7 +155,7 @@ public final class TestUtils {
                   ],
                   "key": {
                     "i": {
-                      "tag": "forge:raw_materials/iron"
+                      "tag": "c:raw_materials/iron"
                     },
                     "k": {
                       "item": "minecraft:pumpkin"
@@ -174,7 +174,7 @@ public final class TestUtils {
                   ],
                   "key": {
                     "i": {
-                      "tag": "forge:raw_materials/iron"
+                      "tag": "c:raw_materials/iron"
                     }
                   },
                   "result": "minecraft:iron_ingot"
@@ -190,10 +190,10 @@ public final class TestUtils {
                   ],
                   "key": {
                     "i": {
-                      "tag": "forge:raw_materials/iron"
+                      "tag": "c:raw_materials/iron"
                     },
                     "k": {
-                      "tag": "forge:raw_materials/iron"
+                      "tag": "c:raw_materials/iron"
                     }
                   },
                   "result": "minecraft:iron_ingot"
@@ -209,7 +209,7 @@ public final class TestUtils {
                   ],
                   "key": {
                     "i": {
-                      "tag": "forge:raw_materials/iron"
+                      "tag": "c:raw_materials/iron"
                     }
                   },
                   "result": "minecraft:iron_ingot"
@@ -225,7 +225,7 @@ public final class TestUtils {
                   ],
                   "key": {
                     "i": {
-                      "tag": "forge:raw_materials/iron"
+                      "tag": "c:raw_materials/iron"
                     }
                   },
                   "result": {
@@ -237,7 +237,7 @@ public final class TestUtils {
         public static final String CRUSHING_NESTED_SANITIZE_1 = """
                 {
                   "type": "create:crushing",
-                  "ingredients": [{ "tag": "forge:raw_materials/lead" }],
+                  "ingredients": [{ "tag": "c:raw_materials/lead" }],
                   "processingTime": 400,
                   "results": [
                     { "item": "emendatusenigmatica:crushed_lead_ore" },
@@ -248,7 +248,7 @@ public final class TestUtils {
         public static final String CRUSHING_NESTED_SANITIZE_2 = """
                 {
                   "type": "create:crushing",
-                  "ingredients": [{ "tag": "forge:raw_materials/lead" }],
+                  "ingredients": [{ "tag": "c:raw_materials/lead" }],
                   "processingTime": 400,
                   "results": [
                     { "count": 1, "item": "emendatusenigmatica:crushed_lead_ore" },
