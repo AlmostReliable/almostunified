@@ -6,7 +6,7 @@
   "default_duplicate_rules": {
     "ignored_fields": [
       "show_notification",
-      "conditions",
+      "neoforge:conditions",
       "category",
       "group"
     ],
@@ -22,7 +22,7 @@
       "ignored_fields": [
         "pattern",
         "show_notification",
-        "conditions",
+        "neoforge:conditions",
         "category",
         "key",
         "group"

@@ -11,12 +11,10 @@ import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.DuplicateConfig;
 import com.almostreliable.unified.recipe.unifier.RecipeUnifierRegistryImpl;
 import com.almostreliable.unified.utils.JsonCompare;
-import com.almostreliable.unified.utils.JsonQuery;
 import com.almostreliable.unified.utils.RecipeTypePropertiesLogger;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -54,16 +52,8 @@ public class RecipeTransformer {
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
 
-        // TODO: remove
-        ResourceLocation fcLocation = ResourceLocation.parse("forge:conditional");
         byType.forEach((type, recipeLinks) -> {
-            if (type.equals(fcLocation)) {
-                recipeLinks.forEach(recipeLink -> handleForgeConditionals(recipeLink).ifPresent(json -> recipes.put(
-                        recipeLink.getId(),
-                        json)));
-            } else {
-                transformRecipes(recipeLinks, recipes, tracker);
-            }
+            transformRecipes(recipeLinks, recipes, tracker);
             result.addAll(recipeLinks);
         });
 
@@ -78,32 +68,6 @@ public class RecipeTransformer {
 
         if (tracker != null) recipes.putAll(tracker.compute());
         return result;
-    }
-
-    private Optional<JsonObject> handleForgeConditionals(RecipeLink recipeLink) {
-        JsonObject copy = recipeLink.getOriginal().deepCopy();
-
-        if (copy.get("recipes") instanceof JsonArray recipes) {
-            for (JsonElement element : recipes) {
-                JsonQuery
-                        .of(element, "recipe")
-                        .asObject()
-                        .map(jsonObject -> new RecipeLink(recipeLink.getId(), jsonObject))
-                        .ifPresent(temporaryLink -> {
-                            unifyRecipe(temporaryLink);
-                            if (temporaryLink.isUnified()) {
-                                element.getAsJsonObject().add("recipe", temporaryLink.getUnified());
-                            }
-                        });
-            }
-
-            if (!copy.equals(recipeLink.getOriginal())) {
-                recipeLink.setUnified(copy);
-                return Optional.of(copy);
-            }
-        }
-
-        return Optional.empty();
     }
 
     /**
