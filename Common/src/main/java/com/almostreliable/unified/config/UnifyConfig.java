@@ -204,7 +204,7 @@ public final class UnifyConfig extends Config {
 
             // Mod priorities
             List<String> modPriorities = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(MOD_PRIORITIES)),
-                    Defaults.getModPriorities(platform));
+                    Defaults.MOD_PRIORITIES);
 
             Map<TagKey<Item>, String> priorityOverrides = safeGet(() -> JsonUtils.deserializeMap(json,
                     PRIORITY_OVERRIDES,

@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @SuppressWarnings("SpellCheckingInspection")
 public final class Defaults {
@@ -78,28 +79,18 @@ public final class Defaults {
         return builder.build();
     });
 
-    public static List<String> getModPriorities(AlmostUnifiedPlatform.Platform platform) {
-        return switch (platform) {
-            case NEO_FORGE -> List.of(
-                    "minecraft",
-                    "kubejs",
-                    "crafttweaker",
-                    "create",
-                    "thermal",
-                    "immersiveengineering",
-                    "mekanism"
-            );
-            case FABRIC -> List.of(
-                    "minecraft",
-                    "kubejs",
-                    "crafttweaker",
-                    "create",
-                    "techreborn",
-                    "modern_industrialization",
-                    "indrev"
-            );
-        };
-    }
+    public static final List<String> MOD_PRIORITIES = Stream.of(
+            "minecraft",
+            "kubejs",
+            "crafttweaker",
+            "create",
+            "thermal",
+            "immersiveengineering",
+            "mekanism",
+            "techreborn",
+            "modern_industrialization",
+            "indrev"
+    ).filter(AlmostUnifiedPlatform.INSTANCE::isModLoaded).toList();
 
     public static final List<String> TAGS = List.of(
             "c:dusts/{material}",
