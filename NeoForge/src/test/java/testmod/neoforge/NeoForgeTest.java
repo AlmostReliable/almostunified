@@ -21,6 +21,7 @@ public class NeoForgeTest {
         CommonTest.init(GameTestHooks.isGametestEnabled());
         GameTestLoader.registerProviders(ArsNouveauRecipeTests.class,
                 MekanismRecipeUnifierTests.class,
+                ModernIndustrializationRecipeUnifierTests.class,
                 ImmersiveEngineeringRecipeUnifierTests.class,
                 EnderIORecipeUnifierTests.class,
                 IntegratedDynamicsRecipeUnifierTests.class);

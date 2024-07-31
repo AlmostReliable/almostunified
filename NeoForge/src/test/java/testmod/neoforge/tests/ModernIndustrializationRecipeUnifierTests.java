@@ -1,4 +1,4 @@
-package testmod.tests;
+package testmod.neoforge.tests;
 
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.compat.ModernIndustrializationRecipeUnifier;
