@@ -23,4 +23,5 @@ public interface RecipeConstants {
     // inner keys
     String VALUE = "value";
     String BASE = "base";
+    String ID = "id";
 }

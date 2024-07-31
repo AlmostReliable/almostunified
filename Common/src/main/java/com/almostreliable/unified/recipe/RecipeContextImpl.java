@@ -166,7 +166,7 @@ public class RecipeContextImpl implements RecipeContext {
     @Override
     public void unifyOutputs(RecipeJson recipe, boolean unifyTagToItems, String... keys) {
         for (String key : keys) {
-            unifyOutputs(recipe, key, unifyTagToItems, RecipeConstants.ITEM);
+            unifyOutputs(recipe, key, unifyTagToItems, RecipeConstants.ID);
         }
     }
 
@@ -198,7 +198,7 @@ public class RecipeContextImpl implements RecipeContext {
             var entry = getLookup().getPreferredEntryForTag(tag);
             if (entry != null) {
                 json.remove(RecipeConstants.TAG);
-                json.addProperty(RecipeConstants.ITEM, entry.id().toString());
+                json.addProperty(RecipeConstants.ID, entry.id().toString());
                 changed = true;
             }
         }
