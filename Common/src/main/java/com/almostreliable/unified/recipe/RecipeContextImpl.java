@@ -166,7 +166,7 @@ public class RecipeContextImpl implements RecipeContext {
     @Override
     public void unifyOutputs(RecipeJson recipe, boolean unifyTagToItems, String... keys) {
         for (String key : keys) {
-            unifyOutputs(recipe, key, unifyTagToItems, RecipeConstants.ID);
+            unifyOutputs(recipe, key, unifyTagToItems, RecipeConstants.ID, RecipeConstants.ITEM);
         }
     }
 
