@@ -1,5 +1,7 @@
 package com.almostreliable.unified.config;
 
+import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.impl.TagInheritance;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.JsonObject;
@@ -29,8 +31,9 @@ public final class TagConfig extends Config {
     private final Map<TagKey<Item>, Set<Pattern>> itemTagInheritance;
     private final TagInheritance.Mode blockTagInheritanceMode;
     private final Map<TagKey<Block>, Set<Pattern>> blockTagInheritance;
+    private final boolean emiStrictHiding;
 
-    private TagConfig(Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships, TagInheritance.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritance.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance) {
+    private TagConfig(Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships, TagInheritance.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritance.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance, boolean emiStrictHiding) {
         super(NAME);
         this.customTags = customTags;
         this.tagOwnerships = tagOwnerships;
@@ -38,6 +41,7 @@ public final class TagConfig extends Config {
         this.itemTagInheritance = itemTagInheritance;
         this.blockTagInheritanceMode = blockTagInheritanceMode;
         this.blockTagInheritance = blockTagInheritance;
+        this.emiStrictHiding = emiStrictHiding;
     }
 
     public TagInheritance getTagInheritance() {
@@ -55,6 +59,10 @@ public final class TagConfig extends Config {
         return Collections.unmodifiableMap(tagOwnerships);
     }
 
+    public boolean isEmiHidingStrict() {
+        return emiStrictHiding;
+    }
+
     public static final class TagSerializer extends Config.Serializer<TagConfig> {
 
         private static final String CUSTOM_TAGS = "custom_tags";
@@ -63,6 +71,7 @@ public final class TagConfig extends Config {
         private static final String ITEM_TAG_INHERITANCE = "item_tag_inheritance";
         private static final String BLOCK_TAG_INHERITANCE_MODE = "block_tag_inheritance_mode";
         private static final String BLOCK_TAG_INHERITANCE = "block_tag_inheritance";
+        private static final String EMI_STRICT_HIDING = "emi_strict_hiding";
 
         private TagSerializer() {}
 
@@ -89,13 +98,18 @@ public final class TagConfig extends Config {
                     json,
                     BLOCK_TAG_INHERITANCE);
 
+            boolean emiStrictHiding = AlmostUnifiedPlatform.INSTANCE.isModLoaded(ModConstants.EMI) ?
+                                      safeGet(() -> json.get(EMI_STRICT_HIDING).getAsBoolean(), true) :
+                                      false;
+
             return new TagConfig(
                     customTags,
                     tagOwnerships,
                     itemTagInheritanceMode,
                     itemTagInheritance,
                     blockTagInheritanceMode,
-                    blockTagInheritance
+                    blockTagInheritance,
+                    emiStrictHiding
             );
         }
 
@@ -132,6 +146,10 @@ public final class TagConfig extends Config {
             });
             json.add(BLOCK_TAG_INHERITANCE_MODE, new JsonPrimitive(config.blockTagInheritanceMode.toString()));
             json.add(BLOCK_TAG_INHERITANCE, blockTagInheritance);
+
+            if (AlmostUnifiedPlatform.INSTANCE.isModLoaded(ModConstants.EMI)) {
+                json.addProperty(EMI_STRICT_HIDING, config.emiStrictHiding);
+            }
 
             return json;
         }

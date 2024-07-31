@@ -64,7 +64,7 @@ public final class AlmostUnified {
                 unifyConfigs,
                 tagOwnerships,
                 tagConfig.getTagInheritance());
-        ItemHider.applyHideTags(itemTags, unifyHandlers);
+        ItemHider.applyHideTags(itemTags, unifyHandlers, tagConfig.isEmiHidingStrict());
 
         RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers, recipeUnifierRegistry, tagOwnerships, placeholderConfig);
     }

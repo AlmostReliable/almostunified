@@ -6,24 +6,32 @@ import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.Utils;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ItemHider {
+public final class ItemHider {
 
-    public static final TagKey<Item> HIDE_TAG = TagKey.create(Registries.ITEM,
-            Utils.getRL("hide"));
+    public static final TagKey<Item> HIDE_TAG = TagKey.create(Registries.ITEM, Utils.getRL("hide"));
+    public static final TagKey<Item> EMI_STRICT_TAG = TagKey.create(Registries.ITEM, Utils.getRL("emi_strict"));
 
-    public static void applyHideTags(VanillaTagWrapper<Item> tags, Collection<UnifyHandler> handlers) {
+    private ItemHider() {}
+
+    public static void applyHideTags(VanillaTagWrapper<Item> tags, Collection<UnifyHandler> handlers, boolean emiHidingStrict) {
         for (var handler : handlers) {
             if (handler.hideNonPreferredItemsInRecipeViewers()) {
-                ItemHider.applyHideTags(tags, handler);
+                applyHideTags(tags, handler);
             }
+        }
+
+        if (emiHidingStrict) {
+            tags.add(EMI_STRICT_TAG.location(), BuiltInRegistries.ITEM.wrapAsHolder(Items.DEBUG_STICK));
         }
     }
 

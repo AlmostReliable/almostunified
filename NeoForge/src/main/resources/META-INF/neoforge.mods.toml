@@ -10,22 +10,31 @@ displayName = "${modName}"
 authors = "${modAuthor}"
 description = '''${modDescription}'''
 
-[[dependencies."${modId}"]]
-modId = "neoforge"
-type = "required"
-versionRange = "[${neoforgeVersion},)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies."${modId}"]]
-modId = "minecraft"
-type = "required"
-versionRange = "[${minecraftVersion},)"
-ordering = "NONE"
-side = "BOTH"
-
 [[mixins]]
 config = "$modId-common.mixins.json"
 
 [[mixins]]
 config = "$modId-neoforge.mixins.json"
+
+[[dependencies."${modId}"]]
+modId = "neoforge"
+versionRange = "[${neoforgeVersion},)"
+
+[[dependencies."${modId}"]]
+modId = "minecraft"
+versionRange = "[${minecraftVersion},)"
+
+[[dependencies."${modId}"]]
+modId = "jei"
+type = "optional"
+versionRange = "[${jeiVersion},)"
+
+[[dependencies."${modId}"]]
+modId = "roughlyenoughitems"
+type = "optional"
+versionRange = "[${reiVersion},)"
+
+[[dependencies."${modId}"]]
+modId = "emi"
+type = "optional"
+versionRange = "[${emiVersion},)"

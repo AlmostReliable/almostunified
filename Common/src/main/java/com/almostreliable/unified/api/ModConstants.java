@@ -6,6 +6,7 @@ public interface ModConstants {
     // recipe viewer mods
     String JEI = "jei";
     String REI = "roughlyenoughitems";
+    String EMI = "emi";
 
     // unify handler mods
     String AD_ASTRA = "ad_astra";
