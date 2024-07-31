@@ -31,5 +31,6 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
         registry.registerForModId(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         registry.registerForModId(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
         registry.registerForModId(ModConstants.MEKANISM, new MekanismRecipeUnifier());
+        registry.registerForModId(ModConstants.PRODUCTIVE_TREES, new ProductiveTreesRecipeUnifier());
     }
 }

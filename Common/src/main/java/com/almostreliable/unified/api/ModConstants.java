@@ -21,4 +21,5 @@ public interface ModConstants {
     String INTEGRATED_DYNAMICS = "integrateddynamics";
     String MEKANISM = "mekanism";
     String MODERN_INDUSTRIALIZATION = "modern_industrialization";
+    String PRODUCTIVE_TREES = "productivetrees";
 }
