@@ -20,11 +20,31 @@ architectury {
 }
 
 loom {
-    // load the test mod manually because NeoForge always uses main by default
-    mods {
-        create("testmod") {
-            sourceSet(sourceSets.test.get())
-            sourceSet(project(":Common").sourceSets.test.get())
+    // load the test mod for test run configs exclusively
+    runs {
+        named("test_client") {
+            mods {
+                create("main") {
+                    sourceSet(sourceSets.main.get())
+                    sourceSet(project(":Common").sourceSets.main.get())
+                }
+                create("testmod") {
+                    sourceSet(sourceSets.test.get())
+                    sourceSet(project(":Common").sourceSets.test.get())
+                }
+            }
+        }
+        named("gametest") {
+            mods {
+                create("main") {
+                    sourceSet(sourceSets.main.get())
+                    sourceSet(project(":Common").sourceSets.main.get())
+                }
+                create("testmod") {
+                    sourceSet(sourceSets.test.get())
+                    sourceSet(project(":Common").sourceSets.test.get())
+                }
+            }
         }
     }
 }
