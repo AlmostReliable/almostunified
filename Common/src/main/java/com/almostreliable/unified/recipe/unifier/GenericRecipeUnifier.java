@@ -26,7 +26,15 @@ public class GenericRecipeUnifier implements RecipeUnifier {
 
     @Override
     public void unify(RecipeContext context, RecipeJson recipe) {
+        unifyInputs(context, recipe);
+        unifyOutputs(context, recipe);
+    }
+
+    public void unifyInputs(RecipeContext context, RecipeJson recipe) {
         context.unifyInputs(recipe, INPUT_KEYS);
+    }
+
+    public void unifyOutputs(RecipeContext context, RecipeJson recipe) {
         context.unifyOutputs(recipe, OUTPUT_KEYS);
     }
 }

@@ -5,6 +5,7 @@ import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.*;
+import com.almostreliable.unified.recipe.unifier.ShapedRecipeUnifier;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.resources.ResourceLocation;
 
@@ -31,6 +32,12 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
         registry.registerForModId(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         registry.registerForModId(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
         registry.registerForModId(ModConstants.MEKANISM, new MekanismRecipeUnifier());
+        registry.registerForModId(ModConstants.OCCULTISM, new OccultismRecipeUnifier());
         registry.registerForModId(ModConstants.PRODUCTIVE_TREES, new ProductiveTreesRecipeUnifier());
+        registry.registerForModId(ModConstants.THEURGY, new TheurgyRecipeUnifier());
+        registry.registerForRecipeType(
+                ResourceLocation.fromNamespaceAndPath(ModConstants.THEURGY, "divination_rod"),
+                ShapedRecipeUnifier.INSTANCE
+        );
     }
 }
