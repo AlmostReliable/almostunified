@@ -4,7 +4,6 @@ import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
-import com.almostreliable.unified.compat.AdAstraRecipeUnifier;
 import com.almostreliable.unified.compat.GregTechModernRecipeUnifier;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +18,6 @@ public class CommonPlugin implements AlmostUnifiedPlugin {
 
     @Override
     public void registerRecipeUnifiers(RecipeUnifierRegistry registry) {
-        registry.registerForModId(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
         registry.registerForModId(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
     }
 }

@@ -9,7 +9,6 @@ public interface ModConstants {
     String EMI = "emi";
 
     // unify handler mods
-    String AD_ASTRA = "ad_astra";
     String AMETHYST_IMBUEMENT = "amethyst_imbuement";
     String ARS_CREO = "ars_creo";
     String ARS_ELEMENTAL = "ars_elemental";

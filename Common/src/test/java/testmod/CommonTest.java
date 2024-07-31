@@ -17,7 +17,6 @@ public class CommonTest {
                     ShapedRecipeUnifierTests.class,
                     SmithingRecipeUnifierTest.class,
                     GregTechModernRecipeUnifierTests.class,
-                    AdAstraRecipeUnifierTests.class,
                     OwnershipTests.class,
                     TagInheritanceTests.class,
                     LootUnificationTests.class
