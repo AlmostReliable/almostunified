@@ -67,7 +67,7 @@ public final class WorldStripper {
                 BlockInWorld block = iterator.next();
                 iterator.remove();
 
-                if (removeCache.computeIfAbsent(block.getState().getBlock(), $ -> shouldRemove(block.getState()))) {
+                if (removeCache.computeIfAbsent(block.getState().getBlock(), $ -> shouldRemove(block))) {
                     level.setBlock(block.getPos(), Blocks.AIR.defaultBlockState(), 3);
                 }
 
@@ -79,11 +79,13 @@ public final class WorldStripper {
             return !iterator.hasNext();
         }
 
-        private boolean shouldRemove(BlockState blockState) {
-            return !(blockState.isAir() || blockState.is(Blocks.BEDROCK) ||
-                     blockState.getBlock() instanceof DropExperienceBlock ||
+        private boolean shouldRemove(BlockInWorld block) {
+            BlockState state = block.getState();
+            return !(state.isAir() || state.is(Blocks.BEDROCK) ||
+                     block.getEntity() != null ||
+                     state.getBlock() instanceof DropExperienceBlock ||
                      BuiltInRegistries.BLOCK
-                             .wrapAsHolder(blockState.getBlock())
+                             .wrapAsHolder(state.getBlock())
                              .tags()
                              .anyMatch(t -> t.location().toString().startsWith("c:ores")));
         }
