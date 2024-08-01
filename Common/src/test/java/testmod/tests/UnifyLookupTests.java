@@ -32,7 +32,7 @@ public class UnifyLookupTests {
                         ResourceLocation.parse("mekanism:electrum_ingot"),
                         ResourceLocation.parse("create:electrum_ingot"),
                         ResourceLocation.parse("thermal:electrum_ingot"))
-                .build(modPriorities, TestUtils.EMPTY_STRATA_LOOKUP, TestUtils.EMPTY_TAG_OWNERSHIPS);
+                .build(modPriorities, TestUtils.EMPTY_VARIANT_LOOKUP, TestUtils.EMPTY_TAG_OWNERSHIPS);
     }
 
     @SimpleGameTest
@@ -144,7 +144,7 @@ public class UnifyLookupTests {
         var rm = new UnifyLookupImpl.Builder()
                 .put(TestUtils.itemTag("c:tools"), Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL)
                 .build(TestUtils.EMPTY_MOD_PRIORITIES,
-                        TestUtils.EMPTY_STRATA_LOOKUP,
+                        TestUtils.EMPTY_VARIANT_LOOKUP,
                         TestUtils.EMPTY_TAG_OWNERSHIPS);
 
         Ingredient ingredient = Ingredient.of(Items.IRON_SWORD);

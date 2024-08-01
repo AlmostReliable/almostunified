@@ -1,7 +1,7 @@
 package testmod;
 
 import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.StoneStrataLookup;
+import com.almostreliable.unified.api.StoneVariantLookup;
 import com.almostreliable.unified.api.TagOwnerships;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.recipe.RecipeContext;
@@ -41,14 +41,14 @@ public class TestUtils {
             new HashMap<>()
     );
 
-    public static final StoneStrataLookup EMPTY_STRATA_LOOKUP = new StoneStrataLookup() {
+    public static final StoneVariantLookup EMPTY_VARIANT_LOOKUP = new StoneVariantLookup() {
         @Override
-        public String getStoneStrata(ResourceLocation item) {
+        public String getStoneVariant(ResourceLocation item) {
             return "";
         }
 
         @Override
-        public boolean isStoneStrataTag(TagKey<Item> tag) {
+        public boolean isOreTag(TagKey<Item> tag) {
             return false;
         }
     };
@@ -97,7 +97,7 @@ public class TestUtils {
                         ResourceLocation.parse("mekanism:test_item"),
                         ResourceLocation.parse("thermal:test_item"),
                         ResourceLocation.parse("testmod:test_item"))
-                .build(TEST_MOD_PRIORITIES, EMPTY_STRATA_LOOKUP, EMPTY_TAG_OWNERSHIPS);
+                .build(TEST_MOD_PRIORITIES, EMPTY_VARIANT_LOOKUP, EMPTY_TAG_OWNERSHIPS);
     }
 
 

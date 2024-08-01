@@ -18,16 +18,16 @@ import java.util.function.Predicate;
 public class UnifyLookupImpl implements UnifyLookup {
 
     private final ModPriorities modPriorities;
-    private final StoneStrataLookup stoneStrataLookup;
+    private final StoneVariantLookup stoneVariantLookup;
     private final TagOwnerships tagOwnerships;
     private final Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries;
     private final Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag;
 
-    private UnifyLookupImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries, Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag, StoneStrataLookup stoneStrataLookup, TagOwnerships tagOwnerships) {
+    private UnifyLookupImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries, Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag, StoneVariantLookup stoneVariantLookup, TagOwnerships tagOwnerships) {
         this.entries = entries;
         this.idEntriesToTag = idEntriesToTag;
         this.modPriorities = modPriorities;
-        this.stoneStrataLookup = stoneStrataLookup;
+        this.stoneVariantLookup = stoneVariantLookup;
         this.tagOwnerships = tagOwnerships;
     }
 
@@ -84,9 +84,9 @@ public class UnifyLookupImpl implements UnifyLookup {
             return null;
         }
 
-        if (stoneStrataLookup.isStoneStrataTag(t)) {
-            String stone = stoneStrataLookup.getStoneStrata(item);
-            return getPreferredEntryForTag(t, i -> stone.equals(stoneStrataLookup.getStoneStrata(i)));
+        if (stoneVariantLookup.isOreTag(t)) {
+            String stone = stoneVariantLookup.getStoneVariant(item);
+            return getPreferredEntryForTag(t, i -> stone.equals(stoneVariantLookup.getStoneVariant(i)));
         }
 
         return getPreferredEntryForTag(t);
@@ -116,11 +116,11 @@ public class UnifyLookupImpl implements UnifyLookup {
         var tagToLookup = tagOwnerships.getOwner(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
-        // TODO do we really need a filter way? Maybe have two methods to explicitly check for stone strata
+        // TODO do we really need a filter way? Maybe have two methods to explicitly check for stone variant
         var items = getEntries(tagToLookup)
                 .stream()
                 .filter(entry -> itemFilter.test(entry.id()))
-                // Helps us to get the clean stone variant first in case of a stone strata tag
+                // Helps us to get the clean stone variant first in case of a stone variant tag
                 .sorted(Comparator.comparingInt(value -> value.id().toString().length()))
                 .toList();
 
@@ -185,7 +185,7 @@ public class UnifyLookupImpl implements UnifyLookup {
             return this;
         }
 
-        public UnifyLookup build(ModPriorities modPriorities, StoneStrataLookup stoneStrataLookup, TagOwnerships tagOwnerships) {
+        public UnifyLookup build(ModPriorities modPriorities, StoneVariantLookup stoneVariantLookup, TagOwnerships tagOwnerships) {
             ImmutableMap.Builder<TagKey<Item>, Set<UnifyEntry<Item>>> entries = ImmutableMap.builder();
             ImmutableMap.Builder<ResourceLocation, UnifyEntry<Item>> idEntriesToTag = ImmutableMap.builder();
             this.entries.forEach((t, e) -> {
@@ -200,7 +200,7 @@ public class UnifyLookupImpl implements UnifyLookup {
             });
 
             var map = entries.build();
-            return new UnifyLookupImpl(modPriorities, map, idEntriesToTag.build(), stoneStrataLookup, tagOwnerships);
+            return new UnifyLookupImpl(modPriorities, map, idEntriesToTag.build(), stoneVariantLookup, tagOwnerships);
         }
     }
 }

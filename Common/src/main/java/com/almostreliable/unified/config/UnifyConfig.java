@@ -29,7 +29,7 @@ public final class UnifyConfig extends Config {
 
     private final List<String> modPriorities;
     private final Map<TagKey<Item>, String> priorityOverrides;
-    private final List<String> stoneStrata;
+    private final List<String> stoneVariants;
     private final List<String> unbakedTags;
     private final Set<TagKey<Item>> ignoredTags;
     private final Set<Pattern> ignoredItems;
@@ -96,11 +96,11 @@ public final class UnifyConfig extends Config {
         return jsons;
     }
 
-    private UnifyConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneStrata, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
+    private UnifyConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneVariants, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
         super(name);
         this.modPriorities = modPriorities;
         this.priorityOverrides = priorityOverrides;
-        this.stoneStrata = stoneStrata;
+        this.stoneVariants = stoneVariants;
         this.unbakedTags = unbakedTags;
         this.ignoredTags = ignoredTags;
         this.ignoredItems = ignoredItems;
@@ -115,8 +115,8 @@ public final class UnifyConfig extends Config {
         return new ModPrioritiesImpl(modPriorities, priorityOverrides);
     }
 
-    public List<String> getStoneStrata() {
-        return stoneStrata;
+    public List<String> getStoneVariants() {
+        return stoneVariants;
     }
 
     public Set<TagKey<Item>> getBakedTags() {
@@ -181,7 +181,7 @@ public final class UnifyConfig extends Config {
     public static final class UnifySerializer extends Config.Serializer<UnifyConfig> {
 
         private static final String MOD_PRIORITIES = "mod_priorities";
-        private static final String STONE_STRATA = "stone_strata";
+        private static final String STONE_VARIANTS = "stone_variants";
         private static final String TAGS = "tags";
         private static final String PRIORITY_OVERRIDES = "priority_overrides";
         private static final String IGNORED_TAGS = "ignored_tags";
@@ -211,8 +211,8 @@ public final class UnifyConfig extends Config {
                     e -> TagKey.create(Registries.ITEM, ResourceLocation.parse(e.getKey())),
                     e -> e.getValue().getAsString()), new HashMap<>());
 
-            List<String> stoneStrata = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(STONE_STRATA)),
-                    Defaults.STONE_STRATAS);
+            List<String> stoneVariants = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(STONE_VARIANTS)),
+                    Defaults.STONE_VARIANTS);
             List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.TAGS);
 
             Set<TagKey<Item>> ignoredTags = safeGet(() -> JsonUtils
@@ -238,7 +238,7 @@ public final class UnifyConfig extends Config {
                     name,
                     modPriorities,
                     priorityOverrides,
-                    stoneStrata,
+                    stoneVariants,
                     tags,
                     ignoredTags,
                     ignoredItems,
@@ -254,7 +254,7 @@ public final class UnifyConfig extends Config {
         public JsonObject serialize(UnifyConfig config) {
             JsonObject json = new JsonObject();
             json.add(MOD_PRIORITIES, JsonUtils.toArray(config.modPriorities));
-            json.add(STONE_STRATA, JsonUtils.toArray(config.stoneStrata));
+            json.add(STONE_VARIANTS, JsonUtils.toArray(config.stoneVariants));
             json.add(TAGS, JsonUtils.toArray(config.unbakedTags));
 
             JsonObject priorityOverrides = new JsonObject();

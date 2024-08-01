@@ -62,7 +62,7 @@ public interface AlmostUnifiedLookup {
      * Returns the replacement item for a given {@link ItemLike}. Will return null if no configured
      * tag exists that includes the item.
      * <p>
-     * If the item is part of some stone strata, it will only check items within the same stone strata.<br>
+     * If the item is part of a stone variant, it will only check items within the same stone variant.<br>
      * => e.g. "modid:deepslate_foo_ore" would not return "prio_modid:foo_ore".
      *
      * @param itemLike The item-like to find the replacement for

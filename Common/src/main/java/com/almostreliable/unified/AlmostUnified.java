@@ -97,10 +97,10 @@ public final class AlmostUnified {
      * @return All unify handlers
      */
     private static List<UnifyHandler> createAndPrepareUnifyHandlers(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagInheritance tagInheritance) {
-        List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, tagOwnerships);
+        List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, blockTags, tagOwnerships);
         var needsRebuild = tagInheritance.apply(itemTags, blockTags, unifyHandlers);
         if (needsRebuild) {
-            unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, tagOwnerships);
+            unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, blockTags, tagOwnerships);
         }
 
         return unifyHandlers;

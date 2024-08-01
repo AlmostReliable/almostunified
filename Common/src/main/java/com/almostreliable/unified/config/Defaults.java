@@ -17,7 +17,7 @@ public final class Defaults {
 
     private Defaults() {}
 
-    public static final List<String> STONE_STRATAS = List.of(
+    public static final List<String> STONE_VARIANTS = List.of(
             "stone",
             "andesite",
             "deepslate",

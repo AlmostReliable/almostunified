@@ -84,7 +84,7 @@ public final class ItemHider {
     /**
      * Returns the replacement for the given item, or the item itself if no replacement is found.
      * <p>
-     * Returning the item itself is important for stone strata detection.
+     * Returning the item itself is important for stone variant detection.
      *
      * @param repMap The replacement map.
      * @param entry  The holder to get the replacement for.

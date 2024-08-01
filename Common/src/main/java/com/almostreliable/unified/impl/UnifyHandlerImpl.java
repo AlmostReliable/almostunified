@@ -9,6 +9,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -26,20 +27,20 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     private final boolean enableLootUnification;
     private final String name;
 
-    public static List<UnifyHandler> create(Collection<UnifyConfig> configs, VanillaTagWrapper<Item> tags, TagOwnershipsImpl tagOwnerships) {
+    public static List<UnifyHandler> create(Collection<UnifyConfig> configs, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagOwnershipsImpl tagOwnerships) {
         return configs
                 .stream()
-                .map(uc -> UnifyHandlerImpl.create(tags, uc, tagOwnerships))
+                .map(config -> create(config, itemTags, blockTags, tagOwnerships))
                 .toList();
     }
 
-    public static UnifyHandler create(VanillaTagWrapper<Item> tags, UnifyConfig config, TagOwnerships tagOwnerships) {
+    public static UnifyHandler create(UnifyConfig config, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagOwnerships tagOwnerships) {
         var modPriorities = config.getModPriorities();
         var unifyTags = config.getBakedTags();
-        var stoneStrata = StoneStrataLookupImpl.create(config.getStoneStrata(), tags);
+        var stoneVariantLookup = StoneVariantLookupImpl.create(config.getStoneVariants(), itemTags, blockTags);
 
         var lookupBuilder = new UnifyLookupImpl.Builder();
-        tags.forEach((tag, holders) -> {
+        itemTags.forEach((tag, holders) -> {
             if (!unifyTags.contains(tag)) {
                 return;
             }
@@ -57,7 +58,7 @@ public final class UnifyHandlerImpl implements UnifyHandler {
         return new UnifyHandlerImpl(
                 config.getName(),
                 modPriorities,
-                lookupBuilder.build(modPriorities, stoneStrata, tagOwnerships),
+                lookupBuilder.build(modPriorities, stoneVariantLookup, tagOwnerships),
                 config.getIgnoredRecipes(),
                 config.getIgnoredRecipeTypes(),
                 config.getIgnoredLootTables(),
