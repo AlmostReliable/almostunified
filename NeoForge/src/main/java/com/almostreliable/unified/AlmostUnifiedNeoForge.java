@@ -5,6 +5,7 @@ import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.recipe.ClientRecipeTracker;
 import com.almostreliable.unified.utils.Utils;
 import com.almostreliable.unified.worldgen.WorldGenBiomeModifier;
+import com.almostreliable.unified.worldgen.WorldStripper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -12,6 +13,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.objectweb.asm.Type;
@@ -25,6 +28,8 @@ public class AlmostUnifiedNeoForge {
     public AlmostUnifiedNeoForge(IEventBus eventBus) {
         eventBus.addListener(this::onRegisterEvent);
         eventBus.addListener(this::onCommonSetup);
+        NeoForge.EVENT_BUS.addListener(this::onCommandsRegister);
+        NeoForge.EVENT_BUS.addListener(WorldStripper::onServerTick);
     }
 
     private void onRegisterEvent(RegisterEvent event) {
@@ -49,6 +54,10 @@ public class AlmostUnifiedNeoForge {
         if (event.getRegistryKey() == Registries.RECIPE_TYPE) {
             Registry.register(BuiltInRegistries.RECIPE_TYPE, ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
         }
+    }
+
+    private void onCommandsRegister(RegisterCommandsEvent event) {
+        AlmostUnifiedCommands.registerCommands(event.getDispatcher());
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
