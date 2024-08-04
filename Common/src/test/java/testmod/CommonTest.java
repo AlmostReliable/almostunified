@@ -2,8 +2,8 @@ package testmod;
 
 import testmod.gametest_core.GameTestLoader;
 import testmod.tests.*;
-import testmod.tests.core.OwnershipTests;
 import testmod.tests.core.TagInheritanceTests;
+import testmod.tests.core.TagSubstitutionTests;
 
 public class CommonTest {
 
@@ -17,7 +17,7 @@ public class CommonTest {
                     ShapedRecipeUnifierTests.class,
                     SmithingRecipeUnifierTest.class,
                     GregTechModernRecipeUnifierTests.class,
-                    OwnershipTests.class,
+                    TagSubstitutionTests.class,
                     TagInheritanceTests.class,
                     LootUnificationTests.class
             );

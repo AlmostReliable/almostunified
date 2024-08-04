@@ -19,16 +19,16 @@ public class UnifyLookupImpl implements UnifyLookup {
 
     private final ModPriorities modPriorities;
     private final StoneVariantLookup stoneVariantLookup;
-    private final TagOwnerships tagOwnerships;
+    private final TagSubstitutions tagSubstitutions;
     private final Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries;
     private final Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag;
 
-    private UnifyLookupImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries, Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag, StoneVariantLookup stoneVariantLookup, TagOwnerships tagOwnerships) {
+    private UnifyLookupImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries, Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
         this.entries = entries;
         this.idEntriesToTag = idEntriesToTag;
         this.modPriorities = modPriorities;
         this.stoneVariantLookup = stoneVariantLookup;
-        this.tagOwnerships = tagOwnerships;
+        this.tagSubstitutions = tagSubstitutions;
     }
 
     @Override
@@ -113,7 +113,7 @@ public class UnifyLookupImpl implements UnifyLookup {
     @Nullable
     @Override
     public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
-        var tagToLookup = tagOwnerships.getOwner(tag);
+        var tagToLookup = tagSubstitutions.getSubstituteTag(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
         // TODO do we really need a filter way? Maybe have two methods to explicitly check for stone variant
@@ -149,8 +149,8 @@ public class UnifyLookupImpl implements UnifyLookup {
     }
 
     @Override
-    public TagOwnerships getTagOwnerships() {
-        return tagOwnerships;
+    public TagSubstitutions getTagSubstitutions() {
+        return tagSubstitutions;
     }
 
 
@@ -185,7 +185,7 @@ public class UnifyLookupImpl implements UnifyLookup {
             return this;
         }
 
-        public UnifyLookup build(ModPriorities modPriorities, StoneVariantLookup stoneVariantLookup, TagOwnerships tagOwnerships) {
+        public UnifyLookup build(ModPriorities modPriorities, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
             ImmutableMap.Builder<TagKey<Item>, Set<UnifyEntry<Item>>> entries = ImmutableMap.builder();
             ImmutableMap.Builder<ResourceLocation, UnifyEntry<Item>> idEntriesToTag = ImmutableMap.builder();
             this.entries.forEach((t, e) -> {
@@ -200,7 +200,11 @@ public class UnifyLookupImpl implements UnifyLookup {
             });
 
             var map = entries.build();
-            return new UnifyLookupImpl(modPriorities, map, idEntriesToTag.build(), stoneVariantLookup, tagOwnerships);
+            return new UnifyLookupImpl(modPriorities,
+                    map,
+                    idEntriesToTag.build(),
+                    stoneVariantLookup,
+                    tagSubstitutions);
         }
     }
 }

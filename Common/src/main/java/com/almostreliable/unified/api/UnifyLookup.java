@@ -99,5 +99,5 @@ public interface UnifyLookup {
      */
     boolean isItemInUnifiedIngredient(Ingredient ingredient, ItemStack item);
 
-    TagOwnerships getTagOwnerships();
+    TagSubstitutions getTagSubstitutions();
 }

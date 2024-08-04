@@ -26,17 +26,17 @@ public final class TagConfig extends Config {
     public static final TagSerializer SERIALIZER = new TagSerializer();
 
     private final Map<ResourceLocation, Set<ResourceLocation>> customTags;
-    private final Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships;
+    private final Map<ResourceLocation, Set<ResourceLocation>> tagSubstitutions;
     private final TagInheritance.Mode itemTagInheritanceMode;
     private final Map<TagKey<Item>, Set<Pattern>> itemTagInheritance;
     private final TagInheritance.Mode blockTagInheritanceMode;
     private final Map<TagKey<Block>, Set<Pattern>> blockTagInheritance;
     private final boolean emiStrictHiding;
 
-    private TagConfig(Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships, TagInheritance.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritance.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance, boolean emiStrictHiding) {
+    private TagConfig(Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagSubstitutions, TagInheritance.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritance.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance, boolean emiStrictHiding) {
         super(NAME);
         this.customTags = customTags;
-        this.tagOwnerships = tagOwnerships;
+        this.tagSubstitutions = tagSubstitutions;
         this.itemTagInheritanceMode = itemTagInheritanceMode;
         this.itemTagInheritance = itemTagInheritance;
         this.blockTagInheritanceMode = blockTagInheritanceMode;
@@ -55,8 +55,8 @@ public final class TagConfig extends Config {
         return Collections.unmodifiableMap(customTags);
     }
 
-    public Map<ResourceLocation, Set<ResourceLocation>> getTagOwnerships() {
-        return Collections.unmodifiableMap(tagOwnerships);
+    public Map<ResourceLocation, Set<ResourceLocation>> getTagSubstitutions() {
+        return Collections.unmodifiableMap(tagSubstitutions);
     }
 
     public boolean isEmiHidingStrict() {
@@ -66,7 +66,7 @@ public final class TagConfig extends Config {
     public static final class TagSerializer extends Config.Serializer<TagConfig> {
 
         private static final String CUSTOM_TAGS = "custom_tags";
-        private static final String TAG_OWNERSHIPS = "tag_ownerships";
+        private static final String TAG_SUBSTITUTIONS = "tag_substitutions";
         private static final String ITEM_TAG_INHERITANCE_MODE = "item_tag_inheritance_mode";
         private static final String ITEM_TAG_INHERITANCE = "item_tag_inheritance";
         private static final String BLOCK_TAG_INHERITANCE_MODE = "block_tag_inheritance_mode";
@@ -82,8 +82,9 @@ public final class TagConfig extends Config {
                     e -> ResourceLocation.parse(e.getKey()),
                     ResourceLocation::parse), new HashMap<>());
 
-            Map<ResourceLocation, Set<ResourceLocation>> tagOwnerships = safeGet(() -> JsonUtils.deserializeMapSet(json,
-                    TAG_OWNERSHIPS,
+            Map<ResourceLocation, Set<ResourceLocation>> tagSubstitutions = safeGet(() -> JsonUtils.deserializeMapSet(
+                    json,
+                    TAG_SUBSTITUTIONS,
                     e -> ResourceLocation.parse(e.getKey()),
                     ResourceLocation::parse), new HashMap<>());
 
@@ -104,7 +105,7 @@ public final class TagConfig extends Config {
 
             return new TagConfig(
                     customTags,
-                    tagOwnerships,
+                    tagSubstitutions,
                     itemTagInheritanceMode,
                     itemTagInheritance,
                     blockTagInheritanceMode,
@@ -124,12 +125,12 @@ public final class TagConfig extends Config {
             });
             json.add(CUSTOM_TAGS, customTags);
 
-            JsonObject tagOwnerships = new JsonObject();
-            config.tagOwnerships.forEach((parent, child) -> {
-                tagOwnerships.add(parent.toString(),
+            JsonObject tagSubstitutions = new JsonObject();
+            config.tagSubstitutions.forEach((parent, child) -> {
+                tagSubstitutions.add(parent.toString(),
                         JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
             });
-            json.add(TAG_OWNERSHIPS, tagOwnerships);
+            json.add(TAG_SUBSTITUTIONS, tagSubstitutions);
 
             JsonObject itemTagInheritance = new JsonObject();
             config.itemTagInheritance.forEach((tag, patterns) -> {

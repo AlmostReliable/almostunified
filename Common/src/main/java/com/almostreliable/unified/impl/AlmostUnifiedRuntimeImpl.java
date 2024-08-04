@@ -16,16 +16,16 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
     private final Collection<? extends UnifyHandler> unifyHandlers;
     private final RecipeUnifierRegistry recipeUnifierRegistry;
-    private final TagOwnerships tagOwnerships;
+    private final TagSubstitutions tagSubstitutions;
     private final Placeholders placeholders;
     private final UnifyLookup compositeUnifyLookup;
 
-    public AlmostUnifiedRuntimeImpl(Collection<? extends UnifyHandler> unifyHandlers, RecipeUnifierRegistry recipeUnifierRegistry, TagOwnerships tagOwnerships, Placeholders placeholders) {
+    public AlmostUnifiedRuntimeImpl(Collection<? extends UnifyHandler> unifyHandlers, RecipeUnifierRegistry recipeUnifierRegistry, TagSubstitutions tagSubstitutions, Placeholders placeholders) {
         this.unifyHandlers = unifyHandlers;
         this.recipeUnifierRegistry = recipeUnifierRegistry;
-        this.tagOwnerships = tagOwnerships;
+        this.tagSubstitutions = tagSubstitutions;
         this.placeholders = placeholders;
-        this.compositeUnifyLookup = new CompositeUnifyLookup(unifyHandlers, tagOwnerships);
+        this.compositeUnifyLookup = new CompositeUnifyLookup(unifyHandlers, tagSubstitutions);
     }
 
     @Override
@@ -63,8 +63,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
     }
 
     @Override
-    public TagOwnerships getTagOwnerships() {
-        return tagOwnerships;
+    public TagSubstitutions getTagSubstitutions() {
+        return tagSubstitutions;
     }
 
     @Override

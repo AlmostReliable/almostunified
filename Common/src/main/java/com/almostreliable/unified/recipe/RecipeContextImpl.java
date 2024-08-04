@@ -124,9 +124,9 @@ public class RecipeContextImpl implements RecipeContext {
     public boolean unifyTagInput(JsonObject json) {
         if (json.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
             var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(primitive.getAsString()));
-            var ownerTag = unifyLookup.getTagOwnerships().getOwner(tag);
-            if (ownerTag != null) {
-                json.addProperty(RecipeConstants.TAG, ownerTag.location().toString());
+            var substituteTag = unifyLookup.getTagSubstitutions().getSubstituteTag(tag);
+            if (substituteTag != null) {
+                json.addProperty(RecipeConstants.TAG, substituteTag.location().toString());
                 return true;
             }
         }

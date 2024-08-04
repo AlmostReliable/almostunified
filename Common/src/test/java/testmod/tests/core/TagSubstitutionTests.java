@@ -16,16 +16,16 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OwnershipTests {
+public class TagSubstitutionTests {
 
     /**
      * See `tags.json` test config.
      * mod_a:silver_ore and mod_b:silver_ore both have the tag `c:ores/silver`, while mod_c:silver_ore only has the `c:silver_ores` tag.
      * <p>
-     * Through the ownership system, we tell AU that `c:ores/silver` should own `c:silver_ores`. Which will result into mod_c:silver_ore is now part of `c:ores/silver`
+     * Through the substitution system, we tell AU that `c:ores/silver` should own `c:silver_ores`. Which will result into mod_c:silver_ore is now part of `c:ores/silver`
      */
     @SimpleGameTest
-    public void checkSilverOwnerships() {
+    public void checkSilverSubstitutions() {
         ResourceLocation silverOreId = ResourceLocation.parse("mod_c:silver_ore");
         Item item = BuiltInRegistries.ITEM.get(silverOreId);
         Set<TagKey<Item>> itemTags = item.builtInRegistryHolder().tags().collect(Collectors.toSet());

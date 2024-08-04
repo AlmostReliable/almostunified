@@ -1,6 +1,6 @@
 {
   "custom_tags": {},
-  "tag_ownerships": {
+  "tag_substitutions": {
     "c:ores/silver": [
       "c:silver_ores"
     ]

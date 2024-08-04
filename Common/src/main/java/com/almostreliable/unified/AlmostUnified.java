@@ -4,7 +4,7 @@ import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.config.*;
 import com.almostreliable.unified.impl.AlmostUnifiedRuntimeImpl;
 import com.almostreliable.unified.impl.TagInheritance;
-import com.almostreliable.unified.impl.TagOwnershipsImpl;
+import com.almostreliable.unified.impl.TagSubstitutionsImpl;
 import com.almostreliable.unified.impl.UnifyHandlerImpl;
 import com.almostreliable.unified.loot.LootUnification;
 import com.almostreliable.unified.recipe.RecipeUnifyHandler;
@@ -56,17 +56,28 @@ public final class AlmostUnified {
         // TODO: add plugin support for registering config defaults
 
         TagReloadHandler.applyCustomTags(tagConfig.getCustomTags(), itemTags);
-        TagOwnershipsImpl tagOwnerships = new TagOwnershipsImpl(allUnifyTags::contains, tagConfig.getTagOwnerships());
-        tagOwnerships.applyOwnerships(itemTags);
+        TagSubstitutionsImpl tagSubstitutions = TagSubstitutionsImpl.create(
+                itemTags::has,
+                allUnifyTags::contains,
+                tagConfig.getTagSubstitutions()
+        );
+        tagSubstitutions.apply(itemTags);
 
-        List<UnifyHandler> unifyHandlers = createAndPrepareUnifyHandlers(itemTags,
+        List<UnifyHandler> unifyHandlers = createAndPrepareUnifyHandlers(
+                itemTags,
                 blockTags,
                 unifyConfigs,
-                tagOwnerships,
-                tagConfig.getTagInheritance());
+                tagSubstitutions,
+                tagConfig.getTagInheritance()
+        );
         ItemHider.applyHideTags(itemTags, unifyHandlers, tagConfig.isEmiHidingStrict());
 
-        RUNTIME = new AlmostUnifiedRuntimeImpl(unifyHandlers, recipeUnifierRegistry, tagOwnerships, placeholderConfig);
+        RUNTIME = new AlmostUnifiedRuntimeImpl(
+                unifyHandlers,
+                recipeUnifierRegistry,
+                tagSubstitutions,
+                placeholderConfig
+        );
     }
 
     private static void logMissingPriorityMods(Collection<UnifyConfig> unifyConfigs) {
@@ -89,18 +100,18 @@ public final class AlmostUnified {
      * <p>
      * This method also applies tag inheritance. If tag inheritance was applied, all handlers will be rebuilt due to tag inheritance modifications against vanilla tags.
      *
-     * @param itemTags       All existing item tags which are used ingame
-     * @param blockTags      All existing block tags which are used ingame
-     * @param unifyConfigs   All unify configs
-     * @param tagOwnerships  All tag ownerships
-     * @param tagInheritance Tag inheritance data
+     * @param itemTags         All existing item tags which are used ingame
+     * @param blockTags        All existing block tags which are used ingame
+     * @param unifyConfigs     All unify configs
+     * @param tagSubstitutions All tag substitutions
+     * @param tagInheritance   Tag inheritance data
      * @return All unify handlers
      */
-    private static List<UnifyHandler> createAndPrepareUnifyHandlers(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnifyConfig> unifyConfigs, TagOwnershipsImpl tagOwnerships, TagInheritance tagInheritance) {
-        List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, blockTags, tagOwnerships);
+    private static List<UnifyHandler> createAndPrepareUnifyHandlers(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnifyConfig> unifyConfigs, TagSubstitutionsImpl tagSubstitutions, TagInheritance tagInheritance) {
+        List<UnifyHandler> unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, blockTags, tagSubstitutions);
         var needsRebuild = tagInheritance.apply(itemTags, blockTags, unifyHandlers);
         if (needsRebuild) {
-            unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, blockTags, tagOwnerships);
+            unifyHandlers = UnifyHandlerImpl.create(unifyConfigs, itemTags, blockTags, tagSubstitutions);
         }
 
         return unifyHandlers;

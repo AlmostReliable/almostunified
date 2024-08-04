@@ -2,7 +2,7 @@ package testmod;
 
 import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.StoneVariantLookup;
-import com.almostreliable.unified.api.TagOwnerships;
+import com.almostreliable.unified.api.TagSubstitutions;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
@@ -53,21 +53,21 @@ public class TestUtils {
         }
     };
 
-    public static final TagOwnerships EMPTY_TAG_OWNERSHIPS = new TagOwnerships() {
+    public static final TagSubstitutions EMPTY_TAG_SUBSTITUTIONS = new TagSubstitutions() {
 
         @Nullable
         @Override
-        public TagKey<Item> getOwner(TagKey<Item> referenceTag) {
+        public TagKey<Item> getSubstituteTag(TagKey<Item> referenceTag) {
             return null;
         }
 
         @Override
-        public Collection<TagKey<Item>> getRefs(TagKey<Item> ownerTag) {
+        public Collection<TagKey<Item>> getReferenceTags(TagKey<Item> substituteTag) {
             return List.of();
         }
 
         @Override
-        public Set<TagKey<Item>> getRefs() {
+        public Set<TagKey<Item>> getReferenceTags() {
             return Set.of();
         }
     };
@@ -97,7 +97,7 @@ public class TestUtils {
                         ResourceLocation.parse("mekanism:test_item"),
                         ResourceLocation.parse("thermal:test_item"),
                         ResourceLocation.parse("testmod:test_item"))
-                .build(TEST_MOD_PRIORITIES, EMPTY_VARIANT_LOOKUP, EMPTY_TAG_OWNERSHIPS);
+                .build(TEST_MOD_PRIORITIES, EMPTY_VARIANT_LOOKUP, EMPTY_TAG_SUBSTITUTIONS);
     }
 
 

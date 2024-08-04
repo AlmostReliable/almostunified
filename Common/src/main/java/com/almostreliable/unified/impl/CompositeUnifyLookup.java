@@ -1,6 +1,6 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.api.TagOwnerships;
+import com.almostreliable.unified.api.TagSubstitutions;
 import com.almostreliable.unified.api.UnifyEntry;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.CompositeCollection;
@@ -20,13 +20,13 @@ import java.util.function.Predicate;
 public class CompositeUnifyLookup implements UnifyLookup {
 
     private final Iterable<? extends UnifyLookup> unifyLookups;
-    private final TagOwnerships tagOwnerships;
+    private final TagSubstitutions tagSubstitutions;
     @Nullable
     private Collection<TagKey<Item>> unifiedTagsView;
 
-    public CompositeUnifyLookup(Iterable<? extends UnifyLookup> unifyLookups, TagOwnerships tagOwnerships) {
+    public CompositeUnifyLookup(Iterable<? extends UnifyLookup> unifyLookups, TagSubstitutions tagSubstitutions) {
         this.unifyLookups = unifyLookups;
-        this.tagOwnerships = tagOwnerships;
+        this.tagSubstitutions = tagSubstitutions;
     }
 
     @Override
@@ -192,7 +192,7 @@ public class CompositeUnifyLookup implements UnifyLookup {
     }
 
     @Override
-    public TagOwnerships getTagOwnerships() {
-        return tagOwnerships;
+    public TagSubstitutions getTagSubstitutions() {
+        return tagSubstitutions;
     }
 }

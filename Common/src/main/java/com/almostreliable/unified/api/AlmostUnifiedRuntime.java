@@ -18,11 +18,11 @@ public interface AlmostUnifiedRuntime {
     UnifyHandler getUnifyHandler(String name);
 
     /**
-     * Get all available tag ownerships, which are defined by the user in the 'tags.json' config.
+     * Get all available tag substitutions, which are defined by the user in the 'tags.json' config.
      *
-     * @return All tag ownerships
+     * @return All tag substitutions
      */
-    TagOwnerships getTagOwnerships();
+    TagSubstitutions getTagSubstitutions();
 
     /**
      * Get all available placeholders, which are defined by the user in the 'placeholders.json' config.

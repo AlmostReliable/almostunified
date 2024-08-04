@@ -27,14 +27,14 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     private final boolean enableLootUnification;
     private final String name;
 
-    public static List<UnifyHandler> create(Collection<UnifyConfig> configs, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagOwnershipsImpl tagOwnerships) {
+    public static List<UnifyHandler> create(Collection<UnifyConfig> configs, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagSubstitutionsImpl tagSubstitutions) {
         return configs
                 .stream()
-                .map(config -> create(config, itemTags, blockTags, tagOwnerships))
+                .map(config -> create(config, itemTags, blockTags, tagSubstitutions))
                 .toList();
     }
 
-    public static UnifyHandler create(UnifyConfig config, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagOwnerships tagOwnerships) {
+    public static UnifyHandler create(UnifyConfig config, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagSubstitutions tagSubstitutions) {
         var modPriorities = config.getModPriorities();
         var unifyTags = config.getBakedTags();
         var stoneVariantLookup = StoneVariantLookupImpl.create(config.getStoneVariants(), itemTags, blockTags);
@@ -58,7 +58,7 @@ public final class UnifyHandlerImpl implements UnifyHandler {
         return new UnifyHandlerImpl(
                 config.getName(),
                 modPriorities,
-                lookupBuilder.build(modPriorities, stoneVariantLookup, tagOwnerships),
+                lookupBuilder.build(modPriorities, stoneVariantLookup, tagSubstitutions),
                 config.getIgnoredRecipes(),
                 config.getIgnoredRecipeTypes(),
                 config.getIgnoredLootTables(),
@@ -212,8 +212,8 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     }
 
     @Override
-    public TagOwnerships getTagOwnerships() {
-        return unifyLookup.getTagOwnerships();
+    public TagSubstitutions getTagSubstitutions() {
+        return unifyLookup.getTagSubstitutions();
     }
 
 }
