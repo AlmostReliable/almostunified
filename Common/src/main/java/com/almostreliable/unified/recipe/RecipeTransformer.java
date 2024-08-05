@@ -176,9 +176,9 @@ public class RecipeTransformer {
                     continue;
                 }
 
-                RecipeContextImpl ctx = new RecipeContextImpl(handler);
+                UnificationHelperImpl helper = new UnificationHelperImpl(handler);
                 RecipeUnifier unifier = factory.getRecipeUnifier(recipe);
-                unifier.unify(ctx, json);
+                unifier.unify(helper, json);
             }
 
             if (!recipe.getOriginal().equals(recipeCopy)) {

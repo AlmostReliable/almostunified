@@ -1,9 +1,9 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonObject;
 
@@ -19,16 +19,16 @@ public class TheurgyRecipeUnifier implements RecipeUnifier {
     private static final String TARGET = "target";
 
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyInputs(context, recipe);
-        context.unifyInputs(recipe, List.of(MERCURY, SALT, SOLUTE, SOURCES, SULFUR, TARGET));
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unifyInputs(helper, recipe);
+        helper.unifyInputs(recipe, List.of(MERCURY, SALT, SOLUTE, SOURCES, SULFUR, TARGET));
 
         if (recipe.getProperty(RecipeConstants.RESULT) instanceof JsonObject result &&
             result.has(OccultismRecipeUnifier.TYPE)) {
-            OccultismRecipeUnifier.unifyTypedOutput(context, recipe, result);
+            OccultismRecipeUnifier.unifyTypedOutput(helper, recipe, result);
             return;
         }
 
-        GenericRecipeUnifier.INSTANCE.unifyOutputs(context, recipe);
+        GenericRecipeUnifier.INSTANCE.unifyOutputs(helper, recipe);
     }
 }

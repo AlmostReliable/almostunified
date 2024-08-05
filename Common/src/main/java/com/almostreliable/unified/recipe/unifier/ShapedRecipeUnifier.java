@@ -1,8 +1,8 @@
 package com.almostreliable.unified.recipe.unifier;
 
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.google.gson.JsonObject;
 
 public class ShapedRecipeUnifier implements RecipeUnifier {
@@ -11,12 +11,12 @@ public class ShapedRecipeUnifier implements RecipeUnifier {
     public static final String KEY_PROPERTY = "key";
 
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
 
         if (recipe.getProperty(KEY_PROPERTY) instanceof JsonObject json) {
             for (var e : json.entrySet()) {
-                context.unifyBasicInput(e.getValue());
+                helper.unifyBasicInput(e.getValue());
             }
         }
     }

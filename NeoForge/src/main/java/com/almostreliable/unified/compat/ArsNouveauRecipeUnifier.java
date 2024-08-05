@@ -1,9 +1,9 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -15,26 +15,26 @@ public class ArsNouveauRecipeUnifier implements RecipeUnifier {
     private static final String REAGENT = "reagent";
 
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
-        context.unifyInputs(recipe, REAGENT);
-        unifyItemInputs(context, recipe, PEDESTAL_ITEMS);
-        unifyItemInputs(context, recipe, RecipeConstants.INPUT_ITEMS);
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
+        helper.unifyInputs(recipe, REAGENT);
+        unifyItemInputs(helper, recipe, PEDESTAL_ITEMS);
+        unifyItemInputs(helper, recipe, RecipeConstants.INPUT_ITEMS);
     }
 
-    public void unifyItemInputs(RecipeContext context, RecipeJson recipe, String key) {
+    public void unifyItemInputs(UnificationHelper helper, RecipeJson recipe, String key) {
         if (!(recipe.getProperty(key) instanceof JsonArray array)) {
             return;
         }
 
         for (JsonElement element : array) {
-            if (context.unifyBasicInput(element)) {
+            if (helper.unifyBasicInput(element)) {
                 continue;
             }
 
             if (element instanceof JsonObject obj) {
                 JsonElement inner = obj.get(RecipeConstants.ITEM);
-                context.unifyBasicInput(inner);
+                helper.unifyBasicInput(inner);
             }
         }
     }

@@ -11,11 +11,10 @@ import javax.annotation.Nullable;
 /**
  * Helper to aid in recipe unification.
  * <p>
- * An instance of this is passed to {@link RecipeUnifier#unify(RecipeContext, RecipeJson)} to help unifying the given
- * recipe JSON.
+ * An instance of this is passed to {@link RecipeUnifier#unify(UnificationHelper, RecipeJson)} to help unifying the
+ * given recipe JSON.
  */
-// TODO: rename to UnificationHelper or RecipeHelper, replace javax with jetbrains, move packages
-public interface RecipeContext {
+public interface UnificationHelper {
 
     UnifyLookup getLookup();
 

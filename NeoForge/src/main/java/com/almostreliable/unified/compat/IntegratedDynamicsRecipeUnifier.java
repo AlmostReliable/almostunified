@@ -1,9 +1,9 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -15,36 +15,36 @@ public class IntegratedDynamicsRecipeUnifier implements RecipeUnifier {
     private static final String ITEMS = "items";
 
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
 
-        unifyItemInput(context, recipe);
-        context.unifyOutputs(recipe, RecipeConstants.RESULT, true, ITEMS);
-        unifyItemResult(context, recipe);
+        unifyItemInput(helper, recipe);
+        helper.unifyOutputs(recipe, RecipeConstants.RESULT, true, ITEMS);
+        unifyItemResult(helper, recipe);
     }
 
     /**
      * Integrated dynamics allows primitive values for `item` keys in their recipes.
      * AlmostUnified will convert them into JsonObject so that they can be unified to use tags.
      *
-     * @param context the recipe context
-     * @param recipe  the recipe
+     * @param helper the unification helper
+     * @param recipe the recipe
      */
-    private static void unifyItemInput(RecipeContext context, RecipeJson recipe) {
+    private static void unifyItemInput(UnificationHelper helper, RecipeJson recipe) {
         JsonElement element = recipe.getProperty(RecipeConstants.ITEM);
         if (element instanceof JsonPrimitive primitive) {
             JsonObject itemAsObject = new JsonObject();
             itemAsObject.add(RecipeConstants.ITEM, primitive);
-            if (context.unifyBasicInput(itemAsObject)) {
+            if (helper.unifyBasicInput(itemAsObject)) {
                 recipe.setProperty(RecipeConstants.ITEM, itemAsObject);
                 return;
             }
         }
 
-        context.unifyInputs(recipe, RecipeConstants.ITEM);
+        helper.unifyInputs(recipe, RecipeConstants.ITEM);
     }
 
-    private void unifyItemResult(RecipeContext context, RecipeJson recipe) {
+    private void unifyItemResult(UnificationHelper helper, RecipeJson recipe) {
         JsonElement element = recipe.getProperty(RecipeConstants.RESULT);
         if (!(element instanceof JsonObject result)) {
             return;
@@ -55,6 +55,6 @@ public class IntegratedDynamicsRecipeUnifier implements RecipeUnifier {
             return;
         }
 
-        context.unifyBasicOutput(items, true, RecipeConstants.ITEM);
+        helper.unifyBasicOutput(items, true, RecipeConstants.ITEM);
     }
 }

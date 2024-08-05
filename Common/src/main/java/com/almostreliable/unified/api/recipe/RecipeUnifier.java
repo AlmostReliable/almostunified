@@ -20,10 +20,10 @@ import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 public interface RecipeUnifier {
 
     /**
-     * Makes use of the provided {@link RecipeContext} to unify the given {@link RecipeJson}.
+     * Makes use of the provided {@link UnificationHelper} to unify the given {@link RecipeJson}.
      *
-     * @param context the {@link RecipeContext} to aid in the unification
-     * @param recipe  the recipe to unify as raw JSON
+     * @param helper the {@link UnificationHelper} to aid in the unification
+     * @param recipe the recipe to unify as raw JSON
      */
-    void unify(RecipeContext context, RecipeJson recipe);
+    void unify(UnificationHelper helper, RecipeJson recipe);
 }

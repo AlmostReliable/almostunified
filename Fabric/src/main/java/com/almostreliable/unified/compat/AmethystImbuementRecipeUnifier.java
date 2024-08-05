@@ -1,18 +1,18 @@
 package com.almostreliable.unified.compat;
 
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 
 import java.util.List;
 
 public class AmethystImbuementRecipeUnifier implements RecipeUnifier {
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
 
-        context.unifyInputs(recipe,
+        helper.unifyInputs(recipe,
                 List.of("imbueA",
                         "imbueB",
                         "imbueC",
@@ -27,6 +27,6 @@ public class AmethystImbuementRecipeUnifier implements RecipeUnifier {
                         "craftH",
                         "craftI"));
 
-        context.unifyOutputs(recipe, "resultA");
+        helper.unifyOutputs(recipe, "resultA");
     }
 }

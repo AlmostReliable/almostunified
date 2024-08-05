@@ -1,8 +1,8 @@
 package com.almostreliable.unified.compat;
 
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 
 public class MekanismRecipeUnifier implements RecipeUnifier {
@@ -15,15 +15,15 @@ public class MekanismRecipeUnifier implements RecipeUnifier {
     private static final String SECONDARY_OUTPUT = "secondaryOutput";
 
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
 
-        context.unifyInputs(recipe, MAIN_INPUT);
-        context.unifyInputs(recipe, ITEM_INPUT);
-        context.unifyInputs(recipe, EXTRA_INPUT);
+        helper.unifyInputs(recipe, MAIN_INPUT);
+        helper.unifyInputs(recipe, ITEM_INPUT);
+        helper.unifyInputs(recipe, EXTRA_INPUT);
 
-        context.unifyOutputs(recipe, MAIN_OUTPUT);
-        context.unifyOutputs(recipe, ITEM_OUTPUT);
-        context.unifyOutputs(recipe, SECONDARY_OUTPUT);
+        helper.unifyOutputs(recipe, MAIN_OUTPUT);
+        helper.unifyOutputs(recipe, ITEM_OUTPUT);
+        helper.unifyOutputs(recipe, SECONDARY_OUTPUT);
     }
 }

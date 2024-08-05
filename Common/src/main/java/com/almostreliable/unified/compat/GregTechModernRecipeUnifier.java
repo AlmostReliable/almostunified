@@ -1,9 +1,9 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,18 +18,18 @@ public class GregTechModernRecipeUnifier implements RecipeUnifier {
     private static final String CONTENT = "content";
 
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
 
-        doUnify(recipe, RecipeConstants.INPUTS, context::unifyBasicInput);
-        doUnify(recipe, TICK_INPUTS, context::unifyBasicInput);
+        doUnify(recipe, RecipeConstants.INPUTS, helper::unifyBasicInput);
+        doUnify(recipe, TICK_INPUTS, helper::unifyBasicInput);
 
         doUnify(recipe,
                 RecipeConstants.OUTPUTS,
-                json -> context.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
+                json -> helper.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
         doUnify(recipe,
                 TICK_OUTPUTS,
-                json -> context.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
+                json -> helper.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
     }
 
     public void doUnify(RecipeJson recipe, String key, Consumer<JsonObject> callback) {

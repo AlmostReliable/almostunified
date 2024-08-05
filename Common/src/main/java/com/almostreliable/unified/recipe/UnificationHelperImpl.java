@@ -2,8 +2,8 @@ package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @SuppressWarnings("SameParameterValue")
-public class RecipeContextImpl implements RecipeContext {
+public class UnificationHelperImpl implements UnificationHelper {
 
     private static final List<String> DEFAULT_INPUT_DEPTH_LOOKUPS = List.of(
             RecipeConstants.VALUE,
@@ -25,7 +25,7 @@ public class RecipeContextImpl implements RecipeContext {
     );
     private final UnifyLookup unifyLookup;
 
-    public RecipeContextImpl(UnifyLookup unifyLookup) {
+    public UnificationHelperImpl(UnifyLookup unifyLookup) {
         this.unifyLookup = unifyLookup;
     }
 

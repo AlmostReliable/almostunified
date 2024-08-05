@@ -1,9 +1,9 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,8 +20,8 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
     private static final String SLAG = "slag";
 
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
 
         List.of(
                 // alloy recipes, refinery
@@ -33,34 +33,34 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
                 ADDITIVES,
                 // refinery
                 RecipeConstants.CATALYST
-        ).forEach(key -> unifyInputs(context, recipe, key));
+        ).forEach(key -> unifyInputs(helper, recipe, key));
 
         List.of(
                 RecipeConstants.RESULT,
                 RecipeConstants.RESULTS,
                 // arc furnace
                 SLAG
-        ).forEach(key -> context.unifyOutputs(recipe, key, true, RecipeConstants.ITEM, BASE_INGREDIENT));
+        ).forEach(key -> helper.unifyOutputs(recipe, key, true, RecipeConstants.ITEM, BASE_INGREDIENT));
 
-        unifySecondaries(context, recipe);
+        unifySecondaries(helper, recipe);
     }
 
-    public void unifyInputs(RecipeContext context, RecipeJson recipe, String key) {
+    public void unifyInputs(UnificationHelper helper, RecipeJson recipe, String key) {
         if (recipe.getProperty(key) instanceof JsonObject json && json.has(BASE_INGREDIENT)) {
-            if (context.unifyBasicInput(json.get(BASE_INGREDIENT))) {
+            if (helper.unifyBasicInput(json.get(BASE_INGREDIENT))) {
                 return;
             }
         }
 
-        context.unifyInputs(recipe, key);
+        helper.unifyInputs(recipe, key);
     }
 
-    public void unifySecondaries(RecipeContext context, RecipeJson recipe) {
+    public void unifySecondaries(UnificationHelper helper, RecipeJson recipe) {
         JsonElement secondaries = recipe.getProperty(SECONDARIES);
         if (secondaries == null) {
             return;
         }
 
-        context.unifyBasicOutput(secondaries.getAsJsonArray(), true, RecipeConstants.OUTPUT);
+        helper.unifyBasicOutput(secondaries.getAsJsonArray(), true, RecipeConstants.OUTPUT);
     }
 }

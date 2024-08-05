@@ -1,9 +1,9 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.recipe.RecipeConstants;
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonObject;
 
@@ -17,20 +17,20 @@ public class OccultismRecipeUnifier implements RecipeUnifier {
     private static final String STACK = "stack";
 
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unifyInputs(context, recipe);
-        context.unifyInputs(recipe, List.of(ACTIVATION_ITEM, ITEM_TO_USE));
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unifyInputs(helper, recipe);
+        helper.unifyInputs(recipe, List.of(ACTIVATION_ITEM, ITEM_TO_USE));
 
         if (recipe.getProperty(RecipeConstants.RESULT) instanceof JsonObject result && result.has(TYPE)) {
-            unifyTypedOutput(context, recipe, result);
+            unifyTypedOutput(helper, recipe, result);
             return;
         }
 
-        GenericRecipeUnifier.INSTANCE.unifyOutputs(context, recipe);
+        GenericRecipeUnifier.INSTANCE.unifyOutputs(helper, recipe);
     }
 
-    static void unifyTypedOutput(RecipeContext context, RecipeJson recipe, JsonObject result) {
-        context.unifyOutputs(recipe, RecipeConstants.RESULT, true, STACK, RecipeConstants.ID);
+    static void unifyTypedOutput(UnificationHelper helper, RecipeJson recipe, JsonObject result) {
+        helper.unifyOutputs(recipe, RecipeConstants.RESULT, true, STACK, RecipeConstants.ID);
 
         // check if the type is a tag but the entry was converted to an item
         var type = result.get(TYPE).getAsString();

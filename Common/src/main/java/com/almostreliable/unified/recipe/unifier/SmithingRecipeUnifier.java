@@ -15,9 +15,9 @@ public class SmithingRecipeUnifier implements RecipeUnifier {
     public static final String TEMPLATE_PROPERTY = "template";
 
     @Override
-    public void unify(RecipeContext context, RecipeJson recipe) {
-        GenericRecipeUnifier.INSTANCE.unify(context, recipe);
-        context.unifyInputs(recipe, List.of(ADDITION_PROPERTY, BASE_PROPERTY, TEMPLATE_PROPERTY));
+    public void unify(UnificationHelper helper, RecipeJson recipe) {
+        GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
+        helper.unifyInputs(recipe, List.of(ADDITION_PROPERTY, BASE_PROPERTY, TEMPLATE_PROPERTY));
     }
 
     public boolean matches(RecipeData recipe) {

@@ -4,13 +4,13 @@ import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.StoneVariantLookup;
 import com.almostreliable.unified.api.TagSubstitutions;
 import com.almostreliable.unified.api.UnifyLookup;
-import com.almostreliable.unified.api.recipe.RecipeContext;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.impl.UnifyLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
-import com.almostreliable.unified.recipe.RecipeContextImpl;
 import com.almostreliable.unified.recipe.RecipeJsonImpl;
 import com.almostreliable.unified.recipe.RecipeLink;
+import com.almostreliable.unified.recipe.UnificationHelperImpl;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -101,15 +101,15 @@ public class TestUtils {
     }
 
 
-    public static RecipeContext recipeContext() {
-        return new RecipeContextImpl(unifyLookup());
+    public static UnificationHelper recipeHelper() {
+        return new UnificationHelperImpl(unifyLookup());
     }
 
     public static void assertUnify(RecipeUnifier unifier, String jsonActual, String jsonExpected) {
         var recipe = TestUtils.recipe(jsonActual);
         JsonObject copy = recipe.getOriginal().deepCopy();
         var json = new RecipeJsonImpl(recipe.getId(), copy);
-        unifier.unify(recipeContext(), json);
+        unifier.unify(recipeHelper(), json);
         assertNotEquals(recipe.getOriginal(), copy);
 
         var expected = TestUtils.json(jsonExpected);
@@ -120,7 +120,7 @@ public class TestUtils {
         var recipe = TestUtils.recipe(jsonStr);
         JsonObject copy = recipe.getOriginal().deepCopy();
         var json = new RecipeJsonImpl(recipe.getId(), copy);
-        unifier.unify(recipeContext(), json);
+        unifier.unify(recipeHelper(), json);
         assertEquals(recipe.getOriginal(), copy);
 
         var expected = TestUtils.json(jsonStr);
