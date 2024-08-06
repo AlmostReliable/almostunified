@@ -57,17 +57,17 @@ public class TestUtils {
 
         @Nullable
         @Override
-        public TagKey<Item> getSubstituteTag(TagKey<Item> referenceTag) {
+        public TagKey<Item> getSubstituteTag(TagKey<Item> replacedTag) {
             return null;
         }
 
         @Override
-        public Collection<TagKey<Item>> getReferenceTags(TagKey<Item> substituteTag) {
+        public Collection<TagKey<Item>> getReplacedTags(TagKey<Item> substituteTag) {
             return List.of();
         }
 
         @Override
-        public Set<TagKey<Item>> getReferenceTags() {
+        public Set<TagKey<Item>> getReplacedTags() {
             return Set.of();
         }
     };

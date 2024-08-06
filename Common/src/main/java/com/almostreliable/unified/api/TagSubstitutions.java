@@ -10,9 +10,9 @@ import java.util.Set;
 /**
  * Helper for tracking tag substitutions.
  * <p>
- * The tag substitutions system allows to convert tags (reference tags) to other tags (substitute tags).<br>
- * The system copies all entries of the reference tags to their respective substitute tags. After that, it replaces
- * all occurrences of the reference tags with their substitute tags in all recipes.
+ * The tag substitutions system allows to convert tags (replaced tags) to other tags (substitute tags).<br>
+ * The system copies all entries of the replaced tags to their respective substitute tags. After that, it replaces
+ * all occurrences of the replaced tags with their substitute tags in all recipes.
  * <p>
  * Example:<br>
  * If we define the following entry {@code minecraft:logs -> minecraft:planks}, any recipes making use of the tag
@@ -23,27 +23,27 @@ import java.util.Set;
 public interface TagSubstitutions {
 
     /**
-     * Returns the substitute tag for the provided reference tag.
+     * Returns the substitute tag for the provided replaced tag.
      *
-     * @param referenceTag the reference tag to get the substitute for
-     * @return the substitute tag or null if the provided tag is not a valid configured reference tag
+     * @param replacedTag the replaced tag to get the substitute for
+     * @return the substitute tag or null if the provided tag is not a valid configured replaced tag
      */
     @Nullable
-    TagKey<Item> getSubstituteTag(TagKey<Item> referenceTag);
+    TagKey<Item> getSubstituteTag(TagKey<Item> replacedTag);
 
     /**
-     * Returns all reference tags for the provided substitute tag.
+     * Returns all replaced tags for the provided substitute tag.
      *
-     * @param substituteTag the substitute tag to get the reference tags for
-     * @return a collection of all reference tags for the provided substitute tag or an empty collection if the
+     * @param substituteTag the substitute tag to get the replaced tags for
+     * @return a collection of all replaced tags for the provided substitute tag or an empty collection if the
      * provided tag is not a valid configured substitute tag
      */
-    Collection<TagKey<Item>> getReferenceTags(TagKey<Item> substituteTag);
+    Collection<TagKey<Item>> getReplacedTags(TagKey<Item> substituteTag);
 
     /**
-     * Returns all valid configured reference tags for all substitute tags.
+     * Returns all valid configured replaced tags for all substitute tags.
      *
-     * @return a collection of all valid configured reference tags
+     * @return a collection of all valid configured replaced tags
      */
-    Set<TagKey<Item>> getReferenceTags();
+    Set<TagKey<Item>> getReplacedTags();
 }

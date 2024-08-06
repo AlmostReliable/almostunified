@@ -19,19 +19,19 @@ import java.util.stream.Collectors;
 
 public final class TagSubstitutionsImpl implements TagSubstitutions {
 
-    private final Map<TagKey<Item>, TagKey<Item>> referencesToSubstitutes;
-    private final Multimap<TagKey<Item>, TagKey<Item>> substitutesToReferences;
+    private final Map<TagKey<Item>, TagKey<Item>> replacedToSubstitute;
+    private final Multimap<TagKey<Item>, TagKey<Item>> substituteToReplaced;
 
-    private TagSubstitutionsImpl(Map<TagKey<Item>, TagKey<Item>> referencesToSubstitutes, Multimap<TagKey<Item>, TagKey<Item>> substitutesToReferences) {
-        this.referencesToSubstitutes = referencesToSubstitutes;
-        this.substitutesToReferences = substitutesToReferences;
+    private TagSubstitutionsImpl(Map<TagKey<Item>, TagKey<Item>> replacedToSubstitute, Multimap<TagKey<Item>, TagKey<Item>> substituteToReplaced) {
+        this.replacedToSubstitute = replacedToSubstitute;
+        this.substituteToReplaced = substituteToReplaced;
     }
 
     /**
      * Creates a new tag substitutions instance that contains immutable maps of all tag substitution relationships.
      * <p>
-     * It is ensured that all substitute tags are unify tags and that all reference tags are not unify tags.<br>
-     * Since substitute tags have to be unify tags, it is ensured that they are valid and exist in the game. Reference
+     * This method ensures that all substitute tags are unify tags and that all replaced tags are not unify tags.<br>
+     * Since substitute tags have to be unify-tags, it is ensured that they are valid and exist in the game. Replaced
      * tags still need to be validated.
      *
      * @param validTagFilter        a filter that defines which tags are valid tags and exist in the game
@@ -42,51 +42,51 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
     public static TagSubstitutionsImpl create(Predicate<TagKey<Item>> validTagFilter, Predicate<TagKey<Item>> unifyTagFilter, Map<ResourceLocation, Set<ResourceLocation>> configuredSubstitutes) {
         ImmutableMap.Builder<TagKey<Item>, TagKey<Item>> refsToSubsBuilder = ImmutableMap.builder();
         ImmutableMultimap.Builder<TagKey<Item>, TagKey<Item>> subsToRefsBuilder = ImmutableMultimap.builder();
-        Set<TagKey<Item>> invalidReferenceTags = new HashSet<>();
-        Set<TagKey<Item>> unifyReferenceTags = new HashSet<>();
+        Set<TagKey<Item>> invalidReplacedTags = new HashSet<>();
+        Set<TagKey<Item>> unifyReplacedTags = new HashSet<>();
 
-        configuredSubstitutes.forEach((rawSubstituteTag, rawReferenceTags) -> {
-            for (ResourceLocation rawReferenceTag : rawReferenceTags) {
+        configuredSubstitutes.forEach((rawSubstituteTag, rawReplacedTags) -> {
+            for (ResourceLocation rawReplacedTag : rawReplacedTags) {
                 var substituteTag = TagKey.create(Registries.ITEM, rawSubstituteTag);
-                var referenceTag = TagKey.create(Registries.ITEM, rawReferenceTag);
+                var replacedTag = TagKey.create(Registries.ITEM, rawReplacedTag);
 
                 if (!unifyTagFilter.test(substituteTag)) {
                     AlmostUnified.LOGGER.warn(
                             "[TagSubstitutions] Substitute tag '#{}' is not configured as a unify tag! Config entry '#{} -> {}' will be ignored.",
                             substituteTag.location(),
                             substituteTag.location(),
-                            rawReferenceTags.stream().map(t -> "#" + t).collect(Collectors.joining(", "))
+                            rawReplacedTags.stream().map(t -> "#" + t).collect(Collectors.joining(", "))
                     );
-                    return; // don't check other reference tags if the substitute tag is invalid
+                    return; // don't check other replaced tags if the substitute tag is invalid
                 }
 
-                if (!validTagFilter.test(referenceTag)) {
-                    invalidReferenceTags.add(referenceTag);
-                    continue; // only skip the current invalid reference tag
+                if (!validTagFilter.test(replacedTag)) {
+                    invalidReplacedTags.add(replacedTag);
+                    continue; // only skip the current invalid replaced tag
                 }
 
-                if (unifyTagFilter.test(referenceTag)) {
-                    unifyReferenceTags.add(referenceTag);
-                    continue; // only skip the current invalid reference tag
+                if (unifyTagFilter.test(replacedTag)) {
+                    unifyReplacedTags.add(replacedTag);
+                    continue; // only skip the current invalid replaced tag
                 }
 
-                refsToSubsBuilder.put(referenceTag, substituteTag);
-                subsToRefsBuilder.put(substituteTag, referenceTag);
+                refsToSubsBuilder.put(replacedTag, substituteTag);
+                subsToRefsBuilder.put(substituteTag, replacedTag);
             }
 
-            if (!invalidReferenceTags.isEmpty()) {
+            if (!invalidReplacedTags.isEmpty()) {
                 AlmostUnified.LOGGER.warn(
-                        "[TagSubstitutions] Substitute tag '#{}' contains invalid reference tags! Affected tags: {}",
+                        "[TagSubstitutions] Substitute tag '#{}' contains invalid replaced tags! Affected tags: {}",
                         rawSubstituteTag,
-                        invalidReferenceTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
+                        invalidReplacedTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
                 );
             }
 
-            if (!unifyReferenceTags.isEmpty()) {
+            if (!unifyReplacedTags.isEmpty()) {
                 AlmostUnified.LOGGER.warn(
-                        "[TagSubstitutions] Substitute tag '#{}' contains reference tags that are configured as unify tags! Affected tags: {}",
+                        "[TagSubstitutions] Substitute tag '#{}' contains replaced tags that are configured as unify tags! Affected tags: {}",
                         rawSubstituteTag,
-                        unifyReferenceTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
+                        unifyReplacedTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
                 );
             }
         });
@@ -102,12 +102,12 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
     public void apply(VanillaTagWrapper<Item> itemTags) {
         Multimap<ResourceLocation, ResourceLocation> changedTags = HashMultimap.create();
 
-        substitutesToReferences.asMap().forEach((substituteTag, referenceTags) -> {
-            for (var referenceTag : referenceTags) {
-                var referenceHolders = itemTags.get(referenceTag.location());
-                for (var referenceHolder : referenceHolders) {
-                    itemTags.add(substituteTag.location(), referenceHolder);
-                    referenceHolder
+        substituteToReplaced.asMap().forEach((substituteTag, replacedTags) -> {
+            for (var replacedTag : replacedTags) {
+                var replacedTagHolders = itemTags.get(replacedTag.location());
+                for (var replacedTagHolder : replacedTagHolders) {
+                    itemTags.add(substituteTag.location(), replacedTagHolder);
+                    replacedTagHolder
                             .unwrapKey()
                             .ifPresent(key -> changedTags.put(substituteTag.location(), key.location()));
                 }
@@ -115,7 +115,7 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
         });
 
         changedTags.asMap().forEach((tag, entries) -> AlmostUnified.LOGGER.info(
-                "[TagSubstitutions] Added reference tag items to substitute tag '#{}'. Added items: {}",
+                "[TagSubstitutions] Added items of replaced tags to substitute tag '#{}'. Added items: {}",
                 tag,
                 entries
         ));
@@ -124,17 +124,17 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
 
     @Override
     @Nullable
-    public TagKey<Item> getSubstituteTag(TagKey<Item> referenceTag) {
-        return referencesToSubstitutes.get(referenceTag);
+    public TagKey<Item> getSubstituteTag(TagKey<Item> replacedTag) {
+        return replacedToSubstitute.get(replacedTag);
     }
 
     @Override
-    public Collection<TagKey<Item>> getReferenceTags(TagKey<Item> substituteTag) {
-        return Collections.unmodifiableCollection(substitutesToReferences.get(substituteTag));
+    public Collection<TagKey<Item>> getReplacedTags(TagKey<Item> substituteTag) {
+        return Collections.unmodifiableCollection(substituteToReplaced.get(substituteTag));
     }
 
     @Override
-    public Set<TagKey<Item>> getReferenceTags() {
-        return referencesToSubstitutes.keySet();
+    public Set<TagKey<Item>> getReplacedTags() {
+        return replacedToSubstitute.keySet();
     }
 }
