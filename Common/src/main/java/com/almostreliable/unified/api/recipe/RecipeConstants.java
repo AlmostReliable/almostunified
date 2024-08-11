@@ -1,5 +1,7 @@
 package com.almostreliable.unified.api.recipe;
 
+import java.util.Set;
+
 @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public interface RecipeConstants {
 
@@ -24,4 +26,29 @@ public interface RecipeConstants {
     String VALUE = "value";
     String BASE = "base";
     String ID = "id";
+
+    // defaults
+    String[] DEFAULT_INPUT_KEYS = {
+            INPUT,
+            INPUTS,
+            INGREDIENT,
+            INGREDIENTS,
+            INPUT_ITEMS
+    };
+    String[] DEFAULT_INPUT_INNER_KEYS = {
+            VALUE,
+            BASE,
+            INGREDIENT
+    };
+    Set<String> DEFAULT_OUTPUT_KEYS = Set.of(
+            OUTPUT,
+            OUTPUTS,
+            RESULT,
+            RESULTS,
+            OUTPUT_ITEMS
+    );
+    String[] DEFAULT_OUTPUT_INNER_KEYS = {
+            ITEM,
+            INGREDIENT
+    };
 }

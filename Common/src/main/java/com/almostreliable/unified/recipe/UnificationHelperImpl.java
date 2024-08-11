@@ -4,6 +4,7 @@ import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.UnificationHelper;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,16 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
-@SuppressWarnings("SameParameterValue")
 public class UnificationHelperImpl implements UnificationHelper {
 
-    private static final List<String> DEFAULT_INPUT_DEPTH_LOOKUPS = List.of(
-            RecipeConstants.VALUE,
-            RecipeConstants.BASE,
-            RecipeConstants.INGREDIENT
-    );
     private final UnifyLookup unifyLookup;
 
     public UnificationHelperImpl(UnifyLookup unifyLookup) {
@@ -35,224 +29,196 @@ public class UnificationHelperImpl implements UnificationHelper {
     }
 
     @Override
-    public void unifyInputs(RecipeJson recipe, String recipeKey) {
-        var element = recipe.getProperty(recipeKey);
-        if (element != null) {
-            unifyBasicInput(element);
-        }
-    }
-
-    @Override
-    public void unifyInputs(RecipeJson recipe, Iterable<String> recipeKeys) {
-        for (String recipeKey : recipeKeys) {
-            unifyInputs(recipe, recipeKey);
-        }
-    }
-
-    @Override
-    public boolean unifyBasicInput(JsonElement jsonElement, Iterable<String> depthInputLookups) {
-        if (jsonElement instanceof JsonArray array) {
-            return unifySimpleInputs(array, depthInputLookups);
-        }
-
-        if (jsonElement instanceof JsonObject object) {
-            return unifySimpleInputs(object, depthInputLookups);
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean unifyBasicInput(JsonElement jsonElement) {
-        return unifyBasicInput(jsonElement, DEFAULT_INPUT_DEPTH_LOOKUPS);
-    }
-
-    @Override
-    public boolean unifySimpleInputs(JsonArray json, Iterable<String> depthInputLookups) {
+    public boolean unifyInputs(RecipeJson recipe, String... keys) {
+        Preconditions.checkArgument(keys.length > 0, "at least one key is required");
         boolean changed = false;
 
-        for (JsonElement element : json) {
-            changed |= unifyBasicInput(element, depthInputLookups);
-        }
-
-        return changed;
-    }
-
-    @Override
-    public boolean unifySimpleInputs(JsonArray json) {
-        return unifySimpleInputs(json, DEFAULT_INPUT_DEPTH_LOOKUPS);
-    }
-
-    @Override
-    public boolean unifySimpleInputs(JsonObject json, Iterable<String> depthInputLookups) {
-        boolean changed = false;
-
-        for (String key : depthInputLookups) {
-            var element = json.get(key);
-            if (element != null) {
-                changed |= unifyBasicInput(element);
-            }
-        }
-
-        changed |= unifyTagInput(json);
-        changed |= unifyItemInput(json);
-
-        return changed;
-    }
-
-    @Override
-    public boolean unifySimpleInputs(JsonObject json) {
-        return unifySimpleInputs(json, DEFAULT_INPUT_DEPTH_LOOKUPS);
-    }
-
-    @Override
-    public boolean unifyItemInput(JsonObject json) {
-        if (json.get(RecipeConstants.ITEM) instanceof JsonPrimitive primitive) {
-            ResourceLocation item = ResourceLocation.parse(primitive.getAsString());
-            var tag = getLookup().getPreferredTagForItem(item);
-            if (tag != null) {
-                json.remove(RecipeConstants.ITEM);
-                json.addProperty(RecipeConstants.TAG, tag.location().toString());
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean unifyTagInput(JsonObject json) {
-        if (json.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
-            var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(primitive.getAsString()));
-            var substituteTag = unifyLookup.getTagSubstitutions().getSubstituteTag(tag);
-            if (substituteTag != null) {
-                json.addProperty(RecipeConstants.TAG, substituteTag.location().toString());
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public void unifyOutputs(RecipeJson recipe, String recipeKey) {
-        unifyOutputs(recipe, true, recipeKey);
-    }
-
-    @Override
-    public void unifyOutputs(RecipeJson recipe, Iterable<String> recipeKeys) {
-        for (String recipeKey : recipeKeys) {
-            unifyOutputs(recipe, recipeKey);
-        }
-    }
-
-    @Override
-    public void unifyOutputs(RecipeJson recipe, String recipeKey, boolean unifyTagToItems, String... nestedLookupKeys) {
-        var element = recipe.getProperty(recipeKey);
-        if (element == null) return;
-
-        if (element instanceof JsonPrimitive primitive) {
-            var replacement = createOutputReplacement(primitive);
-            if (replacement != null) {
-                recipe.setProperty(recipeKey, replacement);
-            }
-
-            return;
-        }
-
-        unifyBasicOutput(element, unifyTagToItems, nestedLookupKeys);
-    }
-
-    @Override
-    public void unifyOutputs(RecipeJson recipe, boolean unifyTagToItems, String... keys) {
         for (String key : keys) {
-            unifyOutputs(recipe, key, unifyTagToItems, RecipeConstants.ID, RecipeConstants.ITEM);
-        }
-    }
+            JsonElement jsonElement = recipe.getProperty(key);
+            if (jsonElement == null) continue;
 
-    @Override
-    public boolean unifyBasicOutput(JsonObject json, boolean unifyTagToItems, String... lookupKeys) {
-        boolean changed = false;
-
-        for (String lookupKey : lookupKeys) {
-            var element = json.get(lookupKey);
-            if (element == null) continue;
-
-            if (element instanceof JsonPrimitive primitive) {
-                var replacement = createOutputReplacement(primitive);
-                if (replacement != null) {
-                    json.add(lookupKey, replacement);
-                    changed = true;
-                }
-
-                continue;
-            }
-
-            if (unifyBasicOutput(element, unifyTagToItems, lookupKeys)) {
-                changed = true;
-            }
-        }
-
-        if (unifyTagToItems && json.get(RecipeConstants.TAG) instanceof JsonPrimitive primitive) {
-            var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(primitive.getAsString()));
-            var entry = getLookup().getPreferredEntryForTag(tag);
-            if (entry != null) {
-                json.remove(RecipeConstants.TAG);
-                json.addProperty(RecipeConstants.ID, entry.id().toString());
-                changed = true;
-            }
+            changed |= unifyInputElement(jsonElement);
         }
 
         return changed;
     }
 
     @Override
-    public boolean unifyBasicOutput(JsonArray json, boolean unifyTagToItems, String... lookupKeys) {
+    public boolean unifyInputElement(JsonElement jsonElement, String... keys) {
+        return switch (jsonElement) {
+            case JsonArray jsonArray -> unifyInputArray(jsonArray, keys);
+            case JsonObject jsonObject -> unifyInputObject(jsonObject, keys);
+            default -> false;
+        };
+    }
+
+    @Override
+    public boolean unifyInputArray(JsonArray jsonArray, String... keys) {
         boolean changed = false;
 
-        for (int i = 0; i < json.size(); i++) {
-            var element = json.get(i);
-            if (element == null) continue;
-
-            if (element instanceof JsonPrimitive primitive) {
-                var replacement = createOutputReplacement(primitive);
-                if (replacement != null) {
-                    json.set(i, replacement);
-                    changed = true;
-                }
-
-                continue;
-            }
-
-            if (unifyBasicOutput(element, unifyTagToItems, lookupKeys)) {
-                changed = true;
-            }
+        for (JsonElement jsonElement : jsonArray) {
+            changed |= unifyInputElement(jsonElement, keys);
         }
 
         return changed;
     }
 
-    private boolean unifyBasicOutput(JsonElement json, boolean tagLookup, String... lookupKeys) {
-        if (json instanceof JsonObject obj) {
-            return unifyBasicOutput(obj, tagLookup, lookupKeys);
+    @Override
+    public boolean unifyInputObject(JsonObject jsonObject, String... keys) {
+        boolean changed = false;
+
+        for (String key : keys.length == 0 ? RecipeConstants.DEFAULT_INPUT_INNER_KEYS : keys) {
+            var jsonElement = jsonObject.get(key);
+            if (jsonElement == null) continue;
+
+            changed |= unifyInputElement(jsonElement);
         }
 
-        if (json instanceof JsonArray arr) {
-            return unifyBasicOutput(arr, tagLookup, lookupKeys);
+        changed |= unifyInputTag(jsonObject);
+        changed |= unifyInputItem(jsonObject);
+
+        return changed;
+    }
+
+    @Override
+    public boolean unifyInputTag(JsonObject jsonObject) {
+        if (!(jsonObject.get(RecipeConstants.TAG) instanceof JsonPrimitive jsonPrimitive)) return false;
+
+        var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(jsonPrimitive.getAsString()));
+        var substituteTag = unifyLookup.getTagSubstitutions().getSubstituteTag(tag);
+        if (substituteTag == null) return false;
+
+        jsonObject.addProperty(RecipeConstants.TAG, substituteTag.location().toString());
+        return true;
+    }
+
+    // TODO: add ignore list for recipes that should not have its inputs converted to tags
+    @Override
+    public boolean unifyInputItem(JsonObject jsonObject) {
+        if (!(jsonObject.get(RecipeConstants.ITEM) instanceof JsonPrimitive jsonPrimitive)) return false;
+
+        ResourceLocation item = ResourceLocation.parse(jsonPrimitive.getAsString());
+        var tag = unifyLookup.getPreferredTagForItem(item);
+        if (tag != null) {
+            jsonObject.remove(RecipeConstants.ITEM);
+            jsonObject.addProperty(RecipeConstants.TAG, tag.location().toString());
+            return true;
         }
 
         return false;
+    }
+
+    @Override
+    public boolean unifyOutputs(RecipeJson recipe, String... keys) {
+        return unifyOutputs(recipe, true, keys);
+    }
+
+    @Override
+    public boolean unifyOutputs(RecipeJson recipe, boolean tagsToItems, String... keys) {
+        Preconditions.checkArgument(keys.length > 0, "at least one key is required");
+        boolean changed = false;
+
+        for (String key : keys) {
+            JsonElement jsonElement = recipe.getProperty(key);
+            if (jsonElement == null) continue;
+
+            if (jsonElement instanceof JsonPrimitive jsonPrimitive) {
+                var replacement = handleOutputItemReplacement(jsonPrimitive);
+                if (replacement == null) continue;
+                recipe.setProperty(key, replacement);
+                changed = true;
+                continue;
+            }
+
+            changed |= unifyOutputElement(jsonElement, tagsToItems);
+        }
+
+        return changed;
+    }
+
+    @Override
+    public boolean unifyOutputElement(JsonElement json, boolean tagsToItems, String... keys) {
+        return switch (json) {
+            case JsonArray jsonArray -> unifyOutputArray(jsonArray, tagsToItems, keys);
+            case JsonObject jsonObject -> unifyOutputObject(jsonObject, tagsToItems, keys);
+            default -> false;
+        };
+    }
+
+    @Override
+    public boolean unifyOutputArray(JsonArray jsonArray, boolean tagsToItems, String... keys) {
+        boolean changed = false;
+
+        for (JsonElement jsonElement : jsonArray) {
+            changed |= unifyOutputElement(jsonElement, tagsToItems, keys);
+        }
+
+        return changed;
+    }
+
+    @Override
+    public boolean unifyOutputObject(JsonObject jsonObject, boolean tagsToItems, String... keys) {
+        boolean changed = false;
+
+        for (String key : keys.length == 0 ? RecipeConstants.DEFAULT_OUTPUT_INNER_KEYS : keys) {
+            var jsonElement = jsonObject.get(key);
+            if (jsonElement == null) continue;
+
+            changed |= unifyOutputElement(jsonElement, tagsToItems, keys);
+        }
+
+        changed |= unifyOutputTag(jsonObject, tagsToItems);
+        changed |= unifyOutputItem(jsonObject);
+
+        return changed;
+    }
+
+    @Override
+    public boolean unifyOutputTag(JsonObject jsonObject, boolean tagsToItems) {
+        if (!(jsonObject.get(RecipeConstants.TAG) instanceof JsonPrimitive jsonPrimitive)) return false;
+
+        var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(jsonPrimitive.getAsString()));
+
+        if (tagsToItems) {
+            var entry = unifyLookup.getPreferredEntryForTag(tag);
+            if (entry == null) return false;
+
+            jsonObject.remove(RecipeConstants.TAG);
+            jsonObject.addProperty(RecipeConstants.ID, entry.id().toString());
+            return true;
+        }
+
+        var substituteTag = unifyLookup.getTagSubstitutions().getSubstituteTag(tag);
+        if (substituteTag == null) return false;
+
+        jsonObject.addProperty(RecipeConstants.TAG, substituteTag.location().toString());
+        return true;
+    }
+
+    @Override
+    public boolean unifyOutputItem(JsonObject jsonObject) {
+        boolean changed = unifyOutputItem(jsonObject, RecipeConstants.ITEM);
+        changed |= unifyOutputItem(jsonObject, RecipeConstants.ID);
+        return changed;
+    }
+
+    @Override
+    public boolean unifyOutputItem(JsonObject jsonObject, String key) {
+        if (!(jsonObject.get(key) instanceof JsonPrimitive jsonPrimitive)) return false;
+
+        JsonPrimitive replacement = handleOutputItemReplacement(jsonPrimitive);
+        if (replacement == null) return false;
+
+        jsonObject.addProperty(key, replacement.getAsString());
+        return true;
     }
 
     @Override
     @Nullable
-    public JsonPrimitive createOutputReplacement(JsonPrimitive primitive) {
-        ResourceLocation item = ResourceLocation.parse(primitive.getAsString());
-        var entry = getLookup().getReplacementForItem(item);
-        if (entry == null || entry.id().equals(item)) {
-            return null;
-        }
-
+    public JsonPrimitive handleOutputItemReplacement(JsonPrimitive jsonPrimitive) {
+        ResourceLocation item = ResourceLocation.parse(jsonPrimitive.getAsString());
+        var entry = unifyLookup.getReplacementForItem(item);
+        if (entry == null || entry.id().equals(item)) return null;
         return new JsonPrimitive(entry.id().toString());
     }
 }

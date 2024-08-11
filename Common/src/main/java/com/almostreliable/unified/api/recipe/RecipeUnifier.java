@@ -22,7 +22,7 @@ public interface RecipeUnifier {
     /**
      * Makes use of the provided {@link UnificationHelper} to unify the given {@link RecipeJson}.
      *
-     * @param helper the {@link UnificationHelper} to aid in the unification
+     * @param helper the helper to aid in the unification
      * @param recipe the recipe to unify as raw JSON
      */
     void unify(UnificationHelper helper, RecipeJson recipe);

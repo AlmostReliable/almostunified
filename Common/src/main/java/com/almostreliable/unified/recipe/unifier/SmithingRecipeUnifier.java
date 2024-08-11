@@ -3,8 +3,6 @@ package com.almostreliable.unified.recipe.unifier;
 import com.almostreliable.unified.api.recipe.*;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
-
 public class SmithingRecipeUnifier implements RecipeUnifier {
 
     public static final SmithingRecipeUnifier INSTANCE = new SmithingRecipeUnifier();
@@ -17,7 +15,7 @@ public class SmithingRecipeUnifier implements RecipeUnifier {
     @Override
     public void unify(UnificationHelper helper, RecipeJson recipe) {
         GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
-        helper.unifyInputs(recipe, List.of(ADDITION_PROPERTY, BASE_PROPERTY, TEMPLATE_PROPERTY));
+        helper.unifyInputs(recipe, ADDITION_PROPERTY, BASE_PROPERTY, TEMPLATE_PROPERTY);
     }
 
     public boolean matches(RecipeData recipe) {

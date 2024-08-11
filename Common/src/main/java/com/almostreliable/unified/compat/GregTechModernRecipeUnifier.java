@@ -21,15 +21,15 @@ public class GregTechModernRecipeUnifier implements RecipeUnifier {
     public void unify(UnificationHelper helper, RecipeJson recipe) {
         GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
 
-        doUnify(recipe, RecipeConstants.INPUTS, helper::unifyBasicInput);
-        doUnify(recipe, TICK_INPUTS, helper::unifyBasicInput);
+        doUnify(recipe, RecipeConstants.INPUTS, helper::unifyInputElement);
+        doUnify(recipe, TICK_INPUTS, helper::unifyInputElement);
 
         doUnify(recipe,
                 RecipeConstants.OUTPUTS,
-                json -> helper.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
+                json -> helper.unifyOutputObject(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
         doUnify(recipe,
                 TICK_OUTPUTS,
-                json -> helper.unifyBasicOutput(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
+                json -> helper.unifyOutputObject(json, true, RecipeConstants.ITEM, RecipeConstants.INGREDIENT));
     }
 
     public void doUnify(RecipeJson recipe, String key, Consumer<JsonObject> callback) {

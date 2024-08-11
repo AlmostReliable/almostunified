@@ -35,7 +35,7 @@ public class IntegratedDynamicsRecipeUnifier implements RecipeUnifier {
         if (element instanceof JsonPrimitive primitive) {
             JsonObject itemAsObject = new JsonObject();
             itemAsObject.add(RecipeConstants.ITEM, primitive);
-            if (helper.unifyBasicInput(itemAsObject)) {
+            if (helper.unifyInputElement(itemAsObject)) {
                 recipe.setProperty(RecipeConstants.ITEM, itemAsObject);
                 return;
             }
@@ -55,6 +55,6 @@ public class IntegratedDynamicsRecipeUnifier implements RecipeUnifier {
             return;
         }
 
-        helper.unifyBasicOutput(items, true, RecipeConstants.ITEM);
+        helper.unifyOutputArray(items, true, RecipeConstants.ITEM);
     }
 }

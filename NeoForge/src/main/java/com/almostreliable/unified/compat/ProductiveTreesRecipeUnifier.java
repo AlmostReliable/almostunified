@@ -5,8 +5,6 @@ import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 
-import java.util.List;
-
 public final class ProductiveTreesRecipeUnifier implements RecipeUnifier {
 
     private static final String LEAF_A = "leafA";
@@ -16,7 +14,7 @@ public final class ProductiveTreesRecipeUnifier implements RecipeUnifier {
     @Override
     public void unify(UnificationHelper helper, RecipeJson recipe) {
         GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
-        helper.unifyInputs(recipe, List.of(LEAF_A, LEAF_B));
+        helper.unifyInputs(recipe, LEAF_A, LEAF_B);
         helper.unifyOutputs(recipe, SECONDARY);
     }
 }

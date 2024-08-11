@@ -1,6 +1,8 @@
 package com.almostreliable.unified.api.recipe;
 
+import com.almostreliable.unified.api.TagSubstitutions;
 import com.almostreliable.unified.api.UnifyLookup;
+import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,47 +11,217 @@ import com.google.gson.JsonPrimitive;
 import javax.annotation.Nullable;
 
 /**
- * Helper to aid in recipe unification.
+ * Helper interface to aid in the unification of recipe JSON elements.
  * <p>
- * An instance of this is passed to {@link RecipeUnifier#unify(UnificationHelper, RecipeJson)} to help unifying the
- * given recipe JSON.
+ * This interface provides methods to unify JSON elements within recipes. Unification involves converting
+ * JSON elements to tags or preferred items as specified by the implementation. An instance of this
+ * interface is passed to {@link RecipeUnifier#unify(UnificationHelper, RecipeJson)} to assist in the
+ * unification process of the given {@link RecipeJson}.
+ * <p>
+ * Implementations of this interface are expected to provide the logic for unification, typically based on
+ * predefined lookup tables or constants. The methods provided by this interface handle various JSON
+ * structures, including {@link JsonObject}s, {@link JsonArray}s, and individual {@link JsonElement}s.
  */
 public interface UnificationHelper {
 
+    /**
+     * Returns the instance of the {@link UnifyLookup} this helper is based on.
+     *
+     * @return the lookup this helper is based on
+     */
     UnifyLookup getLookup();
 
-    void unifyInputs(RecipeJson recipe, String recipeKey);
+    /**
+     * Fetches all entries of the given {@link RecipeJson} under the specified keys and unifies them as inputs.<br>
+     * Entries treated as inputs will be converted to tags if possible.
+     * <p>
+     * The keys refer to top-level entries in the {@link RecipeJson}. This method requires at least one key to be
+     * provided.<br>
+     * To use default keys, refer to {@link RecipeConstants#DEFAULT_INPUT_KEYS} or see {@link GenericRecipeUnifier}.
+     *
+     * @param recipe the {@link RecipeJson} to fetch the input entries from
+     * @param keys   the keys of the input entries to unify
+     * @return true if any element was changed, false otherwise
+     */
+    boolean unifyInputs(RecipeJson recipe, String... keys);
 
-    void unifyInputs(RecipeJson recipe, Iterable<String> recipeKeys);
+    /**
+     * Unifies a {@link JsonElement} as an input.<br>
+     * Elements treated as inputs will be converted to tags if possible.
+     * <p>
+     * This method can unify {@link JsonObject}s and {@link JsonArray}s.<br>
+     * The keys will be used for each nested element. If no keys are provided, it falls back to
+     * {@link RecipeConstants#DEFAULT_INPUT_INNER_KEYS}.
+     *
+     * @param jsonElement the {@link JsonElement} to unify
+     * @param keys        the keys to use
+     * @return true if the {@link JsonElement} was changed, false otherwise
+     */
+    boolean unifyInputElement(JsonElement jsonElement, String... keys);
 
-    boolean unifyBasicInput(JsonElement jsonElement, Iterable<String> depthInputLookups);
+    /**
+     * Unifies a {@link JsonArray} as an input.<br>
+     * Elements treated as inputs will be converted to tags if possible.
+     * <p>
+     * The keys will be used for each nested element. If no keys are provided, it falls back to
+     * {@link RecipeConstants#DEFAULT_INPUT_INNER_KEYS}.
+     *
+     * @param jsonArray the {@link JsonArray} to unify
+     * @param keys      the keys to use
+     * @return true if any element of the {@link JsonArray} was changed, false otherwise
+     */
+    boolean unifyInputArray(JsonArray jsonArray, String... keys);
 
-    boolean unifyBasicInput(JsonElement jsonElement);
+    /**
+     * Unifies a {@link JsonObject} as an input.<br>
+     * Elements treated as inputs will be converted to tags if possible.
+     * <p>
+     * The keys will be used for each nested element. If no keys are provided, it falls back to
+     * {@link RecipeConstants#DEFAULT_INPUT_INNER_KEYS}.
+     *
+     * @param jsonObject the {@link JsonObject} to unify
+     * @param keys       the keys to use
+     * @return true if any element of the {@link JsonObject} was changed, false otherwise
+     */
+    boolean unifyInputObject(JsonObject jsonObject, String... keys);
 
-    boolean unifySimpleInputs(JsonArray json, Iterable<String> depthInputLookups);
+    /**
+     * Unifies a {@link JsonObject} as a tag input.<br>
+     * Tag inputs are only changed if they have an associated {@link TagSubstitutions} entry.
+     *
+     * @param jsonObject the {@link JsonObject} to unify
+     * @return true if the tag input was changed, false otherwise
+     */
+    boolean unifyInputTag(JsonObject jsonObject);
 
-    boolean unifySimpleInputs(JsonArray json);
+    /**
+     * Unifies a {@link JsonObject} as an item input.<br>
+     * The item will be converted to a tag if possible.
+     *
+     * @param jsonObject the {@link JsonObject} to unify
+     * @return true if the item input was changed, false otherwise
+     */
+    boolean unifyInputItem(JsonObject jsonObject);
 
-    boolean unifySimpleInputs(JsonObject json, Iterable<String> depthInputLookups);
+    /**
+     * Fetches all entries of the given {@link RecipeJson} under the specified keys and unifies them as
+     * outputs.<br>
+     * Entries treated as outputs will be converted to preferred items. If the entry is a tag, it will be converted
+     * to the preferred item of the tag.
+     * <p>
+     * The keys refer to top-level entries in the {@link RecipeJson}. This method requires at least one key to be
+     * provided.<br>
+     * To use default keys, refer to {@link RecipeConstants#DEFAULT_OUTPUT_KEYS} or see {@link GenericRecipeUnifier}.
+     *
+     * @param recipe the {@link RecipeJson} to fetch the output entries from
+     * @param keys   the keys of the output entries to unify
+     * @return true if any element was changed, false otherwise
+     */
+    boolean unifyOutputs(RecipeJson recipe, String... keys);
 
-    boolean unifySimpleInputs(JsonObject json);
+    /**
+     * Fetches all entries of the given {@link RecipeJson} under the specified keys and unifies them as
+     * outputs.<br>
+     * Entries treated as outputs will be converted to preferred items. If the entry is a tag and tagsToItems is true,
+     * it will be converted to the preferred item of the tag.
+     * <p>
+     * The keys refer to top-level entries in the {@link RecipeJson}. This method requires at least one key to be
+     * provided.<br>
+     * To use default keys, refer to {@link RecipeConstants#DEFAULT_OUTPUT_KEYS} or see {@link GenericRecipeUnifier}.
+     *
+     * @param recipe      the {@link RecipeJson} to fetch the output entries from
+     * @param tagsToItems if true, tags will be converted to preferred items
+     * @param keys        the keys of the output entries to unify
+     * @return true if any element was changed, false otherwise
+     */
+    boolean unifyOutputs(RecipeJson recipe, boolean tagsToItems, String... keys);
 
-    boolean unifyItemInput(JsonObject json);
+    /**
+     * Unifies a {@link JsonElement} as an output.<br>
+     * Elements treated as outputs will be converted to preferred items. If the element is a tag and tagsToItems is true,
+     * it will be converted to the preferred item of the tag.
+     * <p>
+     * This method can unify {@link JsonObject}s and {@link JsonArray}s.<br>
+     * The keys will be used for each nested element. If no keys are provided, it falls back to
+     * {@link RecipeConstants#DEFAULT_OUTPUT_INNER_KEYS}.
+     *
+     * @param jsonElement the {@link JsonElement} to unify
+     * @param tagsToItems if true, tags will be converted to preferred items
+     * @param keys        the keys to use
+     * @return true if the {@link JsonElement} was changed, false otherwise
+     */
+    boolean unifyOutputElement(JsonElement jsonElement, boolean tagsToItems, String... keys);
 
-    boolean unifyTagInput(JsonObject json);
+    /**
+     * Unifies a {@link JsonArray} as an output.<br>
+     * Elements treated as outputs will be converted to preferred items. If the element is a tag and tagsToItems is true,
+     * it will be converted to the preferred item of the tag.
+     * <p>
+     * The keys will be used for each nested element. If no keys are provided, it falls back to
+     * {@link RecipeConstants#DEFAULT_OUTPUT_INNER_KEYS}.
+     *
+     * @param jsonArray   the {@link JsonArray} to unify
+     * @param tagsToItems if true, tags will be converted to preferred items
+     * @param keys        the keys to use
+     * @return true if the {@link JsonArray} was changed, false otherwise
+     */
+    boolean unifyOutputArray(JsonArray jsonArray, boolean tagsToItems, String... keys);
 
-    void unifyOutputs(RecipeJson recipe, String recipeKey);
+    /**
+     * Unifies a {@link JsonObject} as an output.<br>
+     * Elements treated as outputs will be converted to preferred items. If the element is a tag and tagsToItems is true,
+     * it will be converted to the preferred item of the tag.
+     * <p>
+     * The keys will be used for each nested element. If no keys are provided, it falls back to
+     * {@link RecipeConstants#DEFAULT_OUTPUT_INNER_KEYS}.
+     *
+     * @param jsonObject  the {@link JsonObject} to unify
+     * @param tagsToItems if true, tags will be converted to preferred items
+     * @param keys        the keys to use
+     * @return true if the {@link JsonObject} was changed, false otherwise
+     */
+    boolean unifyOutputObject(JsonObject jsonObject, boolean tagsToItems, String... keys);
 
-    void unifyOutputs(RecipeJson recipe, Iterable<String> recipeKeys);
+    /**
+     * Unifies a {@link JsonObject} as a tag output.<br>
+     * If tagsToItems is true, it will be converted to the preferred item of the tag. If tagsToItems is false, it
+     * will only be changed if the tag has an associated {@link TagSubstitutions} entry.
+     *
+     * @param jsonObject  the {@link JsonObject} to unify
+     * @param tagsToItems if true, the tag will be converted to the preferred item
+     * @return true if the tag was changed, false otherwise
+     */
+    boolean unifyOutputTag(JsonObject jsonObject, boolean tagsToItems);
 
-    void unifyOutputs(RecipeJson recipe, String recipeKey, boolean unifyTagToItems, String... nestedLookupKeys);
+    /**
+     * Unifies a {@link JsonObject} as an item output.<br>
+     * The item will be converted to the preferred item of the tag if possible.
+     * <p>
+     * This uses the default keys {@link RecipeConstants#ITEM} and {@link RecipeConstants#ID}.
+     *
+     * @param jsonObject the {@link JsonObject} to unify
+     * @return true if the item output was changed, false otherwise
+     */
+    boolean unifyOutputItem(JsonObject jsonObject);
 
-    void unifyOutputs(RecipeJson recipe, boolean unifyTagToItems, String... keys);
+    /**
+     * Unifies a {@link JsonObject} as an item output.<br>
+     * The item will be converted to the preferred item of the tag if possible.
+     *
+     * @param jsonObject the {@link JsonObject} to unify
+     * @param key        the key of the output entry to unify
+     * @return true if the item output was changed, false otherwise
+     */
+    boolean unifyOutputItem(JsonObject jsonObject, String key);
 
-    boolean unifyBasicOutput(JsonObject json, boolean unifyTagToItems, String... lookupKeys);
-
-    boolean unifyBasicOutput(JsonArray json, boolean unifyTagToItems, String... lookupKeys);
-
+    /**
+     * Handles the output item replacement.
+     * <p>
+     * It needs to be ensured that the passed {@link JsonPrimitive} is an item.
+     *
+     * @param jsonPrimitive the {@link JsonPrimitive} to handle
+     * @return the replacement {@link JsonPrimitive} or null if no replacement was found
+     */
     @Nullable
-    JsonPrimitive createOutputReplacement(JsonPrimitive primitive);
+    JsonPrimitive handleOutputItemReplacement(JsonPrimitive jsonPrimitive);
 }

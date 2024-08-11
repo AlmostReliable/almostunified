@@ -47,7 +47,7 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
 
     public void unifyInputs(UnificationHelper helper, RecipeJson recipe, String key) {
         if (recipe.getProperty(key) instanceof JsonObject json && json.has(BASE_INGREDIENT)) {
-            if (helper.unifyBasicInput(json.get(BASE_INGREDIENT))) {
+            if (helper.unifyInputElement(json.get(BASE_INGREDIENT))) {
                 return;
             }
         }
@@ -61,6 +61,6 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
             return;
         }
 
-        helper.unifyBasicOutput(secondaries.getAsJsonArray(), true, RecipeConstants.OUTPUT);
+        helper.unifyOutputArray(secondaries.getAsJsonArray(), true, RecipeConstants.OUTPUT);
     }
 }

@@ -7,8 +7,6 @@ import com.almostreliable.unified.api.recipe.UnificationHelper;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonObject;
 
-import java.util.List;
-
 public class OccultismRecipeUnifier implements RecipeUnifier {
 
     static final String TYPE = "type";
@@ -19,7 +17,7 @@ public class OccultismRecipeUnifier implements RecipeUnifier {
     @Override
     public void unify(UnificationHelper helper, RecipeJson recipe) {
         GenericRecipeUnifier.INSTANCE.unifyInputs(helper, recipe);
-        helper.unifyInputs(recipe, List.of(ACTIVATION_ITEM, ITEM_TO_USE));
+        helper.unifyInputs(recipe, ACTIVATION_ITEM, ITEM_TO_USE);
 
         if (recipe.getProperty(RecipeConstants.RESULT) instanceof JsonObject result && result.has(TYPE)) {
             unifyTypedOutput(helper, recipe, result);

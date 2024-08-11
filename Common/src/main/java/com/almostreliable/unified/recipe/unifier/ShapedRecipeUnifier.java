@@ -16,7 +16,7 @@ public class ShapedRecipeUnifier implements RecipeUnifier {
 
         if (recipe.getProperty(KEY_PROPERTY) instanceof JsonObject json) {
             for (var e : json.entrySet()) {
-                helper.unifyBasicInput(e.getValue());
+                helper.unifyInputElement(e.getValue());
             }
         }
     }
