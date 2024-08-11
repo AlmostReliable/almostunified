@@ -40,6 +40,21 @@ public final class UnifyConfig extends Config {
     private final boolean recipeViewerHiding;
     @Nullable private Set<TagKey<Item>> bakedTagsCache;
 
+    private UnifyConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneVariants, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
+        super(name);
+        this.modPriorities = modPriorities;
+        this.priorityOverrides = priorityOverrides;
+        this.stoneVariants = stoneVariants;
+        this.unbakedTags = unbakedTags;
+        this.ignoredTags = ignoredTags;
+        this.ignoredItems = ignoredItems;
+        this.ignoredRecipeTypes = ignoredRecipeTypes;
+        this.ignoredRecipes = ignoredRecipes;
+        this.ignoredLootTables = ignoredLootTables;
+        this.enableLootUnification = enableLootUnification;
+        this.recipeViewerHiding = recipeViewerHiding;
+    }
+
     @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
     public static Collection<UnifyConfig> safeLoadConfigs() {
         try {
@@ -76,6 +91,7 @@ public final class UnifyConfig extends Config {
             configs.add(config);
         }
 
+        logMissingPriorityMods(configs);
         return configs;
     }
 
@@ -96,19 +112,16 @@ public final class UnifyConfig extends Config {
         return jsons;
     }
 
-    private UnifyConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneVariants, List<String> unbakedTags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipes, Set<Pattern> ignoredLootTables, boolean enableLootUnification, boolean recipeViewerHiding) {
-        super(name);
-        this.modPriorities = modPriorities;
-        this.priorityOverrides = priorityOverrides;
-        this.stoneVariants = stoneVariants;
-        this.unbakedTags = unbakedTags;
-        this.ignoredTags = ignoredTags;
-        this.ignoredItems = ignoredItems;
-        this.ignoredRecipeTypes = ignoredRecipeTypes;
-        this.ignoredRecipes = ignoredRecipes;
-        this.ignoredLootTables = ignoredLootTables;
-        this.enableLootUnification = enableLootUnification;
-        this.recipeViewerHiding = recipeViewerHiding;
+    private static void logMissingPriorityMods(Collection<UnifyConfig> unifyConfigs) {
+        Set<String> mods = unifyConfigs
+                .stream()
+                .map(UnifyConfig::getModPriorities)
+                .flatMap(ModPriorities::stream)
+                .filter(m -> !AlmostUnifiedPlatform.INSTANCE.isModLoaded(m))
+                .collect(Collectors.toSet());
+
+        if (mods.isEmpty()) return;
+        AlmostUnified.LOGGER.warn("The following mods are used in unification settings, but are not loaded: {}", mods);
     }
 
     public ModPriorities getModPriorities() {
