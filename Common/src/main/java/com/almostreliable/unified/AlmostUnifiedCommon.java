@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 @SuppressWarnings({ "UtilityClassWithoutPrivateConstructor", "StaticVariableUsedBeforeInitialization" })
-public final class AlmostUnified {
+public final class AlmostUnifiedCommon {
 
     public static final Logger LOGGER = CustomLogger.create();
     public static final StartupConfig STARTUP_CONFIG = Config.load(StartupConfig.NAME, StartupConfig.SERIALIZER);

@@ -1,6 +1,6 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.Placeholders;
@@ -60,7 +60,7 @@ public final class UnifyConfig extends Config {
         try {
             return loadConfigs();
         } catch (Exception e) {
-            AlmostUnified.LOGGER.error("Could not load unify configs.", e);
+            AlmostUnifiedCommon.LOGGER.error("Could not load unify configs.", e);
             return List.of();
         }
     }
@@ -105,7 +105,7 @@ public final class UnifyConfig extends Config {
             try {
                 jsons.put(fileName, JsonUtils.readFromFile(file.toPath(), JsonObject.class));
             } catch (Throwable e) {
-                AlmostUnified.LOGGER.error("Unify config '{}.json' could not be loaded.", fileName, e);
+                AlmostUnifiedCommon.LOGGER.error("Unify config '{}.json' could not be loaded.", fileName, e);
             }
         }
 
@@ -121,7 +121,8 @@ public final class UnifyConfig extends Config {
                 .collect(Collectors.toSet());
 
         if (mods.isEmpty()) return;
-        AlmostUnified.LOGGER.warn("The following mods are used in unification settings, but are not loaded: {}", mods);
+        AlmostUnifiedCommon.LOGGER.warn("The following mods are used in unification settings, but are not loaded: {}",
+                mods);
     }
 
     public ModPriorities getModPriorities() {

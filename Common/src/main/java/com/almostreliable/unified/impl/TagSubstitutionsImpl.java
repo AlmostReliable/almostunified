@@ -1,6 +1,6 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.TagSubstitutions;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import com.google.common.collect.HashMultimap;
@@ -51,7 +51,7 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
                 var replacedTag = TagKey.create(Registries.ITEM, rawReplacedTag);
 
                 if (!unifyTagFilter.test(substituteTag)) {
-                    AlmostUnified.LOGGER.warn(
+                    AlmostUnifiedCommon.LOGGER.warn(
                             "[TagSubstitutions] Substitute tag '#{}' is not configured as a unify tag! Config entry '#{} -> {}' will be ignored.",
                             substituteTag.location(),
                             substituteTag.location(),
@@ -75,7 +75,7 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
             }
 
             if (!invalidReplacedTags.isEmpty()) {
-                AlmostUnified.LOGGER.warn(
+                AlmostUnifiedCommon.LOGGER.warn(
                         "[TagSubstitutions] Substitute tag '#{}' contains invalid replaced tags! Affected tags: {}",
                         rawSubstituteTag,
                         invalidReplacedTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
@@ -83,7 +83,7 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
             }
 
             if (!unifyReplacedTags.isEmpty()) {
-                AlmostUnified.LOGGER.warn(
+                AlmostUnifiedCommon.LOGGER.warn(
                         "[TagSubstitutions] Substitute tag '#{}' contains replaced tags that are configured as unify tags! Affected tags: {}",
                         rawSubstituteTag,
                         unifyReplacedTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
@@ -114,7 +114,7 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
             }
         });
 
-        changedTags.asMap().forEach((tag, entries) -> AlmostUnified.LOGGER.info(
+        changedTags.asMap().forEach((tag, entries) -> AlmostUnifiedCommon.LOGGER.info(
                 "[TagSubstitutions] Added items of replaced tags to substitute tag '#{}'. Added items: {}",
                 tag,
                 entries

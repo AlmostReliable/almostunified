@@ -14,7 +14,7 @@ public class AlmostUnifiedFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        if (!AlmostUnified.STARTUP_CONFIG.isServerOnly()) {
+        if (!AlmostUnifiedCommon.STARTUP_CONFIG.isServerOnly()) {
             Registry.register(
                     BuiltInRegistries.RECIPE_SERIALIZER,
                     ClientRecipeTracker.ID,
@@ -35,7 +35,7 @@ public class AlmostUnifiedFabric implements ModInitializer {
             try {
                 plugins.add(entrypointContainer.getEntrypoint());
             } catch (Exception e) {
-                AlmostUnified.LOGGER.error(
+                AlmostUnifiedCommon.LOGGER.error(
                         "Failed to load plugin for mod {}.",
                         entrypointContainer.getProvider().getMetadata().getName(),
                         e

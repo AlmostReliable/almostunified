@@ -1,6 +1,6 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.UnifyEntry;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.Utils;
@@ -62,13 +62,13 @@ public class TagInheritance {
 
         if (!changedBlockTags.isEmpty()) {
             changedBlockTags.asMap().forEach((dominant, tags) -> {
-                AlmostUnified.LOGGER.info("[TagInheritance] Added '{}' to block tags {}", dominant.id(), tags);
+                AlmostUnifiedCommon.LOGGER.info("[TagInheritance] Added '{}' to block tags {}", dominant.id(), tags);
             });
         }
 
         if (!changedItemTags.isEmpty()) {
             changedItemTags.asMap().forEach((dominant, tags) -> {
-                AlmostUnified.LOGGER.info("[TagInheritance] Added '{}' to item tags {}", dominant.id(), tags);
+                AlmostUnifiedCommon.LOGGER.info("[TagInheritance] Added '{}' to item tags {}", dominant.id(), tags);
             });
             return true;
         }

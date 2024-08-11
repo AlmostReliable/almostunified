@@ -1,6 +1,6 @@
 package com.almostreliable.unified.worldgen;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.utils.Utils;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
@@ -26,7 +26,7 @@ public class WorldGenBiomeModifier implements BiomeModifier {
     public static final ResourceLocation UNKNOWN_BIOME_ID = Utils.getRL("unknown_biome_id");
 
     public static void bindUnifier(WorldGenBiomeModifier modifier, RegistryAccess registryAccess) {
-        if (AlmostUnified.STARTUP_CONFIG.allowWorldGenUnification()) {
+        if (AlmostUnifiedCommon.STARTUP_CONFIG.allowWorldGenUnification()) {
             WorldGenUnifier unifier = new WorldGenUnifier(registryAccess);
             unifier.process();
             modifier.unifier = unifier;
@@ -61,7 +61,7 @@ public class WorldGenBiomeModifier implements BiomeModifier {
         }
 
         if (!removedFeatures.isEmpty()) {
-            AlmostUnified.LOGGER.info("[WorldGen] Removed features from Biome {}:",
+            AlmostUnifiedCommon.LOGGER.info("[WorldGen] Removed features from Biome {}:",
                     biome.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_BIOME_ID));
             removedFeatures.forEach((decoration, features) -> {
                 String ids = features
@@ -70,7 +70,7 @@ public class WorldGenBiomeModifier implements BiomeModifier {
                         .map(ResourceLocation::toString)
                         .collect(Collectors.joining(", "));
 
-                AlmostUnified.LOGGER.info("[WorldGen]\t{}: {}", decoration.getName(), ids);
+                AlmostUnifiedCommon.LOGGER.info("[WorldGen]\t{}: {}", decoration.getName(), ids);
             });
         }
     }

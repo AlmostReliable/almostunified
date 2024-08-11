@@ -67,7 +67,7 @@ public final class ItemHider {
 
             if (toHide.isEmpty()) continue;
 
-            AlmostUnified.LOGGER.info(
+            AlmostUnifiedCommon.LOGGER.info(
                     "[AutoHiding] Hiding {}/{} items for tag '#{}' -> {}",
                     toHide.size(),
                     entriesByTag.size(),

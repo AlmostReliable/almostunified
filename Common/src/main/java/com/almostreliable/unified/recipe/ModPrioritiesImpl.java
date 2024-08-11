@@ -1,6 +1,6 @@
 package com.almostreliable.unified.recipe;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.UnifyEntry;
 import net.minecraft.tags.TagKey;
@@ -49,7 +49,7 @@ public final class ModPrioritiesImpl implements ModPriorities {
         if (priorityOverride != null) {
             var entry = findItemByNamespace(items, priorityOverride);
             if (entry != null) return entry;
-            AlmostUnified.LOGGER.warn(
+            AlmostUnifiedCommon.LOGGER.warn(
                     "Priority override mod '{}' for tag '{}' does not contain a valid item. Falling back to default priority.",
                     priorityOverride,
                     tag.location());

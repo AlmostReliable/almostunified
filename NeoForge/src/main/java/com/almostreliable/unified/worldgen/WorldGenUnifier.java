@@ -1,7 +1,7 @@
 package com.almostreliable.unified.worldgen;
 
-import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.api.AlmostUnifiedLookup;
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.mixin.neoforge.OreConfigurationAccessor;
 import com.almostreliable.unified.utils.Utils;
@@ -32,19 +32,19 @@ public class WorldGenUnifier {
     }
 
     public void process() {
-        var lookup = AlmostUnifiedLookup.INSTANCE.getRuntimeOrThrow().getUnifyLookup();
+        var lookup = AlmostUnified.INSTANCE.getRuntimeOrThrow().getUnifyLookup();
         cfRegistry.holders().forEach(holder -> {
             switch (handleConfiguredFeature(lookup, holder)) {
                 case SAME -> {
                     // do nothing
                 }
                 case REMOVE -> {
-                    AlmostUnified.LOGGER.info("[WorldGen] Mark ConfiguredFeature '{}' for removal:",
+                    AlmostUnifiedCommon.LOGGER.info("[WorldGen] Mark ConfiguredFeature '{}' for removal:",
                             holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID));
                     featuresToRemove.add(holder);
                 }
                 case CHANGE -> {
-                    AlmostUnified.LOGGER.info("[WorldGen] Changed ConfiguredFeature '{}':",
+                    AlmostUnifiedCommon.LOGGER.info("[WorldGen] Changed ConfiguredFeature '{}':",
                             holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID));
                 }
             }
@@ -90,7 +90,7 @@ public class WorldGenUnifier {
 
         Block replacementBlock = BuiltInRegistries.BLOCK.getOptional(replacement.id()).orElse(null);
         if (replacementBlock == null) {
-            AlmostUnified.LOGGER.error(
+            AlmostUnifiedCommon.LOGGER.error(
                     "Trying to find replacement for block {} (Replacement: {}), but it does not exist.",
                     blockId,
                     replacement.id());

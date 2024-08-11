@@ -1,6 +1,6 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.ItemHider;
 import com.almostreliable.unified.PluginManager;
 import com.almostreliable.unified.api.*;
@@ -43,7 +43,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
     }
 
     public static AlmostUnifiedRuntime create(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
-        AlmostUnified.LOGGER.warn("Reload detected. Reconstructing runtime.");
+        AlmostUnifiedCommon.LOGGER.warn("Reload detected. Reconstructing runtime.");
 
         FileUtils.createGitIgnore();
         var tagConfig = Config.load(TagConfig.NAME, TagConfig.SERIALIZER);
@@ -108,7 +108,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
                 }
 
                 if (visitedTags.containsKey(tag)) {
-                    AlmostUnified.LOGGER.warn("Tag '{}' from unify config '{}' was already created in unify config '{}'",
+                    AlmostUnifiedCommon.LOGGER.warn(
+                            "Tag '{}' from unify config '{}' was already created in unify config '{}'",
                             config.getName(),
                             tag.location(),
                             visitedTags.get(tag));
@@ -124,7 +125,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         if (!wrongTags.isEmpty()) {
-            AlmostUnified.LOGGER.warn("The following tags are invalid or not in use and will be ignored: {}",
+            AlmostUnifiedCommon.LOGGER.warn("The following tags are invalid or not in use and will be ignored: {}",
                     wrongTags.stream().map(TagKey::location).collect(Collectors.toList()));
         }
 

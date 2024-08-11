@@ -1,6 +1,6 @@
 package com.almostreliable.unified.mixin.neoforge;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.worldgen.WorldGenBiomeModifier;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -23,7 +23,7 @@ public class ServerLifecycleHooksMixin {
                     WorldGenBiomeModifier.bindUnifier(wgbm, registryAccess);
                 } catch (Exception e) {
                     var id = biomeModifiers.getKey(bm);
-                    AlmostUnified.LOGGER.error("Failed to bind registry access to biome modifier " + id, e);
+                    AlmostUnifiedCommon.LOGGER.error("Failed to bind registry access to biome modifier " + id, e);
                 }
             }
         }

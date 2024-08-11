@@ -1,6 +1,6 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.config.DebugConfig;
 
@@ -40,7 +40,7 @@ public final class FileUtils {
                     StandardOpenOption.WRITE
             );
         } catch (IOException e) {
-            AlmostUnified.LOGGER.warn("Couldn't write to file '{}'.", fileName, e);
+            AlmostUnifiedCommon.LOGGER.warn("Couldn't write to file '{}'.", fileName, e);
         }
     }
 }

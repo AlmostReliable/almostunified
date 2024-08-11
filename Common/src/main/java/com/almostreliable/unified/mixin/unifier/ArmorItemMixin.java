@@ -1,6 +1,6 @@
 package com.almostreliable.unified.mixin.unifier;
 
-import com.almostreliable.unified.api.AlmostUnifiedLookup;
+import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorItem;
@@ -21,7 +21,7 @@ public class ArmorItemMixin {
 
     @Inject(method = "isValidRepairItem", at = @At("HEAD"), cancellable = true)
     private void unified$repairUnification(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
-        AlmostUnifiedRuntime runtime = AlmostUnifiedLookup.INSTANCE.getRuntime();
+        AlmostUnifiedRuntime runtime = AlmostUnified.INSTANCE.getRuntime();
         if (runtime == null) return;
 
         Ingredient repairIngredient = material.value().repairIngredient().get();

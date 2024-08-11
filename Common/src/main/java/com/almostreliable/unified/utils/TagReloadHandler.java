@@ -1,6 +1,6 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
@@ -43,7 +43,7 @@ public final class TagReloadHandler {
             return;
         }
 
-        AlmostUnified.onTagLoaderReload(VANILLA_ITEM_TAGS, VANILLA_BLOCK_TAGS);
+        AlmostUnifiedCommon.onTagLoaderReload(VANILLA_ITEM_TAGS, VANILLA_BLOCK_TAGS);
 
         VANILLA_ITEM_TAGS.seal();
         VANILLA_BLOCK_TAGS.seal();
@@ -60,7 +60,9 @@ public final class TagReloadHandler {
 
             for (ResourceLocation itemId : itemIds) {
                 if (!BuiltInRegistries.ITEM.containsKey(itemId)) {
-                    AlmostUnified.LOGGER.warn("[CustomTags] Custom tag '{}' contains invalid item '{}'", tag, itemId);
+                    AlmostUnifiedCommon.LOGGER.warn("[CustomTags] Custom tag '{}' contains invalid item '{}'",
+                            tag,
+                            itemId);
                     continue;
                 }
 
@@ -72,7 +74,7 @@ public final class TagReloadHandler {
 
                 if (!currentHolders.isEmpty()) {
                     if (currentHolders.contains(itemHolder)) {
-                        AlmostUnified.LOGGER.warn("[CustomTags] Custom tag '{}' already contains item '{}'",
+                        AlmostUnifiedCommon.LOGGER.warn("[CustomTags] Custom tag '{}' already contains item '{}'",
                                 tag,
                                 itemId);
                         continue;
@@ -86,7 +88,7 @@ public final class TagReloadHandler {
 
         if (!changedItemTags.isEmpty()) {
             changedItemTags.asMap().forEach((tag, items) -> {
-                AlmostUnified.LOGGER.info("[CustomTags] Modified tag '#{}', added {}", tag, items);
+                AlmostUnifiedCommon.LOGGER.info("[CustomTags] Modified tag '#{}', added {}", tag, items);
             });
         }
     }

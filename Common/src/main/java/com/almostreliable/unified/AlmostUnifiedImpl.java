@@ -1,6 +1,6 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.AlmostUnifiedLookup;
+import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import com.almostreliable.unified.api.UnifyEntry;
 import com.google.auto.service.AutoService;
@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@AutoService(AlmostUnifiedLookup.class)
-public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
+@AutoService(AlmostUnified.class)
+public class AlmostUnifiedImpl implements AlmostUnified {
 
     @Override
     public boolean isRuntimeLoaded() {
@@ -26,12 +26,12 @@ public class AlmostUnifiedLookupImpl implements AlmostUnifiedLookup {
     @Nullable
     @Override
     public AlmostUnifiedRuntime getRuntime() {
-        return AlmostUnified.getRuntime();
+        return AlmostUnifiedCommon.getRuntime();
     }
 
     @Override
     public AlmostUnifiedRuntime getRuntimeOrThrow() {
-        AlmostUnifiedRuntime runtime = AlmostUnified.getRuntime();
+        AlmostUnifiedRuntime runtime = AlmostUnifiedCommon.getRuntime();
         if (runtime == null) {
             throw new IllegalStateException("The runtime is not loaded");
         }

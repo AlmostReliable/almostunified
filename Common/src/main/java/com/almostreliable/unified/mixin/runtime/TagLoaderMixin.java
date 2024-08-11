@@ -1,6 +1,6 @@
 package com.almostreliable.unified.mixin.runtime;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.utils.TagReloadHandler;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
@@ -32,7 +32,7 @@ public class TagLoaderMixin {
                 TagReloadHandler.initItemTags(tags);
                 TagReloadHandler.run();
             } catch (Exception e) {
-                AlmostUnified.LOGGER.error(e.getMessage(), e);
+                AlmostUnifiedCommon.LOGGER.error(e.getMessage(), e);
             }
         }
         if (directory.equals("tags/block")) {
@@ -41,7 +41,7 @@ public class TagLoaderMixin {
                 TagReloadHandler.initBlockTags(tags);
                 TagReloadHandler.run();
             } catch (Exception e) {
-                AlmostUnified.LOGGER.error(e.getMessage(), e);
+                AlmostUnifiedCommon.LOGGER.error(e.getMessage(), e);
             }
         }
     }

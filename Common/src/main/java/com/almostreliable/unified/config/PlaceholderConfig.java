@@ -1,6 +1,6 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.Placeholders;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.common.collect.ImmutableMap;
@@ -56,7 +56,7 @@ public final class PlaceholderConfig extends Config implements Placeholders {
         }
 
         if (!invalid.isEmpty()) {
-            AlmostUnified.LOGGER.warn(
+            AlmostUnifiedCommon.LOGGER.warn(
                     "The following input '{}' could not be parsed into a ResourceLocation. Reason could be missing placeholder or invalid characters. Skipping. Generated values: {}",
                     str,
                     invalid);

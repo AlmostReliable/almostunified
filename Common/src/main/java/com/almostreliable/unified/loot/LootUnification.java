@@ -1,6 +1,6 @@
 package com.almostreliable.unified.loot;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import com.almostreliable.unified.api.UnifyHandler;
 import net.minecraft.core.HolderLookup;
@@ -30,7 +30,7 @@ public class LootUnification {
                     .listElements()
                     .forEach(holder -> unifyLoot(holder.value(), holder.key().location(), unifyHandlers));
         } catch (Exception e) {
-            AlmostUnified.LOGGER.error("Failed to unify loot", e);
+            AlmostUnifiedCommon.LOGGER.error("Failed to unify loot", e);
         }
     }
 
@@ -47,7 +47,7 @@ public class LootUnification {
         }
 
         if (!modifiedTable.isEmpty()) {
-            AlmostUnified.LOGGER.info("Loot table '{}' was unified by: {}",
+            AlmostUnifiedCommon.LOGGER.info("Loot table '{}' was unified by: {}",
                     tableId,
                     modifiedTable.stream().map(UnifyHandler::getName).collect(
                             Collectors.joining(", ")));

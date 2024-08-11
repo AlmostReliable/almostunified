@@ -15,15 +15,15 @@ import java.util.Set;
  * Use this to obtain an instance of the runtime or to lookup
  * replacement items.
  */
-public interface AlmostUnifiedLookup {
+public interface AlmostUnified {
 
     /**
-     * The default instance of the Almost Unified lookup.
+     * The default instance of Almost Unified.
      * <p>
      * If unavailable, it will return an empty lookup instance which
      * only returns empty default values for each method.
      */
-    AlmostUnifiedLookup INSTANCE = ServiceLoader.load(AlmostUnifiedLookup.class).findFirst().orElseGet(Empty::new);
+    AlmostUnified INSTANCE = ServiceLoader.load(AlmostUnified.class).findFirst().orElseGet(Empty::new);
 
     /**
      * Returns whether the Almost Unified runtime is loaded
@@ -112,7 +112,7 @@ public interface AlmostUnifiedLookup {
      */
     Collection<TagKey<Item>> getUnifiedTags();
 
-    class Empty implements AlmostUnifiedLookup {
+    class Empty implements AlmostUnified {
 
         @Override
         public boolean isRuntimeLoaded() {

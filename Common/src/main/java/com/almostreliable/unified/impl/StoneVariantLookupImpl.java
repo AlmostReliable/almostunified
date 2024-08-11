@@ -1,6 +1,6 @@
 package com.almostreliable.unified.impl;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.StoneVariantLookup;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.registries.Registries;
@@ -78,7 +78,7 @@ public final class StoneVariantLookupImpl implements StoneVariantLookup {
 
                 var oldTag = idToStoneVariantTag.put(id, stoneVariantTag);
                 if (oldTag != null) {
-                    AlmostUnified.LOGGER.error(
+                    AlmostUnifiedCommon.LOGGER.error(
                             "{} is bound to multiple stone variant tags: {} and {}",
                             id,
                             oldTag,

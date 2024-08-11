@@ -41,7 +41,7 @@ public class AlmostUnifiedNeoForge {
             );
         }
 
-        if (AlmostUnified.STARTUP_CONFIG.isServerOnly()) return;
+        if (AlmostUnifiedCommon.STARTUP_CONFIG.isServerOnly()) return;
 
         if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
             Registry.register(
@@ -72,7 +72,7 @@ public class AlmostUnifiedNeoForge {
             try {
                 plugins.add(pluginClass.getConstructor().newInstance());
             } catch (Exception e) {
-                AlmostUnified.LOGGER.error("Failed to load plugin {}.", pluginClass.getName(), e);
+                AlmostUnifiedCommon.LOGGER.error("Failed to load plugin {}.", pluginClass.getName(), e);
             }
         }
 
@@ -108,13 +108,13 @@ public class AlmostUnifiedNeoForge {
                 return (Class<AlmostUnifiedPlugin>) pluginClass;
             }
 
-            AlmostUnified.LOGGER.error(
+            AlmostUnifiedCommon.LOGGER.error(
                     "Plugin {} does not implement {}.",
                     className,
                     AlmostUnifiedPlugin.class.getName()
             );
         } catch (ClassNotFoundException e) {
-            AlmostUnified.LOGGER.error("Failed to load plugin {}.", className, e);
+            AlmostUnifiedCommon.LOGGER.error("Failed to load plugin {}.", className, e);
             return null;
         }
 

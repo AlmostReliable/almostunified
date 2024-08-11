@@ -1,6 +1,6 @@
 package com.almostreliable.unified.mixin.runtime;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.google.gson.JsonElement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
@@ -25,9 +25,9 @@ public class RecipeManagerMixin {
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
     private void runTransformation(Map<ResourceLocation, JsonElement> recipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         try {
-            AlmostUnified.onRecipeManagerReload(recipes, registries);
+            AlmostUnifiedCommon.onRecipeManagerReload(recipes, registries);
         } catch (Exception e) {
-            AlmostUnified.LOGGER.error(e.getMessage(), e);
+            AlmostUnifiedCommon.LOGGER.error(e.getMessage(), e);
         }
     }
 }

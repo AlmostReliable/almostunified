@@ -1,6 +1,6 @@
 package com.almostreliable.unified.recipe;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.api.UnifyLookup;
@@ -46,9 +46,9 @@ public class RecipeTransformer {
      */
     public Result transformRecipes(Map<ResourceLocation, JsonElement> recipes) {
         Stopwatch transformationTimer = Stopwatch.createStarted();
-        AlmostUnified.LOGGER.info("Recipe count: {}", recipes.size());
+        AlmostUnifiedCommon.LOGGER.info("Recipe count: {}", recipes.size());
 
-        var tracker = AlmostUnified.STARTUP_CONFIG.isServerOnly() ? null : new ClientRecipeTracker.RawBuilder();
+        var tracker = AlmostUnifiedCommon.STARTUP_CONFIG.isServerOnly() ? null : new ClientRecipeTracker.RawBuilder();
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
 
@@ -57,7 +57,7 @@ public class RecipeTransformer {
             result.addAll(recipeLinks);
         });
 
-        AlmostUnified.LOGGER.info(
+        AlmostUnifiedCommon.LOGGER.info(
                 "Recipe count afterwards: {} (done in {})",
                 recipes.size(),
                 transformationTimer.stop()
@@ -187,7 +187,7 @@ public class RecipeTransformer {
 
             propertiesLogger.log(recipe.getType(), recipe.getOriginal());
         } catch (Exception e) {
-            AlmostUnified.LOGGER.error("Error unifying recipe '{}'", recipe.getId(), e);
+            AlmostUnifiedCommon.LOGGER.error("Error unifying recipe '{}'", recipe.getId(), e);
         }
     }
 

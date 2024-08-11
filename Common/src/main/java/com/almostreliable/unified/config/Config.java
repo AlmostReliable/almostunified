@@ -1,6 +1,6 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.utils.JsonUtils;
@@ -34,7 +34,7 @@ public class Config {
 
     @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
     public static <T extends Config> T load(String name, Serializer<T> serializer) {
-        AlmostUnified.LOGGER.info("Loading config '{}.json'.", name);
+        AlmostUnifiedCommon.LOGGER.info("Loading config '{}.json'.", name);
 
         JsonObject json = JsonUtils.safeReadFromFile(buildPath(createConfigDir(), name), new JsonObject());
         T config = serializer.deserialize(json);
@@ -56,7 +56,7 @@ public class Config {
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
-            AlmostUnified.LOGGER.error("Failed to create config directory.", e);
+            AlmostUnifiedCommon.LOGGER.error("Failed to create config directory.", e);
         }
 
         return path;
@@ -66,7 +66,7 @@ public class Config {
         if (Files.exists(path)) {
             backupConfig(path);
         } else {
-            AlmostUnified.LOGGER.warn("Config '{}.json' not found. Creating default config.", config.getName());
+            AlmostUnifiedCommon.LOGGER.warn("Config '{}.json' not found. Creating default config.", config.getName());
         }
 
         JsonObject json = serializer.serialize(config);
@@ -80,19 +80,19 @@ public class Config {
                     StandardOpenOption.WRITE
             );
         } catch (IOException e) {
-            AlmostUnified.LOGGER.error("Failed to save config '{}'.", config.getName(), e);
+            AlmostUnifiedCommon.LOGGER.error("Failed to save config '{}'.", config.getName(), e);
         }
     }
 
     private static void backupConfig(Path path) {
-        AlmostUnified.LOGGER.warn("Config '{}' is invalid. Backing up and recreating.", path.getFileName());
+        AlmostUnifiedCommon.LOGGER.warn("Config '{}' is invalid. Backing up and recreating.", path.getFileName());
 
         Path backupPath = path.resolveSibling(path.getFileName() + ".bak");
         try {
             Files.deleteIfExists(backupPath);
             Files.move(path, backupPath);
         } catch (IOException e) {
-            AlmostUnified.LOGGER.error("Config '{}' could not be backed up.", path.getFileName(), e);
+            AlmostUnifiedCommon.LOGGER.error("Config '{}' could not be backed up.", path.getFileName(), e);
         }
     }
 
