@@ -116,17 +116,16 @@ public class UnifyLookupImpl implements UnifyLookup {
         var tagToLookup = tagSubstitutions.getSubstituteTag(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
-        // TODO do we really need a filter way? Maybe have two methods to explicitly check for stone variant
         var items = getEntries(tagToLookup)
                 .stream()
                 .filter(entry -> itemFilter.test(entry.id()))
-                // Helps us to get the clean stone variant first in case of a stone variant tag
+                // clean stone variant first in case of a stone variant tag
                 .sorted(Comparator.comparingInt(value -> value.id().toString().length()))
                 .toList();
 
         if (items.isEmpty()) return null;
 
-        return modPriorities.findPreferredEntry(tagToLookup, items);
+        return modPriorities.findTargetItem(tagToLookup, items);
     }
 
     @Override
