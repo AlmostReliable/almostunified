@@ -2,7 +2,7 @@ package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.UnifyEntry;
+import com.almostreliable.unified.api.UnificationEntry;
 import com.google.auto.service.AutoService;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -94,7 +94,7 @@ public class AlmostUnifiedImpl implements AlmostUnified {
 
         return entries
                 .stream()
-                .map(UnifyEntry::value)
+                .map(UnificationEntry::value)
                 .collect(Collectors.toSet());
     }
 

@@ -1,7 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.BuildConfig;
-import com.almostreliable.unified.api.UnifyEntry;
+import com.almostreliable.unified.api.UnificationEntry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -34,7 +34,7 @@ public final class Utils {
      * @param ids set of ids
      * @return true if all ids have the same namespace
      */
-    public static boolean allSameNamespace(Collection<UnifyEntry<Item>> ids) {
+    public static boolean allSameNamespace(Collection<UnificationEntry<Item>> ids) {
         if (ids.size() <= 1) return true;
 
         var it = ids.iterator();

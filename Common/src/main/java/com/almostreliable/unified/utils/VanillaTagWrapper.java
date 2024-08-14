@@ -1,6 +1,6 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.api.UnifyEntry;
+import com.almostreliable.unified.api.UnificationEntry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -66,7 +66,7 @@ public class VanillaTagWrapper<T> {
         return registry.getHolder(key).map(this::getTags).orElse(Set.of());
     }
 
-    public Set<ResourceLocation> getTags(UnifyEntry<T> entry) {
+    public Set<ResourceLocation> getTags(UnificationEntry<T> entry) {
         return getTags(entry.asHolderOrThrow());
     }
 

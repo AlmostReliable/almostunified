@@ -224,7 +224,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public Collection<UnifyEntry<Item>> getEntries(TagKey<Item> tag) {
+        public Collection<UnificationEntry<Item>> getEntries(TagKey<Item> tag) {
             for (var unifyLookup : unifyLookups) {
                 var resultItems = unifyLookup.getEntries(tag);
                 if (!resultItems.isEmpty()) {
@@ -237,7 +237,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         @Nullable
         @Override
-        public UnifyEntry<Item> getEntry(ResourceLocation entry) {
+        public UnificationEntry<Item> getEntry(ResourceLocation entry) {
             for (var unifyLookup : unifyLookups) {
                 var resultItem = unifyLookup.getEntry(entry);
                 if (resultItem != null) {
@@ -250,7 +250,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         @Nullable
         @Override
-        public UnifyEntry<Item> getEntry(Item item) {
+        public UnificationEntry<Item> getEntry(Item item) {
             for (var unifyLookup : unifyLookups) {
                 var resultItem = unifyLookup.getEntry(item);
                 if (resultItem != null) {
@@ -301,7 +301,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getItemReplacement(ResourceLocation item) {
+        public UnificationEntry<Item> getItemReplacement(ResourceLocation item) {
             for (var unifyLookup : unifyLookups) {
                 var resultItem = unifyLookup.getItemReplacement(item);
                 if (resultItem != null) {
@@ -313,7 +313,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getItemReplacement(Item item) {
+        public UnificationEntry<Item> getItemReplacement(Item item) {
             for (var unifyLookup : unifyLookups) {
                 var resultItem = unifyLookup.getItemReplacement(item);
                 if (resultItem != null) {
@@ -325,7 +325,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getItemReplacement(Holder<Item> item) {
+        public UnificationEntry<Item> getItemReplacement(Holder<Item> item) {
             for (var unifyLookup : unifyLookups) {
                 var resultItem = unifyLookup.getItemReplacement(item);
                 if (resultItem != null) {
@@ -337,7 +337,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag) {
+        public UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag) {
             for (var unifyLookup : unifyLookups) {
                 var result = unifyLookup.getTagTargetItem(tag);
                 if (result != null) {
@@ -349,7 +349,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+        public UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
             for (var unifyLookup : unifyLookups) {
                 var result = unifyLookup.getTagTargetItem(tag, itemFilter);
                 if (result != null) {

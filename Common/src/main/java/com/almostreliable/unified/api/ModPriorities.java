@@ -44,7 +44,7 @@ public interface ModPriorities extends Iterable<String> {
      * @return the priority override item, or null if no override exists
      */
     @Nullable
-    UnifyEntry<Item> findPriorityOverrideItem(TagKey<Item> tag, List<UnifyEntry<Item>> items);
+    UnificationEntry<Item> findPriorityOverrideItem(TagKey<Item> tag, List<UnificationEntry<Item>> items);
 
     /**
      * Returns the target item of the given tag out of the provided list of potential items.
@@ -60,7 +60,7 @@ public interface ModPriorities extends Iterable<String> {
      * @return the target item of the given tag, or null if no target item could be found
      */
     @Nullable
-    UnifyEntry<Item> findTargetItem(TagKey<Item> tag, List<UnifyEntry<Item>> items);
+    UnificationEntry<Item> findTargetItem(TagKey<Item> tag, List<UnificationEntry<Item>> items);
 
     default Stream<String> stream() {
         return StreamSupport.stream(spliterator(), false);

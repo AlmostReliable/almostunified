@@ -29,13 +29,13 @@ public interface UnifyLookup {
      * @param tag The tag to find the potential items for
      * @return The potential entries, otherwise an empty collection
      */
-    Collection<UnifyEntry<Item>> getEntries(TagKey<Item> tag);
+    Collection<UnificationEntry<Item>> getEntries(TagKey<Item> tag);
 
     @Nullable
-    UnifyEntry<Item> getEntry(ResourceLocation entry);
+    UnificationEntry<Item> getEntry(ResourceLocation entry);
 
     @Nullable
-    UnifyEntry<Item> getEntry(Item item);
+    UnificationEntry<Item> getEntry(Item item);
 
     /**
      * Returns the relevant tag for a given {@link Item} Will return null if no configured
@@ -60,16 +60,16 @@ public interface UnifyLookup {
     TagKey<Item> getRelevantItemTag(Holder<Item> item);
 
     @Nullable
-    UnifyEntry<Item> getItemReplacement(ResourceLocation item);
+    UnificationEntry<Item> getItemReplacement(ResourceLocation item);
 
     @Nullable
-    UnifyEntry<Item> getItemReplacement(Item item);
+    UnificationEntry<Item> getItemReplacement(Item item);
 
     @Nullable
-    UnifyEntry<Item> getItemReplacement(Holder<Item> item);
+    UnificationEntry<Item> getItemReplacement(Holder<Item> item);
 
     @Nullable
-    default UnifyEntry<Item> getItemReplacement(UnifyEntry<Item> item) {
+    default UnificationEntry<Item> getItemReplacement(UnificationEntry<Item> item) {
         return getItemReplacement(item.asHolderOrThrow());
     }
 
@@ -84,10 +84,10 @@ public interface UnifyLookup {
      * @return The target entry or null if there is no target entry
      */
     @Nullable
-    UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag);
+    UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag);
 
     @Nullable
-    UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter);
+    UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter);
 
     /**
      * Gets all unify tags of the items within the given ingredient and checks

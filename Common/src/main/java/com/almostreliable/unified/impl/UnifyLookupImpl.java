@@ -20,10 +20,10 @@ public class UnifyLookupImpl implements UnifyLookup {
     private final ModPriorities modPriorities;
     private final StoneVariantLookup stoneVariantLookup;
     private final TagSubstitutions tagSubstitutions;
-    private final Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries;
-    private final Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag;
+    private final Map<TagKey<Item>, Set<UnificationEntry<Item>>> entries;
+    private final Map<ResourceLocation, UnificationEntry<Item>> idEntriesToTag;
 
-    private UnifyLookupImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries, Map<ResourceLocation, UnifyEntry<Item>> idEntriesToTag, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
+    private UnifyLookupImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnificationEntry<Item>>> entries, Map<ResourceLocation, UnificationEntry<Item>> idEntriesToTag, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
         this.entries = entries;
         this.idEntriesToTag = idEntriesToTag;
         this.modPriorities = modPriorities;
@@ -37,26 +37,26 @@ public class UnifyLookupImpl implements UnifyLookup {
     }
 
     @Override
-    public Collection<UnifyEntry<Item>> getEntries(TagKey<Item> tag) {
+    public Collection<UnificationEntry<Item>> getEntries(TagKey<Item> tag) {
         return entries.getOrDefault(tag, Collections.emptySet());
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getEntry(ResourceLocation entry) {
+    public UnificationEntry<Item> getEntry(ResourceLocation entry) {
         return idEntriesToTag.get(entry);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getEntry(Item item) {
+    public UnificationEntry<Item> getEntry(Item item) {
         return getEntry(BuiltInRegistries.ITEM.getKey(item));
     }
 
     @Nullable
     @Override
     public TagKey<Item> getRelevantItemTag(ResourceLocation item) {
-        UnifyEntry<Item> entry = idEntriesToTag.get(item);
+        UnificationEntry<Item> entry = idEntriesToTag.get(item);
         if (entry == null) {
             return null;
         }
@@ -78,7 +78,7 @@ public class UnifyLookupImpl implements UnifyLookup {
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getItemReplacement(ResourceLocation item) {
+    public UnificationEntry<Item> getItemReplacement(ResourceLocation item) {
         var t = getRelevantItemTag(item);
         if (t == null) {
             return null;
@@ -94,25 +94,25 @@ public class UnifyLookupImpl implements UnifyLookup {
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getItemReplacement(Item item) {
+    public UnificationEntry<Item> getItemReplacement(Item item) {
         return getItemReplacement(BuiltInRegistries.ITEM.getKey(item));
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getItemReplacement(Holder<Item> item) {
+    public UnificationEntry<Item> getItemReplacement(Holder<Item> item) {
         return getItemReplacement(BuiltInRegistries.ITEM.getKey(item.value()));
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag) {
+    public UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag) {
         return getTagTargetItem(tag, i -> true);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+    public UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
         var tagToLookup = tagSubstitutions.getSubstituteTag(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
@@ -154,44 +154,42 @@ public class UnifyLookupImpl implements UnifyLookup {
 
 
     public static class Builder {
-        private final Map<TagKey<Item>, Set<UnifyEntry<Item>>> entries = new HashMap<>();
-        private final Set<UnifyEntry<Item>> createdEntries = new HashSet<>();
+        private final Map<TagKey<Item>, Set<UnificationEntry<Item>>> entries = new HashMap<>();
+        private final Set<UnificationEntry<Item>> createdEntries = new HashSet<>();
 
-        private void put(TagKey<Item> tag, UnifyEntry<Item> entry) {
+        private void put(TagKey<Item> tag, UnificationEntry<Item> entry) {
             if (createdEntries.contains(entry)) {
                 throw new IllegalStateException("Entry already created: " + entry);
             }
 
             createdEntries.add(entry);
-            this.entries.computeIfAbsent(tag, k -> new HashSet<>()).add(entry);
+            entries.computeIfAbsent(tag, k -> new HashSet<>()).add(entry);
         }
 
-        public Builder put(TagKey<Item> tag, ResourceLocation... entries) {
-            for (var entry : entries) {
-                UnifyEntryImpl<Item> e = new UnifyEntryImpl<>(BuiltInRegistries.ITEM, entry);
-                put(tag, e);
+        public Builder put(TagKey<Item> tag, ResourceLocation... ids) {
+            for (var id : ids) {
+                put(tag, new UnificationEntryImpl<>(BuiltInRegistries.ITEM, id));
             }
 
             return this;
         }
 
-        public Builder put(TagKey<Item> tag, Item... entries) {
-            for (var entry : entries) {
-                UnifyEntryImpl<Item> e = new UnifyEntryImpl<>(BuiltInRegistries.ITEM, entry);
-                put(tag, e);
+        public Builder put(TagKey<Item> tag, Item... items) {
+            for (var item : items) {
+                put(tag, new UnificationEntryImpl<>(BuiltInRegistries.ITEM, item));
             }
 
             return this;
         }
 
         public UnifyLookup build(ModPriorities modPriorities, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
-            ImmutableMap.Builder<TagKey<Item>, Set<UnifyEntry<Item>>> entries = ImmutableMap.builder();
-            ImmutableMap.Builder<ResourceLocation, UnifyEntry<Item>> idEntriesToTag = ImmutableMap.builder();
+            ImmutableMap.Builder<TagKey<Item>, Set<UnificationEntry<Item>>> entries = ImmutableMap.builder();
+            ImmutableMap.Builder<ResourceLocation, UnificationEntry<Item>> idEntriesToTag = ImmutableMap.builder();
             this.entries.forEach((t, e) -> {
-                ImmutableSet.Builder<UnifyEntry<Item>> set = ImmutableSet.builder();
-                for (UnifyEntry<Item> entry : e) {
+                ImmutableSet.Builder<UnificationEntry<Item>> set = ImmutableSet.builder();
+                for (UnificationEntry<Item> entry : e) {
                     set.add(entry);
-                    ((UnifyEntryImpl<Item>) entry).bindTag(t);
+                    ((UnificationEntryImpl<Item>) entry).bindTag(t);
                     idEntriesToTag.put(entry.id(), entry);
                 }
 

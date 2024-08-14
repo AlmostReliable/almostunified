@@ -2,7 +2,7 @@ package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.UnifyEntry;
+import com.almostreliable.unified.api.UnificationEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -29,7 +29,7 @@ public final class ModPrioritiesImpl implements ModPriorities {
 
     @Nullable
     @Override
-    public UnifyEntry<Item> findPriorityOverrideItem(TagKey<Item> tag, List<UnifyEntry<Item>> items) {
+    public UnificationEntry<Item> findPriorityOverrideItem(TagKey<Item> tag, List<UnificationEntry<Item>> items) {
         String priorityOverride = getPriorityOverride(tag);
         if (priorityOverride == null) return null;
 
@@ -46,7 +46,7 @@ public final class ModPrioritiesImpl implements ModPriorities {
 
     @Nullable
     @Override
-    public UnifyEntry<Item> findTargetItem(TagKey<Item> tag, List<UnifyEntry<Item>> items) {
+    public UnificationEntry<Item> findTargetItem(TagKey<Item> tag, List<UnificationEntry<Item>> items) {
         var overrideEntry = findPriorityOverrideItem(tag, items);
         if (overrideEntry != null) {
             return overrideEntry;
@@ -66,7 +66,7 @@ public final class ModPrioritiesImpl implements ModPriorities {
     }
 
     @Nullable
-    private static UnifyEntry<Item> findItemByNamespace(List<UnifyEntry<Item>> items, String namespace) {
+    private static UnificationEntry<Item> findItemByNamespace(List<UnificationEntry<Item>> items, String namespace) {
         for (var item : items) {
             if (item.id().getNamespace().equals(namespace)) {
                 return item;

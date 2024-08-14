@@ -1,7 +1,7 @@
 package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.api.UnifyEntry;
+import com.almostreliable.unified.api.UnificationEntry;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.Utils;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
@@ -32,8 +32,8 @@ public class TagInheritance {
     }
 
     public boolean apply(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, List<? extends UnifyLookup> unifyHandlers) {
-        Multimap<UnifyEntry<Item>, ResourceLocation> changedItemTags = HashMultimap.create();
-        Multimap<UnifyEntry<Item>, ResourceLocation> changedBlockTags = HashMultimap.create();
+        Multimap<UnificationEntry<Item>, ResourceLocation> changedItemTags = HashMultimap.create();
+        Multimap<UnificationEntry<Item>, ResourceLocation> changedBlockTags = HashMultimap.create();
 
         var relations = resolveRelations(unifyHandlers);
         if (relations.isEmpty()) return false;
@@ -77,14 +77,14 @@ public class TagInheritance {
     }
 
     @Nullable
-    private Holder<Block> findTargetBlockHolder(VanillaTagWrapper<Block> tagMap, UnifyEntry<Item> targetItem) {
+    private Holder<Block> findTargetBlockHolder(VanillaTagWrapper<Block> tagMap, UnificationEntry<Item> targetItem) {
         var blockTags = tagMap.getTags(targetItem.id());
         if (blockTags.isEmpty()) return null;
 
         return BuiltInRegistries.BLOCK.getHolderOrThrow(ResourceKey.create(Registries.BLOCK, targetItem.id()));
     }
 
-    private Set<ResourceLocation> applyItemTags(VanillaTagWrapper<Item> vanillaTags, Holder<Item> targetItem, Set<TagKey<Item>> targetItemTags, UnifyEntry<Item> item) {
+    private Set<ResourceLocation> applyItemTags(VanillaTagWrapper<Item> vanillaTags, Holder<Item> targetItem, Set<TagKey<Item>> targetItemTags, UnificationEntry<Item> item) {
         var itemTags = vanillaTags.getTags(item);
         Set<ResourceLocation> changed = new HashSet<>();
 
@@ -98,7 +98,7 @@ public class TagInheritance {
         return changed;
     }
 
-    private Set<ResourceLocation> applyBlockTags(VanillaTagWrapper<Block> blockTagMap, Holder<Block> targetBlock, Set<TagKey<Item>> targetItemTags, UnifyEntry<Item> item) {
+    private Set<ResourceLocation> applyBlockTags(VanillaTagWrapper<Block> blockTagMap, Holder<Block> targetBlock, Set<TagKey<Item>> targetItemTags, UnificationEntry<Item> item) {
         var blockTags = blockTagMap.getTags(item.id());
         Set<ResourceLocation> changed = new HashSet<>();
 
@@ -162,8 +162,8 @@ public class TagInheritance {
      * @param target  The target item
      * @return A set of all items that are not the target item and are valid
      */
-    private Set<UnifyEntry<Item>> removeTargetItem(Collection<UnifyEntry<Item>> holders, UnifyEntry<Item> target) {
-        Set<UnifyEntry<Item>> result = new HashSet<>(holders.size());
+    private Set<UnificationEntry<Item>> removeTargetItem(Collection<UnificationEntry<Item>> holders, UnificationEntry<Item> target) {
+        Set<UnificationEntry<Item>> result = new HashSet<>(holders.size());
         for (var holder : holders) {
             if (!holder.equals(target)) {
                 result.add(holder);
@@ -173,7 +173,8 @@ public class TagInheritance {
         return result;
     }
 
-    private record TagRelation(TagKey<Item> tag, UnifyEntry<Item> targetItem, Set<UnifyEntry<Item>> items) {}
+    private record TagRelation(TagKey<Item> tag, UnificationEntry<Item> targetItem,
+                               Set<UnificationEntry<Item>> items) {}
 
     public enum Mode {
         ALLOW,

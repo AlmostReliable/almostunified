@@ -1,6 +1,6 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.UnifyEntry;
+import com.almostreliable.unified.api.UnificationEntry;
 import com.almostreliable.unified.api.UnifyHandler;
 import com.almostreliable.unified.api.UnifyLookup;
 import com.almostreliable.unified.utils.Utils;
@@ -51,7 +51,7 @@ public final class ItemHider {
             // avoid handling single entries and tags that only contain the same namespace for all items
             if (Utils.allSameNamespace(entriesByTag)) continue;
 
-            Set<UnifyEntry<Item>> replacements = new HashSet<>();
+            Set<UnificationEntry<Item>> replacements = new HashSet<>();
             for (var holder : entriesByTag) {
                 replacements.add(getReplacementForItem(handler, holder));
             }
@@ -90,7 +90,7 @@ public final class ItemHider {
      * @param entry  The holder to get the replacement for.
      * @return The replacement for the given item, or the item itself if no replacement is found.
      */
-    private static UnifyEntry<Item> getReplacementForItem(UnifyLookup repMap, UnifyEntry<Item> entry) {
+    private static UnificationEntry<Item> getReplacementForItem(UnifyLookup repMap, UnificationEntry<Item> entry) {
         var replacement = repMap.getItemReplacement(entry);
         if (replacement == null) return entry;
         return replacement;

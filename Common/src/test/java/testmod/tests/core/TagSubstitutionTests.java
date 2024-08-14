@@ -1,7 +1,7 @@
 package testmod.tests.core;
 
 import com.almostreliable.unified.api.AlmostUnified;
-import com.almostreliable.unified.api.UnifyEntry;
+import com.almostreliable.unified.api.UnificationEntry;
 import com.almostreliable.unified.api.UnifyLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -35,7 +35,7 @@ public class TagSubstitutionTests {
         UnifyLookup unifyLookup = AlmostUnified.INSTANCE.getRuntimeOrThrow().getUnifyLookup();
         TagKey<Item> unifyTag = unifyLookup.getRelevantItemTag(silverOreId);
         assertEquals(silverTag, unifyTag);
-        UnifyEntry<Item> silverOreEntry = unifyLookup.getTagTargetItem(silverTag);
+        UnificationEntry<Item> silverOreEntry = unifyLookup.getTagTargetItem(silverTag);
         assertEquals(silverOreId, silverOreEntry.id());
 
     }

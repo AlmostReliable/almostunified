@@ -142,19 +142,19 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     }
 
     @Override
-    public Collection<UnifyEntry<Item>> getEntries(TagKey<Item> tag) {
+    public Collection<UnificationEntry<Item>> getEntries(TagKey<Item> tag) {
         return unifyLookup.getEntries(tag);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getEntry(ResourceLocation entry) {
+    public UnificationEntry<Item> getEntry(ResourceLocation entry) {
         return unifyLookup.getEntry(entry);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getEntry(Item item) {
+    public UnificationEntry<Item> getEntry(Item item) {
         return unifyLookup.getEntry(item);
     }
 
@@ -178,31 +178,31 @@ public final class UnifyHandlerImpl implements UnifyHandler {
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getItemReplacement(ResourceLocation item) {
+    public UnificationEntry<Item> getItemReplacement(ResourceLocation item) {
         return unifyLookup.getItemReplacement(item);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getItemReplacement(Item item) {
+    public UnificationEntry<Item> getItemReplacement(Item item) {
         return unifyLookup.getItemReplacement(item);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getItemReplacement(Holder<Item> item) {
+    public UnificationEntry<Item> getItemReplacement(Holder<Item> item) {
         return unifyLookup.getItemReplacement(item);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag) {
+    public UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag) {
         return unifyLookup.getTagTargetItem(tag);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+    public UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
         return unifyLookup.getTagTargetItem(tag, itemFilter);
     }
 
