@@ -2,7 +2,7 @@ package com.almostreliable.unified.worldgen;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.AlmostUnified;
-import com.almostreliable.unified.api.UnifyLookup;
+import com.almostreliable.unified.api.UnificationHandler;
 import com.almostreliable.unified.mixin.neoforge.OreConfigurationAccessor;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
@@ -32,9 +32,9 @@ public class WorldGenUnifier {
     }
 
     public void process() {
-        var lookup = AlmostUnified.INSTANCE.getRuntimeOrThrow().getUnifyLookup();
+        var unificationHandler = AlmostUnified.INSTANCE.getRuntimeOrThrow().getUnificationHandler();
         cfRegistry.holders().forEach(holder -> {
-            switch (handleConfiguredFeature(lookup, holder)) {
+            switch (handleConfiguredFeature(unificationHandler, holder)) {
                 case SAME -> {
                     // do nothing
                 }
@@ -51,7 +51,7 @@ public class WorldGenUnifier {
         });
     }
 
-    private Result handleConfiguredFeature(UnifyLookup lookup, Holder<ConfiguredFeature<?, ?>> cfHolder) {
+    private Result handleConfiguredFeature(UnificationHandler unificationHandler, Holder<ConfiguredFeature<?, ?>> cfHolder) {
         if (!(cfHolder.value().config() instanceof OreConfiguration oreConfig)) {
             return Result.SAME;
         }
@@ -62,7 +62,7 @@ public class WorldGenUnifier {
         var it = newTargetStates.listIterator();
         while (it.hasNext()) {
             var currentTargetState = it.next();
-            if (handleTargetState(lookup, currentTargetState)) {
+            if (handleTargetState(unificationHandler, currentTargetState)) {
                 changed = true;
                 it.remove();
             }
@@ -76,14 +76,14 @@ public class WorldGenUnifier {
         return Result.SAME;
     }
 
-    private boolean handleTargetState(UnifyLookup lookup, OreConfiguration.TargetBlockState targetState) {
+    private boolean handleTargetState(UnificationHandler unificationHandler, OreConfiguration.TargetBlockState targetState) {
         var blockHolder = targetState.state.getBlockHolder();
         if (!(blockHolder instanceof Holder.Reference<Block> ref)) {
             return false;
         }
 
         var blockId = ref.key().location();
-        var replacement = lookup.getItemReplacement(blockId);
+        var replacement = unificationHandler.getItemReplacement(blockId);
         if (replacement == null || replacement.id().equals(blockId)) {
             return false;
         }

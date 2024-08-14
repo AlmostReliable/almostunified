@@ -1,8 +1,8 @@
 package testmod.tests;
 
 import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.UnifyLookup;
-import com.almostreliable.unified.impl.UnifyLookupImpl;
+import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.impl.UnificationHandlerImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
@@ -17,10 +17,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UnifyLookupTests {
+public class UnificationHandlerTests {
 
-    private UnifyLookup createLookup(ModPriorities modPriorities) {
-        return new UnifyLookupImpl.Builder()
+    private UnificationHandler createHandler(ModPriorities modPriorities) {
+        return new UnificationHandlerImpl.Builder()
                 .put(TestUtils.itemTag("testmod:ingots/osmium"),
                         ResourceLocation.parse("minecraft:osmium_ingot"),
                         ResourceLocation.parse("mekanism:osmium_ingot"),
@@ -43,7 +43,7 @@ public class UnifyLookupTests {
                 new HashMap<>()
         );
 
-        var rm = createLookup(modPriorities);
+        var rm = createHandler(modPriorities);
 
 
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
@@ -79,7 +79,7 @@ public class UnifyLookupTests {
                         m -> m.put(TestUtils.itemTag("testmod:ingots/electrum"), "create"))
         );
 
-        var rm = createLookup(modPriorities);
+        var rm = createHandler(modPriorities);
 
         assertEquals(ResourceLocation.parse("create:electrum_ingot"),
                 rm.getTagTargetItem(TestUtils.itemTag("testmod:ingots/electrum")).id(),
@@ -98,7 +98,7 @@ public class UnifyLookupTests {
                 new HashMap<>()
         );
 
-        var rm = createLookup(modPriorities);
+        var rm = createHandler(modPriorities);
 
         assertEquals(TestUtils.itemTag("testmod:ingots/osmium"),
                 rm.getRelevantItemTag(ResourceLocation.parse("mekanism:osmium_ingot")));
@@ -117,7 +117,7 @@ public class UnifyLookupTests {
                 new HashMap<>()
         );
 
-        var rm = createLookup(modPriorities);
+        var rm = createHandler(modPriorities);
 
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
                 rm.getItemReplacement(ResourceLocation.parse("mekanism:osmium_ingot")).id());
@@ -141,7 +141,7 @@ public class UnifyLookupTests {
 
     @SimpleGameTest
     public void testItemInUnifiedIngredient() {
-        var rm = new UnifyLookupImpl.Builder()
+        var rm = new UnificationHandlerImpl.Builder()
                 .put(TestUtils.itemTag("c:tools"), Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL)
                 .build(TestUtils.EMPTY_MOD_PRIORITIES,
                         TestUtils.EMPTY_VARIANT_LOOKUP,

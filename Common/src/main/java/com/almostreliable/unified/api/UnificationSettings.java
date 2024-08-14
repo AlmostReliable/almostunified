@@ -1,9 +1,9 @@
 package com.almostreliable.unified.api;
 
-import net.minecraft.resources.ResourceLocation;
 import com.almostreliable.unified.api.recipe.RecipeData;
+import net.minecraft.resources.ResourceLocation;
 
-public interface UnifySettings {
+public interface UnificationSettings {
 
     ModPriorities getModPriorities();
 

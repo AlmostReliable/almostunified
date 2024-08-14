@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class UnifyLookupImpl implements UnifyLookup {
+public class UnificationHandlerImpl implements UnificationHandler {
 
     private final ModPriorities modPriorities;
     private final StoneVariantLookup stoneVariantLookup;
@@ -23,7 +23,7 @@ public class UnifyLookupImpl implements UnifyLookup {
     private final Map<TagKey<Item>, Set<UnificationEntry<Item>>> entries;
     private final Map<ResourceLocation, UnificationEntry<Item>> idEntriesToTag;
 
-    private UnifyLookupImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnificationEntry<Item>>> entries, Map<ResourceLocation, UnificationEntry<Item>> idEntriesToTag, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
+    private UnificationHandlerImpl(ModPriorities modPriorities, Map<TagKey<Item>, Set<UnificationEntry<Item>>> entries, Map<ResourceLocation, UnificationEntry<Item>> idEntriesToTag, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
         this.entries = entries;
         this.idEntriesToTag = idEntriesToTag;
         this.modPriorities = modPriorities;
@@ -113,10 +113,10 @@ public class UnifyLookupImpl implements UnifyLookup {
     @Nullable
     @Override
     public UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
-        var tagToLookup = tagSubstitutions.getSubstituteTag(tag);
-        if (tagToLookup == null) tagToLookup = tag;
+        var relevantTag = tagSubstitutions.getSubstituteTag(tag);
+        if (relevantTag == null) relevantTag = tag;
 
-        var items = getEntries(tagToLookup)
+        var items = getEntries(relevantTag)
                 .stream()
                 .filter(entry -> itemFilter.test(entry.id()))
                 // clean stone variant first in case of a stone variant tag
@@ -125,7 +125,7 @@ public class UnifyLookupImpl implements UnifyLookup {
 
         if (items.isEmpty()) return null;
 
-        return modPriorities.findTargetItem(tagToLookup, items);
+        return modPriorities.findTargetItem(relevantTag, items);
     }
 
     @Override
@@ -182,7 +182,7 @@ public class UnifyLookupImpl implements UnifyLookup {
             return this;
         }
 
-        public UnifyLookup build(ModPriorities modPriorities, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
+        public UnificationHandler build(ModPriorities modPriorities, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
             ImmutableMap.Builder<TagKey<Item>, Set<UnificationEntry<Item>>> entries = ImmutableMap.builder();
             ImmutableMap.Builder<ResourceLocation, UnificationEntry<Item>> idEntriesToTag = ImmutableMap.builder();
             this.entries.forEach((t, e) -> {
@@ -197,7 +197,7 @@ public class UnifyLookupImpl implements UnifyLookup {
             });
 
             var map = entries.build();
-            return new UnifyLookupImpl(modPriorities,
+            return new UnificationHandlerImpl(modPriorities,
                     map,
                     idEntriesToTag.build(),
                     stoneVariantLookup,

@@ -2,7 +2,7 @@ package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.UnifyHandler;
+import com.almostreliable.unified.api.ConfiguredUnificationHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -22,12 +22,12 @@ public final class AlmostKube {
 
     @Nullable
     public static String getRelevantItemTag(ItemStack stack) {
-        var tag = getRuntime().getUnifyLookup().getRelevantItemTag(getId(stack));
+        var tag = getRuntime().getUnificationHandler().getRelevantItemTag(getId(stack));
         return tag == null ? null : tag.location().toString();
     }
 
     public static ItemStack getItemReplacement(ItemStack stack) {
-        var entry = getRuntime().getUnifyLookup().getItemReplacement(getId(stack));
+        var entry = getRuntime().getUnificationHandler().getItemReplacement(getId(stack));
         if (entry == null) return ItemStack.EMPTY;
 
         return entry.value().getDefaultInstance();
@@ -35,7 +35,7 @@ public final class AlmostKube {
 
     public static ItemStack getTagTargetItem(ResourceLocation tag) {
         var tagKey = TagKey.create(Registries.ITEM, tag);
-        var entry = getRuntime().getUnifyLookup().getTagTargetItem(tagKey);
+        var entry = getRuntime().getUnificationHandler().getTagTargetItem(tagKey);
         if (entry == null) return ItemStack.EMPTY;
 
         return entry.value().getDefaultInstance();
@@ -43,7 +43,7 @@ public final class AlmostKube {
 
     public static Set<String> getTags() {
         return getRuntime()
-                .getUnifyLookup()
+                .getUnificationHandler()
                 .getUnifiedTags()
                 .stream()
                 .map(tag -> tag.location().toString())
@@ -53,20 +53,20 @@ public final class AlmostKube {
     public static Set<String> getItemIds(ResourceLocation tag) {
         var tagKey = TagKey.create(Registries.ITEM, tag);
         return getRuntime()
-                .getUnifyLookup()
+                .getUnificationHandler()
                 .getEntries(tagKey)
                 .stream()
                 .map(holder -> holder.id().toString())
                 .collect(Collectors.toSet());
     }
 
-    public static Collection<? extends UnifyHandler> getUnifyHandlers() {
-        return getRuntime().getUnifyHandlers();
+    public static Collection<? extends ConfiguredUnificationHandler> getUnificationHandlers() {
+        return getRuntime().getConfiguredUnificationHandlers();
     }
 
     @Nullable
-    public static UnifyHandler getUnifyHandler(String name) {
-        return getRuntime().getUnifyHandler(name);
+    public static ConfiguredUnificationHandler getUnificationHandler(String name) {
+        return getRuntime().getUnificationHandler(name);
     }
 
     private static AlmostUnifiedRuntime getRuntime() {

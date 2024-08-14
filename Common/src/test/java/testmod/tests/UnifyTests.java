@@ -1,8 +1,8 @@
 package testmod.tests;
 
 import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.UnifyLookup;
-import com.almostreliable.unified.impl.UnifyLookupImpl;
+import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.impl.UnificationHandlerImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,8 +26,8 @@ public class UnifyTests {
             "thermal",
             "create"), new HashMap<>());
 
-    public static UnifyLookup unifyLookup() {
-        return new UnifyLookupImpl.Builder()
+    public static UnificationHandler unificationHandler() {
+        return new UnificationHandlerImpl.Builder()
                 .put(itemTag("testmod:ingots/iron"), Items.IRON_INGOT)
                 .build(MOD_PRIORITIES, EMPTY_VARIANT_LOOKUP, EMPTY_TAG_SUBSTITUTIONS);
     }
@@ -38,7 +38,7 @@ public class UnifyTests {
 
     @SimpleGameTest
     public void test() {
-        var rm = unifyLookup();
+        var rm = unificationHandler();
         var recipe = json("""
                 {
                   "type": "minecraft:crafting_shaped",

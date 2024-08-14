@@ -11,7 +11,7 @@ public class CommonTest {
         if (gametestEnabled) {
             GameTestLoader.registerProviders(
                     ExampleTest.class,
-                    UnifyLookupTests.class,
+                    UnificationHandlerTests.class,
                     ReplacementsTests.class,
                     UnifyTests.class,
                     ShapedRecipeUnifierTests.class,

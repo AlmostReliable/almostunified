@@ -48,7 +48,7 @@ public class AlmostUnifiedImpl implements AlmostUnified {
             return null;
         }
 
-        var replacement = runtime.getUnifyLookup().getItemReplacement(id);
+        var replacement = runtime.getUnificationHandler().getItemReplacement(id);
         if (replacement == null) {
             return null;
         }
@@ -64,7 +64,7 @@ public class AlmostUnifiedImpl implements AlmostUnified {
             return null;
         }
 
-        var replacement = runtime.getUnifyLookup().getTagTargetItem(tag);
+        var replacement = runtime.getUnificationHandler().getTagTargetItem(tag);
         if (replacement == null) {
             return null;
         }
@@ -80,7 +80,7 @@ public class AlmostUnifiedImpl implements AlmostUnified {
             return null;
         }
 
-        return runtime.getUnifyLookup().getRelevantItemTag(itemLike.asItem());
+        return runtime.getUnificationHandler().getRelevantItemTag(itemLike.asItem());
     }
 
     @Override
@@ -90,7 +90,7 @@ public class AlmostUnifiedImpl implements AlmostUnified {
             return Set.of();
         }
 
-        var entries = runtime.getUnifyLookup().getEntries(tag);
+        var entries = runtime.getUnificationHandler().getEntries(tag);
 
         return entries
                 .stream()
@@ -105,6 +105,6 @@ public class AlmostUnifiedImpl implements AlmostUnified {
             return Set.of();
         }
 
-        return runtime.getUnifyLookup().getUnifiedTags();
+        return runtime.getUnificationHandler().getUnifiedTags();
     }
 }

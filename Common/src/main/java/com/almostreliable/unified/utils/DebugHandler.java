@@ -1,6 +1,6 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.api.UnifyLookup;
+import com.almostreliable.unified.api.UnificationHandler;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.recipe.RecipeLink;
@@ -46,9 +46,9 @@ public final class DebugHandler {
         this.recipesBefore = recipesBefore;
     }
 
-    public static DebugHandler onRunStart(Map<ResourceLocation, JsonElement> recipes, UnifyLookup unifyLookup) {
+    public static DebugHandler onRunStart(Map<ResourceLocation, JsonElement> recipes, UnificationHandler unificationHandler) {
         DebugHandler handler = new DebugHandler(recipes.size());
-        handler.dumpTags(unifyLookup);
+        handler.dumpTags(unificationHandler);
         handler.dumpRecipes(RECIPES_BEFORE, recipes);
         return handler;
     }
@@ -70,18 +70,18 @@ public final class DebugHandler {
         dumpDuplicates();
     }
 
-    private void dumpTags(UnifyLookup unifyLookup) {
+    private void dumpTags(UnificationHandler unificationHandler) {
         if (!config.shouldDumpTags()) return;
 
-        int maxLength = getMaxLength(unifyLookup.getUnifiedTags(), t -> t.location().toString().length());
+        int maxLength = getMaxLength(unificationHandler.getUnifiedTags(), t -> t.location().toString().length());
 
         FileUtils.writeDebugLog(TAGS, sb -> sb
                 .append(lastRun).append("\n")
-                .append(unifyLookup
+                .append(unificationHandler
                         .getUnifiedTags()
                         .stream()
                         .map(t -> rf(t.location(), maxLength) + " => " +
-                                  unifyLookup
+                                  unificationHandler
                                           .getEntries(t)
                                           .stream()
                                           .map(entry -> entry.id().toString())

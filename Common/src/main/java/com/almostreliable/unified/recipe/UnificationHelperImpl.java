@@ -1,6 +1,6 @@
 package com.almostreliable.unified.recipe;
 
-import com.almostreliable.unified.api.UnifyLookup;
+import com.almostreliable.unified.api.UnificationHandler;
 import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.UnificationHelper;
@@ -17,15 +17,15 @@ import javax.annotation.Nullable;
 
 public class UnificationHelperImpl implements UnificationHelper {
 
-    private final UnifyLookup unifyLookup;
+    private final UnificationHandler unificationHandler;
 
-    public UnificationHelperImpl(UnifyLookup unifyLookup) {
-        this.unifyLookup = unifyLookup;
+    public UnificationHelperImpl(UnificationHandler unificationHandler) {
+        this.unificationHandler = unificationHandler;
     }
 
     @Override
-    public UnifyLookup getLookup() {
-        return unifyLookup;
+    public UnificationHandler getUnificationHandler() {
+        return unificationHandler;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class UnificationHelperImpl implements UnificationHelper {
         if (!(jsonObject.get(RecipeConstants.TAG) instanceof JsonPrimitive jsonPrimitive)) return false;
 
         var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(jsonPrimitive.getAsString()));
-        var substituteTag = unifyLookup.getTagSubstitutions().getSubstituteTag(tag);
+        var substituteTag = unificationHandler.getTagSubstitutions().getSubstituteTag(tag);
         if (substituteTag == null) return false;
 
         jsonObject.addProperty(RecipeConstants.TAG, substituteTag.location().toString());
@@ -98,7 +98,7 @@ public class UnificationHelperImpl implements UnificationHelper {
         if (!(jsonObject.get(RecipeConstants.ITEM) instanceof JsonPrimitive jsonPrimitive)) return false;
 
         ResourceLocation item = ResourceLocation.parse(jsonPrimitive.getAsString());
-        var tag = unifyLookup.getRelevantItemTag(item);
+        var tag = unificationHandler.getRelevantItemTag(item);
         if (tag != null) {
             jsonObject.remove(RecipeConstants.ITEM);
             jsonObject.addProperty(RecipeConstants.TAG, tag.location().toString());
@@ -180,7 +180,7 @@ public class UnificationHelperImpl implements UnificationHelper {
         var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(jsonPrimitive.getAsString()));
 
         if (tagsToItems) {
-            var entry = unifyLookup.getTagTargetItem(tag);
+            var entry = unificationHandler.getTagTargetItem(tag);
             if (entry == null) return false;
 
             jsonObject.remove(RecipeConstants.TAG);
@@ -188,7 +188,7 @@ public class UnificationHelperImpl implements UnificationHelper {
             return true;
         }
 
-        var substituteTag = unifyLookup.getTagSubstitutions().getSubstituteTag(tag);
+        var substituteTag = unificationHandler.getTagSubstitutions().getSubstituteTag(tag);
         if (substituteTag == null) return false;
 
         jsonObject.addProperty(RecipeConstants.TAG, substituteTag.location().toString());
@@ -217,7 +217,7 @@ public class UnificationHelperImpl implements UnificationHelper {
     @Nullable
     public JsonPrimitive handleOutputItemReplacement(JsonPrimitive jsonPrimitive) {
         ResourceLocation item = ResourceLocation.parse(jsonPrimitive.getAsString());
-        var entry = unifyLookup.getItemReplacement(item);
+        var entry = unificationHandler.getItemReplacement(item);
         if (entry == null || entry.id().equals(item)) return null;
         return new JsonPrimitive(entry.id().toString());
     }

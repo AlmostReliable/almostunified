@@ -20,7 +20,7 @@ public interface AlmostUnified {
     /**
      * The default instance of Almost Unified.
      * <p>
-     * If unavailable, it will return an empty lookup instance which
+     * If unavailable, it will return an empty instance which
      * only returns empty default values for each method.
      */
     AlmostUnified INSTANCE = ServiceLoader.load(AlmostUnified.class).findFirst().orElseGet(Empty::new);

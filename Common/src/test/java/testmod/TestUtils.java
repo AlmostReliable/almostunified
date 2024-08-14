@@ -3,10 +3,10 @@ package testmod;
 import com.almostreliable.unified.api.ModPriorities;
 import com.almostreliable.unified.api.StoneVariantLookup;
 import com.almostreliable.unified.api.TagSubstitutions;
-import com.almostreliable.unified.api.UnifyLookup;
+import com.almostreliable.unified.api.UnificationHandler;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.recipe.UnificationHelper;
-import com.almostreliable.unified.impl.UnifyLookupImpl;
+import com.almostreliable.unified.impl.UnificationHandlerImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import com.almostreliable.unified.recipe.RecipeJsonImpl;
 import com.almostreliable.unified.recipe.RecipeLink;
@@ -90,8 +90,8 @@ public class TestUtils {
     }
 
 
-    public static UnifyLookup unifyLookup() {
-        return new UnifyLookupImpl.Builder()
+    public static UnificationHandler unificationHandler() {
+        return new UnificationHandlerImpl.Builder()
                 .put(itemTag("testmod:test_tag"),
                         ResourceLocation.parse("minecraft:test_item"),
                         ResourceLocation.parse("mekanism:test_item"),
@@ -102,7 +102,7 @@ public class TestUtils {
 
 
     public static UnificationHelper recipeHelper() {
-        return new UnificationHelperImpl(unifyLookup());
+        return new UnificationHelperImpl(unificationHandler());
     }
 
     public static void assertUnify(RecipeUnifier unifier, String jsonActual, String jsonExpected) {

@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 
-public interface RecipeUnifyHandler {
+public interface RecipeUnificationHandler {
 
     void run(Map<ResourceLocation, JsonElement> recipes);
 }

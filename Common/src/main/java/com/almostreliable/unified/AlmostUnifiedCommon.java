@@ -5,7 +5,7 @@ import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.StartupConfig;
 import com.almostreliable.unified.impl.AlmostUnifiedRuntimeImpl;
 import com.almostreliable.unified.loot.LootUnification;
-import com.almostreliable.unified.recipe.RecipeUnifyHandler;
+import com.almostreliable.unified.recipe.RecipeUnificationHandler;
 import com.almostreliable.unified.utils.CustomLogger;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import com.google.common.base.Preconditions;
@@ -40,10 +40,10 @@ public final class AlmostUnifiedCommon {
     public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes, HolderLookup.Provider registries) {
         Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
 
-        if (RUNTIME instanceof RecipeUnifyHandler handler) {
+        if (RUNTIME instanceof RecipeUnificationHandler handler) {
             handler.run(recipes);
         } else {
-            throw new IllegalStateException("Runtime is not a RecipeUnifyHandler");
+            throw new IllegalStateException("Runtime is not a RecipeUnificationHandler");
         }
 
         LootUnification.unifyLoot(RUNTIME, registries);

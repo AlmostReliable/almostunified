@@ -13,32 +13,32 @@ import java.util.Collection;
 public interface AlmostUnifiedRuntime {
 
     /**
-     * Returns a composition of all {@link UnifyHandler}s.
+     * Returns a composition of all {@link ConfiguredUnificationHandler}s.
      * <p>
-     * Because {@link UnifyHandler}s include config-specific settings, and are thus not composable, the composition is
-     * returned as a {@link UnifyLookup}.
+     * Because {@link ConfiguredUnificationHandler}s include config-specific settings, and are thus not composable, the
+     * composition is returned as a {@link UnificationHandler}.
      *
-     * @return the {@link UnifyHandler} composition as a {@link UnifyLookup}
+     * @return the {@link ConfiguredUnificationHandler} composition as a {@link UnificationHandler}
      */
-    UnifyLookup getUnifyLookup();
+    UnificationHandler getUnificationHandler();
 
     /**
-     * Returns an unmodifiable collection of all {@link UnifyHandler}s.
+     * Returns an unmodifiable collection of all {@link ConfiguredUnificationHandler}s.
      *
-     * @return the {@link UnifyHandler} collection
+     * @return the {@link ConfiguredUnificationHandler} collection
      */
-    Collection<? extends UnifyHandler> getUnifyHandlers();
+    Collection<? extends ConfiguredUnificationHandler> getConfiguredUnificationHandlers();
 
     /**
-     * Returns the {@link UnifyHandler} with the given name.
+     * Returns the {@link ConfiguredUnificationHandler} with the given name.
      * <p>
-     * The name of a {@link UnifyHandler} is the name of the config file it was created from.
+     * The name of a {@link ConfiguredUnificationHandler} is the name of the config file it was created from.
      *
-     * @param name the name of the {@link UnifyHandler}
-     * @return the {@link UnifyHandler} with the given name or null if not found
+     * @param name the name of the {@link ConfiguredUnificationHandler}
+     * @return the {@link ConfiguredUnificationHandler} with the given name or null if not found
      */
     @Nullable
-    UnifyHandler getUnifyHandler(String name);
+    ConfiguredUnificationHandler getUnificationHandler(String name);
 
     /**
      * Returns the {@link TagSubstitutions} instance.

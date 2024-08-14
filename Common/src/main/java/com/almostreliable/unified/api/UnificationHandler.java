@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-public interface UnifyLookup {
+public interface UnificationHandler {
 
     /**
      * Get all available tags, which are used for the unification process.

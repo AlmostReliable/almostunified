@@ -25,7 +25,7 @@ public class ArmorItemMixin {
         if (runtime == null) return;
 
         Ingredient repairIngredient = material.value().repairIngredient().get();
-        if (runtime.getUnifyLookup().isItemInUnifiedIngredient(repairIngredient, repairCandidate)) {
+        if (runtime.getUnificationHandler().isItemInUnifiedIngredient(repairIngredient, repairCandidate)) {
             cir.setReturnValue(true);
         }
     }

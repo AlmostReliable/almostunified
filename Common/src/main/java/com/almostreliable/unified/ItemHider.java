@@ -1,8 +1,8 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.ConfiguredUnificationHandler;
 import com.almostreliable.unified.api.UnificationEntry;
-import com.almostreliable.unified.api.UnifyHandler;
-import com.almostreliable.unified.api.UnifyLookup;
+import com.almostreliable.unified.api.UnificationHandler;
 import com.almostreliable.unified.utils.Utils;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.Holder;
@@ -23,7 +23,7 @@ public final class ItemHider {
 
     private ItemHider() {}
 
-    public static void applyHideTags(VanillaTagWrapper<Item> tags, Collection<UnifyHandler> handlers, boolean emiHidingStrict) {
+    public static void applyHideTags(VanillaTagWrapper<Item> tags, Collection<ConfiguredUnificationHandler> handlers, boolean emiHidingStrict) {
         for (var handler : handlers) {
             if (handler.shouldHideVariantItems()) {
                 applyHideTags(tags, handler);
@@ -35,14 +35,14 @@ public final class ItemHider {
         }
     }
 
-    public static void applyHideTags(VanillaTagWrapper<Item> tags, UnifyHandler handler) {
+    public static void applyHideTags(VanillaTagWrapper<Item> tags, ConfiguredUnificationHandler handler) {
         var holdersToHide = createHidingItems(handler);
         for (Holder<Item> holder : holdersToHide) {
             tags.add(HIDE_TAG.location(), holder);
         }
     }
 
-    public static Set<Holder<Item>> createHidingItems(UnifyHandler handler) {
+    public static Set<Holder<Item>> createHidingItems(ConfiguredUnificationHandler handler) {
         Set<Holder<Item>> hidings = new HashSet<>();
 
         for (TagKey<Item> tag : handler.getUnifiedTags()) {
@@ -90,7 +90,7 @@ public final class ItemHider {
      * @param entry  The holder to get the replacement for.
      * @return The replacement for the given item, or the item itself if no replacement is found.
      */
-    private static UnificationEntry<Item> getReplacementForItem(UnifyLookup repMap, UnificationEntry<Item> entry) {
+    private static UnificationEntry<Item> getReplacementForItem(UnificationHandler repMap, UnificationEntry<Item> entry) {
         var replacement = repMap.getItemReplacement(entry);
         if (replacement == null) return entry;
         return replacement;

@@ -1,10 +1,10 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.api.ConfiguredUnificationHandler;
 import com.almostreliable.unified.api.RecipeUnifierRegistry;
-import com.almostreliable.unified.api.UnifyHandler;
-import com.almostreliable.unified.api.UnifyLookup;
-import com.almostreliable.unified.api.UnifySettings;
+import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.api.UnificationSettings;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.config.Config;
@@ -27,18 +27,18 @@ import java.util.stream.Collectors;
 public class RecipeTransformer {
 
     private final RecipeUnifierRegistry factory;
-    private final Collection<? extends UnifyHandler> unifyHandlers;
+    private final Collection<? extends ConfiguredUnificationHandler> configuredUnificationHandlers;
     private final DuplicateConfig duplicateConfig;
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(RecipeUnifierRegistry factory, Collection<? extends UnifyHandler> unifyHandlers) {
+    public RecipeTransformer(RecipeUnifierRegistry factory, Collection<? extends ConfiguredUnificationHandler> configuredUnificationHandlers) {
         this.factory = factory;
-        this.unifyHandlers = unifyHandlers;
+        this.configuredUnificationHandlers = configuredUnificationHandlers;
         this.duplicateConfig = Config.load(DuplicateConfig.NAME, DuplicateConfig.SERIALIZER);
     }
 
     /**
-     * Transforms a map of recipes. This method will modify the map in-place. Part of the transformation is to unify recipes with the given {@link UnifyLookup}.
+     * Transforms a map of recipes. This method will modify the map in-place. Part of the transformation is to unify recipes with the given {@link UnificationHandler}.
      * After unification, recipes will be checked for duplicates. All duplicates will be removed from the map.
      *
      * @param recipes The map of recipes to transform.
@@ -63,7 +63,7 @@ public class RecipeTransformer {
                 transformationTimer.stop()
         );
 
-        unifyHandlers.forEach(UnifySettings::clearCache);
+        configuredUnificationHandlers.forEach(UnificationSettings::clearCache);
         duplicateConfig.clearCache();
 
         if (tracker != null) recipes.putAll(tracker.compute());
@@ -71,7 +71,7 @@ public class RecipeTransformer {
     }
 
     /**
-     * Transforms a list of recipes. Part of the transformation is to unify recipes with the given {@link UnifyLookup}.
+     * Transforms a list of recipes. Part of the transformation is to unify recipes with the given {@link UnificationHandler}.
      * After unification, recipes will be checked for duplicates.
      * All duplicates will be removed from <b>{@code Map<ResourceLocation, JsonElement> allRecipes}</b>,
      * while unified recipes will replace the original recipes in the map.
@@ -171,7 +171,7 @@ public class RecipeTransformer {
             JsonObject recipeCopy = recipe.getOriginal().deepCopy();
             RecipeJson json = new RecipeJsonImpl(recipe.getId(), recipeCopy);
 
-            for (var handler : unifyHandlers) {
+            for (var handler : configuredUnificationHandlers) {
                 if (!handler.shouldIncludeRecipe(recipe)) {
                     continue;
                 }
