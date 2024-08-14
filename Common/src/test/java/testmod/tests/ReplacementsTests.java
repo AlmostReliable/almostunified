@@ -3,7 +3,6 @@ package testmod.tests;
 import com.almostreliable.unified.config.PlaceholderConfig;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
 import testmod.gametest_core.SimpleGameTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,14 +27,14 @@ public class ReplacementsTests {
     @SimpleGameTest
     public void testInflate() {
         var placeholderConfig = PlaceholderConfig.SERIALIZER.handleDeserialization(INFLATE_PLACEHOLDERS);
-        var result = placeholderConfig.inflate("c:{type}/{material}");
+        var result = placeholderConfig.apply("c:{type}/{material}");
 
         assertEquals(6, result.size());
-        assertTrue(result.contains(ResourceLocation.tryParse("c:gems/iron")));
-        assertTrue(result.contains(ResourceLocation.tryParse("c:gems/gold")));
-        assertTrue(result.contains(ResourceLocation.tryParse("c:rods/iron")));
-        assertTrue(result.contains(ResourceLocation.tryParse("c:rods/gold")));
-        assertTrue(result.contains(ResourceLocation.tryParse("c:raw_materials/iron")));
-        assertTrue(result.contains(ResourceLocation.tryParse("c:raw_materials/gold")));
+        assertTrue(result.contains("c:gems/iron"));
+        assertTrue(result.contains("c:gems/gold"));
+        assertTrue(result.contains("c:rods/iron"));
+        assertTrue(result.contains("c:rods/gold"));
+        assertTrue(result.contains("c:raw_materials/iron"));
+        assertTrue(result.contains("c:raw_materials/gold"));
     }
 }

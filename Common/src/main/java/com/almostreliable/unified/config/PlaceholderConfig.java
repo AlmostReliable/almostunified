@@ -1,15 +1,14 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.Placeholders;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
 public final class PlaceholderConfig extends Config implements Placeholders {
@@ -17,67 +16,47 @@ public final class PlaceholderConfig extends Config implements Placeholders {
     public static final String NAME = "placeholders";
     public static final PlaceholderSerializer SERIALIZER = new PlaceholderSerializer();
 
-    private final Map<String, Collection<String>> replacements;
+    private final Map<String, Collection<String>> placeholders;
 
-    private PlaceholderConfig(Map<String, Collection<String>> replacements) {
+    private PlaceholderConfig(Map<String, Collection<String>> placeholders) {
         super(NAME);
-        this.replacements = replacements;
-    }
-
-    private Collection<String> inflate(Collection<String> input, String key, Collection<String> replacements) {
-        Set<String> result = new HashSet<>();
-        for (String value : input) {
-            for (String replacement : replacements) {
-                result.add(value.replace(key, replacement));
-            }
-        }
-
-        return result;
+        this.placeholders = placeholders;
     }
 
     @Override
-    public Collection<ResourceLocation> inflate(String str) {
-        Collection<String> inputs = new HashSet<>();
-        inputs.add(str);
-        for (var entry : replacements.entrySet()) {
-            inputs = inflate(inputs, "{" + entry.getKey() + "}", entry.getValue());
-        }
-
-        Set<ResourceLocation> result = new HashSet<>();
-        Set<String> invalid = new HashSet<>();
-        for (String input : inputs) {
-            var rl = ResourceLocation.tryParse(input);
-            if (rl == null) {
-                invalid.add(input);
-                continue;
-            }
-
-            result.add(rl);
-        }
-
-        if (!invalid.isEmpty()) {
-            AlmostUnifiedCommon.LOGGER.warn(
-                    "The following input '{}' could not be parsed into a ResourceLocation. Reason could be missing placeholder or invalid characters. Skipping. Generated values: {}",
-                    str,
-                    invalid);
-        }
-
-        return result;
+    public Collection<String> apply(String str) {
+        AtomicReference<Collection<String>> inflated = new AtomicReference<>(new HashSet<>());
+        inflated.get().add(str);
+        forEach((placeholder, replacements) -> inflated.set(inflate(inflated.get(), placeholder, replacements)));
+        return inflated.get();
     }
 
     @Override
-    public Collection<String> getKeys() {
-        return Collections.unmodifiableCollection(replacements.keySet());
+    public Collection<String> getPlaceholders() {
+        return Collections.unmodifiableCollection(placeholders.keySet());
     }
 
     @Override
-    public Collection<String> getValues(String key) {
-        return replacements.getOrDefault(key, Collections.emptyList());
+    public Collection<String> getReplacements(String placeholder) {
+        return placeholders.getOrDefault(placeholder, Collections.emptyList());
     }
 
     @Override
     public void forEach(BiConsumer<String, Collection<String>> consumer) {
-        replacements.forEach(consumer);
+        placeholders.forEach(consumer);
+    }
+
+    private static Collection<String> inflate(Collection<String> values, String placeholder, Collection<String> replacements) {
+        String formattedPlaceholder = "{" + placeholder + "}";
+        Set<String> result = new HashSet<>();
+
+        for (String value : values) {
+            for (String replacement : replacements) {
+                result.add(value.replace(formattedPlaceholder, replacement));
+            }
+        }
+
+        return result;
     }
 
     public static final class PlaceholderSerializer extends Config.Serializer<PlaceholderConfig> {
@@ -114,7 +93,7 @@ public final class PlaceholderConfig extends Config implements Placeholders {
         @Override
         public JsonObject serialize(PlaceholderConfig config) {
             JsonObject json = new JsonObject();
-            for (var entry : config.replacements.entrySet()) {
+            for (var entry : config.placeholders.entrySet()) {
                 json.add(entry.getKey(), JsonUtils.toArray(entry.getValue()));
             }
 

@@ -148,8 +148,10 @@ public final class UnifyConfig extends Config {
 
         Set<TagKey<Item>> result = new HashSet<>();
         for (var unbakedTag : unbakedTags) {
-            var inflate = placeholders.inflate(unbakedTag);
-            for (var rl : inflate) {
+            var rawTags = placeholders.apply(unbakedTag);
+            for (var rawTag : rawTags) {
+                ResourceLocation rl = ResourceLocation.tryParse(rawTag);
+                if (rl == null) continue;
                 var tag = TagKey.create(Registries.ITEM, rl);
                 if (ignoredTags.contains(tag)) continue;
                 if (result.contains(tag)) continue;
