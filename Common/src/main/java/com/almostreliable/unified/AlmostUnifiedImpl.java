@@ -48,7 +48,7 @@ public class AlmostUnifiedImpl implements AlmostUnified {
             return null;
         }
 
-        var replacement = runtime.getUnifyLookup().getReplacementForItem(id);
+        var replacement = runtime.getUnifyLookup().getItemReplacement(id);
         if (replacement == null) {
             return null;
         }
@@ -58,13 +58,13 @@ public class AlmostUnifiedImpl implements AlmostUnified {
 
     @Nullable
     @Override
-    public Item getPreferredItemForTag(TagKey<Item> tag) {
+    public Item getTagTargetItem(TagKey<Item> tag) {
         AlmostUnifiedRuntime runtime = getRuntime();
         if (runtime == null) {
             return null;
         }
 
-        var replacement = runtime.getUnifyLookup().getPreferredEntryForTag(tag);
+        var replacement = runtime.getUnifyLookup().getTagTargetItem(tag);
         if (replacement == null) {
             return null;
         }
@@ -74,13 +74,13 @@ public class AlmostUnifiedImpl implements AlmostUnified {
 
     @Nullable
     @Override
-    public TagKey<Item> getPreferredTagForItem(ItemLike itemLike) {
+    public TagKey<Item> getRelevantItemTag(ItemLike itemLike) {
         AlmostUnifiedRuntime runtime = getRuntime();
         if (runtime == null) {
             return null;
         }
 
-        return runtime.getUnifyLookup().getPreferredTagForItem(itemLike.asItem());
+        return runtime.getUnifyLookup().getRelevantItemTag(itemLike.asItem());
     }
 
     @Override

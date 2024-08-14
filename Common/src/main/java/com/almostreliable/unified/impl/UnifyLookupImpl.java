@@ -55,7 +55,7 @@ public class UnifyLookupImpl implements UnifyLookup {
 
     @Nullable
     @Override
-    public TagKey<Item> getPreferredTagForItem(ResourceLocation item) {
+    public TagKey<Item> getRelevantItemTag(ResourceLocation item) {
         UnifyEntry<Item> entry = idEntriesToTag.get(item);
         if (entry == null) {
             return null;
@@ -66,53 +66,53 @@ public class UnifyLookupImpl implements UnifyLookup {
 
     @Nullable
     @Override
-    public TagKey<Item> getPreferredTagForItem(Item item) {
-        return getPreferredTagForItem(BuiltInRegistries.ITEM.getKey(item));
+    public TagKey<Item> getRelevantItemTag(Item item) {
+        return getRelevantItemTag(BuiltInRegistries.ITEM.getKey(item));
     }
 
     @Nullable
     @Override
-    public TagKey<Item> getPreferredTagForItem(Holder<Item> item) {
-        return getPreferredTagForItem(item.value());
+    public TagKey<Item> getRelevantItemTag(Holder<Item> item) {
+        return getRelevantItemTag(item.value());
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getReplacementForItem(ResourceLocation item) {
-        var t = getPreferredTagForItem(item);
+    public UnifyEntry<Item> getItemReplacement(ResourceLocation item) {
+        var t = getRelevantItemTag(item);
         if (t == null) {
             return null;
         }
 
         if (stoneVariantLookup.isOreTag(t)) {
             String stone = stoneVariantLookup.getStoneVariant(item);
-            return getPreferredEntryForTag(t, i -> stone.equals(stoneVariantLookup.getStoneVariant(i)));
+            return getTagTargetItem(t, i -> stone.equals(stoneVariantLookup.getStoneVariant(i)));
         }
 
-        return getPreferredEntryForTag(t);
+        return getTagTargetItem(t);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getReplacementForItem(Item item) {
-        return getReplacementForItem(BuiltInRegistries.ITEM.getKey(item));
+    public UnifyEntry<Item> getItemReplacement(Item item) {
+        return getItemReplacement(BuiltInRegistries.ITEM.getKey(item));
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getReplacementForItem(Holder<Item> item) {
-        return getReplacementForItem(BuiltInRegistries.ITEM.getKey(item.value()));
+    public UnifyEntry<Item> getItemReplacement(Holder<Item> item) {
+        return getItemReplacement(BuiltInRegistries.ITEM.getKey(item.value()));
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag) {
-        return getPreferredEntryForTag(tag, i -> true);
+    public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag) {
+        return getTagTargetItem(tag, i -> true);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+    public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
         var tagToLookup = tagSubstitutions.getSubstituteTag(tag);
         if (tagToLookup == null) tagToLookup = tag;
 
@@ -135,11 +135,11 @@ public class UnifyLookupImpl implements UnifyLookup {
         for (ItemStack ingredItem : ingredient.getItems()) {
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(ingredItem.getItem());
 
-            var preferredTag = getPreferredTagForItem(itemId);
-            if (preferredTag == null || checkedTags.contains(preferredTag)) continue;
-            checkedTags.add(preferredTag);
+            var relevantTag = getRelevantItemTag(itemId);
+            if (relevantTag == null || checkedTags.contains(relevantTag)) continue;
+            checkedTags.add(relevantTag);
 
-            if (item.is(preferredTag)) {
+            if (item.is(relevantTag)) {
                 return true;
             }
         }

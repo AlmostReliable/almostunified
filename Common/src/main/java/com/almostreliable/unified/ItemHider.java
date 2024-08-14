@@ -25,7 +25,7 @@ public final class ItemHider {
 
     public static void applyHideTags(VanillaTagWrapper<Item> tags, Collection<UnifyHandler> handlers, boolean emiHidingStrict) {
         for (var handler : handlers) {
-            if (handler.hideNonPreferredItemsInRecipeViewers()) {
+            if (handler.shouldHideVariantItems()) {
                 applyHideTags(tags, handler);
             }
         }
@@ -91,7 +91,7 @@ public final class ItemHider {
      * @return The replacement for the given item, or the item itself if no replacement is found.
      */
     private static UnifyEntry<Item> getReplacementForItem(UnifyLookup repMap, UnifyEntry<Item> entry) {
-        var replacement = repMap.getReplacementForItem(entry);
+        var replacement = repMap.getItemReplacement(entry);
         if (replacement == null) return entry;
         return replacement;
     }

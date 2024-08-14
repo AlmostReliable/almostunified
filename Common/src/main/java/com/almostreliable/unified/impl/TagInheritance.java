@@ -39,36 +39,36 @@ public class TagInheritance {
         if (relations.isEmpty()) return false;
 
         for (var relation : relations) {
-            var dominant = relation.dominant;
-            var dominantItemHolder = dominant.asHolderOrThrow();
-            var dominantBlockHolder = findDominantBlockHolder(blockTags, dominant);
+            var targetItem = relation.targetItem;
+            var targetItemHolder = targetItem.asHolderOrThrow();
+            var targetBlockHolder = findTargetBlockHolder(blockTags, targetItem);
 
-            var dominantItemTags = itemTags
-                    .getTags(dominant)
+            var targetItemTags = itemTags
+                    .getTags(targetItem)
                     .stream()
                     .map(rl -> TagKey.create(Registries.ITEM, rl))
                     .collect(ImmutableSet.toImmutableSet());
 
             for (var item : relation.items) {
-                var appliedItemTags = applyItemTags(itemTags, dominantItemHolder, dominantItemTags, item);
-                changedItemTags.putAll(dominant, appliedItemTags);
+                var appliedItemTags = applyItemTags(itemTags, targetItemHolder, targetItemTags, item);
+                changedItemTags.putAll(targetItem, appliedItemTags);
 
-                if (dominantBlockHolder != null) {
-                    var appliedBlockTags = applyBlockTags(blockTags, dominantBlockHolder, dominantItemTags, item);
-                    changedBlockTags.putAll(dominant, appliedBlockTags);
+                if (targetBlockHolder != null) {
+                    var appliedBlockTags = applyBlockTags(blockTags, targetBlockHolder, targetItemTags, item);
+                    changedBlockTags.putAll(targetItem, appliedBlockTags);
                 }
             }
         }
 
         if (!changedBlockTags.isEmpty()) {
-            changedBlockTags.asMap().forEach((dominant, tags) -> {
-                AlmostUnifiedCommon.LOGGER.info("[TagInheritance] Added '{}' to block tags {}", dominant.id(), tags);
+            changedBlockTags.asMap().forEach((target, tags) -> {
+                AlmostUnifiedCommon.LOGGER.info("[TagInheritance] Added '{}' to block tags {}", target.id(), tags);
             });
         }
 
         if (!changedItemTags.isEmpty()) {
-            changedItemTags.asMap().forEach((dominant, tags) -> {
-                AlmostUnifiedCommon.LOGGER.info("[TagInheritance] Added '{}' to item tags {}", dominant.id(), tags);
+            changedItemTags.asMap().forEach((target, tags) -> {
+                AlmostUnifiedCommon.LOGGER.info("[TagInheritance] Added '{}' to item tags {}", target.id(), tags);
             });
             return true;
         }
@@ -77,20 +77,20 @@ public class TagInheritance {
     }
 
     @Nullable
-    private Holder<Block> findDominantBlockHolder(VanillaTagWrapper<Block> tagMap, UnifyEntry<Item> dominant) {
-        var blockTags = tagMap.getTags(dominant.id());
+    private Holder<Block> findTargetBlockHolder(VanillaTagWrapper<Block> tagMap, UnifyEntry<Item> targetItem) {
+        var blockTags = tagMap.getTags(targetItem.id());
         if (blockTags.isEmpty()) return null;
 
-        return BuiltInRegistries.BLOCK.getHolderOrThrow(ResourceKey.create(Registries.BLOCK, dominant.id()));
+        return BuiltInRegistries.BLOCK.getHolderOrThrow(ResourceKey.create(Registries.BLOCK, targetItem.id()));
     }
 
-    private Set<ResourceLocation> applyItemTags(VanillaTagWrapper<Item> vanillaTags, Holder<Item> dominantItem, Set<TagKey<Item>> dominantItemTags, UnifyEntry<Item> item) {
+    private Set<ResourceLocation> applyItemTags(VanillaTagWrapper<Item> vanillaTags, Holder<Item> targetItem, Set<TagKey<Item>> targetItemTags, UnifyEntry<Item> item) {
         var itemTags = vanillaTags.getTags(item);
         Set<ResourceLocation> changed = new HashSet<>();
 
         for (var itemTag : itemTags) {
             var tag = TagKey.create(Registries.ITEM, itemTag);
-            if (itemOptions.shouldInherit(tag, dominantItemTags) && addToVanilla(dominantItem, tag, vanillaTags)) {
+            if (itemOptions.shouldInherit(tag, targetItemTags) && addToVanilla(targetItem, tag, vanillaTags)) {
                 changed.add(itemTag);
             }
         }
@@ -98,13 +98,13 @@ public class TagInheritance {
         return changed;
     }
 
-    private Set<ResourceLocation> applyBlockTags(VanillaTagWrapper<Block> blockTagMap, Holder<Block> dominantBlock, Set<TagKey<Item>> dominantItemTags, UnifyEntry<Item> item) {
+    private Set<ResourceLocation> applyBlockTags(VanillaTagWrapper<Block> blockTagMap, Holder<Block> targetBlock, Set<TagKey<Item>> targetItemTags, UnifyEntry<Item> item) {
         var blockTags = blockTagMap.getTags(item.id());
         Set<ResourceLocation> changed = new HashSet<>();
 
         for (var blockTag : blockTags) {
             var tag = TagKey.create(Registries.BLOCK, blockTag);
-            if (blockOptions.shouldInherit(tag, dominantItemTags) && addToVanilla(dominantBlock, tag, blockTagMap)) {
+            if (blockOptions.shouldInherit(tag, targetItemTags) && addToVanilla(targetBlock, tag, blockTagMap)) {
                 changed.add(blockTag);
             }
         }
@@ -128,7 +128,6 @@ public class TagInheritance {
         return true;
     }
 
-
     private Set<TagRelation> resolveRelations(Collection<? extends UnifyLookup> lookups) {
         Set<TagRelation> relations = new HashSet<>();
 
@@ -143,13 +142,13 @@ public class TagInheritance {
                 // avoid handling single entries and tags that only contain the same namespace for all items
                 if (Utils.allSameNamespace(itemsByTag)) continue;
 
-                var dominant = lookup.getPreferredEntryForTag(unifyTag);
-                if (dominant == null) continue;
+                var target = lookup.getTagTargetItem(unifyTag);
+                if (target == null) continue;
 
-                var items = removeDominantItem(itemsByTag, dominant);
+                var items = removeTargetItem(itemsByTag, target);
 
                 if (items.isEmpty()) continue;
-                relations.add(new TagRelation(unifyTag, dominant, items));
+                relations.add(new TagRelation(unifyTag, target, items));
             }
         }
 
@@ -157,16 +156,16 @@ public class TagInheritance {
     }
 
     /**
-     * Returns a set of all items that are not the dominant item and are valid by checking if they are registered.
+     * Returns a set of all items that are not the target item and are valid by checking if they are registered.
      *
-     * @param holders  The set of all items that are in the tag
-     * @param dominant The dominant item
-     * @return A set of all items that are not the dominant item and are valid
+     * @param holders The set of all items that are in the tag
+     * @param target  The target item
+     * @return A set of all items that are not the target item and are valid
      */
-    private Set<UnifyEntry<Item>> removeDominantItem(Collection<UnifyEntry<Item>> holders, UnifyEntry<Item> dominant) {
+    private Set<UnifyEntry<Item>> removeTargetItem(Collection<UnifyEntry<Item>> holders, UnifyEntry<Item> target) {
         Set<UnifyEntry<Item>> result = new HashSet<>(holders.size());
         for (var holder : holders) {
-            if (!holder.equals(dominant)) {
+            if (!holder.equals(target)) {
                 result.add(holder);
             }
         }
@@ -174,17 +173,20 @@ public class TagInheritance {
         return result;
     }
 
-    private record TagRelation(TagKey<Item> tag, UnifyEntry<Item> dominant, Set<UnifyEntry<Item>> items) {}
+    private record TagRelation(TagKey<Item> tag, UnifyEntry<Item> targetItem, Set<UnifyEntry<Item>> items) {}
 
     public enum Mode {
         ALLOW,
-        DENY;
+        DENY
     }
 
     private record Options<T>(Mode mode, Map<TagKey<T>, Set<Pattern>> inheritance) {
 
         /**
-         * Checks if given tag is used in the inheritance config. If mode is allowed, the tag should match any pattern in the config. If mode is deny, the tag should not match any pattern in the config.
+         * Checks if given tag is used in the inheritance config.
+         * <p>
+         * If mode is allowed, the tag should match any pattern in the config. If mode is deny, the tag should not match
+         * any pattern in the config.
          *
          * @param tag The tag to check
          * @return True if the tag should be skipped
@@ -204,7 +206,7 @@ public class TagInheritance {
         }
 
         /**
-         * Checks if given inheritance tag would match any of the dominant item tags.
+         * Checks if given inheritance tag would match any of the target item tags.
          * <p>
          * E. g based on a simple config:
          * <pre>
@@ -214,16 +216,16 @@ public class TagInheritance {
          *     ]
          * }}
          * </pre>
-         * "minecraft:beacon_payment_items" would be the inheritance tag and "c:ores/silver" would be one of the dominant item tags.
+         * "minecraft:beacon_payment_items" would be the inheritance tag and "c:ores/silver" would be one of the target item tags.
          * If mode is {@code DENY}, the check would be inverted.
          *
-         * @param inheritanceTag   The inheritance tag
-         * @param dominantItemTags The dominant item tags
+         * @param inheritanceTag The inheritance tag
+         * @param targetItemTags The target item tags
          * @return True if we should allow the inheritance or false if we should deny the inheritance
          */
-        public boolean shouldInherit(TagKey<T> inheritanceTag, Collection<TagKey<Item>> dominantItemTags) {
+        public boolean shouldInherit(TagKey<T> inheritanceTag, Collection<TagKey<Item>> targetItemTags) {
             var patterns = inheritance.getOrDefault(inheritanceTag, Set.of());
-            boolean result = checkPatterns(dominantItemTags, patterns);
+            boolean result = checkPatterns(targetItemTags, patterns);
             // noinspection SimplifiableConditionalExpression
             return mode == Mode.ALLOW ? result : !result;
         }

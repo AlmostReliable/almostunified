@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
  * Helper interface to aid in the unification of recipe JSON elements.
  * <p>
  * This interface provides methods to unify JSON elements within recipes. Unification involves converting
- * JSON elements to tags or preferred items as specified by the implementation. An instance of this
+ * JSON elements to tags or target items as specified by the implementation. An instance of this
  * interface is passed to {@link RecipeUnifier#unify(UnificationHelper, RecipeJson)} to assist in the
  * unification process of the given {@link RecipeJson}.
  * <p>
@@ -106,8 +106,8 @@ public interface UnificationHelper {
     /**
      * Fetches all entries of the given {@link RecipeJson} under the specified keys and unifies them as
      * outputs.<br>
-     * Entries treated as outputs will be converted to preferred items. If the entry is a tag, it will be converted
-     * to the preferred item of the tag.
+     * Entries treated as outputs will be converted to target items. If the entry is a tag, it will be converted
+     * to the target item of the tag.
      * <p>
      * The keys refer to top-level entries in the {@link RecipeJson}. This method requires at least one key to be
      * provided.<br>
@@ -122,15 +122,15 @@ public interface UnificationHelper {
     /**
      * Fetches all entries of the given {@link RecipeJson} under the specified keys and unifies them as
      * outputs.<br>
-     * Entries treated as outputs will be converted to preferred items. If the entry is a tag and tagsToItems is true,
-     * it will be converted to the preferred item of the tag.
+     * Entries treated as outputs will be converted to target items. If the entry is a tag and tagsToItems is true,
+     * it will be converted to the target item of the tag.
      * <p>
      * The keys refer to top-level entries in the {@link RecipeJson}. This method requires at least one key to be
      * provided.<br>
      * To use default keys, refer to {@link RecipeConstants#DEFAULT_OUTPUT_KEYS} or see {@link GenericRecipeUnifier}.
      *
      * @param recipe      the {@link RecipeJson} to fetch the output entries from
-     * @param tagsToItems if true, tags will be converted to preferred items
+     * @param tagsToItems if true, tags will be converted to target items
      * @param keys        the keys of the output entries to unify
      * @return true if any element was changed, false otherwise
      */
@@ -138,15 +138,15 @@ public interface UnificationHelper {
 
     /**
      * Unifies a {@link JsonElement} as an output.<br>
-     * Elements treated as outputs will be converted to preferred items. If the element is a tag and tagsToItems is true,
-     * it will be converted to the preferred item of the tag.
+     * Elements treated as outputs will be converted to target items. If the element is a tag and tagsToItems is true,
+     * it will be converted to the target item of the tag.
      * <p>
      * This method can unify {@link JsonObject}s and {@link JsonArray}s.<br>
      * The keys will be used for each nested element. If no keys are provided, it falls back to
      * {@link RecipeConstants#DEFAULT_OUTPUT_INNER_KEYS}.
      *
      * @param jsonElement the {@link JsonElement} to unify
-     * @param tagsToItems if true, tags will be converted to preferred items
+     * @param tagsToItems if true, tags will be converted to target items
      * @param keys        the keys to use
      * @return true if the {@link JsonElement} was changed, false otherwise
      */
@@ -154,14 +154,14 @@ public interface UnificationHelper {
 
     /**
      * Unifies a {@link JsonArray} as an output.<br>
-     * Elements treated as outputs will be converted to preferred items. If the element is a tag and tagsToItems is true,
-     * it will be converted to the preferred item of the tag.
+     * Elements treated as outputs will be converted to target items. If the element is a tag and tagsToItems is true,
+     * it will be converted to the target item of the tag.
      * <p>
      * The keys will be used for each nested element. If no keys are provided, it falls back to
      * {@link RecipeConstants#DEFAULT_OUTPUT_INNER_KEYS}.
      *
      * @param jsonArray   the {@link JsonArray} to unify
-     * @param tagsToItems if true, tags will be converted to preferred items
+     * @param tagsToItems if true, tags will be converted to target items
      * @param keys        the keys to use
      * @return true if the {@link JsonArray} was changed, false otherwise
      */
@@ -169,14 +169,14 @@ public interface UnificationHelper {
 
     /**
      * Unifies a {@link JsonObject} as an output.<br>
-     * Elements treated as outputs will be converted to preferred items. If the element is a tag and tagsToItems is true,
-     * it will be converted to the preferred item of the tag.
+     * Elements treated as outputs will be converted to target items. If the element is a tag and tagsToItems is true,
+     * it will be converted to the target item of the tag.
      * <p>
      * The keys will be used for each nested element. If no keys are provided, it falls back to
      * {@link RecipeConstants#DEFAULT_OUTPUT_INNER_KEYS}.
      *
      * @param jsonObject  the {@link JsonObject} to unify
-     * @param tagsToItems if true, tags will be converted to preferred items
+     * @param tagsToItems if true, tags will be converted to target items
      * @param keys        the keys to use
      * @return true if the {@link JsonObject} was changed, false otherwise
      */
@@ -184,18 +184,18 @@ public interface UnificationHelper {
 
     /**
      * Unifies a {@link JsonObject} as a tag output.<br>
-     * If tagsToItems is true, it will be converted to the preferred item of the tag. If tagsToItems is false, it
+     * If tagsToItems is true, it will be converted to the target item of the tag. If tagsToItems is false, it
      * will only be changed if the tag has an associated {@link TagSubstitutions} entry.
      *
      * @param jsonObject  the {@link JsonObject} to unify
-     * @param tagsToItems if true, the tag will be converted to the preferred item
+     * @param tagsToItems if true, the tag will be converted to the target item
      * @return true if the tag was changed, false otherwise
      */
     boolean unifyOutputTag(JsonObject jsonObject, boolean tagsToItems);
 
     /**
      * Unifies a {@link JsonObject} as an item output.<br>
-     * The item will be converted to the preferred item of the tag if possible.
+     * The item will be converted to the target item of the tag if possible.
      * <p>
      * This uses the default keys {@link RecipeConstants#ITEM} and {@link RecipeConstants#ID}.
      *
@@ -206,7 +206,7 @@ public interface UnificationHelper {
 
     /**
      * Unifies a {@link JsonObject} as an item output.<br>
-     * The item will be converted to the preferred item of the tag if possible.
+     * The item will be converted to the target item of the tag if possible.
      *
      * @param jsonObject the {@link JsonObject} to unify
      * @param key        the key of the output entry to unify

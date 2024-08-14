@@ -36,7 +36,7 @@ public class UnifyLookupTests {
     }
 
     @SimpleGameTest
-    public void testPreferredItemForTag() {
+    public void testTagTargetItem() {
         ArrayList<String> modList = new ArrayList<>(List.of("ae2", "mekanism", "thermal", "create"));
         ModPrioritiesImpl modPriorities = new ModPrioritiesImpl(
                 modList,
@@ -47,32 +47,32 @@ public class UnifyLookupTests {
 
 
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
-                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
-                "Osmium ingot from mekanism should be preferred");
+                rm.getTagTargetItem(TestUtils.itemTag("testmod:ingots/osmium")).id(),
+                "Osmium ingot from mekanism should be target");
 
-        assertNull(rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:not_exist/osmium")),
+        assertNull(rm.getTagTargetItem(TestUtils.itemTag("testmod:not_exist/osmium")),
                 "Tag not found should return null");
 
         assertEquals(ResourceLocation.parse("thermal:cobalt_ingot"),
-                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
-                "Cobalt ingot from mekanism should be preferred");
+                rm.getTagTargetItem(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
+                "Cobalt ingot from mekanism should be target");
 
-        assertNull(rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:not_exist/cobalt")),
+        assertNull(rm.getTagTargetItem(TestUtils.itemTag("testmod:not_exist/cobalt")),
                 "Tag not found should return null");
 
         // Now we remove mekanism from modList.
-        // After that `getPreferredItemForTag` should return the thermal ingot, as AE2 still does not have one.
+        // After that `getTagTargetItem` should return the thermal ingot, as AE2 still does not have one.
         modList.remove("mekanism");
         assertEquals(ResourceLocation.parse("thermal:osmium_ingot"),
-                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
-                "Osmium ingot from thermal should now be preferred");
+                rm.getTagTargetItem(TestUtils.itemTag("testmod:ingots/osmium")).id(),
+                "Osmium ingot from thermal should now be target");
         assertEquals(ResourceLocation.parse("thermal:cobalt_ingot"),
-                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
-                "Cobalt ingot from thermal should be preferred");
+                rm.getTagTargetItem(TestUtils.itemTag("testmod:ingots/cobalt")).id(),
+                "Cobalt ingot from thermal should be target");
     }
 
     @SimpleGameTest
-    public void testPreferredItemForTagWithOverride() {
+    public void testTagTargetItemWithOverride() {
         ModPrioritiesImpl modPriorities = new ModPrioritiesImpl(
                 List.of("ae2", "mekanism", "thermal", "create"),
                 Util.make(new HashMap<>(),
@@ -82,17 +82,17 @@ public class UnifyLookupTests {
         var rm = createLookup(modPriorities);
 
         assertEquals(ResourceLocation.parse("create:electrum_ingot"),
-                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/electrum")).id(),
-                "Electrum ingot from create should be preferred as it is overridden by priorities");
+                rm.getTagTargetItem(TestUtils.itemTag("testmod:ingots/electrum")).id(),
+                "Electrum ingot from create should be target as it is overridden by priorities");
 
         // but for osmium it's the default behavior
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
-                rm.getPreferredEntryForTag(TestUtils.itemTag("testmod:ingots/osmium")).id(),
-                "Osmium ingot from mekanism should be preferred");
+                rm.getTagTargetItem(TestUtils.itemTag("testmod:ingots/osmium")).id(),
+                "Osmium ingot from mekanism should be target");
     }
 
     @SimpleGameTest
-    public void testPreferredTagForItem() {
+    public void testRelevantItemTag() {
         ModPrioritiesImpl modPriorities = new ModPrioritiesImpl(
                 List.of("ae2", "mekanism", "thermal", "create"),
                 new HashMap<>()
@@ -101,13 +101,13 @@ public class UnifyLookupTests {
         var rm = createLookup(modPriorities);
 
         assertEquals(TestUtils.itemTag("testmod:ingots/osmium"),
-                rm.getPreferredTagForItem(ResourceLocation.parse("mekanism:osmium_ingot")));
+                rm.getRelevantItemTag(ResourceLocation.parse("mekanism:osmium_ingot")));
         assertEquals(TestUtils.itemTag("testmod:ingots/cobalt"),
-                rm.getPreferredTagForItem(ResourceLocation.parse("thermal:cobalt_ingot")));
+                rm.getRelevantItemTag(ResourceLocation.parse("thermal:cobalt_ingot")));
         assertEquals(TestUtils.itemTag("testmod:ingots/electrum"),
-                rm.getPreferredTagForItem(ResourceLocation.parse("create:electrum_ingot")));
+                rm.getRelevantItemTag(ResourceLocation.parse("create:electrum_ingot")));
 
-        assertNull(rm.getPreferredTagForItem(ResourceLocation.parse("not_existing_mod:osmium_ingot")));
+        assertNull(rm.getRelevantItemTag(ResourceLocation.parse("not_existing_mod:osmium_ingot")));
     }
 
     @SimpleGameTest
@@ -120,23 +120,23 @@ public class UnifyLookupTests {
         var rm = createLookup(modPriorities);
 
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
-                rm.getReplacementForItem(ResourceLocation.parse("mekanism:osmium_ingot")).id());
+                rm.getItemReplacement(ResourceLocation.parse("mekanism:osmium_ingot")).id());
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
-                rm.getReplacementForItem(ResourceLocation.parse("minecraft:osmium_ingot")).id());
+                rm.getItemReplacement(ResourceLocation.parse("minecraft:osmium_ingot")).id());
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
-                rm.getReplacementForItem(ResourceLocation.parse("thermal:osmium_ingot")).id());
+                rm.getItemReplacement(ResourceLocation.parse("thermal:osmium_ingot")).id());
 
         assertEquals(ResourceLocation.parse("thermal:cobalt_ingot"),
-                rm.getReplacementForItem(ResourceLocation.parse("thermal:cobalt_ingot")).id());
+                rm.getItemReplacement(ResourceLocation.parse("thermal:cobalt_ingot")).id());
         assertEquals(ResourceLocation.parse("thermal:cobalt_ingot"),
-                rm.getReplacementForItem(ResourceLocation.parse("minecraft:cobalt_ingot")).id());
+                rm.getItemReplacement(ResourceLocation.parse("minecraft:cobalt_ingot")).id());
 
         assertEquals(ResourceLocation.parse("mekanism:electrum_ingot"),
-                rm.getReplacementForItem(ResourceLocation.parse("create:electrum_ingot")).id());
+                rm.getItemReplacement(ResourceLocation.parse("create:electrum_ingot")).id());
         assertEquals(ResourceLocation.parse("mekanism:electrum_ingot"),
-                rm.getReplacementForItem(ResourceLocation.parse("mekanism:electrum_ingot")).id());
+                rm.getItemReplacement(ResourceLocation.parse("mekanism:electrum_ingot")).id());
         assertEquals(ResourceLocation.parse("mekanism:electrum_ingot"),
-                rm.getReplacementForItem(ResourceLocation.parse("thermal:electrum_ingot")).id());
+                rm.getItemReplacement(ResourceLocation.parse("thermal:electrum_ingot")).id());
     }
 
     @SimpleGameTest

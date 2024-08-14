@@ -188,7 +188,7 @@ public final class UnifyConfig extends Config {
         return enableLootUnification;
     }
 
-    public boolean hideNonPreferredItemsInRecipeViewers() {
+    public boolean shouldHideVariantItems() {
         return recipeViewerHiding;
     }
 

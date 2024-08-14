@@ -1,7 +1,7 @@
 package com.almostreliable.unified.api;
 
-import com.almostreliable.unified.api.recipe.RecipeData;
 import net.minecraft.resources.ResourceLocation;
+import com.almostreliable.unified.api.recipe.RecipeData;
 
 public interface UnifySettings {
 
@@ -21,7 +21,7 @@ public interface UnifySettings {
 
     void clearCache();
 
-    boolean hideNonPreferredItemsInRecipeViewers();
+    boolean shouldHideVariantItems();
 
     String getName();
 }

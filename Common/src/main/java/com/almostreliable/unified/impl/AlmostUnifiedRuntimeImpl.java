@@ -263,9 +263,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         @Nullable
         @Override
-        public TagKey<Item> getPreferredTagForItem(ResourceLocation item) {
+        public TagKey<Item> getRelevantItemTag(ResourceLocation item) {
             for (var unifyLookup : unifyLookups) {
-                TagKey<Item> tag = unifyLookup.getPreferredTagForItem(item);
+                TagKey<Item> tag = unifyLookup.getRelevantItemTag(item);
                 if (tag != null) {
                     return tag;
                 }
@@ -276,9 +276,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         @Nullable
         @Override
-        public TagKey<Item> getPreferredTagForItem(Item item) {
+        public TagKey<Item> getRelevantItemTag(Item item) {
             for (var unifyLookup : unifyLookups) {
-                TagKey<Item> tag = unifyLookup.getPreferredTagForItem(item);
+                TagKey<Item> tag = unifyLookup.getRelevantItemTag(item);
                 if (tag != null) {
                     return tag;
                 }
@@ -289,9 +289,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         @Nullable
         @Override
-        public TagKey<Item> getPreferredTagForItem(Holder<Item> item) {
+        public TagKey<Item> getRelevantItemTag(Holder<Item> item) {
             for (var unifyLookup : unifyLookups) {
-                TagKey<Item> tag = unifyLookup.getPreferredTagForItem(item);
+                TagKey<Item> tag = unifyLookup.getRelevantItemTag(item);
                 if (tag != null) {
                     return tag;
                 }
@@ -301,9 +301,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getReplacementForItem(ResourceLocation item) {
+        public UnifyEntry<Item> getItemReplacement(ResourceLocation item) {
             for (var unifyLookup : unifyLookups) {
-                var resultItem = unifyLookup.getReplacementForItem(item);
+                var resultItem = unifyLookup.getItemReplacement(item);
                 if (resultItem != null) {
                     return resultItem;
                 }
@@ -313,9 +313,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getReplacementForItem(Item item) {
+        public UnifyEntry<Item> getItemReplacement(Item item) {
             for (var unifyLookup : unifyLookups) {
-                var resultItem = unifyLookup.getReplacementForItem(item);
+                var resultItem = unifyLookup.getItemReplacement(item);
                 if (resultItem != null) {
                     return resultItem;
                 }
@@ -325,9 +325,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getReplacementForItem(Holder<Item> item) {
+        public UnifyEntry<Item> getItemReplacement(Holder<Item> item) {
             for (var unifyLookup : unifyLookups) {
-                var resultItem = unifyLookup.getReplacementForItem(item);
+                var resultItem = unifyLookup.getItemReplacement(item);
                 if (resultItem != null) {
                     return resultItem;
                 }
@@ -337,9 +337,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag) {
+        public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag) {
             for (var unifyLookup : unifyLookups) {
-                var result = unifyLookup.getPreferredEntryForTag(tag);
+                var result = unifyLookup.getTagTargetItem(tag);
                 if (result != null) {
                     return result;
                 }
@@ -349,9 +349,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+        public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
             for (var unifyLookup : unifyLookups) {
-                var result = unifyLookup.getPreferredEntryForTag(tag, itemFilter);
+                var result = unifyLookup.getTagTargetItem(tag, itemFilter);
                 if (result != null) {
                     return result;
                 }

@@ -72,27 +72,27 @@ public interface AlmostUnified {
     Item getReplacementForItem(ItemLike itemLike);
 
     /**
-     * Returns the preferred item for a given {@link TagKey}. Will return null if no configured
+     * Returns the target item for a given {@link TagKey}. Will return null if no configured
      * tag exists that includes the item.
      * <p>
-     * The preferred item is selected according to mod priorities, but it's possible to set a
+     * The target item is selected according to mod priorities, but it's possible to set a
      * fixed override in the config.
      *
-     * @param tag The tag to find the preferred item for
-     * @return The preferred item or null if there is no preferred item
+     * @param tag The tag to find the target item for
+     * @return The target item or null if there is no target item
      */
     @Nullable
-    Item getPreferredItemForTag(TagKey<Item> tag);
+    Item getTagTargetItem(TagKey<Item> tag);
 
     /**
-     * Returns the preferred tag for a given {@link ItemLike} Will return null if no configured
+     * Returns the relevant tag for a given {@link ItemLike} Will return null if no configured
      * tag exists that includes the item.
      *
-     * @param itemLike The item-like to find the preferred tag for
-     * @return The preferred tag or null if there is no preferred tag
+     * @param itemLike The item-like to find the relevant tag for
+     * @return The relevant tag or null if there is no relevant tag
      */
     @Nullable
-    TagKey<Item> getPreferredTagForItem(ItemLike itemLike);
+    TagKey<Item> getRelevantItemTag(ItemLike itemLike);
 
     /**
      * Returns all potential items which are part of a given tag.
@@ -138,13 +138,13 @@ public interface AlmostUnified {
 
         @Nullable
         @Override
-        public Item getPreferredItemForTag(TagKey<Item> tag) {
+        public Item getTagTargetItem(TagKey<Item> tag) {
             return null;
         }
 
         @Nullable
         @Override
-        public TagKey<Item> getPreferredTagForItem(ItemLike itemLike) {
+        public TagKey<Item> getRelevantItemTag(ItemLike itemLike) {
             return null;
         }
 

@@ -38,56 +38,56 @@ public interface UnifyLookup {
     UnifyEntry<Item> getEntry(Item item);
 
     /**
-     * Returns the preferred tag for a given {@link Item} Will return null if no configured
+     * Returns the relevant tag for a given {@link Item} Will return null if no configured
      * tag exists that includes the item.
      *
-     * @param item The item to find the preferred tag for
-     * @return The preferred tag or null if there is no preferred tag
+     * @param item The item to find the relevant tag for
+     * @return The relevant tag or null if there is no relevant tag
      */
     @Nullable
-    TagKey<Item> getPreferredTagForItem(Item item);
+    TagKey<Item> getRelevantItemTag(Item item);
 
     /**
-     * @see #getPreferredTagForItem(Item)
+     * @see #getRelevantItemTag(Item)
      */
     @Nullable
-    TagKey<Item> getPreferredTagForItem(ResourceLocation item);
+    TagKey<Item> getRelevantItemTag(ResourceLocation item);
 
     /**
-     * @see #getPreferredTagForItem(Item)
+     * @see #getRelevantItemTag(Item)
      */
     @Nullable
-    TagKey<Item> getPreferredTagForItem(Holder<Item> item);
+    TagKey<Item> getRelevantItemTag(Holder<Item> item);
 
     @Nullable
-    UnifyEntry<Item> getReplacementForItem(ResourceLocation item);
+    UnifyEntry<Item> getItemReplacement(ResourceLocation item);
 
     @Nullable
-    UnifyEntry<Item> getReplacementForItem(Item item);
+    UnifyEntry<Item> getItemReplacement(Item item);
 
     @Nullable
-    UnifyEntry<Item> getReplacementForItem(Holder<Item> item);
+    UnifyEntry<Item> getItemReplacement(Holder<Item> item);
 
     @Nullable
-    default UnifyEntry<Item> getReplacementForItem(UnifyEntry<Item> item) {
-        return getReplacementForItem(item.asHolderOrThrow());
+    default UnifyEntry<Item> getItemReplacement(UnifyEntry<Item> item) {
+        return getItemReplacement(item.asHolderOrThrow());
     }
 
     /**
-     * Returns the preferred unify entry for a given {@link TagKey}. Will return null if no configured
+     * Returns the target unify entry for a given {@link TagKey}. Will return null if no configured
      * tag exists that includes the item.
      * <p>
-     * The preferred unify entry is selected according to mod priorities, but it's possible to set a
+     * The target unify entry is selected according to mod priorities, but it's possible to set a
      * fixed override in the config.
      *
-     * @param tag The tag to find the preferred entry for
-     * @return The preferred entry or null if there is no preferred entry
+     * @param tag The tag to find the target entry for
+     * @return The target entry or null if there is no target entry
      */
     @Nullable
-    UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag);
+    UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag);
 
     @Nullable
-    UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter);
+    UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter);
 
     /**
      * Gets all unify tags of the items within the given ingredient and checks

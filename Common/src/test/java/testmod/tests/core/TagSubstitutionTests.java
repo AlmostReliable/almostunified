@@ -33,9 +33,9 @@ public class TagSubstitutionTests {
         assertTrue(itemTags.contains(silverTag));
 
         UnifyLookup unifyLookup = AlmostUnified.INSTANCE.getRuntimeOrThrow().getUnifyLookup();
-        TagKey<Item> unifyTag = unifyLookup.getPreferredTagForItem(silverOreId);
+        TagKey<Item> unifyTag = unifyLookup.getRelevantItemTag(silverOreId);
         assertEquals(silverTag, unifyTag);
-        UnifyEntry<Item> silverOreEntry = unifyLookup.getPreferredEntryForTag(silverTag);
+        UnifyEntry<Item> silverOreEntry = unifyLookup.getTagTargetItem(silverTag);
         assertEquals(silverOreId, silverOreEntry.id());
 
     }

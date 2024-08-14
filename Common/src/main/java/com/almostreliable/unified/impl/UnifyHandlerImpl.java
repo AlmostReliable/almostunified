@@ -63,7 +63,7 @@ public final class UnifyHandlerImpl implements UnifyHandler {
                 config.getIgnoredRecipeTypes(),
                 config.getIgnoredLootTables(),
                 config.enableLootUnification(),
-                config.hideNonPreferredItemsInRecipeViewers()
+                config.shouldHideVariantItems()
         );
     }
 
@@ -127,7 +127,7 @@ public final class UnifyHandlerImpl implements UnifyHandler {
     }
 
     @Override
-    public boolean hideNonPreferredItemsInRecipeViewers() {
+    public boolean shouldHideVariantItems() {
         return recipeViewerHiding;
     }
 
@@ -160,50 +160,50 @@ public final class UnifyHandlerImpl implements UnifyHandler {
 
     @Nullable
     @Override
-    public TagKey<Item> getPreferredTagForItem(ResourceLocation item) {
-        return unifyLookup.getPreferredTagForItem(item);
+    public TagKey<Item> getRelevantItemTag(ResourceLocation item) {
+        return unifyLookup.getRelevantItemTag(item);
     }
 
     @Nullable
     @Override
-    public TagKey<Item> getPreferredTagForItem(Item item) {
-        return unifyLookup.getPreferredTagForItem(item);
+    public TagKey<Item> getRelevantItemTag(Item item) {
+        return unifyLookup.getRelevantItemTag(item);
     }
 
     @Nullable
     @Override
-    public TagKey<Item> getPreferredTagForItem(Holder<Item> item) {
-        return unifyLookup.getPreferredTagForItem(item);
+    public TagKey<Item> getRelevantItemTag(Holder<Item> item) {
+        return unifyLookup.getRelevantItemTag(item);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getReplacementForItem(ResourceLocation item) {
-        return unifyLookup.getReplacementForItem(item);
+    public UnifyEntry<Item> getItemReplacement(ResourceLocation item) {
+        return unifyLookup.getItemReplacement(item);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getReplacementForItem(Item item) {
-        return unifyLookup.getReplacementForItem(item);
+    public UnifyEntry<Item> getItemReplacement(Item item) {
+        return unifyLookup.getItemReplacement(item);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getReplacementForItem(Holder<Item> item) {
-        return unifyLookup.getReplacementForItem(item);
+    public UnifyEntry<Item> getItemReplacement(Holder<Item> item) {
+        return unifyLookup.getItemReplacement(item);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag) {
-        return unifyLookup.getPreferredEntryForTag(tag);
+    public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag) {
+        return unifyLookup.getTagTargetItem(tag);
     }
 
     @Nullable
     @Override
-    public UnifyEntry<Item> getPreferredEntryForTag(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
-        return unifyLookup.getPreferredEntryForTag(tag, itemFilter);
+    public UnifyEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
+        return unifyLookup.getTagTargetItem(tag, itemFilter);
     }
 
     @Override
