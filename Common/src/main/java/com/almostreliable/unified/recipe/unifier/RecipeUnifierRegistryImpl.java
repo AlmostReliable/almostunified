@@ -1,8 +1,7 @@
 package com.almostreliable.unified.recipe.unifier;
 
 import com.almostreliable.unified.api.RecipeUnifierRegistry;
-import com.almostreliable.unified.api.recipe.RecipeData;
-import com.almostreliable.unified.api.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.recipe.*;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -36,12 +35,11 @@ public class RecipeUnifierRegistryImpl implements RecipeUnifierRegistry {
             return byMod;
         }
 
-        if (SmithingRecipeUnifier.INSTANCE.matches(recipeData)) {
+        if (SmithingRecipeUnifier.isApplicable(recipeData)) {
             return SmithingRecipeUnifier.INSTANCE;
         }
 
-        if (recipeData.hasProperty(ShapedRecipeUnifier.PATTERN_PROPERTY) &&
-            recipeData.hasProperty(ShapedRecipeUnifier.KEY_PROPERTY)) {
+        if (ShapedRecipeUnifier.isApplicable(recipeData)) {
             return ShapedRecipeUnifier.INSTANCE;
         }
 

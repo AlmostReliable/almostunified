@@ -1,7 +1,7 @@
 package testmod.tests;
 
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.recipe.unifier.SmithingRecipeUnifier;
+import com.almostreliable.unified.api.recipe.SmithingRecipeUnifier;
 import testmod.gametest_core.SimpleGameTest;
 
 import static testmod.TestUtils.assertUnify;

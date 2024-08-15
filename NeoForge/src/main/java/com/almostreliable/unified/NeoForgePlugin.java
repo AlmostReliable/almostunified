@@ -4,8 +4,8 @@ import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.api.RecipeUnifierRegistry;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
+import com.almostreliable.unified.api.recipe.ShapedRecipeUnifier;
 import com.almostreliable.unified.compat.*;
-import com.almostreliable.unified.recipe.unifier.ShapedRecipeUnifier;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.resources.ResourceLocation;
 

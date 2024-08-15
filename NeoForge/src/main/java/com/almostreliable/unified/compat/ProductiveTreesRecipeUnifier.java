@@ -1,9 +1,9 @@
 package com.almostreliable.unified.compat;
 
+import com.almostreliable.unified.api.recipe.GenericRecipeUnifier;
 import com.almostreliable.unified.api.recipe.RecipeJson;
 import com.almostreliable.unified.api.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.recipe.UnificationHelper;
-import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 
 public final class ProductiveTreesRecipeUnifier implements RecipeUnifier {
 

@@ -2,7 +2,6 @@ package com.almostreliable.unified.api.recipe;
 
 import com.almostreliable.unified.api.TagSubstitutions;
 import com.almostreliable.unified.api.UnificationHandler;
-import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,16 +10,16 @@ import com.google.gson.JsonPrimitive;
 import javax.annotation.Nullable;
 
 /**
- * Helper interface to aid in the unification of recipe JSON elements.
+ * Helper interface to aid in the unification of recipes.
  * <p>
- * This interface provides methods to unify JSON elements within recipes. Unification involves converting
- * JSON elements to tags or target items as specified by the implementation. An instance of this
- * interface is passed to {@link RecipeUnifier#unify(UnificationHelper, RecipeJson)} to assist in the
- * unification process of the given {@link RecipeJson}.
+ * This interface provides methods to unify elements within recipes. Unification involves converting elements to tags
+ * or target items<br>
+ * An instance of this interface is passed to {@link RecipeUnifier#unify(UnificationHelper, RecipeJson)} to assist in
+ * the unification process of the given {@link RecipeJson}.
  * <p>
- * Implementations of this interface are expected to provide the logic for unification, typically based on
- * predefined lookup tables or constants. The methods provided by this interface handle various JSON
- * structures, including {@link JsonObject}s, {@link JsonArray}s, and individual {@link JsonElement}s.
+ * Implementations of this interface are expected to provide the logic for unification, typically based on predefined
+ * lookup tables or constants. The methods provided by this interface handle various JSON structures, including
+ * {@link JsonObject}s, {@link JsonArray}s, and individual {@link JsonElement}s.
  */
 public interface UnificationHelper {
 
