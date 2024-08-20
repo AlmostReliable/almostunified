@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Helper for tracking tag substitutions.
  * <p>
- * The tag substitutions system allows to convert tags (replaced tags) to other tags (substitute tags).<br>
+ * The tag substitutions system allows converting tags (replaced tags) to other tags (substitute tags).<br>
  * The system copies all entries of the replaced tags to their respective substitute tags. After that, it replaces
  * all occurrences of the replaced tags with their substitute tags in all recipes.
  * <p>

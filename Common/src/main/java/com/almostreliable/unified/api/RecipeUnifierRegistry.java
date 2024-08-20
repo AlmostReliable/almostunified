@@ -15,7 +15,7 @@ public interface RecipeUnifierRegistry {
     /**
      * Registers a {@link RecipeUnifier} for a specific recipe type.
      * <p>
-     * Recipe type based recipe unifiers override mod id based recipe unifiers.<br>
+     * Recipe-type-based recipe unifiers override mod-id-based recipe unifiers.<br>
      * Registering a custom recipe unifier will always disable the bundled recipe unifiers
      * like the {@link GenericRecipeUnifier}.
      *
@@ -27,7 +27,7 @@ public interface RecipeUnifierRegistry {
     /**
      * Registers a {@link RecipeUnifier} for a specific mod id.
      * <p>
-     * Mod id based recipe unifiers will only apply if no recipe type based recipe unifiers
+     * Mod-id-based recipe unifiers will only apply if no recipe-type-based recipe unifiers
      * are registered for the respective recipe.<br>
      * Registering a custom recipe unifier will always disable the bundled recipe unifiers
      * like the {@link GenericRecipeUnifier}.

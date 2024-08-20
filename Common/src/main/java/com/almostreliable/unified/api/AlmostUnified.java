@@ -12,8 +12,7 @@ import java.util.Set;
 /**
  * The core interface for the Almost Unified api.
  * <p>
- * Use this to obtain an instance of the runtime or to lookup
- * replacement items.
+ * Use this to get an instance of the runtime or to lookup replacement items.
  */
 public interface AlmostUnified {
 
@@ -23,6 +22,7 @@ public interface AlmostUnified {
      * If unavailable, it will return an empty instance which
      * only returns empty default values for each method.
      */
+    @SuppressWarnings("InnerClassReferencedViaSubclass")
     AlmostUnified INSTANCE = ServiceLoader.load(AlmostUnified.class).findFirst().orElseGet(Empty::new);
 
     /**
@@ -95,7 +95,7 @@ public interface AlmostUnified {
     TagKey<Item> getRelevantItemTag(ItemLike itemLike);
 
     /**
-     * Returns all potential items which are part of a given tag.
+     * Returns all potential items that are part of the given tag.
      * <p>
      * Tags are only considered if they are part of the config,
      * otherwise, an empty set is always returned.
