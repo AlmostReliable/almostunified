@@ -15,7 +15,7 @@ import java.util.stream.StreamSupport;
  * If a tag contains multiple items from different mods, the priority defines which item is chosen first. Priority
  * is sorted from highest to lowest. All unlisted mods have less priority than all listed mods.
  * <p>
- * Priority overrides allow to override the priority mod for specific tags.<br>
+ * Priority overrides allow overriding the priority mod for specific tags.<br>
  * When a priority override is specified for a tag, the mod priorities will be ignored.
  */
 public interface ModPriorities extends Iterable<String> {
@@ -34,7 +34,7 @@ public interface ModPriorities extends Iterable<String> {
     String getPriorityOverride(TagKey<Item> tag);
 
     /**
-     * Returns the priority override item of the given tag out of the provided list of potential items.
+     * Returns the priority override item of the given tag contained in the list of potential items.
      * <p>
      * This method returns the item if a priority override is configured for the given tag. If you want to resolve the
      * tag to an item by also using the mod priorities, use {@link #findTargetItem(TagKey, List)} instead.
@@ -47,12 +47,12 @@ public interface ModPriorities extends Iterable<String> {
     UnificationEntry<Item> findPriorityOverrideItem(TagKey<Item> tag, List<UnificationEntry<Item>> items);
 
     /**
-     * Returns the target item of the given tag out of the provided list of potential items.
+     * Returns the target item of the given tag contained in the list of potential items.
      * <p>
      * The item is chosen according to the priority overrides first if available. If no priority override is configured,
      * the item is chosen according to the mod priorities.
      * <p>
-     * This method can return null if no override exists and the potential items only include items with namespaces
+     * This method can return null if no override exists, and the potential items only include items with namespaces
      * that are not part of the mod priorities.
      *
      * @param tag   the tag to get the target item for
