@@ -4,7 +4,6 @@
   "package": "com.almostreliable.unified.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "RegistryOpsAccessor",
     "loot.CompositeEntryBaseMixin",
     "loot.LootItemMixin",
     "loot.LootPoolMixin",
