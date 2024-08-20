@@ -34,7 +34,11 @@ public class OccultismRecipeUnifier implements RecipeUnifier {
         var type = result.get(TYPE).getAsString();
         if (!type.contains(RecipeConstants.TAG) || result.has(RecipeConstants.TAG)) return;
 
-        // use correct type: weighted_tag -> weighted_item, tag -> item
+        // replace the item key with id
+        result.add(RecipeConstants.ID, result.get(RecipeConstants.ITEM));
+        result.remove(RecipeConstants.ITEM);
+
+        // use correct type: weighted_tag → weighted_item, tag → item
         result.addProperty(TYPE, type.replace(RecipeConstants.TAG, RecipeConstants.ITEM));
 
         // wrap weighted tag values in json object to make it a valid weighted item
