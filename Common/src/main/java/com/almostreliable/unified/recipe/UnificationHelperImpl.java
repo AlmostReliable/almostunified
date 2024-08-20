@@ -34,8 +34,8 @@ public record UnificationHelperImpl(UnificationLookup getUnificationLookup) impl
     }
 
     @Override
-    public boolean unifyInputElement(JsonElement jsonElement, String... keys) {
-        return switch (jsonElement) {
+    public boolean unifyInputElement(@Nullable JsonElement jsonElement, String... keys) {
+        return jsonElement != null && switch (jsonElement) {
             case JsonArray jsonArray -> unifyInputArray(jsonArray, keys);
             case JsonObject jsonObject -> unifyInputObject(jsonObject, keys);
             default -> false;
@@ -127,12 +127,19 @@ public record UnificationHelperImpl(UnificationLookup getUnificationLookup) impl
     }
 
     @Override
-    public boolean unifyOutputElement(JsonElement json, boolean tagsToItems, String... keys) {
-        return switch (json) {
+    public boolean unifyOutputs(RecipeJson recipe, String key, boolean tagsToItems, String... innerKeys) {
+        Preconditions.checkArgument(innerKeys.length > 0, "at least one inner key is required");
+        return unifyOutputElement(recipe.getProperty(key), tagsToItems, innerKeys);
+    }
+
+    @Override
+    public boolean unifyOutputElement(@Nullable JsonElement json, boolean tagsToItems, String... keys) {
+        return json != null && switch (json) {
             case JsonArray jsonArray -> unifyOutputArray(jsonArray, tagsToItems, keys);
             case JsonObject jsonObject -> unifyOutputObject(jsonObject, tagsToItems, keys);
             default -> false;
         };
+
     }
 
     @Override

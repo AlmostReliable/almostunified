@@ -56,7 +56,7 @@ public interface UnificationHelper {
      * @param keys        the keys to use
      * @return true if the {@link JsonElement} was changed, false otherwise
      */
-    boolean unifyInputElement(JsonElement jsonElement, String... keys);
+    boolean unifyInputElement(@Nullable JsonElement jsonElement, String... keys);
 
     /**
      * Unifies a {@link JsonArray} as an input.<br>
@@ -136,6 +136,23 @@ public interface UnificationHelper {
     boolean unifyOutputs(RecipeJson recipe, boolean tagsToItems, String... keys);
 
     /**
+     * Fetches the entry of the given {@link RecipeJson} under the specified key and unifies it as output by using the
+     * given inner keys.<br>
+     * Entries treated as outputs will be converted to target items. If the entry is a tag and tagsToItems is true,
+     * it will be converted to the target item of the tag.
+     * <p>
+     * The key refers to a top-level entry in the {@link RecipeJson} while the inner keys refer to nested entries within
+     * the resulting {@link JsonElement}.
+     *
+     * @param recipe      the {@link RecipeJson} to fetch the output entry from
+     * @param key         the key of the output entry to unify
+     * @param tagsToItems if true, tags will be converted to target items
+     * @param innerKeys   the inner keys of the output entry to unify
+     * @return true if any element was changed, false otherwise
+     */
+    boolean unifyOutputs(RecipeJson recipe, String key, boolean tagsToItems, String... innerKeys);
+
+    /**
      * Unifies a {@link JsonElement} as an output.<br>
      * Elements treated as outputs will be converted to target items. If the element is a tag and tagsToItems is true,
      * it will be converted to the target item of the tag.
@@ -149,7 +166,7 @@ public interface UnificationHelper {
      * @param keys        the keys to use
      * @return true if the {@link JsonElement} was changed, false otherwise
      */
-    boolean unifyOutputElement(JsonElement jsonElement, boolean tagsToItems, String... keys);
+    boolean unifyOutputElement(@Nullable JsonElement jsonElement, boolean tagsToItems, String... keys);
 
     /**
      * Unifies a {@link JsonArray} as an output.<br>
