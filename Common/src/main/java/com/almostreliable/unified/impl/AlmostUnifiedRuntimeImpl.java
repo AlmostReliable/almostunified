@@ -11,7 +11,10 @@ import com.almostreliable.unified.config.UnificationConfig;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.RecipeUnificationHandler;
 import com.almostreliable.unified.recipe.unifier.RecipeUnifierRegistryImpl;
-import com.almostreliable.unified.utils.*;
+import com.almostreliable.unified.utils.DebugHandler;
+import com.almostreliable.unified.utils.FileUtils;
+import com.almostreliable.unified.utils.TagReloadHandler;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -205,7 +208,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         private final Iterable<? extends UnificationLookup> unificationLookups;
 
-        @Nullable private Collection<TagKey<Item>> unifiedTagsView;
+        @Nullable private Collection<TagKey<Item>> unificationTagsView;
 
         private CompositeUnificationLookup(Iterable<? extends UnificationLookup> unificationLookups) {
             this.unificationLookups = unificationLookups;
@@ -213,16 +216,16 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         @Override
         public Collection<TagKey<Item>> getTags() {
-            if (unifiedTagsView == null) {
-                Collection<Collection<TagKey<Item>>> iterables = new ArrayList<>();
+            if (unificationTagsView == null) {
+                Set<TagKey<Item>> tagView = new HashSet<>();
                 for (var unificationLookup : unificationLookups) {
-                    iterables.add(unificationLookup.getTags());
+                    tagView.addAll(unificationLookup.getTags());
                 }
 
-                unifiedTagsView = new CompositeCollection<>(iterables);
+                unificationTagsView = Collections.unmodifiableCollection(tagView);
             }
 
-            return unifiedTagsView;
+            return unificationTagsView;
         }
 
         @Override
