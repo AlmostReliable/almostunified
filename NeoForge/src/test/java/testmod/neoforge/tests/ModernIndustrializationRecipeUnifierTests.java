@@ -1,7 +1,7 @@
 package testmod.neoforge.tests;
 
-import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.compat.ModernIndustrializationRecipeUnifier;
+import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
+import com.almostreliable.unified.compat.unification.ModernIndustrializationRecipeUnifier;
 import testmod.gametest_core.SimpleGameTest;
 
 import static testmod.TestUtils.assertNoUnify;

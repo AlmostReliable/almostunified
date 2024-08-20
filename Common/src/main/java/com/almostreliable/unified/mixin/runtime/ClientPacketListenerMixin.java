@@ -1,6 +1,6 @@
 package com.almostreliable.unified.mixin.runtime;
 
-import com.almostreliable.unified.ClientTagUpdateEvent;
+import com.almostreliable.unified.utils.ClientTagUpdateEvent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
 import org.spongepowered.asm.mixin.Mixin;

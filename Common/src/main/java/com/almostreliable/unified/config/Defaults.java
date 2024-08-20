@@ -127,7 +127,7 @@ public final class Defaults {
         return resultMap;
     }
 
-    private static JsonCompare.CompareSettings getDefaultCompareSettings(AlmostUnifiedPlatform.Platform platform) {
+    public static JsonCompare.CompareSettings getDefaultCompareSettings(AlmostUnifiedPlatform.Platform platform) {
         JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
         result.ignoreField(switch (platform) {
             case NEO_FORGE -> "neoforge:conditions";

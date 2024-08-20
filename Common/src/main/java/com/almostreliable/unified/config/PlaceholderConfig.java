@@ -1,6 +1,6 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.api.Placeholders;
+import com.almostreliable.unified.api.unification.Placeholders;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;

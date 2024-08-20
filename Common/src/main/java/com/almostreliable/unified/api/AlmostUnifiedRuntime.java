@@ -1,5 +1,10 @@
 package com.almostreliable.unified.api;
 
+import com.almostreliable.unified.api.unification.Placeholders;
+import com.almostreliable.unified.api.unification.TagSubstitutions;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.api.unification.UnificationSettings;
+
 import javax.annotation.Nullable;
 import java.util.Collection;
 

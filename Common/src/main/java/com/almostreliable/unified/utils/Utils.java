@@ -1,7 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.BuildConfig;
-import com.almostreliable.unified.api.UnificationEntry;
+import com.almostreliable.unified.api.unification.UnificationEntry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

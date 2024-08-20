@@ -1,9 +1,9 @@
 package testmod.tests;
 
-import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.UnificationLookup;
-import com.almostreliable.unified.impl.UnificationLookupImpl;
-import com.almostreliable.unified.recipe.ModPrioritiesImpl;
+import com.almostreliable.unified.api.unification.ModPriorities;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.unification.ModPrioritiesImpl;
+import com.almostreliable.unified.unification.UnificationLookupImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;

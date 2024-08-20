@@ -1,8 +1,8 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.impl.TagInheritance;
+import com.almostreliable.unified.api.constant.ModConstants;
+import com.almostreliable.unified.unification.TagInheritance;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;

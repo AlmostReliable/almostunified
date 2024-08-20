@@ -1,9 +1,9 @@
 package testmod.tests;
 
-import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.UnificationLookup;
-import com.almostreliable.unified.impl.UnificationLookupImpl;
-import com.almostreliable.unified.recipe.ModPrioritiesImpl;
+import com.almostreliable.unified.api.unification.ModPriorities;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.unification.ModPrioritiesImpl;
+import com.almostreliable.unified.unification.UnificationLookupImpl;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;

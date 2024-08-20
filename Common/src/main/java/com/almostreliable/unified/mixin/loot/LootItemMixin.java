@@ -1,7 +1,7 @@
 package com.almostreliable.unified.mixin.loot;
 
-import com.almostreliable.unified.api.UnificationLookup;
-import com.almostreliable.unified.loot.LootUnificationHandler;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.unification.loot.LootUnificationHandler;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.entries.LootItem;

@@ -1,8 +1,8 @@
 package testmod.tests.core;
 
 import com.almostreliable.unified.api.AlmostUnified;
-import com.almostreliable.unified.api.UnificationEntry;
-import com.almostreliable.unified.api.UnificationLookup;
+import com.almostreliable.unified.api.unification.UnificationEntry;
+import com.almostreliable.unified.api.unification.UnificationLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

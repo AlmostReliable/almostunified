@@ -1,10 +1,10 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.api.UnificationLookup;
+import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.DebugConfig;
-import com.almostreliable.unified.recipe.RecipeLink;
-import com.almostreliable.unified.recipe.RecipeTransformer;
+import com.almostreliable.unified.unification.recipe.RecipeLink;
+import com.almostreliable.unified.unification.recipe.RecipeTransformer;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;

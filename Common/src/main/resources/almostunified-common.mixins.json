@@ -10,8 +10,8 @@
     "loot.LootTableMixin",
     "runtime.RecipeManagerMixin",
     "runtime.TagLoaderMixin",
-    "unifier.ArmorItemMixin",
-    "unifier.TieredItemMixin"
+    "unification.ArmorItemMixin",
+    "unification.TieredItemMixin"
   ],
   "client": [
     "runtime.ClientPacketListenerMixin"

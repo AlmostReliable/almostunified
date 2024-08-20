@@ -1,6 +1,6 @@
 package testmod.tests;
 
-import com.almostreliable.unified.api.recipe.ShapedRecipeUnifier;
+import com.almostreliable.unified.api.unification.bundled.ShapedRecipeUnifier;
 import testmod.gametest_core.SimpleGameTest;
 
 import static testmod.TestUtils.assertUnify;

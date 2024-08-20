@@ -1,6 +1,6 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.api.UnificationEntry;
+import com.almostreliable.unified.api.unification.UnificationEntry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;

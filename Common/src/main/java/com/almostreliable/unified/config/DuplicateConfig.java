@@ -1,11 +1,10 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.recipe.RecipeLink;
+import com.almostreliable.unified.unification.recipe.RecipeLink;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -115,7 +114,6 @@ public final class DuplicateConfig extends Config {
 
         // Extracted as method because `safeGet` couldn't cast the type... Seems to be an old SDK bug :-)
         // https://bugs.openjdk.org/browse/JDK-8324860
-        @NotNull
         private LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> getOverrideRules(JsonObject json) {
             return json
                     .getAsJsonObject(OVERRIDE_DUPLICATE_RULES)
@@ -141,9 +139,8 @@ public final class DuplicateConfig extends Config {
             serializePatterns(json, IGNORED_RECIPE_IDS, config.ignoreRecipeIds);
             json.add(DEFAULT_DUPLICATE_RULES, config.defaultRules.serialize());
             JsonObject overrides = new JsonObject();
-            config.overrideRules.forEach((rl, compareSettings) -> {
-                overrides.add(rl.toString(), compareSettings.serialize());
-            });
+            config.overrideRules.forEach((rl, compareSettings) ->
+                    overrides.add(rl.toString(), compareSettings.serialize()));
             json.add(OVERRIDE_DUPLICATE_RULES, overrides);
             json.addProperty(STRICT_MODE, false);
 

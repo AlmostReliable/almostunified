@@ -2,10 +2,12 @@ package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
-import com.almostreliable.unified.recipe.ClientRecipeTracker;
+import com.almostreliable.unified.compat.PluginManager;
+import com.almostreliable.unified.compat.viewer.ClientRecipeTracker;
+import com.almostreliable.unified.core.AlmostUnifiedCommands;
+import com.almostreliable.unified.unification.worldgen.WorldGenBiomeModifier;
+import com.almostreliable.unified.unification.worldgen.WorldStripper;
 import com.almostreliable.unified.utils.Utils;
-import com.almostreliable.unified.worldgen.WorldGenBiomeModifier;
-import com.almostreliable.unified.worldgen.WorldStripper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;

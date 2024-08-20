@@ -1,7 +1,8 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
-import com.almostreliable.unified.recipe.ClientRecipeTracker;
+import com.almostreliable.unified.compat.PluginManager;
+import com.almostreliable.unified.compat.viewer.ClientRecipeTracker;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;

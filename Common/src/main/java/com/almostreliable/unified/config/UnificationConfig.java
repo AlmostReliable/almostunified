@@ -2,9 +2,9 @@ package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.Placeholders;
-import com.almostreliable.unified.recipe.ModPrioritiesImpl;
+import com.almostreliable.unified.api.unification.ModPriorities;
+import com.almostreliable.unified.api.unification.Placeholders;
+import com.almostreliable.unified.unification.ModPrioritiesImpl;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.Registries;

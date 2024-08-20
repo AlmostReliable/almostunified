@@ -1,16 +1,16 @@
 package testmod;
 
-import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.StoneVariantLookup;
-import com.almostreliable.unified.api.TagSubstitutions;
-import com.almostreliable.unified.api.UnificationLookup;
-import com.almostreliable.unified.api.recipe.RecipeUnifier;
-import com.almostreliable.unified.api.recipe.UnificationHelper;
-import com.almostreliable.unified.impl.UnificationLookupImpl;
-import com.almostreliable.unified.recipe.ModPrioritiesImpl;
-import com.almostreliable.unified.recipe.RecipeJsonImpl;
-import com.almostreliable.unified.recipe.RecipeLink;
-import com.almostreliable.unified.recipe.UnificationHelperImpl;
+import com.almostreliable.unified.api.unification.ModPriorities;
+import com.almostreliable.unified.api.unification.StoneVariantLookup;
+import com.almostreliable.unified.api.unification.TagSubstitutions;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
+import com.almostreliable.unified.api.unification.recipe.UnificationHelper;
+import com.almostreliable.unified.unification.ModPrioritiesImpl;
+import com.almostreliable.unified.unification.UnificationLookupImpl;
+import com.almostreliable.unified.unification.recipe.RecipeJsonImpl;
+import com.almostreliable.unified.unification.recipe.RecipeLink;
+import com.almostreliable.unified.unification.recipe.UnificationHelperImpl;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

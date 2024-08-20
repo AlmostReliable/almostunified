@@ -3,9 +3,8 @@ package com.almostreliable.unified;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.StartupConfig;
-import com.almostreliable.unified.impl.AlmostUnifiedRuntimeImpl;
-import com.almostreliable.unified.loot.LootUnification;
-import com.almostreliable.unified.recipe.RecipeUnificationHandler;
+import com.almostreliable.unified.core.AlmostUnifiedRuntimeImpl;
+import com.almostreliable.unified.unification.loot.LootUnification;
 import com.almostreliable.unified.utils.CustomLogger;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import com.google.common.base.Preconditions;
@@ -25,10 +24,10 @@ public final class AlmostUnifiedCommon {
     public static final Logger LOGGER = CustomLogger.create();
     public static final StartupConfig STARTUP_CONFIG = Config.load(StartupConfig.NAME, StartupConfig.SERIALIZER);
 
-    @Nullable private static AlmostUnifiedRuntime RUNTIME;
+    @Nullable private static AlmostUnifiedRuntimeImpl RUNTIME;
 
     @Nullable
-    static AlmostUnifiedRuntime getRuntime() {
+    public static AlmostUnifiedRuntime getRuntime() {
         return RUNTIME;
     }
 
@@ -36,16 +35,10 @@ public final class AlmostUnifiedCommon {
         RUNTIME = AlmostUnifiedRuntimeImpl.create(itemTags, blockTags);
     }
 
-
     public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes, HolderLookup.Provider registries) {
         Preconditions.checkNotNull(RUNTIME, "AlmostUnifiedRuntime was not loaded correctly");
 
-        if (RUNTIME instanceof RecipeUnificationHandler handler) {
-            handler.run(recipes);
-        } else {
-            throw new IllegalStateException("Runtime is not a RecipeUnificationHandler");
-        }
-
+        RUNTIME.run(recipes);
         LootUnification.unifyLoot(RUNTIME, registries);
     }
 }

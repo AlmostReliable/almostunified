@@ -1,7 +1,7 @@
 package com.almostreliable.unified.mixin.runtime;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.utils.TagReloadHandler;
+import com.almostreliable.unified.core.TagReloadHandler;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;

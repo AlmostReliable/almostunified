@@ -1,7 +1,7 @@
 package com.almostreliable.unified.mixin.loot;
 
-import com.almostreliable.unified.api.UnificationLookup;
-import com.almostreliable.unified.loot.LootUnificationHandler;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.unification.loot.LootUnificationHandler;
 import net.minecraft.world.level.storage.loot.entries.CompositeEntryBase;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import org.spongepowered.asm.mixin.Final;
