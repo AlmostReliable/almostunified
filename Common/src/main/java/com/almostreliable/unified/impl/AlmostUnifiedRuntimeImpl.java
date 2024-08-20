@@ -7,7 +7,7 @@ import com.almostreliable.unified.api.*;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.PlaceholderConfig;
 import com.almostreliable.unified.config.TagConfig;
-import com.almostreliable.unified.config.UnifyConfig;
+import com.almostreliable.unified.config.UnificationConfig;
 import com.almostreliable.unified.recipe.RecipeTransformer;
 import com.almostreliable.unified.recipe.RecipeUnificationHandler;
 import com.almostreliable.unified.recipe.unifier.RecipeUnifierRegistryImpl;
@@ -47,9 +47,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         FileUtils.createGitIgnore();
         var tagConfig = Config.load(TagConfig.NAME, TagConfig.SERIALIZER);
         var placeholderConfig = Config.load(PlaceholderConfig.NAME, PlaceholderConfig.SERIALIZER);
-        var unifyConfigs = UnifyConfig.safeLoadConfigs();
+        var unificationConfigs = UnificationConfig.safeLoadConfigs();
 
-        var allUnifyTags = bakeAndValidateTags(unifyConfigs, itemTags, placeholderConfig);
+        var unificationTags = bakeAndValidateTags(unificationConfigs, itemTags, placeholderConfig);
 
         RecipeUnifierRegistry recipeUnifierRegistry = new RecipeUnifierRegistryImpl();
         PluginManager.instance().registerRecipeUnifiers(recipeUnifierRegistry);
@@ -58,7 +58,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         TagReloadHandler.applyCustomTags(tagConfig.getCustomTags(), itemTags);
         TagSubstitutionsImpl tagSubstitutions = TagSubstitutionsImpl.create(
                 itemTags::has,
-                allUnifyTags::contains,
+                unificationTags::contains,
                 tagConfig.getTagSubstitutions()
         );
         tagSubstitutions.apply(itemTags);
@@ -66,7 +66,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         List<UnificationSettings> unificationSettings = createUnificationLookups(
                 itemTags,
                 blockTags,
-                unifyConfigs,
+                unificationConfigs,
                 tagSubstitutions,
                 tagConfig.getTagInheritance()
         );
@@ -88,18 +88,18 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
      * <li>Tag must not exist in another unify config. If found, the tag will be skipped.</li>
      * </ul>
      *
-     * @param unifyConfigs The unify configs
-     * @param itemTags     The vanilla tags
-     * @param placeholders The replacements
+     * @param unificationConfigs The unify configs
+     * @param itemTags           The vanilla tags
+     * @param placeholders       The replacements
      * @return The baked tags combined from all unify configs
      */
-    private static Set<TagKey<Item>> bakeAndValidateTags(Collection<UnifyConfig> unifyConfigs, VanillaTagWrapper<Item> itemTags, Placeholders placeholders) {
+    private static Set<TagKey<Item>> bakeAndValidateTags(Collection<UnificationConfig> unificationConfigs, VanillaTagWrapper<Item> itemTags, Placeholders placeholders) {
         Set<TagKey<Item>> result = new HashSet<>();
 
         Map<TagKey<Item>, String> visitedTags = new HashMap<>();
         Set<TagKey<Item>> wrongTags = new HashSet<>();
 
-        for (UnifyConfig config : unifyConfigs) {
+        for (UnificationConfig config : unificationConfigs) {
             Predicate<TagKey<Item>> validator = tag -> {
                 if (!itemTags.has(tag)) {
                     wrongTags.add(tag);
@@ -136,25 +136,22 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
      * <p>
      * This method also applies tag inheritance. If tag inheritance was applied, all handlers will be rebuilt due to tag inheritance modifications against vanilla tags.
      *
-     * @param itemTags         All existing item tags which are used ingame
-     * @param blockTags        All existing block tags which are used ingame
-     * @param unifyConfigs     All unify configs
-     * @param tagSubstitutions All tag substitutions
-     * @param tagInheritance   Tag inheritance data
+     * @param itemTags           All existing item tags which are used ingame
+     * @param blockTags          All existing block tags which are used ingame
+     * @param unificationConfigs All unify configs
+     * @param tagSubstitutions   All tag substitutions
+     * @param tagInheritance     Tag inheritance data
      * @return All unify handlers
      */
-    private static List<UnificationSettings> createUnificationLookups(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnifyConfig> unifyConfigs, TagSubstitutionsImpl tagSubstitutions, TagInheritance tagInheritance) {
-        List<UnificationSettings> unificationSettings = UnificationSettingsImpl.create(
-                unifyConfigs,
+    private static List<UnificationSettings> createUnificationLookups(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnificationConfig> unificationConfigs, TagSubstitutionsImpl tagSubstitutions, TagInheritance tagInheritance) {
+        var unificationSettings = UnificationSettingsImpl.create(unificationConfigs,
                 itemTags,
                 blockTags,
                 tagSubstitutions);
+
         var needsRebuild = tagInheritance.apply(itemTags, blockTags, unificationSettings);
         if (needsRebuild) {
-            unificationSettings = UnificationSettingsImpl.create(unifyConfigs,
-                    itemTags,
-                    blockTags,
-                    tagSubstitutions);
+            return UnificationSettingsImpl.create(unificationConfigs, itemTags, blockTags, tagSubstitutions);
         }
 
         return unificationSettings;

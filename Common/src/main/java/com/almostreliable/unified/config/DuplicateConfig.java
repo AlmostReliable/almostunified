@@ -19,16 +19,17 @@ public final class DuplicateConfig extends Config {
     private final JsonCompare.CompareSettings defaultRules;
     private final LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules;
     private final Set<Pattern> ignoreRecipeTypes;
-    private final Set<Pattern> ignoreRecipes;
+    private final Set<Pattern> ignoreRecipeIds;
     private final boolean strictMode;
+
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
 
-    private DuplicateConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipes, boolean strictMode) {
+    private DuplicateConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipeIds, boolean strictMode) {
         super(NAME);
         this.defaultRules = defaultRules;
         this.overrideRules = overrideRules;
         this.ignoreRecipeTypes = ignoreRecipeTypes;
-        this.ignoreRecipes = ignoreRecipes;
+        this.ignoreRecipeIds = ignoreRecipeIds;
         this.strictMode = strictMode;
         this.ignoredRecipeTypesCache = new HashMap<>();
     }
@@ -38,7 +39,7 @@ public final class DuplicateConfig extends Config {
             return true;
         }
 
-        for (Pattern ignoreRecipePattern : ignoreRecipes) {
+        for (Pattern ignoreRecipePattern : ignoreRecipeIds) {
             if (ignoreRecipePattern.matcher(recipe.getId().toString()).matches()) {
                 return true;
             }
@@ -81,7 +82,7 @@ public final class DuplicateConfig extends Config {
         private static final String DEFAULT_DUPLICATE_RULES = "default_duplicate_rules";
         private static final String OVERRIDE_DUPLICATE_RULES = "override_duplicate_rules";
         private static final String IGNORED_RECIPE_TYPES = "ignored_recipe_types";
-        private static final String IGNORED_RECIPES = "ignored_recipes";
+        private static final String IGNORED_RECIPE_IDS = "ignored_recipe_ids";
         private static final String STRICT_MODE = "strict_mode";
 
         private DuplicateSerializer() {}
@@ -94,7 +95,7 @@ public final class DuplicateConfig extends Config {
                     IGNORED_RECIPE_TYPES,
                     Defaults.IGNORED_RECIPE_TYPES
             );
-            Set<Pattern> ignoreRecipes = deserializePatterns(json, IGNORED_RECIPES, List.of());
+            Set<Pattern> ignoreRecipeIds = deserializePatterns(json, IGNORED_RECIPE_IDS, List.of());
 
             JsonCompare.CompareSettings defaultRules = safeGet(() -> createCompareSet(json.getAsJsonObject(
                             DEFAULT_DUPLICATE_RULES)),
@@ -107,7 +108,7 @@ public final class DuplicateConfig extends Config {
                     defaultRules,
                     overrideRules,
                     ignoreRecipeTypes,
-                    ignoreRecipes,
+                    ignoreRecipeIds,
                     strictMode
             );
         }
@@ -137,7 +138,7 @@ public final class DuplicateConfig extends Config {
             JsonObject json = new JsonObject();
 
             serializePatterns(json, IGNORED_RECIPE_TYPES, config.ignoreRecipeTypes);
-            serializePatterns(json, IGNORED_RECIPES, config.ignoreRecipes);
+            serializePatterns(json, IGNORED_RECIPE_IDS, config.ignoreRecipeIds);
             json.add(DEFAULT_DUPLICATE_RULES, config.defaultRules.serialize());
             JsonObject overrides = new JsonObject();
             config.overrideRules.forEach((rl, compareSettings) -> {

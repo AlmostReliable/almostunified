@@ -38,25 +38,7 @@ public interface UnificationSettings extends UnificationLookup {
      * @return true if the recipe should be included, false otherwise
      */
     default boolean shouldIncludeRecipe(RecipeData recipe) {
-        return shouldIncludeRecipeId(recipe) && shouldIncludeRecipeType(recipe);
-    }
-
-    /**
-     * Returns whether the given recipe id should be included in the unification process.
-     *
-     * @param id the recipe id to check
-     * @return true if the recipe id should be included, false otherwise
-     */
-    boolean shouldIncludeRecipeId(ResourceLocation id);
-
-    /**
-     * Returns whether the recipe id of the given {@link RecipeData} should be included in the unification process.
-     *
-     * @param recipe the recipe to check
-     * @return true if the recipe id should be included, false otherwise
-     */
-    default boolean shouldIncludeRecipeId(RecipeData recipe) {
-        return shouldIncludeRecipeId(recipe.getId());
+        return shouldIncludeRecipeType(recipe) && shouldIncludeRecipeId(recipe);
     }
 
     /**
@@ -78,6 +60,24 @@ public interface UnificationSettings extends UnificationLookup {
     }
 
     /**
+     * Returns whether the given recipe id should be included in the unification process.
+     *
+     * @param id the recipe id to check
+     * @return true if the recipe id should be included, false otherwise
+     */
+    boolean shouldIncludeRecipeId(ResourceLocation id);
+
+    /**
+     * Returns whether the recipe id of the given {@link RecipeData} should be included in the unification process.
+     *
+     * @param recipe the recipe to check
+     * @return true if the recipe id should be included, false otherwise
+     */
+    default boolean shouldIncludeRecipeId(RecipeData recipe) {
+        return shouldIncludeRecipeId(recipe.getId());
+    }
+
+    /**
      * Returns whether variant items of this config should be hidden in recipe viewers.
      *
      * @return true if variant items should be hidden, false otherwise
@@ -89,7 +89,7 @@ public interface UnificationSettings extends UnificationLookup {
      *
      * @return true if loot tables should be unified, false otherwise
      */
-    boolean enableLootUnification();
+    boolean shouldUnifyLoot();
 
     /**
      * Returns whether the given loot table should be included in the unification process.

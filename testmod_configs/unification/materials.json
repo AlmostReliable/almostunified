@@ -13,6 +13,7 @@
     "immersiveengineering",
     "mekanism"
   ],
+  "priority_overrides": {},
   "stone_variants": [
     "stone",
     "nether",
@@ -35,14 +36,13 @@
     "c:storage_blocks/{material}",
     "c:wires/{material}"
   ],
-  "priority_overrides": {},
   "ignored_tags": [],
   "ignored_items": [],
   "ignored_recipe_types": [
     "cucumber:shaped_tag"
   ],
-  "ignored_recipes": [],
-  "ignored_loot_tables": [],
-  "enable_loot_unification": true,
-  "recipe_viewer_hiding": true
+  "ignored_recipe_ids": [],
+  "recipe_viewer_hiding": true,
+  "loot_unification": true,
+  "ignored_loot_tables": []
 }

@@ -21,7 +21,7 @@ public class LootUnification {
 
             boolean enableLootUnification = handlers
                     .stream()
-                    .anyMatch(UnificationSettings::enableLootUnification);
+                    .anyMatch(UnificationSettings::shouldUnifyLoot);
             if (!enableLootUnification) {
                 return;
             }
@@ -41,7 +41,7 @@ public class LootUnification {
 
         Set<UnificationSettings> modifiedTable = new HashSet<>();
         for (UnificationSettings handler : unificationSettings) {
-            if (handler.enableLootUnification() && handler.shouldIncludeLootTable(tableId)) {
+            if (handler.shouldUnifyLoot() && handler.shouldIncludeLootTable(tableId)) {
                 if (lootUnificationHandler.almostunified$unify(handler)) {
                     modifiedTable.add(handler);
                 }
