@@ -2,7 +2,7 @@ package com.almostreliable.unified.loot;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.ConfiguredUnificationHandler;
+import com.almostreliable.unified.api.UnificationSettings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -17,11 +17,11 @@ public class LootUnification {
 
     public static void unifyLoot(AlmostUnifiedRuntime runtime, HolderLookup.Provider registries) {
         try {
-            var handlers = runtime.getConfiguredUnificationHandlers();
+            var handlers = runtime.getUnificationSettings();
 
             boolean enableLootUnification = handlers
                     .stream()
-                    .anyMatch(ConfiguredUnificationHandler::enableLootUnification);
+                    .anyMatch(UnificationSettings::enableLootUnification);
             if (!enableLootUnification) {
                 return;
             }
@@ -36,12 +36,12 @@ public class LootUnification {
         }
     }
 
-    public static void unifyLoot(LootTable lootTable, ResourceLocation tableId, Collection<? extends ConfiguredUnificationHandler> configuredUnificationHandlers) {
+    public static void unifyLoot(LootTable lootTable, ResourceLocation tableId, Collection<? extends UnificationSettings> unificationSettings) {
         LootUnificationHandler lootUnificationHandler = LootUnificationHandler.cast(lootTable);
 
-        Set<ConfiguredUnificationHandler> modifiedTable = new HashSet<>();
-        for (ConfiguredUnificationHandler handler : configuredUnificationHandlers) {
-            if (handler.enableLootUnification() && handler.shouldUnifyLootTable(tableId)) {
+        Set<UnificationSettings> modifiedTable = new HashSet<>();
+        for (UnificationSettings handler : unificationSettings) {
+            if (handler.enableLootUnification() && handler.shouldIncludeLootTable(tableId)) {
                 if (lootUnificationHandler.almostunified$unify(handler)) {
                     modifiedTable.add(handler);
                 }
@@ -51,7 +51,7 @@ public class LootUnification {
         if (!modifiedTable.isEmpty()) {
             AlmostUnifiedCommon.LOGGER.info("Loot table '{}' was unified by: {}",
                     tableId,
-                    modifiedTable.stream().map(ConfiguredUnificationHandler::getName).collect(
+                    modifiedTable.stream().map(UnificationSettings::getName).collect(
                             Collectors.joining(", ")));
         }
     }

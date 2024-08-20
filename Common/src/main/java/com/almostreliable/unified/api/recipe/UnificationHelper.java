@@ -1,7 +1,7 @@
 package com.almostreliable.unified.api.recipe;
 
 import com.almostreliable.unified.api.TagSubstitutions;
-import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.api.UnificationLookup;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -24,11 +24,11 @@ import javax.annotation.Nullable;
 public interface UnificationHelper {
 
     /**
-     * Returns the instance of the {@link UnificationHandler} this helper is based on.
+     * Returns the instance of the {@link UnificationLookup} this helper is based on.
      *
-     * @return the {@link UnificationHandler} this helper is based on
+     * @return the {@link UnificationLookup} this helper is based on
      */
-    UnificationHandler getUnificationHandler();
+    UnificationLookup getUnificationLookup();
 
     /**
      * Fetches all entries of the given {@link RecipeJson} under the specified keys and unifies them as inputs.<br>

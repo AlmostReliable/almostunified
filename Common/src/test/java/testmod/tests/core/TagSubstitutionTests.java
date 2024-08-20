@@ -2,7 +2,7 @@ package testmod.tests.core;
 
 import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.UnificationEntry;
-import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.api.UnificationLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -32,10 +32,10 @@ public class TagSubstitutionTests {
         TagKey<Item> silverTag = TagKey.create(Registries.ITEM, ResourceLocation.parse("c:ores/silver"));
         assertTrue(itemTags.contains(silverTag));
 
-        UnificationHandler unificationHandler = AlmostUnified.INSTANCE.getRuntimeOrThrow().getUnificationHandler();
-        TagKey<Item> unifyTag = unificationHandler.getRelevantItemTag(silverOreId);
+        UnificationLookup unificationLookup = AlmostUnified.INSTANCE.getRuntimeOrThrow().getUnificationLookup();
+        TagKey<Item> unifyTag = unificationLookup.getRelevantItemTag(silverOreId);
         assertEquals(silverTag, unifyTag);
-        UnificationEntry<Item> silverOreEntry = unificationHandler.getTagTargetItem(silverTag);
+        UnificationEntry<Item> silverOreEntry = unificationLookup.getTagTargetItem(silverTag);
         assertEquals(silverOreId, silverOreEntry.id());
 
     }

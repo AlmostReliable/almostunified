@@ -1,6 +1,6 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.api.UnificationLookup;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.recipe.RecipeLink;
@@ -46,9 +46,9 @@ public final class DebugHandler {
         this.recipesBefore = recipesBefore;
     }
 
-    public static DebugHandler onRunStart(Map<ResourceLocation, JsonElement> recipes, UnificationHandler unificationHandler) {
+    public static DebugHandler onRunStart(Map<ResourceLocation, JsonElement> recipes, UnificationLookup unificationLookup) {
         DebugHandler handler = new DebugHandler(recipes.size());
-        handler.dumpTags(unificationHandler);
+        handler.dumpTags(unificationLookup);
         handler.dumpRecipes(RECIPES_BEFORE, recipes);
         return handler;
     }
@@ -70,19 +70,19 @@ public final class DebugHandler {
         dumpDuplicates();
     }
 
-    private void dumpTags(UnificationHandler unificationHandler) {
+    private void dumpTags(UnificationLookup unificationLookup) {
         if (!config.shouldDumpTags()) return;
 
-        int maxLength = getMaxLength(unificationHandler.getUnifiedTags(), t -> t.location().toString().length());
+        int maxLength = getMaxLength(unificationLookup.getTags(), t -> t.location().toString().length());
 
         FileUtils.writeDebugLog(TAGS, sb -> sb
                 .append(lastRun).append("\n")
-                .append(unificationHandler
-                        .getUnifiedTags()
+                .append(unificationLookup
+                        .getTags()
                         .stream()
                         .map(t -> rf(t.location(), maxLength) + " => " +
-                                  unificationHandler
-                                          .getEntries(t)
+                                  unificationLookup
+                                          .getTagEntries(t)
                                           .stream()
                                           .map(entry -> entry.id().toString())
                                           .sorted()

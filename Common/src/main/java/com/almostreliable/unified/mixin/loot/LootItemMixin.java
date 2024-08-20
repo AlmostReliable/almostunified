@@ -1,6 +1,6 @@
 package com.almostreliable.unified.mixin.loot;
 
-import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.api.UnificationLookup;
 import com.almostreliable.unified.loot.LootUnificationHandler;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
@@ -15,7 +15,7 @@ public class LootItemMixin implements LootUnificationHandler {
     @Shadow @Final @Mutable private Holder<Item> item;
 
     @Override
-    public boolean almostunified$unify(UnificationHandler lookup) {
+    public boolean almostunified$unify(UnificationLookup lookup) {
         var replacement = lookup.getItemReplacement(item);
         if (replacement == null || item.value().equals(replacement.value())) {
             return false;

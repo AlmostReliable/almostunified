@@ -13,32 +13,32 @@ import java.util.Collection;
 public interface AlmostUnifiedRuntime {
 
     /**
-     * Returns a composition of all {@link ConfiguredUnificationHandler}s.
+     * Returns a composition of all {@link UnificationSettings}s.
      * <p>
-     * Because {@link ConfiguredUnificationHandler}s include config-specific settings, and are thus not composable, the
-     * composition is returned as a {@link UnificationHandler}.
+     * Because {@link UnificationSettings}s include config-specific settings, and are thus not composable, the
+     * composition is returned as a {@link UnificationLookup}.
      *
-     * @return the {@link ConfiguredUnificationHandler} composition as a {@link UnificationHandler}
+     * @return the {@link UnificationSettings} composition as a {@link UnificationLookup}
      */
-    UnificationHandler getUnificationHandler();
+    UnificationLookup getUnificationLookup();
 
     /**
-     * Returns an unmodifiable collection of all {@link ConfiguredUnificationHandler}s.
+     * Returns an unmodifiable collection of all {@link UnificationSettings}s.
      *
-     * @return the {@link ConfiguredUnificationHandler} collection
+     * @return the {@link UnificationSettings} collection
      */
-    Collection<? extends ConfiguredUnificationHandler> getConfiguredUnificationHandlers();
+    Collection<? extends UnificationSettings> getUnificationSettings();
 
     /**
-     * Returns the {@link ConfiguredUnificationHandler} with the given name.
+     * Returns the {@link UnificationSettings} with the given name.
      * <p>
-     * The name of a {@link ConfiguredUnificationHandler} is the name of the config file it was created from.
+     * The name of a {@link UnificationSettings} is the name of the config file it was created from.
      *
-     * @param name the name of the {@link ConfiguredUnificationHandler}
-     * @return the {@link ConfiguredUnificationHandler} with the given name or null if not found
+     * @param name the name of the {@link UnificationSettings}
+     * @return the {@link UnificationSettings} with the given name or null if not found
      */
     @Nullable
-    ConfiguredUnificationHandler getUnificationHandler(String name);
+    UnificationSettings getUnificationLookup(String name);
 
     /**
      * Returns the {@link TagSubstitutions} instance.

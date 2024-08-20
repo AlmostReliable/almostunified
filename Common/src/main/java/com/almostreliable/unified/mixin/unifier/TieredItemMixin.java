@@ -24,7 +24,7 @@ public class TieredItemMixin {
         if (runtime == null) return;
 
         Ingredient repairIngredient = tier.getRepairIngredient();
-        if (runtime.getUnificationHandler().isItemInUnifiedIngredient(repairIngredient, repairCandidate)) {
+        if (runtime.getUnificationLookup().isUnifiedIngredientItem(repairIngredient, repairCandidate)) {
             cir.setReturnValue(true);
         }
     }

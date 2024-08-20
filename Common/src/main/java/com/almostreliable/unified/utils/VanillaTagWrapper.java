@@ -9,7 +9,6 @@ import net.minecraft.tags.TagKey;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 /**
  * Base wrapper to store vanilla tags and their holders. The wrapper allows to add new tags and holders to a tag.
@@ -89,12 +88,6 @@ public class VanillaTagWrapper<T> {
         }
 
         return map;
-    }
-
-    public void forEach(BiConsumer<TagKey<T>, Collection<Holder<T>>> onConsume) {
-        for (var entry : vanillaTags.entrySet()) {
-            onConsume.accept(TagKey.create(registry.key(), entry.getKey()), entry.getValue());
-        }
     }
 
     public void seal() {

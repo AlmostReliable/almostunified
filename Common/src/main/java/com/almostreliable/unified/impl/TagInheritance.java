@@ -2,7 +2,7 @@ package com.almostreliable.unified.impl;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.UnificationEntry;
-import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.api.UnificationLookup;
 import com.almostreliable.unified.utils.Utils;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import com.google.common.collect.HashMultimap;
@@ -31,11 +31,11 @@ public class TagInheritance {
         blockOptions = new Options<>(blockMode, blockInheritance);
     }
 
-    public boolean apply(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, List<? extends UnificationHandler> unificationHandlers) {
+    public boolean apply(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, List<? extends UnificationLookup> unificationLookups) {
         Multimap<UnificationEntry<Item>, ResourceLocation> changedItemTags = HashMultimap.create();
         Multimap<UnificationEntry<Item>, ResourceLocation> changedBlockTags = HashMultimap.create();
 
-        var relations = resolveRelations(unificationHandlers);
+        var relations = resolveRelations(unificationLookups);
         if (relations.isEmpty()) return false;
 
         for (var relation : relations) {
@@ -128,21 +128,21 @@ public class TagInheritance {
         return true;
     }
 
-    private Set<TagRelation> resolveRelations(Collection<? extends UnificationHandler> unificationHandlers) {
+    private Set<TagRelation> resolveRelations(Collection<? extends UnificationLookup> unificationLookups) {
         Set<TagRelation> relations = new HashSet<>();
 
-        for (var unificationHandler : unificationHandlers) {
-            for (TagKey<Item> unifyTag : unificationHandler.getUnifiedTags()) {
+        for (var unificationLookup : unificationLookups) {
+            for (TagKey<Item> unifyTag : unificationLookup.getTags()) {
                 if (itemOptions.skipForInheritance(unifyTag) && blockOptions.skipForInheritance(unifyTag)) {
                     continue;
                 }
 
-                var itemsByTag = unificationHandler.getEntries(unifyTag);
+                var itemsByTag = unificationLookup.getTagEntries(unifyTag);
 
                 // avoid handling single entries and tags that only contain the same namespace for all items
                 if (Utils.allSameNamespace(itemsByTag)) continue;
 
-                var target = unificationHandler.getTagTargetItem(unifyTag);
+                var target = unificationLookup.getTagTargetItem(unifyTag);
                 if (target == null) continue;
 
                 var items = removeTargetItem(itemsByTag, target);

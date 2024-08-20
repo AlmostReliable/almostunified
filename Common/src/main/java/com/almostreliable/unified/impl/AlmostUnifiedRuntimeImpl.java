@@ -13,7 +13,6 @@ import com.almostreliable.unified.recipe.RecipeUnificationHandler;
 import com.almostreliable.unified.recipe.unifier.RecipeUnifierRegistryImpl;
 import com.almostreliable.unified.utils.*;
 import com.google.gson.JsonElement;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -28,19 +27,18 @@ import java.util.stream.Collectors;
 
 public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, RecipeUnificationHandler {
 
-    private final Collection<? extends ConfiguredUnificationHandler> configuredUnificationHandlers;
+    private final Collection<? extends UnificationSettings> unificationSettings;
     private final RecipeUnifierRegistry recipeUnifierRegistry;
     private final TagSubstitutions tagSubstitutions;
     private final Placeholders placeholders;
-    private final UnificationHandler compositeUnificationHandler;
+    private final UnificationLookup compositeUnificationLookup;
 
-    private AlmostUnifiedRuntimeImpl(Collection<? extends ConfiguredUnificationHandler> configuredUnificationHandlers, RecipeUnifierRegistry recipeUnifierRegistry, TagSubstitutions tagSubstitutions, Placeholders placeholders) {
-        this.configuredUnificationHandlers = configuredUnificationHandlers;
+    private AlmostUnifiedRuntimeImpl(Collection<? extends UnificationSettings> unificationSettings, RecipeUnifierRegistry recipeUnifierRegistry, TagSubstitutions tagSubstitutions, Placeholders placeholders) {
+        this.unificationSettings = unificationSettings;
         this.recipeUnifierRegistry = recipeUnifierRegistry;
         this.tagSubstitutions = tagSubstitutions;
         this.placeholders = placeholders;
-        this.compositeUnificationHandler = new CompositeUnificationHandler(configuredUnificationHandlers,
-                tagSubstitutions);
+        this.compositeUnificationLookup = new CompositeUnificationLookup(unificationSettings);
     }
 
     public static AlmostUnifiedRuntime create(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
@@ -65,17 +63,17 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         );
         tagSubstitutions.apply(itemTags);
 
-        List<ConfiguredUnificationHandler> configuredUnificationHandlers = createAndPrepareUnificationHandlers(
+        List<UnificationSettings> unificationSettings = createUnificationLookups(
                 itemTags,
                 blockTags,
                 unifyConfigs,
                 tagSubstitutions,
                 tagConfig.getTagInheritance()
         );
-        ItemHider.applyHideTags(itemTags, configuredUnificationHandlers, tagConfig.isEmiHidingStrict());
+        ItemHider.applyHideTags(itemTags, unificationSettings, tagConfig.isEmiHidingStrict());
 
         return new AlmostUnifiedRuntimeImpl(
-                configuredUnificationHandlers,
+                unificationSettings,
                 recipeUnifierRegistry,
                 tagSubstitutions,
                 placeholderConfig
@@ -145,29 +143,29 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
      * @param tagInheritance   Tag inheritance data
      * @return All unify handlers
      */
-    private static List<ConfiguredUnificationHandler> createAndPrepareUnificationHandlers(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnifyConfig> unifyConfigs, TagSubstitutionsImpl tagSubstitutions, TagInheritance tagInheritance) {
-        List<ConfiguredUnificationHandler> configuredUnificationHandlers = ConfiguredUnificationHandlerImpl.create(
+    private static List<UnificationSettings> createUnificationLookups(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnifyConfig> unifyConfigs, TagSubstitutionsImpl tagSubstitutions, TagInheritance tagInheritance) {
+        List<UnificationSettings> unificationSettings = UnificationSettingsImpl.create(
                 unifyConfigs,
                 itemTags,
                 blockTags,
                 tagSubstitutions);
-        var needsRebuild = tagInheritance.apply(itemTags, blockTags, configuredUnificationHandlers);
+        var needsRebuild = tagInheritance.apply(itemTags, blockTags, unificationSettings);
         if (needsRebuild) {
-            configuredUnificationHandlers = ConfiguredUnificationHandlerImpl.create(unifyConfigs,
+            unificationSettings = UnificationSettingsImpl.create(unifyConfigs,
                     itemTags,
                     blockTags,
                     tagSubstitutions);
         }
 
-        return configuredUnificationHandlers;
+        return unificationSettings;
     }
 
     @Override
     public void run(Map<ResourceLocation, JsonElement> recipes) {
-        DebugHandler debugHandler = DebugHandler.onRunStart(recipes, compositeUnificationHandler);
+        DebugHandler debugHandler = DebugHandler.onRunStart(recipes, compositeUnificationLookup);
 
         debugHandler.measure(() -> {
-            var transformer = new RecipeTransformer(recipeUnifierRegistry, configuredUnificationHandlers);
+            var transformer = new RecipeTransformer(recipeUnifierRegistry, unificationSettings);
             return transformer.transformRecipes(recipes);
         });
 
@@ -175,21 +173,21 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
     }
 
     @Override
-    public UnificationHandler getUnificationHandler() {
-        return compositeUnificationHandler;
+    public UnificationLookup getUnificationLookup() {
+        return compositeUnificationLookup;
     }
 
     @Override
-    public Collection<? extends ConfiguredUnificationHandler> getConfiguredUnificationHandlers() {
-        return Collections.unmodifiableCollection(configuredUnificationHandlers);
+    public Collection<? extends UnificationSettings> getUnificationSettings() {
+        return Collections.unmodifiableCollection(unificationSettings);
     }
 
     @Nullable
     @Override
-    public ConfiguredUnificationHandler getUnificationHandler(String name) {
-        for (ConfiguredUnificationHandler configuredUnificationHandler : configuredUnificationHandlers) {
-            if (configuredUnificationHandler.getName().equals(name)) {
-                return configuredUnificationHandler;
+    public UnificationSettings getUnificationLookup(String name) {
+        for (UnificationSettings unificationSettings : unificationSettings) {
+            if (unificationSettings.getName().equals(name)) {
+                return unificationSettings;
             }
         }
 
@@ -206,23 +204,22 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         return placeholders;
     }
 
-    private static final class CompositeUnificationHandler implements UnificationHandler {
+    private static final class CompositeUnificationLookup implements UnificationLookup {
 
-        private final Iterable<? extends UnificationHandler> unificationHandlers;
-        private final TagSubstitutions tagSubstitutions;
+        private final Iterable<? extends UnificationLookup> unificationLookups;
+
         @Nullable private Collection<TagKey<Item>> unifiedTagsView;
 
-        private CompositeUnificationHandler(Iterable<? extends UnificationHandler> unificationHandlers, TagSubstitutions tagSubstitutions) {
-            this.unificationHandlers = unificationHandlers;
-            this.tagSubstitutions = tagSubstitutions;
+        private CompositeUnificationLookup(Iterable<? extends UnificationLookup> unificationLookups) {
+            this.unificationLookups = unificationLookups;
         }
 
         @Override
-        public Collection<TagKey<Item>> getUnifiedTags() {
+        public Collection<TagKey<Item>> getTags() {
             if (unifiedTagsView == null) {
                 Collection<Collection<TagKey<Item>>> iterables = new ArrayList<>();
-                for (var unificationHandler : unificationHandlers) {
-                    iterables.add(unificationHandler.getUnifiedTags());
+                for (var unificationLookup : unificationLookups) {
+                    iterables.add(unificationLookup.getTags());
                 }
 
                 unifiedTagsView = new CompositeCollection<>(iterables);
@@ -232,9 +229,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public Collection<UnificationEntry<Item>> getEntries(TagKey<Item> tag) {
-            for (var unificationHandler : unificationHandlers) {
-                var resultItems = unificationHandler.getEntries(tag);
+        public Collection<UnificationEntry<Item>> getTagEntries(TagKey<Item> tag) {
+            for (var unificationLookup : unificationLookups) {
+                var resultItems = unificationLookup.getTagEntries(tag);
                 if (!resultItems.isEmpty()) {
                     return resultItems;
                 }
@@ -245,22 +242,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         @Nullable
         @Override
-        public UnificationEntry<Item> getEntry(ResourceLocation entry) {
-            for (var unificationHandler : unificationHandlers) {
-                var resultItem = unificationHandler.getEntry(entry);
-                if (resultItem != null) {
-                    return resultItem;
-                }
-            }
-
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public UnificationEntry<Item> getEntry(Item item) {
-            for (var unificationHandler : unificationHandlers) {
-                var resultItem = unificationHandler.getEntry(item);
+        public UnificationEntry<Item> getItemEntry(ResourceLocation item) {
+            for (var unificationLookup : unificationLookups) {
+                var resultItem = unificationLookup.getItemEntry(item);
                 if (resultItem != null) {
                     return resultItem;
                 }
@@ -272,34 +256,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         @Nullable
         @Override
         public TagKey<Item> getRelevantItemTag(ResourceLocation item) {
-            for (var unificationHandler : unificationHandlers) {
-                TagKey<Item> tag = unificationHandler.getRelevantItemTag(item);
-                if (tag != null) {
-                    return tag;
-                }
-            }
-
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public TagKey<Item> getRelevantItemTag(Item item) {
-            for (var unificationHandler : unificationHandlers) {
-                TagKey<Item> tag = unificationHandler.getRelevantItemTag(item);
-                if (tag != null) {
-                    return tag;
-                }
-            }
-
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public TagKey<Item> getRelevantItemTag(Holder<Item> item) {
-            for (var unificationHandler : unificationHandlers) {
-                TagKey<Item> tag = unificationHandler.getRelevantItemTag(item);
+            for (var unificationLookup : unificationLookups) {
+                TagKey<Item> tag = unificationLookup.getRelevantItemTag(item);
                 if (tag != null) {
                     return tag;
                 }
@@ -310,46 +268,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         @Override
         public UnificationEntry<Item> getItemReplacement(ResourceLocation item) {
-            for (var unificationHandler : unificationHandlers) {
-                var resultItem = unificationHandler.getItemReplacement(item);
+            for (var unificationLookup : unificationLookups) {
+                var resultItem = unificationLookup.getItemReplacement(item);
                 if (resultItem != null) {
                     return resultItem;
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        public UnificationEntry<Item> getItemReplacement(Item item) {
-            for (var unificationHandler : unificationHandlers) {
-                var resultItem = unificationHandler.getItemReplacement(item);
-                if (resultItem != null) {
-                    return resultItem;
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        public UnificationEntry<Item> getItemReplacement(Holder<Item> item) {
-            for (var unificationHandler : unificationHandlers) {
-                var resultItem = unificationHandler.getItemReplacement(item);
-                if (resultItem != null) {
-                    return resultItem;
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        public UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag) {
-            for (var unificationHandler : unificationHandlers) {
-                var result = unificationHandler.getTagTargetItem(tag);
-                if (result != null) {
-                    return result;
                 }
             }
 
@@ -358,8 +280,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
 
         @Override
         public UnificationEntry<Item> getTagTargetItem(TagKey<Item> tag, Predicate<ResourceLocation> itemFilter) {
-            for (var unificationHandler : unificationHandlers) {
-                var result = unificationHandler.getTagTargetItem(tag, itemFilter);
+            for (var unificationLookup : unificationLookups) {
+                var result = unificationLookup.getTagTargetItem(tag, itemFilter);
                 if (result != null) {
                     return result;
                 }
@@ -369,19 +291,14 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime, Rec
         }
 
         @Override
-        public boolean isItemInUnifiedIngredient(Ingredient ingredient, ItemStack item) {
-            for (var unificationHandler : unificationHandlers) {
-                if (unificationHandler.isItemInUnifiedIngredient(ingredient, item)) {
+        public boolean isUnifiedIngredientItem(Ingredient ingredient, ItemStack item) {
+            for (var unificationLookup : unificationLookups) {
+                if (unificationLookup.isUnifiedIngredientItem(ingredient, item)) {
                     return true;
                 }
             }
 
             return false;
-        }
-
-        @Override
-        public TagSubstitutions getTagSubstitutions() {
-            return tagSubstitutions;
         }
     }
 }

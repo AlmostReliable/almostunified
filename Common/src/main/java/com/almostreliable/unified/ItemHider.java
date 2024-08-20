@@ -1,8 +1,8 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.api.ConfiguredUnificationHandler;
 import com.almostreliable.unified.api.UnificationEntry;
-import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.api.UnificationLookup;
+import com.almostreliable.unified.api.UnificationSettings;
 import com.almostreliable.unified.utils.Utils;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.Holder;
@@ -23,7 +23,7 @@ public final class ItemHider {
 
     private ItemHider() {}
 
-    public static void applyHideTags(VanillaTagWrapper<Item> tags, Collection<ConfiguredUnificationHandler> handlers, boolean emiHidingStrict) {
+    public static void applyHideTags(VanillaTagWrapper<Item> tags, Collection<UnificationSettings> handlers, boolean emiHidingStrict) {
         for (var handler : handlers) {
             if (handler.shouldHideVariantItems()) {
                 applyHideTags(tags, handler);
@@ -35,18 +35,18 @@ public final class ItemHider {
         }
     }
 
-    public static void applyHideTags(VanillaTagWrapper<Item> tags, ConfiguredUnificationHandler handler) {
+    public static void applyHideTags(VanillaTagWrapper<Item> tags, UnificationSettings handler) {
         var holdersToHide = createHidingItems(handler);
         for (Holder<Item> holder : holdersToHide) {
             tags.add(HIDE_TAG.location(), holder);
         }
     }
 
-    public static Set<Holder<Item>> createHidingItems(ConfiguredUnificationHandler handler) {
+    public static Set<Holder<Item>> createHidingItems(UnificationSettings handler) {
         Set<Holder<Item>> hidings = new HashSet<>();
 
-        for (TagKey<Item> tag : handler.getUnifiedTags()) {
-            var entriesByTag = handler.getEntries(tag);
+        for (TagKey<Item> tag : handler.getTags()) {
+            var entriesByTag = handler.getTagEntries(tag);
 
             // avoid handling single entries and tags that only contain the same namespace for all items
             if (Utils.allSameNamespace(entriesByTag)) continue;
@@ -90,7 +90,7 @@ public final class ItemHider {
      * @param entry  The holder to get the replacement for.
      * @return The replacement for the given item, or the item itself if no replacement is found.
      */
-    private static UnificationEntry<Item> getReplacementForItem(UnificationHandler repMap, UnificationEntry<Item> entry) {
+    private static UnificationEntry<Item> getReplacementForItem(UnificationLookup repMap, UnificationEntry<Item> entry) {
         var replacement = repMap.getItemReplacement(entry);
         if (replacement == null) return entry;
         return replacement;

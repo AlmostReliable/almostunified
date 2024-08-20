@@ -1,8 +1,8 @@
 package testmod.tests;
 
 import com.almostreliable.unified.api.ModPriorities;
-import com.almostreliable.unified.api.UnificationHandler;
-import com.almostreliable.unified.impl.UnificationHandlerImpl;
+import com.almostreliable.unified.api.UnificationLookup;
+import com.almostreliable.unified.impl.UnificationLookupImpl;
 import com.almostreliable.unified.recipe.ModPrioritiesImpl;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UnificationHandlerTests {
 
-    private UnificationHandler createHandler(ModPriorities modPriorities) {
-        return new UnificationHandlerImpl.Builder()
+    private UnificationLookup createHandler(ModPriorities modPriorities) {
+        return new UnificationLookupImpl.Builder()
                 .put(TestUtils.itemTag("testmod:ingots/osmium"),
                         ResourceLocation.parse("minecraft:osmium_ingot"),
                         ResourceLocation.parse("mekanism:osmium_ingot"),
@@ -141,7 +141,7 @@ public class UnificationHandlerTests {
 
     @SimpleGameTest
     public void testItemInUnifiedIngredient() {
-        var rm = new UnificationHandlerImpl.Builder()
+        var rm = new UnificationLookupImpl.Builder()
                 .put(TestUtils.itemTag("c:tools"), Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL)
                 .build(TestUtils.EMPTY_MOD_PRIORITIES,
                         TestUtils.EMPTY_VARIANT_LOOKUP,
@@ -151,10 +151,10 @@ public class UnificationHandlerTests {
         Ingredient ingredient = Ingredient.of(Items.IRON_SWORD);
 
         // Shovel is part of `minecraft:tools` and part of our created tag map
-        assertTrue(rm.isItemInUnifiedIngredient(ingredient, Items.IRON_SHOVEL.getDefaultInstance()),
+        assertTrue(rm.isUnifiedIngredientItem(ingredient, Items.IRON_SHOVEL.getDefaultInstance()),
                 "SHOVEL is in our created tag map");
 
-        assertFalse(rm.isItemInUnifiedIngredient(ingredient, Items.CARROT.getDefaultInstance()),
+        assertFalse(rm.isUnifiedIngredientItem(ingredient, Items.CARROT.getDefaultInstance()),
                 "CARROT is not part of `minecraft:tools`");
     }
 }

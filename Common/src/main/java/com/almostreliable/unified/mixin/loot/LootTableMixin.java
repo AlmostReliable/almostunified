@@ -1,6 +1,6 @@
 package com.almostreliable.unified.mixin.loot;
 
-import com.almostreliable.unified.api.UnificationHandler;
+import com.almostreliable.unified.api.UnificationLookup;
 import com.almostreliable.unified.loot.LootUnificationHandler;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -15,7 +15,7 @@ public class LootTableMixin implements LootUnificationHandler {
     @Shadow @Final private List<LootPool> pools;
 
     @Override
-    public boolean almostunified$unify(UnificationHandler lookup) {
+    public boolean almostunified$unify(UnificationLookup lookup) {
         boolean unified = false;
         for (LootPool pool : this.pools) {
             unified |= LootUnificationHandler.cast(pool).almostunified$unify(lookup);
