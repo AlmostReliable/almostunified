@@ -29,7 +29,7 @@ dependencies {
      * required here for the @Environment annotations and the mixin dependencies
      * do NOT use other classes from the Fabric loader
      */
-    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+    modCompileOnly("net.fabricmc:fabric-loader:$fabricLoaderVersion")
 
     // compile time
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion") // required for jei plugin
