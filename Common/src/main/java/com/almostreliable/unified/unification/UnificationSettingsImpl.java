@@ -20,6 +20,7 @@ public final class UnificationSettingsImpl implements UnificationSettings {
 
     private final String name;
     private final ModPriorities modPriorities;
+    private final StoneVariants stoneVariants;
     private final Function<ResourceLocation, Boolean> recipeTypeCheck;
     private final Function<ResourceLocation, Boolean> recipeIdCheck;
     private final boolean recipeViewerHiding;
@@ -28,9 +29,10 @@ public final class UnificationSettingsImpl implements UnificationSettings {
     private final UnificationLookup unificationLookup;
     private final Runnable clearCaches;
 
-    private UnificationSettingsImpl(String name, ModPriorities modPriorities, Function<ResourceLocation, Boolean> recipeTypeCheck, Function<ResourceLocation, Boolean> recipeIdCheck, boolean recipeViewerHiding, boolean lootUnification, Function<ResourceLocation, Boolean> lootTableCheck, UnificationLookup unificationLookup, Runnable clearCaches) {
+    private UnificationSettingsImpl(String name, ModPriorities modPriorities, StoneVariants stoneVariants, Function<ResourceLocation, Boolean> recipeTypeCheck, Function<ResourceLocation, Boolean> recipeIdCheck, boolean recipeViewerHiding, boolean lootUnification, Function<ResourceLocation, Boolean> lootTableCheck, UnificationLookup unificationLookup, Runnable clearCaches) {
         this.name = name;
         this.modPriorities = modPriorities;
+        this.stoneVariants = stoneVariants;
         this.recipeTypeCheck = recipeTypeCheck;
         this.recipeIdCheck = recipeIdCheck;
         this.recipeViewerHiding = recipeViewerHiding;
@@ -71,6 +73,7 @@ public final class UnificationSettingsImpl implements UnificationSettings {
         return new UnificationSettingsImpl(
                 config.getName(),
                 modPriorities,
+                stoneVariants,
                 config::shouldIncludeRecipeType,
                 config::shouldIncludeRecipeId,
                 config.shouldHideVariantItems(),
@@ -89,6 +92,11 @@ public final class UnificationSettingsImpl implements UnificationSettings {
     @Override
     public ModPriorities getModPriorities() {
         return modPriorities;
+    }
+
+    @Override
+    public StoneVariants getStoneVariants() {
+        return stoneVariants;
     }
 
     @Override

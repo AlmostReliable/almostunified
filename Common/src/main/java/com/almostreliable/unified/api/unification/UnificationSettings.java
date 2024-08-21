@@ -32,6 +32,13 @@ public interface UnificationSettings extends UnificationLookup {
     ModPriorities getModPriorities();
 
     /**
+     * Returns the instance of the {@link StoneVariants} these settings are based on.
+     *
+     * @return the {@link StoneVariants}
+     */
+    StoneVariants getStoneVariants();
+
+    /**
      * Returns whether the given {@link RecipeData} should be included in the unification process.
      * <p>
      * This method is a quick way to check the recipe id and type.
