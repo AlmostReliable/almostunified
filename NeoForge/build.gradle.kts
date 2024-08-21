@@ -64,7 +64,7 @@ dependencies {
     }
     // TODO go back to API when solved: https://github.com/architectury/architectury-loom/issues/204
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion") // required for common rei plugin
-    runtimeOnly("dev.architectury:architectury-neoforge:13.0.6") // TODO: Remove on new REI version
+    modLocalRuntime("dev.architectury:architectury-neoforge:13.0.6") // TODO: Remove on new REI version
     modCompileOnly("dev.emi:emi-neoforge:$emiVersion+$minecraftVersion:api") // required for common emi plugin
 
     // runtime
