@@ -186,7 +186,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
     @Nullable
     @Override
-    public UnificationSettings getUnificationLookup(String name) {
+    public UnificationSettings getUnificationSettings(String name) {
         for (UnificationSettings settings : unificationSettings) {
             if (settings.getName().equals(name)) {
                 return settings;

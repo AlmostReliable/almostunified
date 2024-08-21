@@ -173,12 +173,12 @@ public class RecipeTransformer {
             JsonObject recipeCopy = recipe.getOriginal().deepCopy();
             RecipeJson json = new RecipeJsonImpl(recipe.getId(), recipeCopy);
 
-            for (var handler : unificationSettings) {
-                if (!handler.shouldIncludeRecipe(recipe)) {
+            for (var settings : unificationSettings) {
+                if (!settings.shouldIncludeRecipe(recipe)) {
                     continue;
                 }
 
-                UnificationHelperImpl helper = new UnificationHelperImpl(handler);
+                UnificationHelperImpl helper = new UnificationHelperImpl(settings);
                 RecipeUnifier unifier = factory.getRecipeUnifier(recipe);
                 unifier.unify(helper, json);
             }

@@ -10,10 +10,10 @@ import java.util.Collection;
 
 /**
  * The runtime is the core of the Almost Unified mod.<br>
- * It stores all required information about tags, recipes, unification handlers, and configs.
+ * It stores all required information about tags, recipes, unification settings, and configs.
  * <p>
  * The runtime is reconstructed every time the game reloads. Within the reconstruction process, all configs are reloaded,
- * plugin unifiers are collected, tag changes are applied, and all handlers are recreated.
+ * plugin unifiers are collected, tag changes are applied, and all lookups are recreated.
  *
  * @since 1.0.0
  */
@@ -45,7 +45,7 @@ public interface AlmostUnifiedRuntime {
      * @return the {@link UnificationSettings} with the given name or null if not found
      */
     @Nullable
-    UnificationSettings getUnificationLookup(String name);
+    UnificationSettings getUnificationSettings(String name);
 
     /**
      * Returns the {@link TagSubstitutions} instance.
