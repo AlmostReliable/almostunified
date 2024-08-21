@@ -92,7 +92,7 @@ public final class ItemHider {
      * @return The replacement for the given item, or the item itself if no replacement is found.
      */
     private static UnificationEntry<Item> getReplacementForItem(UnificationLookup repMap, UnificationEntry<Item> entry) {
-        var replacement = repMap.getItemReplacement(entry);
+        var replacement = repMap.getVariantItemTarget(entry);
         if (replacement == null) return entry;
         return replacement;
     }

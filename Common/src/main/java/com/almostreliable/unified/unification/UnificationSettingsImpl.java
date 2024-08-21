@@ -140,8 +140,8 @@ public final class UnificationSettingsImpl implements UnificationSettings {
 
     @Nullable
     @Override
-    public UnificationEntry<Item> getItemReplacement(ResourceLocation item) {
-        return unificationLookup.getItemReplacement(item);
+    public UnificationEntry<Item> getVariantItemTarget(ResourceLocation item) {
+        return unificationLookup.getVariantItemTarget(item);
     }
 
     @Nullable

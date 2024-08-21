@@ -2,7 +2,6 @@ package com.almostreliable.unified.compat.kube;
 
 import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.unification.UnificationSettings;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -11,7 +10,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,25 +18,8 @@ public final class AlmostKube {
 
     private AlmostKube() {}
 
-    @Nullable
-    public static String getRelevantItemTag(ItemStack stack) {
-        var tag = getRuntime().getUnificationLookup().getRelevantItemTag(getId(stack));
-        return tag == null ? null : tag.location().toString();
-    }
-
-    public static ItemStack getItemReplacement(ItemStack stack) {
-        var entry = getRuntime().getUnificationLookup().getItemReplacement(getId(stack));
-        if (entry == null) return ItemStack.EMPTY;
-
-        return entry.value().getDefaultInstance();
-    }
-
-    public static ItemStack getTagTargetItem(ResourceLocation tag) {
-        var tagKey = TagKey.create(Registries.ITEM, tag);
-        var entry = getRuntime().getUnificationLookup().getTagTargetItem(tagKey);
-        if (entry == null) return ItemStack.EMPTY;
-
-        return entry.value().getDefaultInstance();
+    private static AlmostUnifiedRuntime getRuntime() {
+        return AlmostUnified.INSTANCE.getRuntimeOrThrow();
     }
 
     public static Set<String> getTags() {
@@ -50,7 +31,7 @@ public final class AlmostKube {
                 .collect(Collectors.toSet());
     }
 
-    public static Set<String> getItemIds(ResourceLocation tag) {
+    public static Set<String> getTagEntries(ResourceLocation tag) {
         var tagKey = TagKey.create(Registries.ITEM, tag);
         return getRuntime()
                 .getUnificationLookup()
@@ -60,17 +41,25 @@ public final class AlmostKube {
                 .collect(Collectors.toSet());
     }
 
-    public static Collection<? extends UnificationSettings> getUnificationSettings() {
-        return getRuntime().getUnificationSettings();
-    }
-
     @Nullable
-    public static UnificationSettings getUnificationSettings(String name) {
-        return getRuntime().getUnificationLookup(name);
+    public static String getRelevantItemTag(ItemStack stack) {
+        var tag = getRuntime().getUnificationLookup().getRelevantItemTag(getId(stack));
+        return tag == null ? null : tag.location().toString();
     }
 
-    private static AlmostUnifiedRuntime getRuntime() {
-        return AlmostUnified.INSTANCE.getRuntimeOrThrow();
+    public static ItemStack getVariantItemTarget(ItemStack stack) {
+        var entry = getRuntime().getUnificationLookup().getVariantItemTarget(getId(stack));
+        if (entry == null) return ItemStack.EMPTY;
+
+        return entry.value().getDefaultInstance();
+    }
+
+    public static ItemStack getTagTargetItem(ResourceLocation tag) {
+        var tagKey = TagKey.create(Registries.ITEM, tag);
+        var entry = getRuntime().getUnificationLookup().getTagTargetItem(tagKey);
+        if (entry == null) return ItemStack.EMPTY;
+
+        return entry.value().getDefaultInstance();
     }
 
     private static ResourceLocation getId(ItemStack stack) {

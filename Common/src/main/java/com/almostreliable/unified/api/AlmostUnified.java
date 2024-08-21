@@ -1,5 +1,6 @@
 package com.almostreliable.unified.api;
 
+import com.almostreliable.unified.api.unification.Placeholders;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -10,107 +11,111 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 /**
- * The core interface for the Almost Unified api.
+ * The core interface for the Almost Unified API.
  * <p>
- * Use this to get an instance of the runtime or to lookup replacement items.
+ * Use this to get an instance of the {@link AlmostUnifiedRuntime} or to look up unification information.
  */
 public interface AlmostUnified {
 
     /**
      * The default instance of Almost Unified.
      * <p>
-     * If unavailable, it will return an empty instance which
-     * only returns empty default values for each method.
+     * If unavailable, it will return an empty instance that only returns default values for each method.<br>
+     * This instance is only available on the logical server side.
      */
     @SuppressWarnings("InnerClassReferencedViaSubclass")
     AlmostUnified INSTANCE = ServiceLoader.load(AlmostUnified.class).findFirst().orElseGet(Empty::new);
 
     /**
-     * Returns whether the Almost Unified runtime is loaded
-     * and ready to be used.
+     * Returns whether the {@link AlmostUnifiedRuntime} is loaded and ready to be used.
+     * <p>
+     * The {@link AlmostUnifiedRuntime} is only available on the logical server side.
      *
-     * @return True if the runtime is loaded, false otherwise.
+     * @return true if the {@link AlmostUnifiedRuntime} is loaded, false otherwise
      */
     boolean isRuntimeLoaded();
 
     /**
-     * Returns the instance of the Almost Unified runtime or null
-     * if the runtime is not loaded.
+     * Returns the instance of the {@link AlmostUnifiedRuntime}.
      * <p>
-     * This can be used if you are not sure whether the runtime is loaded.
-     * <p>
-     * If you are sure whether the runtime is loaded, use {@link #getRuntimeOrThrow()}.
+     * The {@link AlmostUnifiedRuntime} is only available on the logical server side. This method returns null if the
+     * runtime is not loaded. To check this beforehand, use {@link #isRuntimeLoaded()}. If you are sure the runtime is
+     * available, you can use {@link #getRuntimeOrThrow()} instead.
      *
-     * @return The Almost Unified runtime or null if the runtime is not loaded.
+     * @return the {@link AlmostUnifiedRuntime}, or null if the runtime is not loaded
      */
     @Nullable
     AlmostUnifiedRuntime getRuntime();
 
     /**
-     * Returns the instance of the Almost Unified runtime or throws
-     * an exception if the runtime is not loaded.
+     * Returns the instance of the {@link AlmostUnifiedRuntime}.
      * <p>
-     * This can be used if you are sure whether the runtime is loaded.
-     * <p>
-     * If you are not sure whether the runtime is loaded, use {@link #getRuntime()}.
+     * The {@link AlmostUnifiedRuntime} is only available on the logical server side. This method throws an exception
+     * if the runtime is not loaded. To check this beforehand, use {@link #isRuntimeLoaded()}.
      *
-     * @return The Almost Unified runtime.
+     * @return the {@link AlmostUnifiedRuntime}
      */
     AlmostUnifiedRuntime getRuntimeOrThrow();
 
     /**
-     * Returns the replacement item for a given {@link ItemLike}. Will return null if no configured
-     * tag exists that includes the item.
+     * Returns all {@link TagKey}s used for the unification process.
      * <p>
-     * If the item is part of a stone variant, it will only check items within the same stone variant.<br>
-     * => e.g. "modid:deepslate_foo_ore" would not return "prio_modid:foo_ore".
+     * The returned collection will only contain tags that have their {@link Placeholders} replaced and have been
+     * validated. All tags will be unique.
      *
-     * @param itemLike The item-like to find the replacement for
-     * @return The replacement item or null if there is no replacement
+     * @return the {@link TagKey}s used for the unification, or empty if no tags are used
      */
-    @Nullable
-    Item getReplacementForItem(ItemLike itemLike);
+    Collection<TagKey<Item>> getTags();
 
     /**
-     * Returns the target item for a given {@link TagKey}. Will return null if no configured
-     * tag exists that includes the item.
+     * Returns all item entries for the given {@link TagKey}.
      * <p>
-     * The target item is selected according to mod priorities, but it's possible to set a
-     * fixed override in the config.
+     * The returned collection will only contain entries if the provided {@link TagKey} is a configured unification tag.
      *
-     * @param tag The tag to find the target item for
-     * @return The target item or null if there is no target item
+     * @param tag the {@link TagKey} to get the entries for
+     * @return the item entries for the {@link TagKey}, or empty if not found
      */
-    @Nullable
-    Item getTagTargetItem(TagKey<Item> tag);
+    Collection<Item> getTagEntries(TagKey<Item> tag);
 
     /**
-     * Returns the relevant tag for a given {@link ItemLike} Will return null if no configured
-     * tag exists that includes the item.
+     * Returns the relevant {@link TagKey} for the given {@link ItemLike}
+     * <p>
+     * Since an item can only have a single relevant tag, this method is guaranteed to return a single {@link TagKey} as
+     * long as there exists a configured unification tag that includes the item.
      *
-     * @param itemLike The item-like to find the relevant tag for
-     * @return The relevant tag or null if there is no relevant tag
+     * @param itemLike the {@link ItemLike} to get the relevant {@link TagKey} for
+     * @return the relevant {@link TagKey}, or null if not found
      */
     @Nullable
     TagKey<Item> getRelevantItemTag(ItemLike itemLike);
 
     /**
-     * Returns all potential items that are part of the given tag.
+     * Returns the target item for the given variant {@link ItemLike}.
      * <p>
-     * Tags are only considered if they are part of the config,
-     * otherwise, an empty set is always returned.
+     * The target item describes the item with the highest priority among all variant items within a {@link TagKey}.
+     * It is used to replace the variant items in the unification process.<br>
+     * This method will return null if no configured unification tag exists that includes the given item.
+     * <p>
+     * If the item is part of a stone variant, it will only check items within the same stone variant.
      *
-     * @param tag The tag to find the potential items for
-     * @return The potential items or an empty set if there are no potential items
+     * @param itemLike the variant {@link ItemLike} to get the target item for
+     * @return the target item, or null if not found
      */
-    Set<Item> getPotentialItems(TagKey<Item> tag);
+    @Nullable
+    Item getVariantItemTarget(ItemLike itemLike);
 
     /**
-     * Returns all configured tags.
+     * Returns the target item for the given {@link TagKey}.
+     * <p>
+     * The target item describes the item with the highest priority among all variant items within a {@link TagKey}.
+     * It is used to replace the variant items in the unification process.<br>
+     * This method will return null the given {@link TagKey} is not a configured unification tag.
      *
-     * @return The configured tags
+     * @param tag the {@link TagKey} to get the target item for
+     * @return the target item, or null if not found
      */
-    Collection<TagKey<Item>> getUnifiedTags();
+    @Nullable
+    Item getTagTargetItem(TagKey<Item> tag);
 
     class Empty implements AlmostUnified {
 
@@ -130,16 +135,14 @@ public interface AlmostUnified {
             throw new IllegalStateException("runtime is not loaded");
         }
 
-        @Nullable
         @Override
-        public Item getReplacementForItem(ItemLike itemLike) {
-            return null;
+        public Collection<TagKey<Item>> getTags() {
+            return Set.of();
         }
 
-        @Nullable
         @Override
-        public Item getTagTargetItem(TagKey<Item> tag) {
-            return null;
+        public Collection<Item> getTagEntries(TagKey<Item> tag) {
+            return Set.of();
         }
 
         @Nullable
@@ -148,14 +151,16 @@ public interface AlmostUnified {
             return null;
         }
 
+        @Nullable
         @Override
-        public Set<Item> getPotentialItems(TagKey<Item> tag) {
-            return Set.of();
+        public Item getVariantItemTarget(ItemLike itemLike) {
+            return null;
         }
 
+        @Nullable
         @Override
-        public Collection<TagKey<Item>> getUnifiedTags() {
-            return Set.of();
+        public Item getTagTargetItem(TagKey<Item> tag) {
+            return null;
         }
     }
 }

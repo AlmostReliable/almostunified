@@ -35,13 +35,13 @@ public interface UnificationLookup {
     Collection<TagKey<Item>> getTags();
 
     /**
-     * Returns all {@link UnificationEntry}s for a given {@link TagKey}.
+     * Returns all {@link UnificationEntry}s for the given {@link TagKey}.
      * <p>
      * The returned collection will only contain entries if the provided {@link TagKey} is part of the config this
      * lookup is for.
      *
      * @param tag the {@link TagKey} to get the entries for
-     * @return the {@link UnificationEntry}s for the tag, or empty if no {@link UnificationEntry}s are found
+     * @return the {@link UnificationEntry}s for the {@link TagKey}, or empty if no {@link UnificationEntry}s are found
      */
     Collection<UnificationEntry<Item>> getTagEntries(TagKey<Item> tag);
 
@@ -123,76 +123,84 @@ public interface UnificationLookup {
     }
 
     /**
-     * Returns the replacement {@link UnificationEntry} for the given item id.
+     * Returns the target item {@link UnificationEntry} for the given variant item id.
      * <p>
-     * The replacement of an {@link Item} is the {@link Item} that is used instead of the provided item in the
-     * unification process.<br>
-     * If the config this lookup is for doesn't cover the {@link Item}, null is returned. This method will return the
-     * {@link Item} itself if the provided {@link Item} is the target {@link Item} already.
+     * The target item describes the item with the highest priority among all variant items within a tag. It is used
+     * to replace the variant items in the unification process.<br>
+     * This method will return null if the config this lookup is for doesn't cover a unification tag that includes
+     * the given item.
+     * <p>
+     * If the item is part of a stone variant, it will only check items within the same stone variant.
      *
-     * @param item the item id to get the replacement {@link UnificationEntry} for
-     * @return the replacement {@link UnificationEntry} for the item id, or null if no replacement
+     * @param item the variant item id to get the target {@link UnificationEntry} for
+     * @return the target {@link UnificationEntry} for the variant item id, or null if no target
      * {@link UnificationEntry} is found
      */
     @Nullable
-    UnificationEntry<Item> getItemReplacement(ResourceLocation item);
+    UnificationEntry<Item> getVariantItemTarget(ResourceLocation item);
 
     /**
-     * Returns the replacement {@link UnificationEntry} for the given {@link Item}.
+     * Returns the target item {@link UnificationEntry} for the given variant {@link Item}.
      * <p>
-     * The replacement of an {@link Item} is the {@link Item} that is used instead of the provided item in the
-     * unification process.<br>
-     * If the config this lookup is for doesn't cover the {@link Item}, null is returned. This method will return the
-     * {@link Item} itself if the provided {@link Item} is the target {@link Item} already.
+     * The target item describes the item with the highest priority among all variant items within a tag. It is used
+     * to replace the variant items in the unification process.<br>
+     * This method will return null if the config this lookup is for doesn't cover a unification tag that includes
+     * the given item.
+     * <p>
+     * If the item is part of a stone variant, it will only check items within the same stone variant.
      *
-     * @param item the {@link Item} to get the replacement {@link UnificationEntry} for
-     * @return the replacement {@link UnificationEntry} for the {@link Item}, or null if no replacement
+     * @param item the variant {@link Item} to get the target {@link UnificationEntry} for
+     * @return the target {@link UnificationEntry} for the variant {@link Item}, or null if no target
      * {@link UnificationEntry} is found
      */
     @Nullable
-    default UnificationEntry<Item> getItemReplacement(Item item) {
-        return getItemReplacement(BuiltInRegistries.ITEM.getKey(item));
+    default UnificationEntry<Item> getVariantItemTarget(Item item) {
+        return getVariantItemTarget(BuiltInRegistries.ITEM.getKey(item));
     }
 
     /**
-     * Returns the replacement {@link UnificationEntry} for the given item {@link Holder}.
+     * Returns the target {@link UnificationEntry} for the given variant item {@link Holder}.
      * <p>
-     * The replacement of an {@link Item} is the {@link Item} that is used instead of the provided item in the
-     * unification process.<br>
-     * If the config this lookup is for doesn't cover the {@link Item}, null is returned. This method will return the
-     * {@link Item} itself if the provided {@link Item} is the target {@link Item} already.
+     * The target item describes the item with the highest priority among all variant items within a tag. It is used
+     * to replace the variant items in the unification process.<br>
+     * This method will return null if the config this lookup is for doesn't cover a unification tag that includes
+     * the given item.
+     * <p>
+     * If the item is part of a stone variant, it will only check items within the same stone variant.
      *
-     * @param item the item {@link Holder} to get the replacement {@link UnificationEntry} for
-     * @return the replacement {@link UnificationEntry} for the item {@link Holder}, or null if no replacement
+     * @param item the variant item {@link Holder} to get the target {@link UnificationEntry} for
+     * @return the target {@link UnificationEntry} for the variant item {@link Holder}, or null if no target
      * {@link UnificationEntry} is found
      */
     @Nullable
-    default UnificationEntry<Item> getItemReplacement(Holder<Item> item) {
-        return getItemReplacement(item.value());
+    default UnificationEntry<Item> getVariantItemTarget(Holder<Item> item) {
+        return getVariantItemTarget(item.value());
     }
 
     /**
-     * Returns the replacement {@link UnificationEntry} for the given {@link UnificationEntry}.
+     * Returns the target {@link UnificationEntry} for the given variant {@link UnificationEntry}.
      * <p>
-     * The replacement of an {@link Item} is the {@link Item} that is used instead of the provided item in the
-     * unification process.<br>
-     * If the config this lookup is for doesn't cover the {@link Item}, null is returned. This method will return the
-     * {@link Item} itself if the provided {@link Item} is the target {@link Item} already.
+     * The target item describes the item with the highest priority among all variant items within a {@link TagKey}.
+     * It is used to replace the variant items in the unification process.<br>
+     * This method will return null if the config this lookup is for doesn't cover a unification tag that includes
+     * the given item.
+     * <p>
+     * If the item is part of a stone variant, it will only check items within the same stone variant.
      *
-     * @param item the {@link UnificationEntry} to get the replacement {@link UnificationEntry} for
-     * @return the replacement {@link UnificationEntry} for the {@link UnificationEntry}, or null if no replacement
+     * @param item the variant {@link UnificationEntry} to get the target {@link UnificationEntry} for
+     * @return the target {@link UnificationEntry} for the variant {@link UnificationEntry}, or null if no target
      * {@link UnificationEntry} is found
      */
     @Nullable
-    default UnificationEntry<Item> getItemReplacement(UnificationEntry<Item> item) {
-        return getItemReplacement(item.asHolderOrThrow());
+    default UnificationEntry<Item> getVariantItemTarget(UnificationEntry<Item> item) {
+        return getVariantItemTarget(item.asHolderOrThrow());
     }
 
     /**
      * Returns the target {@link UnificationEntry} for the given {@link TagKey} that matches the given filter.
      * <p>
-     * The target {@link Item} of a {@link TagKey} is the {@link Item} that has the highest priority within the
-     * {@link TagKey}.<br>
+     * The target item describes the item with the highest priority among all variant items within a {@link TagKey}.
+     * It is used to replace the variant items in the unification process.<br>
      * If the config this lookup is for doesn't cover the {@link TagKey}, null is returned.
      *
      * @param tag the {@link TagKey} to get the target {@link UnificationEntry} for
@@ -205,8 +213,8 @@ public interface UnificationLookup {
     /**
      * Returns the target {@link UnificationEntry} for the given {@link TagKey}.
      * <p>
-     * The target {@link Item} of a {@link TagKey} is the {@link Item} that has the highest priority within the
-     * {@link TagKey}.<br>
+     * The target item describes the item with the highest priority among all variant items within a {@link TagKey}.
+     * It is used to replace the variant items in the unification process.<br>
      * If the config this lookup is for doesn't cover the {@link TagKey}, null is returned.
      *
      * @param tag the {@link TagKey} to get the target {@link UnificationEntry} for

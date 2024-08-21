@@ -16,7 +16,7 @@ public class LootItemMixin implements LootUnificationHandler {
 
     @Override
     public boolean almostunified$unify(UnificationLookup lookup) {
-        var replacement = lookup.getItemReplacement(item);
+        var replacement = lookup.getVariantItemTarget(item);
         if (replacement == null || item.value().equals(replacement.value())) {
             return false;
         }

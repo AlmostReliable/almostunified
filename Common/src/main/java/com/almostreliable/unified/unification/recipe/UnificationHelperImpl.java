@@ -214,7 +214,7 @@ public record UnificationHelperImpl(UnificationLookup getUnificationLookup) impl
     @Nullable
     public JsonPrimitive handleOutputItemReplacement(JsonPrimitive jsonPrimitive) {
         ResourceLocation item = ResourceLocation.parse(jsonPrimitive.getAsString());
-        var entry = getUnificationLookup.getItemReplacement(item);
+        var entry = getUnificationLookup.getVariantItemTarget(item);
         if (entry == null || entry.id().equals(item)) return null;
         return new JsonPrimitive(entry.id().toString());
     }

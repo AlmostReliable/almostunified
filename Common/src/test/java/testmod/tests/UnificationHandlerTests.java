@@ -120,23 +120,23 @@ public class UnificationHandlerTests {
         var rm = createHandler(modPriorities);
 
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
-                rm.getItemReplacement(ResourceLocation.parse("mekanism:osmium_ingot")).id());
+                rm.getVariantItemTarget(ResourceLocation.parse("mekanism:osmium_ingot")).id());
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
-                rm.getItemReplacement(ResourceLocation.parse("minecraft:osmium_ingot")).id());
+                rm.getVariantItemTarget(ResourceLocation.parse("minecraft:osmium_ingot")).id());
         assertEquals(ResourceLocation.parse("mekanism:osmium_ingot"),
-                rm.getItemReplacement(ResourceLocation.parse("thermal:osmium_ingot")).id());
+                rm.getVariantItemTarget(ResourceLocation.parse("thermal:osmium_ingot")).id());
 
         assertEquals(ResourceLocation.parse("thermal:cobalt_ingot"),
-                rm.getItemReplacement(ResourceLocation.parse("thermal:cobalt_ingot")).id());
+                rm.getVariantItemTarget(ResourceLocation.parse("thermal:cobalt_ingot")).id());
         assertEquals(ResourceLocation.parse("thermal:cobalt_ingot"),
-                rm.getItemReplacement(ResourceLocation.parse("minecraft:cobalt_ingot")).id());
+                rm.getVariantItemTarget(ResourceLocation.parse("minecraft:cobalt_ingot")).id());
 
         assertEquals(ResourceLocation.parse("mekanism:electrum_ingot"),
-                rm.getItemReplacement(ResourceLocation.parse("create:electrum_ingot")).id());
+                rm.getVariantItemTarget(ResourceLocation.parse("create:electrum_ingot")).id());
         assertEquals(ResourceLocation.parse("mekanism:electrum_ingot"),
-                rm.getItemReplacement(ResourceLocation.parse("mekanism:electrum_ingot")).id());
+                rm.getVariantItemTarget(ResourceLocation.parse("mekanism:electrum_ingot")).id());
         assertEquals(ResourceLocation.parse("mekanism:electrum_ingot"),
-                rm.getItemReplacement(ResourceLocation.parse("thermal:electrum_ingot")).id());
+                rm.getVariantItemTarget(ResourceLocation.parse("thermal:electrum_ingot")).id());
     }
 
     @SimpleGameTest

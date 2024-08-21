@@ -40,72 +40,46 @@ public class AlmostUnifiedImpl implements AlmostUnified {
         return runtime;
     }
 
-    @Nullable
     @Override
-    public Item getReplacementForItem(ItemLike itemLike) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
-        AlmostUnifiedRuntime runtime = getRuntime();
-        if (runtime == null) {
-            return null;
-        }
-
-        var replacement = runtime.getUnificationLookup().getItemReplacement(id);
-        if (replacement == null) {
-            return null;
-        }
-
-        return replacement.value();
-    }
-
-    @Nullable
-    @Override
-    public Item getTagTargetItem(TagKey<Item> tag) {
-        AlmostUnifiedRuntime runtime = getRuntime();
-        if (runtime == null) {
-            return null;
-        }
-
-        var replacement = runtime.getUnificationLookup().getTagTargetItem(tag);
-        if (replacement == null) {
-            return null;
-        }
-
-        return replacement.value();
-    }
-
-    @Nullable
-    @Override
-    public TagKey<Item> getRelevantItemTag(ItemLike itemLike) {
-        AlmostUnifiedRuntime runtime = getRuntime();
-        if (runtime == null) {
-            return null;
-        }
-
-        return runtime.getUnificationLookup().getRelevantItemTag(itemLike.asItem());
+    public Collection<TagKey<Item>> getTags() {
+        if (!isRuntimeLoaded()) return Set.of();
+        return getRuntimeOrThrow().getUnificationLookup().getTags();
     }
 
     @Override
-    public Set<Item> getPotentialItems(TagKey<Item> tag) {
-        AlmostUnifiedRuntime runtime = getRuntime();
-        if (runtime == null) {
-            return Set.of();
-        }
-
-        var entries = runtime.getUnificationLookup().getTagEntries(tag);
-
-        return entries
+    public Collection<Item> getTagEntries(TagKey<Item> tag) {
+        if (!isRuntimeLoaded()) return Set.of();
+        return getRuntimeOrThrow()
+                .getUnificationLookup()
+                .getTagEntries(tag)
                 .stream()
                 .map(UnificationEntry::value)
                 .collect(Collectors.toSet());
     }
 
+    @Nullable
     @Override
-    public Collection<TagKey<Item>> getUnifiedTags() {
-        AlmostUnifiedRuntime runtime = getRuntime();
-        if (runtime == null) {
-            return Set.of();
-        }
+    public TagKey<Item> getRelevantItemTag(ItemLike itemLike) {
+        if (!isRuntimeLoaded()) return null;
+        return getRuntimeOrThrow().getUnificationLookup().getRelevantItemTag(itemLike.asItem());
+    }
 
-        return runtime.getUnificationLookup().getTags();
+    @Nullable
+    @Override
+    public Item getVariantItemTarget(ItemLike itemLike) {
+        if (!isRuntimeLoaded()) return null;
+
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
+        var replacement = getRuntimeOrThrow().getUnificationLookup().getVariantItemTarget(id);
+        return replacement == null ? null : replacement.value();
+    }
+
+    @Nullable
+    @Override
+    public Item getTagTargetItem(TagKey<Item> tag) {
+        if (!isRuntimeLoaded()) return null;
+
+        var replacement = getRuntimeOrThrow().getUnificationLookup().getTagTargetItem(tag);
+        return replacement == null ? null : replacement.value();
     }
 }

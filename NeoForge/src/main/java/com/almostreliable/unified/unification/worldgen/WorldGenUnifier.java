@@ -83,7 +83,7 @@ public class WorldGenUnifier {
         }
 
         var blockId = ref.key().location();
-        var replacement = unificationLookup.getItemReplacement(blockId);
+        var replacement = unificationLookup.getVariantItemTarget(blockId);
         if (replacement == null || replacement.id().equals(blockId)) {
             return false;
         }

@@ -269,9 +269,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         }
 
         @Override
-        public UnificationEntry<Item> getItemReplacement(ResourceLocation item) {
+        public UnificationEntry<Item> getVariantItemTarget(ResourceLocation item) {
             for (var unificationLookup : unificationLookups) {
-                var resultItem = unificationLookup.getItemReplacement(item);
+                var resultItem = unificationLookup.getVariantItemTarget(item);
                 if (resultItem != null) {
                     return resultItem;
                 }

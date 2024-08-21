@@ -55,7 +55,7 @@ public final class UnificationLookupImpl implements UnificationLookup {
 
     @Nullable
     @Override
-    public UnificationEntry<Item> getItemReplacement(ResourceLocation item) {
+    public UnificationEntry<Item> getVariantItemTarget(ResourceLocation item) {
         var tag = getRelevantItemTag(item);
         if (tag == null) return null;
 
