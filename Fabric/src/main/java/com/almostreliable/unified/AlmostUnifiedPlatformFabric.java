@@ -1,5 +1,6 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.constant.ModConstants;
 import com.google.auto.service.AutoService;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -26,11 +27,16 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
 
     @Override
     public Path getConfigPath() {
-        return FabricLoader.getInstance().getConfigDir().resolve(BuildConfig.MOD_ID);
+        return FabricLoader.getInstance().getConfigDir().resolve(ModConstants.ALMOST_UNIFIED);
     }
 
     @Override
     public Path getDebugLogPath() {
-        return FabricLoader.getInstance().getGameDir().resolve("logs").resolve(BuildConfig.MOD_ID).resolve("debug");
+        return FabricLoader
+                .getInstance()
+                .getGameDir()
+                .resolve("logs")
+                .resolve(ModConstants.ALMOST_UNIFIED)
+                .resolve("debug");
     }
 }

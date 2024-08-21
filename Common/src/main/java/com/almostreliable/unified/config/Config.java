@@ -2,7 +2,7 @@ package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.utils.JsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class Config {
 
-    private static final String CONFIG_DIR_PROPERTY = BuildConfig.MOD_ID + ".configDir";
+    private static final String CONFIG_DIR_PROPERTY = ModConstants.ALMOST_UNIFIED + ".configDir";
     private final String name;
 
     Config(String name) {

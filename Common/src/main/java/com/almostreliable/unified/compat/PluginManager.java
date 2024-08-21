@@ -1,7 +1,7 @@
 package com.almostreliable.unified.compat;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -38,11 +38,11 @@ public final class PluginManager {
 
         var sortedPlugins = new ArrayList<>(plugins);
         sortedPlugins.sort((a, b) -> {
-            if (a.getPluginId().getNamespace().equals(BuildConfig.MOD_ID)) {
+            if (a.getPluginId().getNamespace().equals(ModConstants.ALMOST_UNIFIED)) {
                 return -1;
             }
 
-            if (b.getPluginId().getNamespace().equals(BuildConfig.MOD_ID)) {
+            if (b.getPluginId().getNamespace().equals(ModConstants.ALMOST_UNIFIED)) {
                 return 1;
             }
 

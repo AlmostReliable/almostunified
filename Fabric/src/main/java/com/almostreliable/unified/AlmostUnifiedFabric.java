@@ -1,5 +1,6 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.PluginManager;
 import com.almostreliable.unified.compat.viewer.ClientRecipeTracker;
@@ -30,7 +31,7 @@ public class AlmostUnifiedFabric implements ModInitializer {
     private static void initializePluginManager() {
         List<AlmostUnifiedPlugin> plugins = new ArrayList<>();
         var entrypointContainers = FabricLoader.getInstance()
-                .getEntrypointContainers(BuildConfig.MOD_ID, AlmostUnifiedPlugin.class);
+                .getEntrypointContainers(ModConstants.ALMOST_UNIFIED, AlmostUnifiedPlugin.class);
 
         for (var entrypointContainer : entrypointContainers) {
             try {

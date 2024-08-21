@@ -1,5 +1,6 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.constant.ModConstants;
 import com.google.auto.service.AutoService;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
@@ -33,11 +34,11 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
 
     @Override
     public Path getConfigPath() {
-        return FMLPaths.CONFIGDIR.get().resolve(BuildConfig.MOD_ID);
+        return FMLPaths.CONFIGDIR.get().resolve(ModConstants.ALMOST_UNIFIED);
     }
 
     @Override
     public Path getDebugLogPath() {
-        return FMLPaths.GAMEDIR.get().resolve("logs").resolve(BuildConfig.MOD_ID).resolve("debug");
+        return FMLPaths.GAMEDIR.get().resolve("logs").resolve(ModConstants.ALMOST_UNIFIED).resolve("debug");
     }
 }

@@ -1,5 +1,6 @@
 package com.almostreliable.unified;
 
+import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.PluginManager;
@@ -24,7 +25,7 @@ import org.objectweb.asm.Type;
 import javax.annotation.Nullable;
 import java.util.*;
 
-@Mod(BuildConfig.MOD_ID)
+@Mod(ModConstants.ALMOST_UNIFIED)
 public class AlmostUnifiedNeoForge {
 
     public AlmostUnifiedNeoForge(IEventBus eventBus) {

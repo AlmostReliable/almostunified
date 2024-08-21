@@ -1,6 +1,7 @@
 package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.api.constant.ModConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -22,9 +23,9 @@ import java.util.Optional;
 
 public final class CustomLogger {
 
-    private static final String BACKUP_FILE = BuildConfig.MOD_ID + "-backup.log.gz";
-    private static final String FILE = BuildConfig.MOD_ID + ".log";
-    private static final String LOG_PATH = "logs/" + BuildConfig.MOD_ID;
+    private static final String BACKUP_FILE = ModConstants.ALMOST_UNIFIED + "-backup.log.gz";
+    private static final String FILE = ModConstants.ALMOST_UNIFIED + ".log";
+    private static final String LOG_PATH = "logs/" + ModConstants.ALMOST_UNIFIED;
 
     private CustomLogger() {}
 

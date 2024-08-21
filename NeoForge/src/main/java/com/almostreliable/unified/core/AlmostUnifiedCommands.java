@@ -1,6 +1,6 @@
 package com.almostreliable.unified.core;
 
-import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.unification.worldgen.WorldStripper;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -24,7 +24,7 @@ public final class AlmostUnifiedCommands {
                 .requires(source -> source.hasPermission(2))
                 .then(radiusArgument)
                 .executes(AlmostUnifiedCommands::onStripCommand);
-        var mainCommand = Commands.literal(BuildConfig.MOD_ID)
+        var mainCommand = Commands.literal(ModConstants.ALMOST_UNIFIED)
                 .then(stripSubCommand)
                 .executes(AlmostUnifiedCommands::onHelpCommand);
 

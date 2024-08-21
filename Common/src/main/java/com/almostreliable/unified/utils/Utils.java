@@ -1,6 +1,6 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.BuildConfig;
+import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.unification.UnificationEntry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -21,11 +21,11 @@ public final class Utils {
     }
 
     public static ResourceLocation getRL(String path) {
-        return ResourceLocation.fromNamespaceAndPath(BuildConfig.MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(ModConstants.ALMOST_UNIFIED, path);
     }
 
     public static String prefix(String path) {
-        return BuildConfig.MOD_ID + "." + path;
+        return ModConstants.ALMOST_UNIFIED + "." + path;
     }
 
     /**

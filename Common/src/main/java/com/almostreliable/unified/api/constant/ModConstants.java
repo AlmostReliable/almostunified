@@ -1,7 +1,11 @@
 package com.almostreliable.unified.api.constant;
 
+import com.almostreliable.unified.BuildConfig;
+
 @SuppressWarnings({ "SpellCheckingInspection", "StaticMethodOnlyUsedInOneClass" })
 public interface ModConstants {
+
+    String ALMOST_UNIFIED = BuildConfig.MOD_ID;
 
     // recipe viewer mods
     String JEI = "jei";
