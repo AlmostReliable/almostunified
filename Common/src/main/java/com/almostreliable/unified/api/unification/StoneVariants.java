@@ -13,7 +13,7 @@ import net.minecraft.world.item.Item;
  * As a fallback, it will lazily try to fetch the stone variant from the item or
  * the respective block id.
  */
-public interface StoneVariantLookup {
+public interface StoneVariants {
 
     /**
      * Returns the stone variant for the given item.

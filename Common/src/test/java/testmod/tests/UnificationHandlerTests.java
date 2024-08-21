@@ -32,7 +32,7 @@ public class UnificationHandlerTests {
                         ResourceLocation.parse("mekanism:electrum_ingot"),
                         ResourceLocation.parse("create:electrum_ingot"),
                         ResourceLocation.parse("thermal:electrum_ingot"))
-                .build(modPriorities, TestUtils.EMPTY_VARIANT_LOOKUP, TestUtils.EMPTY_TAG_SUBSTITUTIONS);
+                .build(modPriorities, TestUtils.EMPTY_STONE_VARIANTS, TestUtils.EMPTY_TAG_SUBSTITUTIONS);
     }
 
     @SimpleGameTest
@@ -144,7 +144,7 @@ public class UnificationHandlerTests {
         var rm = new UnificationLookupImpl.Builder()
                 .put(TestUtils.itemTag("c:tools"), Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL)
                 .build(TestUtils.EMPTY_MOD_PRIORITIES,
-                        TestUtils.EMPTY_VARIANT_LOOKUP,
+                        TestUtils.EMPTY_STONE_VARIANTS,
                         TestUtils.EMPTY_TAG_SUBSTITUTIONS
                 );
 

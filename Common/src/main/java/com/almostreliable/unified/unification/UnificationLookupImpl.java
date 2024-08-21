@@ -17,14 +17,14 @@ import java.util.function.Predicate;
 public final class UnificationLookupImpl implements UnificationLookup {
 
     private final ModPriorities modPriorities;
-    private final StoneVariantLookup stoneVariantLookup;
+    private final StoneVariants stoneVariants;
     private final TagSubstitutions tagSubstitutions;
     private final Map<TagKey<Item>, Set<UnificationEntry<Item>>> tagsToEntries;
     private final Map<ResourceLocation, UnificationEntry<Item>> idsToEntries;
 
-    private UnificationLookupImpl(ModPriorities modPriorities, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions, Map<TagKey<Item>, Set<UnificationEntry<Item>>> tagsToEntries, Map<ResourceLocation, UnificationEntry<Item>> idsToEntries) {
+    private UnificationLookupImpl(ModPriorities modPriorities, StoneVariants stoneVariants, TagSubstitutions tagSubstitutions, Map<TagKey<Item>, Set<UnificationEntry<Item>>> tagsToEntries, Map<ResourceLocation, UnificationEntry<Item>> idsToEntries) {
         this.modPriorities = modPriorities;
-        this.stoneVariantLookup = stoneVariantLookup;
+        this.stoneVariants = stoneVariants;
         this.tagSubstitutions = tagSubstitutions;
         this.tagsToEntries = tagsToEntries;
         this.idsToEntries = idsToEntries;
@@ -59,9 +59,9 @@ public final class UnificationLookupImpl implements UnificationLookup {
         var tag = getRelevantItemTag(item);
         if (tag == null) return null;
 
-        if (stoneVariantLookup.isOreTag(tag)) {
-            String stoneVariant = stoneVariantLookup.getStoneVariant(item);
-            return getTagTargetItem(tag, itemId -> stoneVariant.equals(stoneVariantLookup.getStoneVariant(itemId)));
+        if (stoneVariants.isOreTag(tag)) {
+            String stoneVariant = stoneVariants.getStoneVariant(item);
+            return getTagTargetItem(tag, itemId -> stoneVariant.equals(stoneVariants.getStoneVariant(itemId)));
         }
 
         return getTagTargetItem(tag);
@@ -132,7 +132,7 @@ public final class UnificationLookupImpl implements UnificationLookup {
             return this;
         }
 
-        public UnificationLookup build(ModPriorities modPriorities, StoneVariantLookup stoneVariantLookup, TagSubstitutions tagSubstitutions) {
+        public UnificationLookup build(ModPriorities modPriorities, StoneVariants stoneVariants, TagSubstitutions tagSubstitutions) {
             ImmutableMap.Builder<TagKey<Item>, Set<UnificationEntry<Item>>> tagsToEntriesBuilder = ImmutableMap.builder();
             ImmutableMap.Builder<ResourceLocation, UnificationEntry<Item>> idsToEntriesBuilder = ImmutableMap.builder();
 
@@ -149,7 +149,7 @@ public final class UnificationLookupImpl implements UnificationLookup {
 
             return new UnificationLookupImpl(
                     modPriorities,
-                    stoneVariantLookup,
+                    stoneVariants,
                     tagSubstitutions,
                     tagsToEntriesBuilder.build(),
                     idsToEntriesBuilder.build()

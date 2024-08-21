@@ -1,7 +1,7 @@
 package testmod;
 
 import com.almostreliable.unified.api.unification.ModPriorities;
-import com.almostreliable.unified.api.unification.StoneVariantLookup;
+import com.almostreliable.unified.api.unification.StoneVariants;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
 import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
@@ -41,7 +41,7 @@ public class TestUtils {
             new HashMap<>()
     );
 
-    public static final StoneVariantLookup EMPTY_VARIANT_LOOKUP = new StoneVariantLookup() {
+    public static final StoneVariants EMPTY_STONE_VARIANTS = new StoneVariants() {
         @Override
         public String getStoneVariant(ResourceLocation item) {
             return "";
@@ -97,7 +97,7 @@ public class TestUtils {
                         ResourceLocation.parse("mekanism:test_item"),
                         ResourceLocation.parse("thermal:test_item"),
                         ResourceLocation.parse("testmod:test_item"))
-                .build(TEST_MOD_PRIORITIES, EMPTY_VARIANT_LOOKUP, EMPTY_TAG_SUBSTITUTIONS);
+                .build(TEST_MOD_PRIORITIES, EMPTY_STONE_VARIANTS, EMPTY_TAG_SUBSTITUTIONS);
     }
 
 

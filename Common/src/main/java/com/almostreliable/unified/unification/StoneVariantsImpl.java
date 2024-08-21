@@ -1,7 +1,7 @@
 package com.almostreliable.unified.unification;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.api.unification.StoneVariantLookup;
+import com.almostreliable.unified.api.unification.StoneVariants;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public final class StoneVariantLookupImpl implements StoneVariantLookup {
+public final class StoneVariantsImpl implements StoneVariants {
 
     private static final Pattern ORE_TAG_PATTERN = Pattern.compile("(c:ores/.+|(minecraft|c):.+_ores)");
 
@@ -21,12 +21,12 @@ public final class StoneVariantLookupImpl implements StoneVariantLookup {
     private final List<String> stoneVariants;
     private final Map<ResourceLocation, String> itemToStoneVariant;
 
-    private StoneVariantLookupImpl(Collection<String> stoneVariants, Map<ResourceLocation, String> itemToStoneVariant) {
+    private StoneVariantsImpl(Collection<String> stoneVariants, Map<ResourceLocation, String> itemToStoneVariant) {
         this.stoneVariants = sortStoneVariants(stoneVariants);
         this.itemToStoneVariant = itemToStoneVariant;
     }
 
-    public static StoneVariantLookup create(Collection<String> stoneVariants, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
+    public static StoneVariants create(Collection<String> stoneVariants, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
         Set<TagKey<Item>> stoneVariantItemTags = new HashSet<>();
         Set<TagKey<Block>> stoneVariantBlockTags = new HashSet<>();
 
@@ -55,7 +55,7 @@ public final class StoneVariantLookupImpl implements StoneVariantLookup {
             itemToStoneVariant.put(item, itemStoneVariant);
         });
 
-        return new StoneVariantLookupImpl(stoneVariants, itemToStoneVariant);
+        return new StoneVariantsImpl(stoneVariants, itemToStoneVariant);
     }
 
     /**

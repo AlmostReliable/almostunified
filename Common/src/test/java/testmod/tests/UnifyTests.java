@@ -29,7 +29,7 @@ public class UnifyTests {
     public static UnificationLookup unificationLookup() {
         return new UnificationLookupImpl.Builder()
                 .put(itemTag("testmod:ingots/iron"), Items.IRON_INGOT)
-                .build(MOD_PRIORITIES, EMPTY_VARIANT_LOOKUP, EMPTY_TAG_SUBSTITUTIONS);
+                .build(MOD_PRIORITIES, EMPTY_STONE_VARIANTS, EMPTY_TAG_SUBSTITUTIONS);
     }
 
     private static JsonObject json(String str) {

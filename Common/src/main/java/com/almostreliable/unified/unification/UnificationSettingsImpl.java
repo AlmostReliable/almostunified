@@ -62,7 +62,7 @@ public final class UnificationSettingsImpl implements UnificationSettings {
         }
 
         ModPriorities modPriorities = config.getModPriorities();
-        StoneVariantLookup stoneVariantLookup = StoneVariantLookupImpl.create(
+        StoneVariants stoneVariants = StoneVariantsImpl.create(
                 config.getStoneVariants(),
                 itemTags,
                 blockTags
@@ -76,7 +76,7 @@ public final class UnificationSettingsImpl implements UnificationSettings {
                 config.shouldHideVariantItems(),
                 config.shouldUnifyLoot(),
                 config::shouldIncludeLootTable,
-                lookupBuilder.build(modPriorities, stoneVariantLookup, tagSubstitutions),
+                lookupBuilder.build(modPriorities, stoneVariants, tagSubstitutions),
                 config::clearCaches
         );
     }
