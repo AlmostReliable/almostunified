@@ -14,6 +14,8 @@ import java.util.Set;
  * The core interface for the Almost Unified API.
  * <p>
  * Use this to get an instance of the {@link AlmostUnifiedRuntime} or to look up unification information.
+ *
+ * @since 1.0.0
  */
 public interface AlmostUnified {
 

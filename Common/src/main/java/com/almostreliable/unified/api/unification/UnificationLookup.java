@@ -21,6 +21,8 @@ import java.util.function.Predicate;
  * expose internal information such as mod priorities.
  * <p>
  * If a lookup with exposed configuration is required, use {@link UnificationSettings} instead.
+ *
+ * @since 1.0.0
  */
 public interface UnificationLookup {
 

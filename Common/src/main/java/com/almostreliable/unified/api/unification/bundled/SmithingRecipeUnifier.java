@@ -19,6 +19,8 @@ import net.minecraft.resources.ResourceLocation;
  * {@link SmithingRecipeUnifier#isApplicable(RecipeData)}. Custom {@link RecipeUnifier}s can call
  * {@link SmithingRecipeUnifier#unify(UnificationHelper, RecipeJson)} on the {@link SmithingRecipeUnifier#INSTANCE} to
  * apply the defaults.
+ *
+ * @since 1.0.0
  */
 public final class SmithingRecipeUnifier implements RecipeUnifier {
 

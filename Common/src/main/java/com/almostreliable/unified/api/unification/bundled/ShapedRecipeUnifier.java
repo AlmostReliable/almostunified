@@ -20,6 +20,8 @@ import net.minecraft.resources.ResourceLocation;
  * {@link ShapedRecipeUnifier#isApplicable(RecipeData)}. Custom {@link RecipeUnifier}s can call
  * {@link ShapedRecipeUnifier#unify(UnificationHelper, RecipeJson)} on the {@link ShapedRecipeUnifier#INSTANCE} to apply
  * the defaults.
+ *
+ * @since 1.0.0
  */
 public final class ShapedRecipeUnifier implements RecipeUnifier {
 

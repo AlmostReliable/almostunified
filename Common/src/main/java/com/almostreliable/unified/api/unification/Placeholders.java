@@ -8,6 +8,8 @@ import java.util.function.BiConsumer;
  * <p>
  * Placeholders are used to replace specific patterns in config values with a set of values to easily cover all possible
  * combinations of all values. Placeholders are in the format of {@code {placeholder}}.
+ *
+ * @since 1.0.0
  */
 public interface Placeholders {
 

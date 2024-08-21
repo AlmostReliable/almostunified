@@ -18,6 +18,8 @@ import com.almostreliable.unified.api.unification.recipe.UnificationHelper;
  * <p>
  * For more specific {@link RecipeUnifier} implementations, see {@link ShapedRecipeUnifier} and
  * {@link SmithingRecipeUnifier}.
+ *
+ * @since 1.0.0
  */
 public final class GenericRecipeUnifier implements RecipeUnifier {
 

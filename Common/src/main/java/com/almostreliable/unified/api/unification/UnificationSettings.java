@@ -9,6 +9,8 @@ import net.minecraft.resources.ResourceLocation;
  * There exists one instance for each config.<br>
  * Because {@link UnificationLookup}s are not composable, this interface should only be used when specific settings
  * need to be checked.
+ *
+ * @since 1.0.0
  */
 public interface UnificationSettings extends UnificationLookup {
 

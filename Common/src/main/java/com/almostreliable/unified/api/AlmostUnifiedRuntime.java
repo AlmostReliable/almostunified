@@ -14,6 +14,8 @@ import java.util.Collection;
  * <p>
  * The runtime is reconstructed every time the game reloads. Within the reconstruction process, all configs are reloaded,
  * plugin unifiers are collected, tag changes are applied, and all handlers are recreated.
+ *
+ * @since 1.0.0
  */
 public interface AlmostUnifiedRuntime {
 

@@ -17,6 +17,8 @@ import java.util.stream.StreamSupport;
  * <p>
  * Priority overrides allow overriding the priority mod for specific tags.<br>
  * When a priority override is specified for a tag, the mod priorities will be ignored.
+ *
+ * @since 1.0.0
  */
 public interface ModPriorities extends Iterable<String> {
 

@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceLocation;
  * The registry holding all {@link RecipeUnifier}s.
  * <p>
  * {@link RecipeUnifier}s can be registered per recipe type or per mod id.
+ *
+ * @since 1.0.0
  */
 public interface RecipeUnifierRegistry {
 

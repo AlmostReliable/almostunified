@@ -22,6 +22,8 @@ import javax.annotation.Nullable;
  * Implementations of this interface are expected to provide the logic for unification, typically based on predefined
  * lookup tables or constants. The methods provided by this interface handle various JSON structures, including
  * {@link JsonObject}s, {@link JsonArray}s, and individual {@link JsonElement}s.
+ *
+ * @since 1.0.0
  */
 public interface UnificationHelper {
 

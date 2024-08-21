@@ -16,6 +16,8 @@ import com.almostreliable.unified.api.unification.bundled.GenericRecipeUnifier;
  * <p>
  * Registration is handled in {@link RecipeUnifierRegistry} which can be obtained in
  * {@link AlmostUnifiedPlugin#registerRecipeUnifiers(RecipeUnifierRegistry)}.
+ *
+ * @since 1.0.0
  */
 public interface RecipeUnifier {
 

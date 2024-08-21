@@ -12,6 +12,8 @@ import net.minecraft.world.item.Item;
  * <p>
  * As a fallback, it will lazily try to fetch the stone variant from the item or
  * the respective block id.
+ *
+ * @since 1.0.0
  */
 public interface StoneVariants {
 

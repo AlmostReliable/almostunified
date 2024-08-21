@@ -19,6 +19,8 @@ import java.util.Set;
  * {@code minecraft:logs} will use the {@code minecraft:planks} tag instead.
  * <p>
  * This can be useful when mods use different tag conventions like {@code c:ingots/iron} and {@code c:iron_ingots}.
+ *
+ * @since 1.0.0
  */
 public interface TagSubstitutions {
 

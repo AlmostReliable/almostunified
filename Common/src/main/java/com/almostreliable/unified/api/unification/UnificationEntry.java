@@ -12,6 +12,7 @@ import net.minecraft.tags.TagKey;
  * This helper allows easy access to registry information while also offering utility methods.
  *
  * @param <T> the type of the entry
+ * @since 1.0.0
  */
 public interface UnificationEntry<T> {
 

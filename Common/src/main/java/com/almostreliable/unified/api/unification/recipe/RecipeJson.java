@@ -6,6 +6,8 @@ import javax.annotation.Nullable;
 
 /**
  * Abstraction of a recipe JSON to access and override properties.
+ *
+ * @since 1.0.0
  */
 public interface RecipeJson extends RecipeData {
 

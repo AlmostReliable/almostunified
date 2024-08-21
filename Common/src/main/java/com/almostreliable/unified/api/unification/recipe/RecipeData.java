@@ -4,6 +4,8 @@ import net.minecraft.resources.ResourceLocation;
 
 /**
  * Basic information about a recipe used for determination of the correct {@link RecipeUnifier}.
+ *
+ * @since 1.0.0
  */
 public interface RecipeData {
 

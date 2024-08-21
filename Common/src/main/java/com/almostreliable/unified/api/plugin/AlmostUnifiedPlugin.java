@@ -9,6 +9,8 @@ import net.minecraft.resources.ResourceLocation;
  * <p>
  * NeoForge plugins should attach the {@link AlmostUnifiedNeoPlugin} annotation for discovery.<br>
  * Fabric plugins should use the {@code almostunified} entrypoint.
+ *
+ * @since 1.0.0
  */
 public interface AlmostUnifiedPlugin {
 
