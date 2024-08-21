@@ -26,9 +26,8 @@ public class RecipeLink implements RecipeData {
         try {
             this.type = ResourceLocation.tryParse(originalRecipe.get("type").getAsString());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Could not detect recipe type");
+            throw new IllegalArgumentException("could not detect recipe type");
         }
-
     }
 
     /**
@@ -90,7 +89,7 @@ public class RecipeLink implements RecipeData {
     private void updateDuplicateLink(@Nullable DuplicateLink duplicateLink) {
         Preconditions.checkNotNull(duplicateLink);
         if (hasDuplicateLink() && getDuplicateLink() != duplicateLink) {
-            throw new IllegalStateException("Recipe is already linked to " + getDuplicateLink());
+            throw new IllegalStateException("recipe is already linked to " + getDuplicateLink());
         }
 
         this.duplicateLink = duplicateLink;
@@ -109,7 +108,7 @@ public class RecipeLink implements RecipeData {
     void setUnified(JsonObject json) {
         Preconditions.checkNotNull(json);
         if (isUnified()) {
-            throw new IllegalStateException("Recipe already unified");
+            throw new IllegalStateException("recipe already unified");
         }
 
         this.unifiedRecipe = json;

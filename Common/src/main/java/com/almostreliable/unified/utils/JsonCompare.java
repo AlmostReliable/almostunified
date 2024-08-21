@@ -278,7 +278,7 @@ public final class JsonCompare {
             Rule old = rules.put(key, rule);
             ignoreField(key);
             if (old != null) {
-                throw new IllegalStateException("Multiple rule for key <" + key + "> found");
+                throw new IllegalStateException("multiple rules for key <" + key + "> found");
             }
         }
 
@@ -317,7 +317,7 @@ public final class JsonCompare {
                 Rule r = switch (e.getValue().getAsString()) {
                     case HigherRule.NAME -> new HigherRule();
                     case LowerRule.NAME -> new LowerRule();
-                    default -> throw new IllegalArgumentException("Unknown rule <" + e.getValue().getAsString() + ">");
+                    default -> throw new IllegalArgumentException("unknown rule <" + e.getValue().getAsString() + ">");
                 };
                 addRule(e.getKey(), r);
             });

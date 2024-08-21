@@ -26,7 +26,7 @@ public class RecipeJsonImpl implements RecipeJson {
         try {
             return ResourceLocation.parse(json.get("type").getAsString());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Could not detect recipe type");
+            throw new IllegalArgumentException("could not detect recipe type");
         }
     }
 

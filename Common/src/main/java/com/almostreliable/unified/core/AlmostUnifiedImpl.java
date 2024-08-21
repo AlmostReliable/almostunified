@@ -34,7 +34,7 @@ public class AlmostUnifiedImpl implements AlmostUnified {
     public AlmostUnifiedRuntime getRuntimeOrThrow() {
         AlmostUnifiedRuntime runtime = AlmostUnifiedCommon.getRuntime();
         if (runtime == null) {
-            throw new IllegalStateException("The runtime is not loaded");
+            throw new IllegalStateException("runtime is not loaded");
         }
 
         return runtime;

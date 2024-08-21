@@ -134,7 +134,7 @@ public class GameTestLoader {
 
         static TestMethodConsumer of(Object instance, Method method) {
             if (Modifier.isStatic(method.getModifiers())) {
-                throw new RuntimeException("Static methods are not supported");
+                throw new RuntimeException("static methods are not supported");
             }
 
             return new TestMethodConsumer(instance, method);
@@ -181,7 +181,7 @@ public class GameTestLoader {
             if (parameterTypes.length == 1) {
                 if (!GameTestHelper.class.isAssignableFrom(parameterTypes[0])) {
                     throw new RuntimeException(
-                            "Unsupported parameter type. Parameter must extend " + GameTestHelper.class.getName());
+                            "unsupported parameter type, parameter must extend " + GameTestHelper.class.getName());
                 }
 
                 // noinspection CastToIncompatibleInterface
@@ -190,7 +190,7 @@ public class GameTestLoader {
                 return;
             }
 
-            throw new RuntimeException("Unsupported number of parameters. Must be 0 or 1");
+            throw new RuntimeException("unsupported number of parameters, must be 0 or 1");
         }
     }
 }

@@ -35,7 +35,7 @@ public class AlmostGameTestHelper extends GameTestHelper {
     public <T extends BlockEntity> T getBlockEntity(BlockPos pos, Class<T> clazz) {
         BlockEntity be = getBlockEntity(pos);
         if (!clazz.isInstance(be)) {
-            throw new GameTestAssertException("Expected block entity of type " + clazz.getName() + " at " + pos + ".");
+            throw new GameTestAssertException("expected block entity of type " + clazz.getName() + " at " + pos);
         }
 
         return clazz.cast(be);

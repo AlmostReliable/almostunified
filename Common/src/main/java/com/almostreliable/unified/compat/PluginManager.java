@@ -25,7 +25,7 @@ public final class PluginManager {
     @SuppressWarnings("StaticVariableUsedBeforeInitialization")
     public static PluginManager instance() {
         if (INSTANCE == null) {
-            throw new IllegalStateException("PluginManager is not initialized.");
+            throw new IllegalStateException("PluginManager is not initialized");
         }
 
         return INSTANCE;
@@ -33,7 +33,7 @@ public final class PluginManager {
 
     public static void init(Collection<AlmostUnifiedPlugin> plugins) {
         if (INSTANCE != null) {
-            throw new IllegalStateException("PluginManager is already initialized.");
+            throw new IllegalStateException("PluginManager is already initialized");
         }
 
         var sortedPlugins = new ArrayList<>(plugins);

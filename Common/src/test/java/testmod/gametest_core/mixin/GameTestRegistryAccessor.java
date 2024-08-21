@@ -18,26 +18,26 @@ public interface GameTestRegistryAccessor {
 
     @Accessor("TEST_FUNCTIONS")
     static Collection<TestFunction> TEST_FUNCTIONS() {
-        throw new MixinException("Mixin failed to apply");
+        throw new MixinException("mixin failed to apply");
     }
 
     @Accessor("TEST_CLASS_NAMES")
     static Set<String> TEST_CLASS_NAMES() {
-        throw new MixinException("Mixin failed to apply");
+        throw new MixinException("mixin failed to apply");
     }
 
     @Accessor("BEFORE_BATCH_FUNCTIONS")
     static Map<String, Consumer<ServerLevel>> BEFORE_BATCH_FUNCTIONS() {
-        throw new MixinException("Mixin failed to apply");
+        throw new MixinException("mixin failed to apply");
     }
 
     @Accessor("AFTER_BATCH_FUNCTIONS")
     static Map<String, Consumer<ServerLevel>> AFTER_BATCH_FUNCTIONS() {
-        throw new MixinException("Mixin failed to apply");
+        throw new MixinException("mixin failed to apply");
     }
 
     @Accessor("LAST_FAILED_TESTS")
     static Set<TestFunction> LAST_FAILED_TESTS() {
-        throw new MixinException("Mixin failed to apply");
+        throw new MixinException("mixin failed to apply");
     }
 }

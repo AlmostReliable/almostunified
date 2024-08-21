@@ -201,7 +201,7 @@ public class RecipeTransformer {
 
         private void add(RecipeLink link) {
             if (allRecipesByType.containsEntry(link.getType(), link)) {
-                throw new IllegalStateException("Already tracking recipe type " + link.getType());
+                throw new IllegalStateException("already tracking recipe type " + link.getType());
             }
 
             allRecipesByType.put(link.getType(), link);

@@ -46,7 +46,7 @@ public class UnificationEntryImpl<T> implements UnificationEntry<T> {
         if (value == null) {
             value = registry
                     .getOptional(key)
-                    .orElseThrow(() -> new IllegalStateException("Entry " + key + " not found in " + registry));
+                    .orElseThrow(() -> new IllegalStateException("entry " + key + " not found in " + registry));
         }
 
         return value;
@@ -55,7 +55,7 @@ public class UnificationEntryImpl<T> implements UnificationEntry<T> {
     @Override
     public TagKey<T> tag() {
         if (tag == null) {
-            throw new IllegalStateException("Tag not bound to " + this);
+            throw new IllegalStateException("tag not bound to " + this);
         }
 
         return tag;
@@ -68,7 +68,7 @@ public class UnificationEntryImpl<T> implements UnificationEntry<T> {
 
     public void bindTag(TagKey<T> tag) {
         if (this.tag != null) {
-            throw new IllegalStateException("Tag already bound to " + this.tag);
+            throw new IllegalStateException("tag already bound to " + this.tag);
         }
 
         this.tag = tag;
