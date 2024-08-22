@@ -100,8 +100,8 @@ This project is All Rights Reserved.
 [maven_common_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-common/
 [maven_fabric_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-fabric%2Fmaven-metadata.xml&style=flat-square
 [maven_fabric_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-fabric/
-[maven_forge_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-forge%2Fmaven-metadata.xml&style=flat-square
-[maven_forge_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-forge/
+[maven_neoforge_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-forge%2Fmaven-metadata.xml&style=flat-square
+[maven_neoforge_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-forge/
 
 <!-- Links -->
 [minecraft]: https://www.minecraft.net/
