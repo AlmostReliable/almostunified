@@ -93,7 +93,7 @@ subprojects {
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
         "mappings"(loom.layered {
             officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-$minecraftVersion:$parchmentVersion@zip")
+            parchment("org.parchmentmc.data:parchment-1.21:$parchmentVersion@zip") // TODO: replace on aprchment update
         })
 
         /**

@@ -65,7 +65,7 @@ dependencies {
     // TODO go back to API when solved: https://github.com/architectury/architectury-loom/issues/204
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion") // required for common rei plugin
     modLocalRuntime("dev.architectury:architectury-neoforge:13.0.6") // TODO: Remove on new REI version
-    modCompileOnly("dev.emi:emi-neoforge:$emiVersion+$minecraftVersion:api") // required for common emi plugin
+    modCompileOnly("dev.emi:emi-neoforge:$emiVersion+1.21:api") // required for common emi plugin TODO: replace on EMI release
 
     // runtime
     forgeRuntimeLibrary("org.junit.jupiter:junit-jupiter-api:$junitVersion")
@@ -73,7 +73,7 @@ dependencies {
         when (neoforgeRecipeViewer) {
             "jei" -> modLocalRuntime("mezz.jei:jei-$minecraftVersion-neoforge:$jeiVersion") { isTransitive = false }
             "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:$reiVersion")
-            "emi" -> modLocalRuntime("dev.emi:emi-neoforge:$emiVersion+$minecraftVersion")
+            "emi" -> modLocalRuntime("dev.emi:emi-neoforge:$emiVersion+1.21") //TODO: replace on EMI release
             else -> throw GradleException("Invalid forgeRecipeViewer value: $neoforgeRecipeViewer")
         }
     }

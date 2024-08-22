@@ -35,7 +35,7 @@ dependencies {
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion") // required for jei plugin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for rei plugin
     compileOnly("me.shedaniel:REIPluginCompatibilities-forge-annotations:9.+") // required to disable rei compat layer
-    modCompileOnly("dev.emi:emi-xplat-intermediary:$emiVersion+$minecraftVersion:api") // required for emi plugin
+    modCompileOnly("dev.emi:emi-xplat-intermediary:$emiVersion+1.21:api") // required for emi plugin TODO: replace on EMI release
 }
 
 buildConfig {
