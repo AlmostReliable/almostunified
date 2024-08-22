@@ -103,7 +103,7 @@ public final class JsonCompare {
             if (secondElem == null) return false;
 
             // sanitize elements for implicit counts of 1
-            if (compareSettings.shouldSanitize && needsSanitizing(firstElem, secondElem)) {
+            if (compareSettings.handleImplicitCounts && needsSanitizing(firstElem, secondElem)) {
                 firstElem = sanitize(firstElem);
                 secondElem = sanitize(secondElem);
             }
@@ -262,13 +262,14 @@ public final class JsonCompare {
     }
 
     public static class CompareSettings {
+
         public static final String IGNORED_FIELDS = "ignored_fields";
         public static final String RULES = "rules";
-        public static final String SHOULD_SANITIZE = "should_sanitize";
+        public static final String HANDLE_IMPLICIT_COUNTS = "handle_implicit_counts";
 
         private final LinkedHashMap<String, Rule> rules = new LinkedHashMap<>();
         private final Set<String> ignoredFields = new HashSet<>();
-        private boolean shouldSanitize;
+        private boolean handleImplicitCounts;
 
         public void ignoreField(String property) {
             ignoredFields.add(property);
@@ -280,10 +281,6 @@ public final class JsonCompare {
             if (old != null) {
                 throw new IllegalStateException("multiple rules for key <" + key + "> found");
             }
-        }
-
-        public void setShouldSanitize(boolean shouldSanitize) {
-            this.shouldSanitize = shouldSanitize;
         }
 
         public Set<String> getIgnoredFields() {
@@ -303,7 +300,7 @@ public final class JsonCompare {
             });
             result.add(RULES, rulesJson);
 
-            result.addProperty(SHOULD_SANITIZE, shouldSanitize);
+            result.addProperty(HANDLE_IMPLICIT_COUNTS, handleImplicitCounts);
 
             return result;
         }
@@ -322,7 +319,7 @@ public final class JsonCompare {
                 addRule(e.getKey(), r);
             });
 
-            shouldSanitize = json.getAsJsonPrimitive(SHOULD_SANITIZE).getAsBoolean();
+            handleImplicitCounts = json.getAsJsonPrimitive(HANDLE_IMPLICIT_COUNTS).getAsBoolean();
         }
 
         public Map<String, Rule> getRules() {
