@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "1.21.1"
+    tags-ignore:
+      - "**"
+    paths:
+      - "gradle/**"
+      - "testmod_configs/**"
+      - "**.java"
+      - "**.kts"
+      - "**.properties"
+      - "**/build.yml"
+  pull_request:
+    branches:
+      - "1.21.1"
+    paths:
+      - "gradle/**"
+      - "testmod_configs/**"
+      - "**.java"
+      - "**.kts"
+      - "**.properties"
+      - "**/build.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  redirect:
+    uses: AlmostReliable/.github/.github/workflows/build.yml@main
+    with:
+      java-distribution: "microsoft"
+      java-version: "21"
