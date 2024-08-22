@@ -19,17 +19,17 @@ public final class DuplicateConfig extends Config {
     private final LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules;
     private final Set<Pattern> ignoreRecipeTypes;
     private final Set<Pattern> ignoreRecipeIds;
-    private final boolean strictMode;
+    private final boolean compareAll;
 
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
 
-    private DuplicateConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipeIds, boolean strictMode) {
+    private DuplicateConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipeIds, boolean compareAll) {
         super(NAME);
         this.defaultRules = defaultRules;
         this.overrideRules = overrideRules;
         this.ignoreRecipeTypes = ignoreRecipeTypes;
         this.ignoreRecipeIds = ignoreRecipeIds;
-        this.strictMode = strictMode;
+        this.compareAll = compareAll;
         this.ignoredRecipeTypesCache = new HashMap<>();
     }
 
@@ -68,8 +68,8 @@ public final class DuplicateConfig extends Config {
         return overrideRules.getOrDefault(type, defaultRules);
     }
 
-    public boolean isStrictMode() {
-        return strictMode;
+    public boolean shouldCompareAll() {
+        return compareAll;
     }
 
     public void clearCache() {
@@ -82,7 +82,7 @@ public final class DuplicateConfig extends Config {
         private static final String OVERRIDE_DUPLICATE_RULES = "override_duplicate_rules";
         private static final String IGNORED_RECIPE_TYPES = "ignored_recipe_types";
         private static final String IGNORED_RECIPE_IDS = "ignored_recipe_ids";
-        private static final String STRICT_MODE = "strict_mode";
+        private static final String COMPARE_ALL = "compare_all";
 
         private DuplicateSerializer() {}
 
@@ -101,14 +101,14 @@ public final class DuplicateConfig extends Config {
                     Defaults.getDefaultDuplicateRules(platform));
             LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules = safeGet(() -> getOverrideRules(
                     json), Defaults.getDefaultDuplicateOverrides(platform));
-            boolean strictMode = safeGet(() -> json.get(STRICT_MODE).getAsBoolean(), false);
+            boolean compareAll = safeGet(() -> json.get(COMPARE_ALL).getAsBoolean(), false);
 
             return new DuplicateConfig(
                     defaultRules,
                     overrideRules,
                     ignoreRecipeTypes,
                     ignoreRecipeIds,
-                    strictMode
+                    compareAll
             );
         }
 
@@ -142,7 +142,7 @@ public final class DuplicateConfig extends Config {
             config.overrideRules.forEach((rl, compareSettings) ->
                     overrides.add(rl.toString(), compareSettings.serialize()));
             json.add(OVERRIDE_DUPLICATE_RULES, overrides);
-            json.addProperty(STRICT_MODE, false);
+            json.addProperty(COMPARE_ALL, false);
 
             return json;
         }

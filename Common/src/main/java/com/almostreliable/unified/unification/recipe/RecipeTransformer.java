@@ -86,7 +86,7 @@ public class RecipeTransformer {
      */
     private void transformRecipes(List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> allRecipes, @Nullable ClientRecipeTracker.RawBuilder tracker) {
         var unified = unifyRecipes(recipeLinks, r -> allRecipes.put(r.getId(), r.getUnified()));
-        var duplicates = handleDuplicates(duplicateConfig.isStrictMode() ? recipeLinks : unified, recipeLinks);
+        var duplicates = handleDuplicates(duplicateConfig.shouldCompareAll() ? recipeLinks : unified, recipeLinks);
         duplicates
                 .stream()
                 .flatMap(d -> d.getRecipesWithoutMaster().stream())

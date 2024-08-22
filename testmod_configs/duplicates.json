@@ -31,5 +31,5 @@
       "should_sanitize": false
     }
   },
-  "strict_mode": false
+  "compare_all": false
 }
