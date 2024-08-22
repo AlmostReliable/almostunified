@@ -122,7 +122,8 @@ public final class JsonCompare {
      * <p>
      * Conditions are both elements being a JSON array with the same size, both elements being
      * a JSON object, one element being a JSON object and the other being a JSON primitive.
-     * @param firstElem the first element
+     *
+     * @param firstElem  the first element
      * @param secondElem the second element
      * @return true if the elements need to be sanitized, false otherwise
      */
@@ -139,7 +140,8 @@ public final class JsonCompare {
      * value from the original object under a dummy key called "au_sanitized".
      * <p>
      * If the element is not a string primitive, the default object is returned.
-     * @param value The value to sanitize
+     *
+     * @param value        The value to sanitize
      * @param defaultValue The default value to return if the element is not a string primitive
      * @return The sanitized object or the default value
      */
@@ -161,6 +163,7 @@ public final class JsonCompare {
      * the original recipe, so it can be safely used for comparison.
      * <p>
      * If the object doesn't support this transformation, the original object is returned.
+     *
      * @param element The element to sanitize
      * @return The sanitized element or the original element if it can't be sanitized
      */
@@ -190,7 +193,7 @@ public final class JsonCompare {
             var sanitized = createSanitizedObjectOrDefault(jsonObject.get(key), jsonObject);
 
             // ensure the object changed (was sanitized) and that we got a JsonObject
-            //noinspection ObjectEquality
+            // noinspection ObjectEquality
             if (sanitized == jsonObject || !(sanitized instanceof JsonObject sanitizedObject)) {
                 return jsonObject;
             }
@@ -204,7 +207,8 @@ public final class JsonCompare {
 
     /**
      * Merges remaining properties from the original object to the sanitized object.
-     * @param jsonObject The original object
+     *
+     * @param jsonObject      The original object
      * @param sanitizedObject The sanitized object
      */
     private static void mergeRemainingProperties(JsonObject jsonObject, JsonObject sanitizedObject) {
@@ -258,9 +262,9 @@ public final class JsonCompare {
     }
 
     public static class CompareSettings {
-        public static final String IGNORED_FIELDS = "ignoredFields";
+        public static final String IGNORED_FIELDS = "ignored_fields";
         public static final String RULES = "rules";
-        public static final String SHOULD_SANITIZE = "shouldSanitize";
+        public static final String SHOULD_SANITIZE = "should_sanitize";
 
         private final LinkedHashMap<String, Rule> rules = new LinkedHashMap<>();
         private final Set<String> ignoredFields = new HashSet<>();
@@ -274,7 +278,7 @@ public final class JsonCompare {
             Rule old = rules.put(key, rule);
             ignoreField(key);
             if (old != null) {
-                throw new IllegalStateException("Multiple rule for key <" + key + "> found");
+                throw new IllegalStateException("multiple rules for key <" + key + "> found");
             }
         }
 
@@ -313,7 +317,7 @@ public final class JsonCompare {
                 Rule r = switch (e.getValue().getAsString()) {
                     case HigherRule.NAME -> new HigherRule();
                     case LowerRule.NAME -> new LowerRule();
-                    default -> throw new IllegalArgumentException("Unknown rule <" + e.getValue().getAsString() + ">");
+                    default -> throw new IllegalArgumentException("unknown rule <" + e.getValue().getAsString() + ">");
                 };
                 addRule(e.getKey(), r);
             });

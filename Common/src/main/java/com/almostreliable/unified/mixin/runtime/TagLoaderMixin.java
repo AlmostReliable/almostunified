@@ -1,7 +1,7 @@
 package com.almostreliable.unified.mixin.runtime;
 
-import com.almostreliable.unified.AlmostUnified;
-import com.almostreliable.unified.utils.TagReloadHandler;
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.core.TagReloadHandler;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -26,22 +26,22 @@ public class TagLoaderMixin {
 
     @Inject(method = "build(Ljava/util/Map;)Ljava/util/Map;", at = @At("RETURN"))
     private <T> void onCreateLoadResult(Map<ResourceLocation, List<TagLoader.EntryWithSource>> map, CallbackInfoReturnable<Map<ResourceLocation, Collection<T>>> cir) {
-        if (directory.equals("tags/items")) {
+        if (directory.equals("tags/item")) {
             try {
                 Map<ResourceLocation, Collection<Holder<Item>>> tags = Utils.cast(cir.getReturnValue());
                 TagReloadHandler.initItemTags(tags);
                 TagReloadHandler.run();
             } catch (Exception e) {
-                AlmostUnified.LOG.error(e.getMessage(), e);
+                AlmostUnifiedCommon.LOGGER.error(e.getMessage(), e);
             }
         }
-        if (directory.equals("tags/blocks")) {
+        if (directory.equals("tags/block")) {
             try {
                 Map<ResourceLocation, Collection<Holder<Block>>> tags = Utils.cast(cir.getReturnValue());
                 TagReloadHandler.initBlockTags(tags);
                 TagReloadHandler.run();
             } catch (Exception e) {
-                AlmostUnified.LOG.error(e.getMessage(), e);
+                AlmostUnifiedCommon.LOGGER.error(e.getMessage(), e);
             }
         }
     }

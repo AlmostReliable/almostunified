@@ -2,12 +2,16 @@
   "required": true,
   "minVersion": "0.8.5",
   "package": "com.almostreliable.unified.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "loot.CompositeEntryBaseMixin",
+    "loot.LootItemMixin",
+    "loot.LootPoolMixin",
+    "loot.LootTableMixin",
     "runtime.RecipeManagerMixin",
     "runtime.TagLoaderMixin",
-    "unifier.ArmorItemMixin",
-    "unifier.TieredItemMixin"
+    "unification.ArmorItemMixin",
+    "unification.TieredItemMixin"
   ],
   "client": [
     "runtime.ClientPacketListenerMixin"

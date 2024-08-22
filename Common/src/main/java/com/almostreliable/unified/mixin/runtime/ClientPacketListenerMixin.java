@@ -1,8 +1,8 @@
 package com.almostreliable.unified.mixin.runtime;
 
-import com.almostreliable.unified.ClientTagUpdateEvent;
+import com.almostreliable.unified.utils.ClientTagUpdateEvent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.protocol.game.ClientboundUpdateTagsPacket;
+import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

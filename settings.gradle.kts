@@ -3,6 +3,7 @@ pluginManagement {
         maven("https://maven.architectury.dev/")
         maven("https://maven.fabricmc.net/")
         maven("https://maven.minecraftforge.net/")
+        maven("https://maven.neoforged.net/releases")
         gradlePluginPortal()
     }
 }
@@ -10,4 +11,4 @@ pluginManagement {
 val modName: String by extra
 val minecraftVersion: String by extra
 rootProject.name = "$modName-$minecraftVersion"
-include("Common", "Fabric", "Forge")
+include("Common", "NeoForge", "Fabric")

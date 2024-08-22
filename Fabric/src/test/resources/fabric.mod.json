@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "testmod",
+  "version": "dev",
+  "name": "Test Mod",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "testmod.FabricTest"
+    ]
+  },
+  "mixins": ["testmod.mixins.json"]
+}

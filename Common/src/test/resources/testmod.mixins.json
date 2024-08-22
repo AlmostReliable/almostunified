@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "testmod.gametest_core.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "GameTestHelperAccessor",
+    "GameTestRegistryAccessor",
+    "ItemTooltipMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

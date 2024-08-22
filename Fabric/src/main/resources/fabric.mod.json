@@ -19,10 +19,17 @@
       "com.almostreliable.unified.AlmostUnifiedFabric"
     ],
     "jei_mod_plugin": [
-      "com.almostreliable.unified.compat.AlmostJEI"
+      "com.almostreliable.unified.compat.viewers.AlmostJEI"
     ],
     "rei_client": [
-      "com.almostreliable.unified.compat.AlmostREI"
+      "com.almostreliable.unified.compat.viewers.AlmostREI"
+    ],
+    "emi": [
+      "com.almostreliable.unified.compat.viewers.AlmostEMI"
+    ],
+    "almostunified": [
+      "com.almostreliable.unified.core.CommonPlugin",
+      "com.almostreliable.unified.core.FabricPlugin"
     ]
   },
   "mixins": [
@@ -35,6 +42,7 @@
   },
   "suggests": {
     "jei": ">=${jeiVersion}",
-    "roughlyenoughitems": ">=${reiVersion}"
+    "roughlyenoughitems": ">=${reiVersion}",
+    "emi": ">=${emiVersion}"
   }
 }

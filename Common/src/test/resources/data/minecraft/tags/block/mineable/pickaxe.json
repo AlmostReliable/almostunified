@@ -1,0 +1,8 @@
+{
+  "values": [
+    "testmod:osmium_ore",
+    "meka_fake:osmium_ore",
+    "ie_fake:osmium_ore",
+    "thermal_fake:osmium_ore"
+  ]
+}

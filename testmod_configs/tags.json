@@ -1,0 +1,18 @@
+{
+  "custom_tags": {},
+  "tag_substitutions": {
+    "c:ores/silver": [
+      "c:silver_ores"
+    ]
+  },
+  "item_tag_inheritance_mode": "ALLOW",
+  "item_tag_inheritance": {
+    "minecraft:beacon_payment_items": [
+      "c:not_in_use",
+      "c:ores/silver"
+    ]
+  },
+  "block_tag_inheritance_mode": "ALLOW",
+  "block_tag_inheritance": {},
+  "emi_strict_hiding": true
+}

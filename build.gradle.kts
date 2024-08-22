@@ -11,19 +11,21 @@ val modId: String by project
 val modName: String by project
 val modDescription: String by project
 val modAuthor: String by project
+val modPackage: String by project
 val autoServiceVersion: String by project
+val junitVersion: String by project
 val parchmentVersion: String by project
 val fabricApiVersion: String by project
-val forgeVersion: String by project
+val neoforgeVersion: String by project
 val jeiVersion: String by project
 val reiVersion: String by project
+val emiVersion: String by project
 val githubRepo: String by project
 val githubUser: String by project
 
 plugins {
     id("architectury-plugin") version "3.4.+"
-    id("dev.architectury.loom") version "1.3.+" apply false
-    id("io.github.juuxel.loom-vineflower") version "1.11.0" apply false
+    id("dev.architectury.loom") version "1.7.+" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     java
     `maven-publish`
@@ -42,7 +44,7 @@ allprojects {
     tasks {
         withType<JavaCompile> {
             options.encoding = "UTF-8"
-            options.release.set(17)
+            options.release.set(21)
         }
 
         withType<GenerateModuleMetadata> {
@@ -51,7 +53,7 @@ allprojects {
     }
 
     extensions.configure<JavaPluginExtension> {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
         withSourcesJar()
     }
 }
@@ -62,7 +64,6 @@ allprojects {
 subprojects {
     apply(plugin = "architectury-plugin")
     apply(plugin = "dev.architectury.loom")
-    apply(plugin = "io.github.juuxel.loom-vineflower")
     apply(plugin = "maven-publish")
 
     base {
@@ -71,14 +72,17 @@ subprojects {
     }
 
     repositories {
+        maven("https://maven.neoforged.net/releases")
         maven("https://maven.parchmentmc.org") // Parchment
         maven("https://maven.shedaniel.me") // REI
         maven("https://maven.blamejared.com/") // JEI
+        maven("https://maven.terraformersmc.com/") // EMI
         mavenLocal()
     }
 
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
     loom.silentMojangMappingsLicense()
+    loom.createRemapConfigurations(sourceSets.getByName("test")) // create test implementations that allow remapping
 
     dependencies {
         /**
@@ -95,17 +99,30 @@ subprojects {
         /**
          * non-Minecraft dependencies
          */
-        compileOnly("com.google.auto.service:auto-service:$autoServiceVersion")
-        annotationProcessor("com.google.auto.service:auto-service:$autoServiceVersion")
+        compileOnly(testCompileOnly("com.google.auto.service:auto-service:$autoServiceVersion")!!)
+        annotationProcessor(testAnnotationProcessor("com.google.auto.service:auto-service:$autoServiceVersion")!!)
+        testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     }
 
     tasks {
+        val apiJar = register<Jar>("apiJar") {
+            val remapJar = named<RemapJarTask>("remapJar")
+            archiveClassifier.set("api")
+            dependsOn(remapJar)
+            from(zipTree(remapJar.get().archiveFile))
+            include(modPackage.replace('.', '/') + "/api/**")
+        }
+
+        build {
+            dependsOn(apiJar)
+        }
+
         /**
          * resource processing for defined targets
          * will replace `${key}` with the specified values from the map below
          */
         processResources {
-            val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
+            val resourceTargets = listOf("META-INF/neoforge.mods.toml", "fabric.mod.json", "pack.mcmeta")
 
             val replaceProperties = mapOf(
                 "version" to project.version as String,
@@ -116,12 +133,10 @@ subprojects {
                 "modAuthor" to modAuthor,
                 "modDescription" to modDescription,
                 "fabricApiVersion" to fabricApiVersion,
-                "forgeVersion" to forgeVersion,
-                // use major version for FML only because wrong Forge version error message
-                // is way better than FML error message
-                "forgeFMLVersion" to forgeVersion.substringBefore("."),
+                "neoforgeVersion" to neoforgeVersion,
                 "jeiVersion" to jeiVersion,
                 "reiVersion" to reiVersion,
+                "emiVersion" to emiVersion,
                 "githubUser" to githubUser,
                 "githubRepo" to githubRepo
             )
@@ -146,6 +161,11 @@ subprojects {
             register(mpm, MavenPublication::class) {
                 artifactId = base.archivesName.get()
                 from(components["java"])
+
+                val apiJarTask = tasks.named<Jar>("apiJar")
+                artifact(apiJarTask) {
+                    classifier = "api"
+                }
             }
         }
 
@@ -183,8 +203,39 @@ subprojects {
 
     apply(plugin = "com.github.johnrengelman.shadow")
 
+    /**
+     * add the outputs of the common test source set to the test source set classpath
+     */
+    sourceSets.named("test") {
+        val cst = project(":Common").sourceSets.getByName("test")
+        this.compileClasspath += cst.output
+        this.runtimeClasspath += cst.output
+    }
+
     extensions.configure<LoomGradleExtensionAPI> {
         runs {
+            create("test_client") {
+                name("Testmod Client")
+                client()
+                source(sourceSets.test.get())
+                property("fabric-api.gametest", "true")
+                property("neoforge.gameTestServer", "true")
+                property("neoforge.enabledGameTestNamespaces", "testmod")
+                property("$modId.gametest.testPackages", "testmod.*")
+                property("$modId.configDir", rootProject.projectDir.toPath().resolve("testmod_configs").toString())
+            }
+
+            create("gametest") {
+                name("Gametest")
+                server()
+                source(sourceSets.test.get())
+                property("fabric-api.gametest", "true")
+                property("neoforge.gameTestServer", "true")
+                property("neoforge.enabledGameTestNamespaces", "testmod")
+                property("$modId.gametest.testPackages", "testmod.*")
+                property("$modId.configDir", rootProject.projectDir.toPath().resolve("testmod_configs").toString())
+            }
+
             forEach {
                 val dir = "../run/${project.name.lowercase()}_${it.environment}"
                 println("[Run Config] ${project.name} '${it.name}' directory: $dir")

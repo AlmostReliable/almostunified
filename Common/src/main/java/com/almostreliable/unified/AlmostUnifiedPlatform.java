@@ -1,17 +1,13 @@
 package com.almostreliable.unified;
 
-import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
-import com.almostreliable.unified.utils.UnifyTag;
-import net.minecraft.world.item.Item;
-
 import java.nio.file.Path;
-import java.util.List;
 import java.util.ServiceLoader;
-import java.util.Set;
 
 public interface AlmostUnifiedPlatform {
 
-    AlmostUnifiedPlatform INSTANCE = load(AlmostUnifiedPlatform.class);
+    AlmostUnifiedPlatform INSTANCE = ServiceLoader.load(AlmostUnifiedPlatform.class)
+            .findFirst()
+            .orElseThrow(() -> new NullPointerException("Failed to load platform service."));
 
     /**
      * Gets the current platform
@@ -32,22 +28,10 @@ public interface AlmostUnifiedPlatform {
 
     Path getConfigPath();
 
-    Path getLogPath();
-
-    void bindRecipeHandlers(RecipeHandlerFactory factory);
-
-    Set<UnifyTag<Item>> getStoneStrataTags(List<String> stoneStrataIds);
-
-    static <T> T load(Class<T> clazz) {
-        T loadedService = ServiceLoader.load(clazz)
-                .findFirst()
-                .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
-        AlmostUnified.LOG.debug("Loaded {} for service {}", loadedService, clazz);
-        return loadedService;
-    }
+    Path getDebugLogPath();
 
     enum Platform {
-        FORGE,
+        NEO_FORGE,
         FABRIC
     }
 }

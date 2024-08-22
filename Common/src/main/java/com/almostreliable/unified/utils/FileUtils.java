@@ -1,6 +1,8 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.config.DebugConfig;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,21 +14,33 @@ public final class FileUtils {
 
     private FileUtils() {}
 
-    public static void write(Path path, String fileName, Consumer<StringBuilder> callback) {
+    public static void createGitIgnore() {
+        Path path = AlmostUnifiedPlatform.INSTANCE.getConfigPath();
+        if (!Files.exists(path.resolve(".gitignore"))) {
+            write(path, ".gitignore", sb -> sb.append(DebugConfig.NAME).append(".json").append("\n"));
+        }
+    }
+
+    public static void writeDebugLog(String fileName, Consumer<StringBuilder> callback) {
+        write(AlmostUnifiedPlatform.INSTANCE.getDebugLogPath(), fileName, callback);
+    }
+
+    private static void write(Path path, String fileName, Consumer<StringBuilder> callback) {
         StringBuilder sb = new StringBuilder();
         callback.accept(sb);
 
         try {
             Files.createDirectories(path);
             Path filePath = path.resolve(fileName);
-            Files.writeString(filePath,
+            Files.writeString(
+                    filePath,
                     sb.toString(),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING,
-                    StandardOpenOption.WRITE);
+                    StandardOpenOption.WRITE
+            );
         } catch (IOException e) {
-            AlmostUnified.LOG.warn("Dump couldn't be written '{}': {}", fileName, e.getMessage());
-            e.printStackTrace();
+            AlmostUnifiedCommon.LOGGER.warn("Couldn't write to file '{}'.", fileName, e);
         }
     }
 }

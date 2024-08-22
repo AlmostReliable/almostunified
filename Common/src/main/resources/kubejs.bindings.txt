@@ -1,1 +1,1 @@
-* AlmostUnified com.almostreliable.unified.compat.AlmostKube
+* AlmostUnified com.almostreliable.unified.compat.kube.AlmostKube
