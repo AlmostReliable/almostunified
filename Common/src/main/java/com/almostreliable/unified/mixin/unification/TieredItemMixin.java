@@ -21,7 +21,7 @@ public class TieredItemMixin {
     @Shadow @Final private Tier tier;
 
     @Inject(method = "isValidRepairItem", at = @At("HEAD"), cancellable = true)
-    private void unified$repairUnification(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
+    private void almostunified$onItemRepair(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
         AlmostUnifiedRuntime runtime = AlmostUnified.INSTANCE.getRuntime();
         if (runtime == null) return;
 

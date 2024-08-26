@@ -22,7 +22,7 @@ public class ArmorItemMixin {
     @Shadow @Final protected Holder<ArmorMaterial> material;
 
     @Inject(method = "isValidRepairItem", at = @At("HEAD"), cancellable = true)
-    private void unified$repairUnification(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
+    private void almostunified$onArmorRepair(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {
         AlmostUnifiedRuntime runtime = AlmostUnified.INSTANCE.getRuntime();
         if (runtime == null) return;
 

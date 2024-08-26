@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPacketListener.class)
 public class ClientPacketListenerMixin {
     @Inject(method = "handleUpdateTags", at = @At("RETURN"))
-    private void runClientTagUpdateEvent(ClientboundUpdateTagsPacket packet, CallbackInfo ci) {
+    private void almostunified$onClientTagsUpdate(ClientboundUpdateTagsPacket packet, CallbackInfo ci) {
         ClientTagUpdateEvent.invoke();
     }
 }

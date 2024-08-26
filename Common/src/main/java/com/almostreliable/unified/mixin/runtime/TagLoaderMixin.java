@@ -27,7 +27,7 @@ public class TagLoaderMixin {
     @Shadow @Final private String directory;
 
     @Inject(method = "build(Ljava/util/Map;)Ljava/util/Map;", at = @At("RETURN"))
-    private <T> void onCreateLoadResult(Map<ResourceLocation, List<TagLoader.EntryWithSource>> map, CallbackInfoReturnable<Map<ResourceLocation, Collection<T>>> cir) {
+    private <T> void almostunified$onTagUpdate(Map<ResourceLocation, List<TagLoader.EntryWithSource>> map, CallbackInfoReturnable<Map<ResourceLocation, Collection<T>>> cir) {
         if (directory.equals("tags/item")) {
             try {
                 Map<ResourceLocation, Collection<Holder<Item>>> tags = Utils.cast(cir.getReturnValue());

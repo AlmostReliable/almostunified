@@ -25,7 +25,7 @@ public class RecipeManagerMixin {
     @Shadow @Final private HolderLookup.Provider registries;
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
-    private void runTransformation(Map<ResourceLocation, JsonElement> recipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
+    private void almostunified$onRecipeReload(Map<ResourceLocation, JsonElement> recipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         try {
             AlmostUnifiedCommon.onRecipeManagerReload(recipes, registries);
         } catch (Exception e) {
