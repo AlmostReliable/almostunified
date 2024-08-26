@@ -4,8 +4,8 @@ import com.almostreliable.unified.api.unification.Placeholders;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
 import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.api.unification.UnificationSettings;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**

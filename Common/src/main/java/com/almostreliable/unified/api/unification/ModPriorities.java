@@ -2,8 +2,8 @@ package com.almostreliable.unified.api.unification;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;

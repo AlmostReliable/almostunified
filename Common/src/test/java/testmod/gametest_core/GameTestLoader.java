@@ -2,10 +2,10 @@ package testmod.gametest_core;
 
 import net.minecraft.gametest.framework.*;
 import net.minecraft.world.level.block.Rotation;
+import org.jetbrains.annotations.Nullable;
 import testmod.gametest_core.mixin.GameTestHelperAccessor;
 import testmod.gametest_core.mixin.GameTestRegistryAccessor;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

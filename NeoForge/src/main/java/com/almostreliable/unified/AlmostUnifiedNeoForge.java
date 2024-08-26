@@ -20,9 +20,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 @Mod(ModConstants.ALMOST_UNIFIED)

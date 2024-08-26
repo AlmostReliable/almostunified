@@ -1,8 +1,8 @@
 package com.almostreliable.unified.utils;
 
 import com.google.gson.*;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;

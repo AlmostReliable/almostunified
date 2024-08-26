@@ -5,8 +5,8 @@ import com.almostreliable.unified.api.unification.ModPriorities;
 import com.almostreliable.unified.api.unification.UnificationEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;

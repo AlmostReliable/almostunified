@@ -1,8 +1,7 @@
 package com.almostreliable.unified.api.unification.recipe;
 
 import com.google.gson.JsonElement;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Abstraction of a recipe JSON to access and override properties.

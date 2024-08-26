@@ -13,8 +13,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public record UnificationHelperImpl(UnificationLookup getUnificationLookup) implements UnificationHelper {
 

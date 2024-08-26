@@ -4,8 +4,8 @@ import com.almostreliable.unified.api.unification.Placeholders;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.ServiceLoader;
 import java.util.Set;
