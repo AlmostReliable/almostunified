@@ -18,6 +18,7 @@ import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
 import com.almostreliable.unified.compat.PluginManager;
 import com.almostreliable.unified.compat.viewer.ItemHider;
 import com.almostreliable.unified.config.Config;
+import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.config.PlaceholderConfig;
 import com.almostreliable.unified.config.TagConfig;
 import com.almostreliable.unified.config.UnificationConfig;
@@ -50,13 +51,15 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final RecipeUnifierRegistry recipeUnifierRegistry;
     private final TagSubstitutions tagSubstitutions;
     private final Placeholders placeholders;
+    private final DebugConfig debugConfig;
     private final UnificationLookup compositeUnificationLookup;
 
-    private AlmostUnifiedRuntimeImpl(Collection<? extends UnificationSettings> unificationSettings, RecipeUnifierRegistry recipeUnifierRegistry, TagSubstitutions tagSubstitutions, Placeholders placeholders) {
+    private AlmostUnifiedRuntimeImpl(Collection<? extends UnificationSettings> unificationSettings, RecipeUnifierRegistry recipeUnifierRegistry, TagSubstitutions tagSubstitutions, Placeholders placeholders, DebugConfig debugConfig) {
         this.unificationSettings = unificationSettings;
         this.recipeUnifierRegistry = recipeUnifierRegistry;
         this.tagSubstitutions = tagSubstitutions;
         this.placeholders = placeholders;
+        this.debugConfig = debugConfig;
         this.compositeUnificationLookup = new CompositeUnificationLookup(unificationSettings);
     }
 
@@ -64,11 +67,17 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         AlmostUnifiedCommon.LOGGER.warn("Reload detected. Reconstructing runtime.");
 
         FileUtils.createGitIgnore();
-        var tagConfig = Config.load(TagConfig.NAME, TagConfig.SERIALIZER);
+        var debugConfig = Config.load(DebugConfig.NAME, DebugConfig.SERIALIZER);
         var placeholderConfig = Config.load(PlaceholderConfig.NAME, PlaceholderConfig.SERIALIZER);
+        var tagConfig = Config.load(TagConfig.NAME, TagConfig.SERIALIZER);
         var unificationConfigs = UnificationConfig.safeLoadConfigs();
 
-        var unificationTags = bakeAndValidateTags(unificationConfigs, itemTags, placeholderConfig);
+        var unificationTags = bakeAndValidateTags(
+            unificationConfigs,
+            itemTags,
+            placeholderConfig,
+            debugConfig.shouldLogInvalidTags()
+        );
 
         RecipeUnifierRegistry recipeUnifierRegistry = new RecipeUnifierRegistryImpl();
         PluginManager.instance().registerRecipeUnifiers(recipeUnifierRegistry);
@@ -95,7 +104,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
             unificationSettings,
             recipeUnifierRegistry,
             tagSubstitutions,
-            placeholderConfig
+            placeholderConfig,
+            debugConfig
         );
     }
 
@@ -110,9 +120,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
      * @param unificationConfigs The unify configs
      * @param itemTags           The vanilla tags
      * @param placeholders       The replacements
+     * @param logInvalidTags     Whether to log invalid tags
      * @return The baked tags combined from all unify configs
      */
-    private static Set<TagKey<Item>> bakeAndValidateTags(Collection<UnificationConfig> unificationConfigs, VanillaTagWrapper<Item> itemTags, Placeholders placeholders) {
+    private static Set<TagKey<Item>> bakeAndValidateTags(Collection<UnificationConfig> unificationConfigs, VanillaTagWrapper<Item> itemTags, Placeholders placeholders, boolean logInvalidTags) {
         Set<TagKey<Item>> result = new HashSet<>();
 
         Map<TagKey<Item>, String> visitedTags = new HashMap<>();
@@ -142,7 +153,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
             result.addAll(tags);
         }
 
-        if (!wrongTags.isEmpty()) {
+        if (!wrongTags.isEmpty() && logInvalidTags) {
             AlmostUnifiedCommon.LOGGER.warn("The following tags are invalid or not in use and will be ignored: {}",
                 wrongTags.stream().map(TagKey::location).collect(Collectors.toList()));
         }
@@ -177,7 +188,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     }
 
     public void run(Map<ResourceLocation, JsonElement> recipes) {
-        DebugHandler debugHandler = DebugHandler.onRunStart(recipes, compositeUnificationLookup);
+        DebugHandler debugHandler = DebugHandler.onRunStart(recipes, compositeUnificationLookup, debugConfig);
 
         debugHandler.measure(() -> {
             var transformer = new RecipeTransformer(recipeUnifierRegistry, unificationSettings);

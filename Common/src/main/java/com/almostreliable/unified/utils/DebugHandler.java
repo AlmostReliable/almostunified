@@ -3,7 +3,6 @@ package com.almostreliable.unified.utils;
 import net.minecraft.resources.ResourceLocation;
 
 import com.almostreliable.unified.api.unification.UnificationLookup;
-import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.unification.recipe.RecipeLink;
 import com.almostreliable.unified.unification.recipe.RecipeTransformer;
@@ -43,14 +42,14 @@ public final class DebugHandler {
     private long endTime;
     @Nullable private RecipeTransformer.Result transformerResult;
 
-    private DebugHandler(int recipesBefore) {
-        this.config = Config.load(DebugConfig.NAME, DebugConfig.SERIALIZER);
+    private DebugHandler(int recipesBefore, DebugConfig config) {
+        this.config = config;
         this.lastRun = "# Last run: " + DATE_FORMAT.format(new Date(System.currentTimeMillis()));
         this.recipesBefore = recipesBefore;
     }
 
-    public static DebugHandler onRunStart(Map<ResourceLocation, JsonElement> recipes, UnificationLookup unificationLookup) {
-        DebugHandler handler = new DebugHandler(recipes.size());
+    public static DebugHandler onRunStart(Map<ResourceLocation, JsonElement> recipes, UnificationLookup unificationLookup, DebugConfig config) {
+        DebugHandler handler = new DebugHandler(recipes.size(), config);
         handler.dumpTags(unificationLookup);
         handler.dumpRecipes(RECIPES_BEFORE, recipes);
         return handler;
