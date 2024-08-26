@@ -2,7 +2,11 @@ package com.almostreliable.unified.core;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.unification.*;
+import com.almostreliable.unified.api.unification.Placeholders;
+import com.almostreliable.unified.api.unification.TagSubstitutions;
+import com.almostreliable.unified.api.unification.UnificationEntry;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.api.unification.UnificationSettings;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
 import com.almostreliable.unified.compat.PluginManager;
 import com.almostreliable.unified.compat.viewer.ItemHider;
@@ -27,7 +31,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 

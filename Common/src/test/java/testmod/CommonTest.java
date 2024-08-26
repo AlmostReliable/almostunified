@@ -1,7 +1,14 @@
 package testmod;
 
 import testmod.gametest_core.GameTestLoader;
-import testmod.tests.*;
+import testmod.tests.ExampleTest;
+import testmod.tests.GregTechModernRecipeUnifierTests;
+import testmod.tests.LootUnificationTests;
+import testmod.tests.ReplacementsTests;
+import testmod.tests.ShapedRecipeUnifierTests;
+import testmod.tests.SmithingRecipeUnifierTest;
+import testmod.tests.UnificationHandlerTests;
+import testmod.tests.UnifyTests;
 import testmod.tests.core.TagInheritanceTests;
 import testmod.tests.core.TagSubstitutionTests;
 

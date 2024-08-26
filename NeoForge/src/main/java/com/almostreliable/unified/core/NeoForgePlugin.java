@@ -5,7 +5,16 @@ import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.api.unification.bundled.ShapedRecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
-import com.almostreliable.unified.compat.unification.*;
+import com.almostreliable.unified.compat.unification.ArsNouveauRecipeUnifier;
+import com.almostreliable.unified.compat.unification.CyclicRecipeUnifier;
+import com.almostreliable.unified.compat.unification.EnderIORecipeUnifier;
+import com.almostreliable.unified.compat.unification.ImmersiveEngineeringRecipeUnifier;
+import com.almostreliable.unified.compat.unification.IntegratedDynamicsRecipeUnifier;
+import com.almostreliable.unified.compat.unification.MekanismRecipeUnifier;
+import com.almostreliable.unified.compat.unification.ModernIndustrializationRecipeUnifier;
+import com.almostreliable.unified.compat.unification.OccultismRecipeUnifier;
+import com.almostreliable.unified.compat.unification.ProductiveTreesRecipeUnifier;
+import com.almostreliable.unified.compat.unification.TheurgyRecipeUnifier;
 import com.almostreliable.unified.utils.Utils;
 import net.minecraft.resources.ResourceLocation;
 

@@ -1,6 +1,10 @@
 package testmod.gametest_core;
 
-import net.minecraft.gametest.framework.*;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.gametest.framework.StructureUtils;
+import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Nullable;
 import testmod.gametest_core.mixin.GameTestHelperAccessor;

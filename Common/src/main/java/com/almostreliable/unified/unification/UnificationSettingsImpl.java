@@ -1,6 +1,11 @@
 package com.almostreliable.unified.unification;
 
-import com.almostreliable.unified.api.unification.*;
+import com.almostreliable.unified.api.unification.ModPriorities;
+import com.almostreliable.unified.api.unification.StoneVariants;
+import com.almostreliable.unified.api.unification.TagSubstitutions;
+import com.almostreliable.unified.api.unification.UnificationEntry;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.api.unification.UnificationSettings;
 import com.almostreliable.unified.config.UnificationConfig;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.resources.ResourceLocation;

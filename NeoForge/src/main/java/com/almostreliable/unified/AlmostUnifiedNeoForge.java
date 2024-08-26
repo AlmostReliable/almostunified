@@ -23,7 +23,11 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Mod(ModConstants.ALMOST_UNIFIED)
 public class AlmostUnifiedNeoForge {

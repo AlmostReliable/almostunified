@@ -8,7 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base wrapper to store vanilla tags and their holders. The wrapper allows to add new tags and holders to a tag.

@@ -1,6 +1,10 @@
 package com.almostreliable.unified.unification;
 
-import com.almostreliable.unified.api.unification.*;
+import com.almostreliable.unified.api.unification.ModPriorities;
+import com.almostreliable.unified.api.unification.StoneVariants;
+import com.almostreliable.unified.api.unification.TagSubstitutions;
+import com.almostreliable.unified.api.unification.UnificationEntry;
+import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -11,7 +15,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public final class UnificationLookupImpl implements UnificationLookup {

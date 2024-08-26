@@ -18,7 +18,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class TagInheritance {

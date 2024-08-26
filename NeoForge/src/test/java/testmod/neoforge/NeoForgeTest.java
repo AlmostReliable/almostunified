@@ -12,7 +12,12 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import testmod.CommonTest;
 import testmod.TestItems;
 import testmod.gametest_core.GameTestLoader;
-import testmod.neoforge.tests.*;
+import testmod.neoforge.tests.ArsNouveauRecipeTests;
+import testmod.neoforge.tests.EnderIORecipeUnifierTests;
+import testmod.neoforge.tests.ImmersiveEngineeringRecipeUnifierTests;
+import testmod.neoforge.tests.IntegratedDynamicsRecipeUnifierTests;
+import testmod.neoforge.tests.MekanismRecipeUnifierTests;
+import testmod.neoforge.tests.ModernIndustrializationRecipeUnifierTests;
 
 @Mod("testmod")
 public class NeoForgeTest {
