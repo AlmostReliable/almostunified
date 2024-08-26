@@ -1,5 +1,10 @@
 package testmod;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+
 import com.almostreliable.unified.api.unification.ModPriorities;
 import com.almostreliable.unified.api.unification.StoneVariants;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
@@ -11,15 +16,13 @@ import com.almostreliable.unified.unification.UnificationLookupImpl;
 import com.almostreliable.unified.unification.recipe.RecipeJsonImpl;
 import com.almostreliable.unified.unification.recipe.RecipeLink;
 import com.almostreliable.unified.unification.recipe.UnificationHelperImpl;
+
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;

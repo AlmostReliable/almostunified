@@ -2,6 +2,7 @@ package testmod.neoforge.tests;
 
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.compat.unification.ImmersiveEngineeringRecipeUnifier;
+
 import testmod.gametest_core.SimpleGameTest;
 
 import static testmod.TestUtils.assertUnify;

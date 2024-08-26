@@ -1,15 +1,17 @@
 package com.almostreliable.unified.core;
 
-import com.almostreliable.unified.api.constant.ModConstants;
-import com.almostreliable.unified.unification.worldgen.WorldStripper;
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+
+import com.almostreliable.unified.api.constant.ModConstants;
+import com.almostreliable.unified.unification.worldgen.WorldStripper;
+
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 
 public final class AlmostUnifiedCommands {
 

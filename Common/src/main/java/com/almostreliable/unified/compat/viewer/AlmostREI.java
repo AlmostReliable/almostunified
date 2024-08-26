@@ -1,9 +1,15 @@
 package com.almostreliable.unified.compat.viewer;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
 import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.compat.viewer.ClientRecipeTracker.ClientRecipeLink;
 import com.almostreliable.unified.utils.ClientTagUpdateEvent;
 import com.almostreliable.unified.utils.Utils;
+
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.entry.filtering.base.BasicFilteringRule;
 import me.shedaniel.rei.api.client.gui.DisplayRenderer;
@@ -19,10 +25,7 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.plugins.PluginManager;
 import me.shedaniel.rei.api.common.registry.ReloadStage;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

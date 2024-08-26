@@ -1,11 +1,13 @@
 package com.almostreliable.unified.utils;
 
-import com.almostreliable.unified.api.unification.UnificationEntry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+
+import com.almostreliable.unified.api.unification.UnificationEntry;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

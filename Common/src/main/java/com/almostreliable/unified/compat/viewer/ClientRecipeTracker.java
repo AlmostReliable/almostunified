@@ -1,13 +1,5 @@
 package com.almostreliable.unified.compat.viewer;
 
-import com.almostreliable.unified.unification.recipe.RecipeLink;
-import com.almostreliable.unified.utils.Utils;
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -18,6 +10,17 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+
+import com.almostreliable.unified.unification.recipe.RecipeLink;
+import com.almostreliable.unified.utils.Utils;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

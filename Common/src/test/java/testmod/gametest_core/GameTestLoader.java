@@ -6,9 +6,11 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.StructureUtils;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.world.level.block.Rotation;
-import org.jetbrains.annotations.Nullable;
+
 import testmod.gametest_core.mixin.GameTestHelperAccessor;
 import testmod.gametest_core.mixin.GameTestRegistryAccessor;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

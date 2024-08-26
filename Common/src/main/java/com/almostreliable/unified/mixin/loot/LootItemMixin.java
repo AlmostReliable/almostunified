@@ -1,10 +1,12 @@
 package com.almostreliable.unified.mixin.loot;
 
-import com.almostreliable.unified.api.unification.UnificationLookup;
-import com.almostreliable.unified.unification.loot.LootUnificationHandler;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.unification.loot.LootUnificationHandler;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;

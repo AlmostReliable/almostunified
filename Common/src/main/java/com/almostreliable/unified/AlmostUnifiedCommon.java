@@ -1,5 +1,10 @@
 package com.almostreliable.unified;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.StartupConfig;
@@ -7,13 +12,11 @@ import com.almostreliable.unified.core.AlmostUnifiedRuntimeImpl;
 import com.almostreliable.unified.unification.loot.LootUnification;
 import com.almostreliable.unified.utils.CustomLogger;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
+
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import org.apache.logging.log4j.Logger;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;

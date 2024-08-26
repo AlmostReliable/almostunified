@@ -1,13 +1,14 @@
 package com.almostreliable.unified.unification;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.api.unification.StoneVariants;
-import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.api.unification.StoneVariants;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
 
 import java.util.Collection;
 import java.util.Comparator;

@@ -1,5 +1,9 @@
 package com.almostreliable.unified;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+
 import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
@@ -9,9 +13,7 @@ import com.almostreliable.unified.core.AlmostUnifiedCommands;
 import com.almostreliable.unified.unification.worldgen.WorldGenBiomeModifier;
 import com.almostreliable.unified.unification.worldgen.WorldStripper;
 import com.almostreliable.unified.utils.Utils;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
@@ -20,8 +22,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,15 +1,18 @@
 package com.almostreliable.unified.core;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.api.AlmostUnified;
-import com.almostreliable.unified.api.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.unification.UnificationEntry;
-import com.google.auto.service.AutoService;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.api.AlmostUnified;
+import com.almostreliable.unified.api.AlmostUnifiedRuntime;
+import com.almostreliable.unified.api.unification.UnificationEntry;
+
+import com.google.auto.service.AutoService;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

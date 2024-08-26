@@ -1,10 +1,12 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.utils.JsonCompare;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
+
+import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.utils.JsonCompare;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

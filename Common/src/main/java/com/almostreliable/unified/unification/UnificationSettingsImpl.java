@@ -1,5 +1,12 @@
 package com.almostreliable.unified.unification;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
+
 import com.almostreliable.unified.api.unification.ModPriorities;
 import com.almostreliable.unified.api.unification.StoneVariants;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
@@ -8,12 +15,7 @@ import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.api.unification.UnificationSettings;
 import com.almostreliable.unified.config.UnificationConfig;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

@@ -1,14 +1,16 @@
 package testmod.tests;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+
 import com.almostreliable.unified.api.unification.ModPriorities;
 import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.unification.ModPrioritiesImpl;
 import com.almostreliable.unified.unification.UnificationLookupImpl;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import testmod.gametest_core.SimpleGameTest;
 
 import java.util.HashMap;

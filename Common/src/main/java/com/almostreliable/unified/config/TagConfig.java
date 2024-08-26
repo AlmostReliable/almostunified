@@ -1,11 +1,5 @@
 package com.almostreliable.unified.config;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.api.constant.ModConstants;
-import com.almostreliable.unified.unification.TagInheritance;
-import com.almostreliable.unified.utils.JsonUtils;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -13,6 +7,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+
+import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.api.constant.ModConstants;
+import com.almostreliable.unified.unification.TagInheritance;
+import com.almostreliable.unified.utils.JsonUtils;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import java.util.Collections;
 import java.util.HashMap;

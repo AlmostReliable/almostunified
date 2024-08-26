@@ -1,5 +1,7 @@
 package com.almostreliable.unified.unification.recipe;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.api.unification.UnificationSettings;
@@ -12,12 +14,13 @@ import com.almostreliable.unified.config.DuplicateConfig;
 import com.almostreliable.unified.unification.UnificationSettingsImpl;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.almostreliable.unified.utils.RecipeTypePropertiesLogger;
+
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

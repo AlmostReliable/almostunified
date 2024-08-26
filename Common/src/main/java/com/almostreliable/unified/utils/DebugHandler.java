@@ -1,14 +1,17 @@
 package com.almostreliable.unified.utils;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.unification.recipe.RecipeLink;
 import com.almostreliable.unified.unification.recipe.RecipeTransformer;
+
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
-import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DateFormat;

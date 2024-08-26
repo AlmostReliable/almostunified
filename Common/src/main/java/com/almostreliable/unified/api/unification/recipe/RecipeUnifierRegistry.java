@@ -1,7 +1,8 @@
 package com.almostreliable.unified.api.unification.recipe;
 
-import com.almostreliable.unified.api.unification.bundled.GenericRecipeUnifier;
 import net.minecraft.resources.ResourceLocation;
+
+import com.almostreliable.unified.api.unification.bundled.GenericRecipeUnifier;
 
 /**
  * The registry holding all {@link RecipeUnifier}s.

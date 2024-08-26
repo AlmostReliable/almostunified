@@ -1,14 +1,15 @@
 package testmod.old;
 
-import com.almostreliable.unified.AlmostUnifiedPlatform;
-import com.almostreliable.unified.config.Defaults;
-import com.almostreliable.unified.utils.JsonCompare;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+
+import com.almostreliable.unified.AlmostUnifiedPlatform;
+import com.almostreliable.unified.config.Defaults;
+import com.almostreliable.unified.utils.JsonCompare;
 
 import java.util.List;
 

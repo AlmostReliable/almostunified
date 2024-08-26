@@ -1,8 +1,5 @@
 package com.almostreliable.unified.unification.worldgen;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.utils.Utils;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -10,8 +7,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.utils.Utils;
+
+import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

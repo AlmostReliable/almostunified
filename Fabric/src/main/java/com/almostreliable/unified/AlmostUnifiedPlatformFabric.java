@@ -1,6 +1,7 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.constant.ModConstants;
+
 import com.google.auto.service.AutoService;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;

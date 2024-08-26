@@ -4,6 +4,7 @@ package testmod.gametest_core.mixin;
 import net.minecraft.gametest.framework.GameTestRegistry;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.server.level.ServerLevel;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.throwables.MixinException;

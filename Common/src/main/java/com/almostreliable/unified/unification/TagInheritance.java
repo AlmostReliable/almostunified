@@ -1,13 +1,5 @@
 package com.almostreliable.unified.unification;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.api.unification.UnificationEntry;
-import com.almostreliable.unified.api.unification.UnificationLookup;
-import com.almostreliable.unified.utils.Utils;
-import com.almostreliable.unified.utils.VanillaTagWrapper;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -16,6 +8,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.api.unification.UnificationEntry;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.utils.Utils;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

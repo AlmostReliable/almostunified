@@ -1,13 +1,15 @@
 package testmod.tests;
 
-import com.almostreliable.unified.api.unification.ModPriorities;
-import com.almostreliable.unified.api.unification.UnificationLookup;
-import com.almostreliable.unified.unification.ModPrioritiesImpl;
-import com.almostreliable.unified.unification.UnificationLookupImpl;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import com.almostreliable.unified.api.unification.ModPriorities;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.unification.ModPrioritiesImpl;
+import com.almostreliable.unified.unification.UnificationLookupImpl;
+
 import testmod.TestUtils;
 import testmod.gametest_core.SimpleGameTest;
 

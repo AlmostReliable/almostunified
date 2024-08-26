@@ -1,5 +1,12 @@
 package com.almostreliable.unified.core;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
+
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import com.almostreliable.unified.api.unification.Placeholders;
@@ -22,13 +29,9 @@ import com.almostreliable.unified.unification.recipe.RecipeUnifierRegistryImpl;
 import com.almostreliable.unified.utils.DebugHandler;
 import com.almostreliable.unified.utils.FileUtils;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
+
 import com.google.gson.JsonElement;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

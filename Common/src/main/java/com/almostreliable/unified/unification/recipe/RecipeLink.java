@@ -1,10 +1,13 @@
 package com.almostreliable.unified.unification.recipe;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.api.unification.recipe.RecipeData;
 import com.almostreliable.unified.utils.JsonCompare;
+
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;

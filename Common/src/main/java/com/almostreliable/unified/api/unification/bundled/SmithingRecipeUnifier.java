@@ -1,11 +1,12 @@
 package com.almostreliable.unified.api.unification.bundled;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.api.constant.RecipeConstants;
 import com.almostreliable.unified.api.unification.recipe.RecipeData;
 import com.almostreliable.unified.api.unification.recipe.RecipeJson;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.UnificationHelper;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * The {@link RecipeUnifier} implementation for smithing recipes.

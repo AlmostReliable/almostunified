@@ -2,6 +2,7 @@ package com.almostreliable.unified.utils;
 
 import com.almostreliable.unified.BuildConfig;
 import com.almostreliable.unified.api.constant.ModConstants;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;

@@ -5,6 +5,7 @@ import com.almostreliable.unified.api.unification.bundled.GenericRecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.RecipeJson;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.UnificationHelper;
+
 import com.google.gson.JsonObject;
 
 public class OccultismRecipeUnifier implements RecipeUnifier {

@@ -1,7 +1,8 @@
 package com.almostreliable.unified.utils;
 
-import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,18 +1,21 @@
 package com.almostreliable.unified.unification;
 
-import com.almostreliable.unified.api.unification.ModPriorities;
-import com.almostreliable.unified.api.unification.StoneVariants;
-import com.almostreliable.unified.api.unification.TagSubstitutions;
-import com.almostreliable.unified.api.unification.UnificationEntry;
-import com.almostreliable.unified.api.unification.UnificationLookup;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import com.almostreliable.unified.api.unification.ModPriorities;
+import com.almostreliable.unified.api.unification.StoneVariants;
+import com.almostreliable.unified.api.unification.TagSubstitutions;
+import com.almostreliable.unified.api.unification.UnificationEntry;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

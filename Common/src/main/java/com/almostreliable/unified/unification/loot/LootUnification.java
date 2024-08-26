@@ -1,12 +1,13 @@
 package com.almostreliable.unified.unification.loot;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.api.AlmostUnifiedRuntime;
-import com.almostreliable.unified.api.unification.UnificationSettings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootTable;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.api.AlmostUnifiedRuntime;
+import com.almostreliable.unified.api.unification.UnificationSettings;
 
 import java.util.Collection;
 import java.util.HashSet;

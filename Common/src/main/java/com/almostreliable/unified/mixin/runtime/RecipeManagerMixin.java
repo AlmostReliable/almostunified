@@ -1,12 +1,14 @@
 package com.almostreliable.unified.mixin.runtime;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.google.gson.JsonElement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.crafting.RecipeManager;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+
+import com.google.gson.JsonElement;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

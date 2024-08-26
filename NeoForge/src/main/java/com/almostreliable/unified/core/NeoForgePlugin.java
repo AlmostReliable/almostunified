@@ -1,5 +1,7 @@
 package com.almostreliable.unified.core;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
@@ -16,7 +18,6 @@ import com.almostreliable.unified.compat.unification.OccultismRecipeUnifier;
 import com.almostreliable.unified.compat.unification.ProductiveTreesRecipeUnifier;
 import com.almostreliable.unified.compat.unification.TheurgyRecipeUnifier;
 import com.almostreliable.unified.utils.Utils;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 

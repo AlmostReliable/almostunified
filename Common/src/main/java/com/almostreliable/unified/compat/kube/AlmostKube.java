@@ -1,13 +1,15 @@
 package com.almostreliable.unified.compat.kube;
 
-import com.almostreliable.unified.api.AlmostUnified;
-import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+
+import com.almostreliable.unified.api.AlmostUnified;
+import com.almostreliable.unified.api.AlmostUnifiedRuntime;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;

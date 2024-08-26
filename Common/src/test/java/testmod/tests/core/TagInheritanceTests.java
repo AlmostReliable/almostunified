@@ -10,6 +10,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
+
 import testmod.gametest_core.AlmostGameTestHelper;
 import testmod.gametest_core.SimpleGameTest;
 

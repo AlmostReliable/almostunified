@@ -1,8 +1,16 @@
 package com.almostreliable.unified.compat.viewer;
 
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
 import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.compat.viewer.ClientRecipeTracker.ClientRecipeLink;
 import com.almostreliable.unified.utils.Utils;
+
 import me.shedaniel.rei.plugincompatibilities.api.REIPluginCompatIgnore;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -12,12 +20,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.category.extensions.IRecipeCategoryDecorator;
 import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

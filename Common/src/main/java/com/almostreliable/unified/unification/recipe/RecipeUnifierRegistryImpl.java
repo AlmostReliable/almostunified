@@ -1,12 +1,13 @@
 package com.almostreliable.unified.unification.recipe;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.api.unification.bundled.GenericRecipeUnifier;
 import com.almostreliable.unified.api.unification.bundled.ShapedRecipeUnifier;
 import com.almostreliable.unified.api.unification.bundled.SmithingRecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.RecipeData;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;

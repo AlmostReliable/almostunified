@@ -1,6 +1,7 @@
 package com.almostreliable.unified.config;
 
 import com.almostreliable.unified.AlmostUnifiedPlatform;
+
 import com.google.gson.JsonObject;
 
 public final class StartupConfig extends Config {

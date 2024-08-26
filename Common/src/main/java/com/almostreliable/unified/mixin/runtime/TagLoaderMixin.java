@@ -1,13 +1,15 @@
 package com.almostreliable.unified.mixin.runtime;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.core.TagReloadHandler;
-import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.core.TagReloadHandler;
+import com.almostreliable.unified.utils.Utils;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

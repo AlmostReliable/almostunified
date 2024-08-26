@@ -1,10 +1,5 @@
 package com.almostreliable.unified.unification.worldgen;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.api.AlmostUnified;
-import com.almostreliable.unified.api.unification.UnificationLookup;
-import com.almostreliable.unified.mixin.neoforge.worldgen.OreConfigurationAccessor;
-import com.almostreliable.unified.utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -16,6 +11,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.api.AlmostUnified;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.mixin.neoforge.worldgen.OreConfigurationAccessor;
+import com.almostreliable.unified.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;

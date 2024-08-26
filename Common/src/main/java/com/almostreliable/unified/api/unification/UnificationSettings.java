@@ -1,7 +1,8 @@
 package com.almostreliable.unified.api.unification;
 
-import com.almostreliable.unified.api.unification.recipe.RecipeData;
 import net.minecraft.resources.ResourceLocation;
+
+import com.almostreliable.unified.api.unification.recipe.RecipeData;
 
 /**
  * Interface exposing unification information for a single unification config.

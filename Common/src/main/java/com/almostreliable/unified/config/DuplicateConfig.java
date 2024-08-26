@@ -1,10 +1,12 @@
 package com.almostreliable.unified.config;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.unification.recipe.RecipeLink;
 import com.almostreliable.unified.utils.JsonCompare;
+
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

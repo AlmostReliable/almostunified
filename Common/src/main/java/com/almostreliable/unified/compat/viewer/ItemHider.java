@@ -1,17 +1,18 @@
 package com.almostreliable.unified.compat.viewer;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.api.unification.UnificationEntry;
-import com.almostreliable.unified.api.unification.UnificationLookup;
-import com.almostreliable.unified.api.unification.UnificationSettings;
-import com.almostreliable.unified.utils.Utils;
-import com.almostreliable.unified.utils.VanillaTagWrapper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.api.unification.UnificationEntry;
+import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.api.unification.UnificationSettings;
+import com.almostreliable.unified.utils.Utils;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
 
 import java.util.Collection;
 import java.util.HashSet;

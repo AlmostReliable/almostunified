@@ -1,9 +1,5 @@
 package com.almostreliable.unified.core;
 
-import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.utils.VanillaTagWrapper;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -11,6 +7,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.utils.VanillaTagWrapper;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

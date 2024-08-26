@@ -1,12 +1,14 @@
 package com.almostreliable.unified.mixin.unification;
 
-import com.almostreliable.unified.api.AlmostUnified;
-import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import com.almostreliable.unified.api.AlmostUnified;
+import com.almostreliable.unified.api.AlmostUnifiedRuntime;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

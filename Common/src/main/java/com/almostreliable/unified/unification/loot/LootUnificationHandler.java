@@ -1,8 +1,9 @@
 package com.almostreliable.unified.unification.loot;
 
-import com.almostreliable.unified.api.unification.UnificationLookup;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
+
+import com.almostreliable.unified.api.unification.UnificationLookup;
 
 public interface LootUnificationHandler {
 

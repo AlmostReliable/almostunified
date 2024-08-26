@@ -1,8 +1,9 @@
 package com.almostreliable.unified.api.plugin;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Implemented by plugins that wish to register their own {@link RecipeUnifier}s.

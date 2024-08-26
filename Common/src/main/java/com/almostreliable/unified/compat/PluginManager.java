@@ -1,10 +1,12 @@
 package com.almostreliable.unified.compat;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
-import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

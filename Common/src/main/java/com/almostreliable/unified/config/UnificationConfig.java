@@ -1,18 +1,21 @@
 package com.almostreliable.unified.config;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.unification.ModPriorities;
 import com.almostreliable.unified.api.unification.Placeholders;
 import com.almostreliable.unified.unification.ModPrioritiesImpl;
 import com.almostreliable.unified.utils.JsonUtils;
+
 import com.google.gson.JsonObject;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;

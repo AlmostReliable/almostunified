@@ -1,8 +1,10 @@
 package com.almostreliable.unified.mixin.neoforge.worldgen;
 
+import net.minecraft.server.MinecraftServer;
+
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.unification.worldgen.WorldGenBiomeModifier;
-import net.minecraft.server.MinecraftServer;
+
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.spongepowered.asm.mixin.Mixin;
