@@ -74,10 +74,10 @@ public class Config {
         String jsonString = gson.toJson(json);
         try {
             Files.writeString(
-                    path,
-                    jsonString,
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.WRITE
+                path,
+                jsonString,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.WRITE
             );
         } catch (IOException e) {
             AlmostUnifiedCommon.LOGGER.error("Failed to save config '{}'.", config.getName(), e);
@@ -132,12 +132,12 @@ public class Config {
 
         Set<Pattern> deserializePatterns(JsonObject json, String configKey, List<String> defaultValue) {
             return safeGet(
-                    () -> JsonUtils
-                            .toList(json.getAsJsonArray(configKey))
-                            .stream()
-                            .map(Pattern::compile)
-                            .collect(Collectors.toSet()),
-                    new HashSet<>(defaultValue.stream().map(Pattern::compile).toList())
+                () -> JsonUtils
+                    .toList(json.getAsJsonArray(configKey))
+                    .stream()
+                    .map(Pattern::compile)
+                    .collect(Collectors.toSet()),
+                new HashSet<>(defaultValue.stream().map(Pattern::compile).toList())
             );
         }
 

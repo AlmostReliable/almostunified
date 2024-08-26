@@ -129,31 +129,31 @@ public final class JsonUtils {
     }
 
     public static <K, V> Map<K, V> deserializeMap(
-            JsonObject json,
-            String key,
-            Function<Map.Entry<String, JsonElement>, K> keyMapper,
-            Function<Map.Entry<String, JsonElement>, V> valueMapper
+        JsonObject json,
+        String key,
+        Function<Map.Entry<String, JsonElement>, K> keyMapper,
+        Function<Map.Entry<String, JsonElement>, V> valueMapper
     ) {
         return json.getAsJsonObject(key)
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(keyMapper, valueMapper, (a, b) -> b, HashMap::new));
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(keyMapper, valueMapper, (a, b) -> b, HashMap::new));
     }
 
     public static <K, V> Map<K, Set<V>> deserializeMapSet(
-            JsonObject json,
-            String key,
-            Function<Map.Entry<String, JsonElement>, K> keyMapper,
-            Function<String, V> valueMapper
+        JsonObject json,
+        String key,
+        Function<Map.Entry<String, JsonElement>, K> keyMapper,
+        Function<String, V> valueMapper
     ) {
         return deserializeMap(
-                json,
-                key,
-                keyMapper,
-                e -> toList(e.getValue().getAsJsonArray())
-                        .stream()
-                        .map(valueMapper)
-                        .collect(Collectors.toSet())
+            json,
+            key,
+            keyMapper,
+            e -> toList(e.getValue().getAsJsonArray())
+                .stream()
+                .map(valueMapper)
+                .collect(Collectors.toSet())
         );
     }
 }

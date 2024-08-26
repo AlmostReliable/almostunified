@@ -11,20 +11,20 @@ public class AmethystImbuementRecipeUnifier implements RecipeUnifier {
         GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
 
         helper.unifyInputs(
-                recipe,
-                "imbueA",
-                "imbueB",
-                "imbueC",
-                "imbueD",
-                "craftA",
-                "craftB",
-                "craftC",
-                "craftD",
-                "craftE",
-                "craftF",
-                "craftG",
-                "craftH",
-                "craftI"
+            recipe,
+            "imbueA",
+            "imbueB",
+            "imbueC",
+            "imbueD",
+            "craftA",
+            "craftB",
+            "craftC",
+            "craftD",
+            "craftE",
+            "craftF",
+            "craftG",
+            "craftH",
+            "craftI"
         );
 
         helper.unifyOutputs(recipe, "resultA");

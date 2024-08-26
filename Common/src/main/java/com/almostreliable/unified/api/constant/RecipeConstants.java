@@ -27,26 +27,26 @@ public interface RecipeConstants {
 
     // defaults
     String[] DEFAULT_INPUT_KEYS = {
-            INPUT,
-            INPUTS,
-            INGREDIENT,
-            INGREDIENTS,
-            INPUT_ITEMS
+        INPUT,
+        INPUTS,
+        INGREDIENT,
+        INGREDIENTS,
+        INPUT_ITEMS
     };
     String[] DEFAULT_INPUT_INNER_KEYS = {
-            VALUE,
-            BASE,
-            INGREDIENT
+        VALUE,
+        BASE,
+        INGREDIENT
     };
     String[] DEFAULT_OUTPUT_KEYS = {
-            OUTPUT,
-            OUTPUTS,
-            RESULT,
-            RESULTS,
-            OUTPUT_ITEMS
+        OUTPUT,
+        OUTPUTS,
+        RESULT,
+        RESULTS,
+        OUTPUT_ITEMS
     };
     String[] DEFAULT_OUTPUT_INNER_KEYS = {
-            ITEM,
-            INGREDIENT
+        ITEM,
+        INGREDIENT
     };
 }

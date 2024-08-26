@@ -62,13 +62,13 @@ public class WorldGenBiomeModifier implements BiomeModifier {
 
         if (!removedFeatures.isEmpty()) {
             AlmostUnifiedCommon.LOGGER.info("[WorldGen] Removed features from Biome {}:",
-                    biome.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_BIOME_ID));
+                biome.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_BIOME_ID));
             removedFeatures.forEach((decoration, features) -> {
                 String ids = features
-                        .stream()
-                        .flatMap(f -> f.unwrapKey().map(ResourceKey::location).stream())
-                        .map(ResourceLocation::toString)
-                        .collect(Collectors.joining(", "));
+                    .stream()
+                    .flatMap(f -> f.unwrapKey().map(ResourceKey::location).stream())
+                    .map(ResourceLocation::toString)
+                    .collect(Collectors.joining(", "));
 
                 AlmostUnifiedCommon.LOGGER.info("[WorldGen]\t{}: {}", decoration.getName(), ids);
             });

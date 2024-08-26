@@ -22,10 +22,10 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
     @Override
     public void registerRecipeUnifiers(RecipeUnifierRegistry registry) {
         List.of(
-                ModConstants.ARS_CREO,
-                ModConstants.ARS_ELEMENTAL,
-                ModConstants.ARS_NOUVEAU,
-                ModConstants.ARS_SCALAES
+            ModConstants.ARS_CREO,
+            ModConstants.ARS_ELEMENTAL,
+            ModConstants.ARS_NOUVEAU,
+            ModConstants.ARS_SCALAES
         ).forEach(modId -> registry.registerForModId(modId, new ArsNouveauRecipeUnifier()));
         registry.registerForModId(ModConstants.CYCLIC, new CyclicRecipeUnifier());
         registry.registerForModId(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
@@ -37,8 +37,8 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
         registry.registerForModId(ModConstants.PRODUCTIVE_TREES, new ProductiveTreesRecipeUnifier());
         registry.registerForModId(ModConstants.THEURGY, new TheurgyRecipeUnifier());
         registry.registerForRecipeType(
-                ResourceLocation.fromNamespaceAndPath(ModConstants.THEURGY, "divination_rod"),
-                ShapedRecipeUnifier.INSTANCE
+            ResourceLocation.fromNamespaceAndPath(ModConstants.THEURGY, "divination_rod"),
+            ShapedRecipeUnifier.INSTANCE
         );
     }
 }

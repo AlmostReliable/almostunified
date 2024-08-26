@@ -39,9 +39,9 @@ public final class WorldStripper {
 
         @SuppressWarnings("SimplifyStreamApiCallChains")
         var blockIterator = BlockPos.betweenClosedStream(min, max)
-                .map(pos -> blockInWorld(level, pos))
-                .collect(Collectors.toList())
-                .iterator();
+            .map(pos -> blockInWorld(level, pos))
+            .collect(Collectors.toList())
+            .iterator();
 
         WORKER = new Worker(level, blockIterator);
     }
@@ -85,9 +85,9 @@ public final class WorldStripper {
                      block.getEntity() != null ||
                      state.getBlock() instanceof DropExperienceBlock ||
                      BuiltInRegistries.BLOCK
-                             .wrapAsHolder(state.getBlock())
-                             .tags()
-                             .anyMatch(t -> t.location().toString().startsWith("c:ores")));
+                         .wrapAsHolder(state.getBlock())
+                         .tags()
+                         .anyMatch(t -> t.location().toString().startsWith("c:ores")));
         }
     }
 }

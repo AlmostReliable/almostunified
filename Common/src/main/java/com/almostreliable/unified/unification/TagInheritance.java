@@ -44,10 +44,10 @@ public class TagInheritance {
             var targetBlockHolder = findTargetBlockHolder(blockTags, targetItem);
 
             var targetItemTags = itemTags
-                    .getTags(targetItem)
-                    .stream()
-                    .map(rl -> TagKey.create(Registries.ITEM, rl))
-                    .collect(ImmutableSet.toImmutableSet());
+                .getTags(targetItem)
+                .stream()
+                .map(rl -> TagKey.create(Registries.ITEM, rl))
+                .collect(ImmutableSet.toImmutableSet());
 
             for (var item : relation.items) {
                 var appliedItemTags = applyItemTags(itemTags, targetItemHolder, targetItemTags, item);

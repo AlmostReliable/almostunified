@@ -33,11 +33,11 @@ public final class FileUtils {
             Files.createDirectories(path);
             Path filePath = path.resolve(fileName);
             Files.writeString(
-                    filePath,
-                    sb.toString(),
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING,
-                    StandardOpenOption.WRITE
+                filePath,
+                sb.toString(),
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING,
+                StandardOpenOption.WRITE
             );
         } catch (IOException e) {
             AlmostUnifiedCommon.LOGGER.warn("Couldn't write to file '{}'.", fileName, e);

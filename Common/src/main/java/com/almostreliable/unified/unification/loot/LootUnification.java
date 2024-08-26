@@ -22,8 +22,8 @@ public final class LootUnification {
             var handlers = runtime.getUnificationSettings();
 
             boolean enableLootUnification = handlers
-                    .stream()
-                    .anyMatch(UnificationSettings::shouldUnifyLoot);
+                .stream()
+                .anyMatch(UnificationSettings::shouldUnifyLoot);
             if (!enableLootUnification) {
                 return;
             }
@@ -31,8 +31,8 @@ public final class LootUnification {
             var lootTableRegistry = registries.lookupOrThrow(Registries.LOOT_TABLE);
 
             lootTableRegistry
-                    .listElements()
-                    .forEach(holder -> unifyLoot(holder.value(), holder.key().location(), handlers));
+                .listElements()
+                .forEach(holder -> unifyLoot(holder.value(), holder.key().location(), handlers));
         } catch (Exception e) {
             AlmostUnifiedCommon.LOGGER.error("Failed to unify loot", e);
         }
@@ -52,9 +52,9 @@ public final class LootUnification {
 
         if (!modifiedTable.isEmpty()) {
             AlmostUnifiedCommon.LOGGER.info("Loot table '{}' was unified by: {}",
-                    tableId,
-                    modifiedTable.stream().map(UnificationSettings::getName).collect(
-                            Collectors.joining(", ")));
+                tableId,
+                modifiedTable.stream().map(UnificationSettings::getName).collect(
+                    Collectors.joining(", ")));
         }
     }
 }

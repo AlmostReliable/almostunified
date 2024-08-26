@@ -76,21 +76,21 @@ public final class DebugHandler {
         int maxLength = getMaxLength(unificationLookup.getTags(), t -> t.location().toString().length());
 
         FileUtils.writeDebugLog(TAGS, sb -> sb
-                .append(lastRun).append("\n")
-                .append(unificationLookup
-                        .getTags()
-                        .stream()
-                        .map(t -> rf(t.location(), maxLength) + " => " +
-                                  unificationLookup
-                                          .getTagEntries(t)
-                                          .stream()
-                                          .map(entry -> entry.id().toString())
-                                          .sorted()
-                                          .collect(Collectors.joining(", ")) + "\n"
-                        )
-                        .sorted()
-                        .collect(Collectors.joining())
-                ));
+            .append(lastRun).append("\n")
+            .append(unificationLookup
+                .getTags()
+                .stream()
+                .map(t -> rf(t.location(), maxLength) + " => " +
+                          unificationLookup
+                              .getTagEntries(t)
+                              .stream()
+                              .map(entry -> entry.id().toString())
+                              .sorted()
+                              .collect(Collectors.joining(", ")) + "\n"
+                )
+                .sorted()
+                .collect(Collectors.joining())
+            ));
     }
 
     private void dumpRecipes(String fileName, Map<ResourceLocation, JsonElement> recipes) {
@@ -99,13 +99,13 @@ public final class DebugHandler {
         int maxLength = getMaxLength(recipes.keySet(), id -> id.toString().length());
 
         FileUtils.writeDebugLog(fileName, sb -> sb
-                .append(lastRun).append("\n")
-                .append(recipes
-                        .entrySet()
-                        .stream()
-                        .sorted(Map.Entry.comparingByKey())
-                        .map(e -> rf(e.getKey(), maxLength) + " => " + e.getValue().toString())
-                        .collect(Collectors.joining("\n")))
+            .append(lastRun).append("\n")
+            .append(recipes
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> rf(e.getKey(), maxLength) + " => " + e.getValue().toString())
+                .collect(Collectors.joining("\n")))
         );
     }
 
@@ -117,58 +117,58 @@ public final class DebugHandler {
 
         FileUtils.writeDebugLog(OVERVIEW, sb -> {
             sb
-                    .append(lastRun).append("\n")
-                    .append("# Statistics:\n")
-                    .append("- Unified Recipes: ")
-                    .append(transformerResult.getUnifiedRecipeCount())
-                    .append("\n")
-                    .append("- Duplicate Recipes: ")
-                    .append(transformerResult.getDuplicatesCount())
-                    .append(" (Individual: ")
-                    .append(transformerResult.getDuplicateRecipesCount())
-                    .append(")\n")
-                    .append("- Recipes Before: ")
-                    .append(recipesBefore)
-                    .append("\n")
-                    .append("- Recipes After: ")
-                    .append(recipesAfter)
-                    .append("\n")
-                    .append("- Elapsed Time: ")
-                    .append(endTime - startTime)
-                    .append(" ms")
-                    .append("\n\n")
-                    .append("# Summary:\n")
-                    .append(rf("Recipe type", maxLength))
-                    .append(" | ")
-                    .append(lf("Unified", 10))
-                    .append(" | ")
-                    .append(lf("Duplicates", 10))
-                    .append(" | ")
-                    .append(lf("All", 5))
-                    .append("\n")
-                    .append(StringUtils.repeat("-", maxLength + 10 + 10 + 5 + 9))
-                    .append("\n");
+                .append(lastRun).append("\n")
+                .append("# Statistics:\n")
+                .append("- Unified Recipes: ")
+                .append(transformerResult.getUnifiedRecipeCount())
+                .append("\n")
+                .append("- Duplicate Recipes: ")
+                .append(transformerResult.getDuplicatesCount())
+                .append(" (Individual: ")
+                .append(transformerResult.getDuplicateRecipesCount())
+                .append(")\n")
+                .append("- Recipes Before: ")
+                .append(recipesBefore)
+                .append("\n")
+                .append("- Recipes After: ")
+                .append(recipesAfter)
+                .append("\n")
+                .append("- Elapsed Time: ")
+                .append(endTime - startTime)
+                .append(" ms")
+                .append("\n\n")
+                .append("# Summary:\n")
+                .append(rf("Recipe type", maxLength))
+                .append(" | ")
+                .append(lf("Unified", 10))
+                .append(" | ")
+                .append(lf("Duplicates", 10))
+                .append(" | ")
+                .append(lf("All", 5))
+                .append("\n")
+                .append(StringUtils.repeat("-", maxLength + 10 + 10 + 5 + 9))
+                .append("\n");
 
             getSortedUnifiedRecipeTypes().forEach(type -> {
                 int unifiedSize = transformerResult.getUnifiedRecipes(type).size();
                 int allSize = transformerResult.getRecipes(type).size();
                 int duplicatesSize = transformerResult.getDuplicates(type).size();
                 int individualDuplicatesSize = transformerResult
-                        .getDuplicates(type)
-                        .stream()
-                        .mapToInt(l -> l.getRecipes().size())
-                        .sum();
+                    .getDuplicates(type)
+                    .stream()
+                    .mapToInt(l -> l.getRecipes().size())
+                    .sum();
 
                 String dStr = String.format("%s (%s)", lf(duplicatesSize, 3), lf(individualDuplicatesSize, 3));
                 sb
-                        .append(rf(type, maxLength))
-                        .append(" | ")
-                        .append(lf(unifiedSize, 10))
-                        .append(" | ")
-                        .append(lf(duplicatesSize == 0 ? " " : dStr, 10))
-                        .append(" | ")
-                        .append(lf(allSize, 5))
-                        .append("\n");
+                    .append(rf(type, maxLength))
+                    .append(" | ")
+                    .append(lf(unifiedSize, 10))
+                    .append(" | ")
+                    .append(lf(duplicatesSize == 0 ? " " : dStr, 10))
+                    .append(" | ")
+                    .append(lf(allSize, 5))
+                    .append("\n");
             });
         });
     }
@@ -183,15 +183,15 @@ public final class DebugHandler {
 
                 getSortedUnifiedRecipes(type).forEach(recipe -> {
                     sb
-                            .append("\t- ")
-                            .append(recipe.getId())
-                            .append("\n")
-                            .append("\t\t    Original: ")
-                            .append(recipe.getOriginal())
-                            .append("\n")
-                            .append("\t\t Transformed: ")
-                            .append(recipe.getUnified() == null ? "NOT UNIFIED" : recipe.getUnified().toString())
-                            .append("\n\n");
+                        .append("\t- ")
+                        .append(recipe.getId())
+                        .append("\n")
+                        .append("\t\t    Original: ")
+                        .append(recipe.getOriginal())
+                        .append("\n")
+                        .append("\t\t Transformed: ")
+                        .append(recipe.getUnified() == null ? "NOT UNIFIED" : recipe.getUnified().toString())
+                        .append("\n\n");
                 });
 
                 sb.append("}\n\n");
@@ -207,27 +207,27 @@ public final class DebugHandler {
             sb.append(lastRun).append("\n");
             getSortedUnifiedRecipeTypes().forEach(type -> {
                 Collection<RecipeLink.DuplicateLink> duplicates = transformerResult
-                        .getDuplicates(type)
-                        .stream()
-                        .sorted(Comparator.comparing(l -> l.getMaster().getId().toString()))
-                        .toList();
+                    .getDuplicates(type)
+                    .stream()
+                    .sorted(Comparator.comparing(l -> l.getMaster().getId().toString()))
+                    .toList();
                 if (duplicates.isEmpty()) return;
 
                 sb.append(duplicates
-                        .stream()
-                        .map(this::createDuplicatesDump)
-                        .collect(Collectors.joining("", type + " {\n", "}\n\n")));
+                    .stream()
+                    .map(this::createDuplicatesDump)
+                    .collect(Collectors.joining("", type + " {\n", "}\n\n")));
             });
         });
     }
 
     private String createDuplicatesDump(RecipeLink.DuplicateLink link) {
         return link
-                .getRecipes()
-                .stream()
-                .sorted(Comparator.comparing(r -> r.getId().toString()))
-                .map(r -> "\t\t- " + r.getId() + "\n")
-                .collect(Collectors.joining("", String.format("\t%s\n", link.getMaster().getId().toString()), "\n"));
+            .getRecipes()
+            .stream()
+            .sorted(Comparator.comparing(r -> r.getId().toString()))
+            .map(r -> "\t\t- " + r.getId() + "\n")
+            .collect(Collectors.joining("", String.format("\t%s\n", link.getMaster().getId().toString()), "\n"));
     }
 
     private static <T> int getMaxLength(Collection<T> collection, ToIntFunction<T> function) {
@@ -245,16 +245,16 @@ public final class DebugHandler {
     private Stream<ResourceLocation> getSortedUnifiedRecipeTypes() {
         Preconditions.checkNotNull(transformerResult);
         return transformerResult
-                .getUnifiedRecipeTypes()
-                .stream()
-                .sorted(Comparator.comparing(ResourceLocation::toString));
+            .getUnifiedRecipeTypes()
+            .stream()
+            .sorted(Comparator.comparing(ResourceLocation::toString));
     }
 
     private Stream<RecipeLink> getSortedUnifiedRecipes(ResourceLocation type) {
         Preconditions.checkNotNull(transformerResult);
         return transformerResult
-                .getUnifiedRecipes(type)
-                .stream()
-                .sorted(Comparator.comparing(r -> r.getId().toString()));
+            .getUnifiedRecipes(type)
+            .stream()
+            .sorted(Comparator.comparing(r -> r.getId().toString()));
     }
 }

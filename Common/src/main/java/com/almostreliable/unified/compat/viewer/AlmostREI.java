@@ -68,15 +68,15 @@ public class AlmostREI implements REIClientPlugin {
 
     @SuppressWarnings("OverrideOnly")
     private record IndicatorExtension(@Nullable ButtonArea plusButtonArea)
-            implements CategoryExtensionProvider<Display> {
+        implements CategoryExtensionProvider<Display> {
 
         @Override
         public DisplayCategoryView<Display> provide(Display display, DisplayCategory<Display> category, DisplayCategoryView<Display> lastView) {
             return display
-                    .getDisplayLocation()
-                    .map(CRTLookup::getLink)
-                    .map(link -> (DisplayCategoryView<Display>) new IndicatorView(lastView, link))
-                    .orElse(lastView);
+                .getDisplayLocation()
+                .map(CRTLookup::getLink)
+                .map(link -> (DisplayCategoryView<Display>) new IndicatorView(lastView, link))
+                .orElse(lastView);
         }
 
         private final class IndicatorView implements DisplayCategoryView<Display> {
@@ -113,7 +113,7 @@ public class AlmostREI implements REIClientPlugin {
 
                 var widgets = lastView.setupDisplay(display, bounds);
                 widgets.add(Widgets.createDrawableWidget(
-                        (guiGraphics, mX, mY, delta) -> RecipeIndicator.renderIndicator(guiGraphics, pX, pY, size)
+                    (guiGraphics, mX, mY, delta) -> RecipeIndicator.renderIndicator(guiGraphics, pX, pY, size)
                 ));
 
                 var tooltipArea = new Rectangle(pX, pY, size, size);

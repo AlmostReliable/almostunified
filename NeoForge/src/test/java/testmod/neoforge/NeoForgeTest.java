@@ -20,11 +20,11 @@ public class NeoForgeTest {
     public NeoForgeTest(IEventBus bus) {
         CommonTest.init(GameTestHooks.isGametestEnabled());
         GameTestLoader.registerProviders(ArsNouveauRecipeTests.class,
-                MekanismRecipeUnifierTests.class,
-                ModernIndustrializationRecipeUnifierTests.class,
-                ImmersiveEngineeringRecipeUnifierTests.class,
-                EnderIORecipeUnifierTests.class,
-                IntegratedDynamicsRecipeUnifierTests.class);
+            MekanismRecipeUnifierTests.class,
+            ModernIndustrializationRecipeUnifierTests.class,
+            ImmersiveEngineeringRecipeUnifierTests.class,
+            EnderIORecipeUnifierTests.class,
+            IntegratedDynamicsRecipeUnifierTests.class);
 
         bus.addListener(this::onRegistry);
     }

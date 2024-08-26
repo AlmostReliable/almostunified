@@ -61,8 +61,8 @@ public final class TagReloadHandler {
             for (ResourceLocation itemId : itemIds) {
                 if (!BuiltInRegistries.ITEM.containsKey(itemId)) {
                     AlmostUnifiedCommon.LOGGER.warn("[CustomTags] Custom tag '{}' contains invalid item '{}'",
-                            tag,
-                            itemId);
+                        tag,
+                        itemId);
                     continue;
                 }
 
@@ -75,8 +75,8 @@ public final class TagReloadHandler {
                 if (!currentHolders.isEmpty()) {
                     if (currentHolders.contains(itemHolder)) {
                         AlmostUnifiedCommon.LOGGER.warn("[CustomTags] Custom tag '{}' already contains item '{}'",
-                                tag,
-                                itemId);
+                            tag,
+                            itemId);
                         continue;
                     }
                 }
@@ -88,11 +88,11 @@ public final class TagReloadHandler {
 
         if (!changedItemTags.isEmpty()) {
             changedItemTags.asMap().forEach(
-                    (tag, items) -> AlmostUnifiedCommon.LOGGER.info(
-                            "[CustomTags] Modified tag '#{}', added {}",
-                            tag,
-                            items
-                    )
+                (tag, items) -> AlmostUnifiedCommon.LOGGER.info(
+                    "[CustomTags] Modified tag '#{}', added {}",
+                    tag,
+                    items
+                )
             );
         }
     }

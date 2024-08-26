@@ -63,26 +63,26 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
         TagReloadHandler.applyCustomTags(tagConfig.getCustomTags(), itemTags);
         TagSubstitutionsImpl tagSubstitutions = TagSubstitutionsImpl.create(
-                itemTags::has,
-                unificationTags::contains,
-                tagConfig.getTagSubstitutions()
+            itemTags::has,
+            unificationTags::contains,
+            tagConfig.getTagSubstitutions()
         );
         tagSubstitutions.apply(itemTags);
 
         List<UnificationSettings> unificationSettings = createUnificationLookups(
-                itemTags,
-                blockTags,
-                unificationConfigs,
-                tagSubstitutions,
-                tagConfig.getTagInheritance()
+            itemTags,
+            blockTags,
+            unificationConfigs,
+            tagSubstitutions,
+            tagConfig.getTagInheritance()
         );
         ItemHider.applyHideTags(itemTags, unificationSettings, tagConfig.isEmiHidingStrict());
 
         return new AlmostUnifiedRuntimeImpl(
-                unificationSettings,
-                recipeUnifierRegistry,
-                tagSubstitutions,
-                placeholderConfig
+            unificationSettings,
+            recipeUnifierRegistry,
+            tagSubstitutions,
+            placeholderConfig
         );
     }
 
@@ -114,10 +114,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
                 if (visitedTags.containsKey(tag)) {
                     AlmostUnifiedCommon.LOGGER.warn(
-                            "Tag '{}' from unify config '{}' was already created in unify config '{}'",
-                            config.getName(),
-                            tag.location(),
-                            visitedTags.get(tag));
+                        "Tag '{}' from unify config '{}' was already created in unify config '{}'",
+                        config.getName(),
+                        tag.location(),
+                        visitedTags.get(tag));
                     return false;
                 }
 
@@ -131,7 +131,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
         if (!wrongTags.isEmpty()) {
             AlmostUnifiedCommon.LOGGER.warn("The following tags are invalid or not in use and will be ignored: {}",
-                    wrongTags.stream().map(TagKey::location).collect(Collectors.toList()));
+                wrongTags.stream().map(TagKey::location).collect(Collectors.toList()));
         }
 
         return result;
@@ -151,9 +151,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
      */
     private static List<UnificationSettings> createUnificationLookups(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnificationConfig> unificationConfigs, TagSubstitutionsImpl tagSubstitutions, TagInheritance tagInheritance) {
         var unificationSettings = UnificationSettingsImpl.create(unificationConfigs,
-                itemTags,
-                blockTags,
-                tagSubstitutions);
+            itemTags,
+            blockTags,
+            tagSubstitutions);
 
         var needsRebuild = tagInheritance.apply(itemTags, blockTags, unificationSettings);
         if (needsRebuild) {

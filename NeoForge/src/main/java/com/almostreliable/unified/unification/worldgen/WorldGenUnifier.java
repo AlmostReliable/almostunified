@@ -40,12 +40,12 @@ public class WorldGenUnifier {
                 }
                 case REMOVE -> {
                     AlmostUnifiedCommon.LOGGER.info("[WorldGen] Mark ConfiguredFeature '{}' for removal:",
-                            holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID));
+                        holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID));
                     featuresToRemove.add(holder);
                 }
                 case CHANGE -> {
                     AlmostUnifiedCommon.LOGGER.info("[WorldGen] Changed ConfiguredFeature '{}':",
-                            holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID));
+                        holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID));
                 }
             }
         });
@@ -91,9 +91,9 @@ public class WorldGenUnifier {
         Block replacementBlock = BuiltInRegistries.BLOCK.getOptional(replacement.id()).orElse(null);
         if (replacementBlock == null) {
             AlmostUnifiedCommon.LOGGER.error(
-                    "Trying to find replacement for block {} (Replacement: {}), but it does not exist.",
-                    blockId,
-                    replacement.id());
+                "Trying to find replacement for block {} (Replacement: {}), but it does not exist.",
+                blockId,
+                replacement.id());
             return false;
         }
 

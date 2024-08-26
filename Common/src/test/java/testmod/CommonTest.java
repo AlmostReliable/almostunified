@@ -10,16 +10,16 @@ public class CommonTest {
     public static void init(boolean gametestEnabled) {
         if (gametestEnabled) {
             GameTestLoader.registerProviders(
-                    ExampleTest.class,
-                    UnificationHandlerTests.class,
-                    ReplacementsTests.class,
-                    UnifyTests.class,
-                    ShapedRecipeUnifierTests.class,
-                    SmithingRecipeUnifierTest.class,
-                    GregTechModernRecipeUnifierTests.class,
-                    TagSubstitutionTests.class,
-                    TagInheritanceTests.class,
-                    LootUnificationTests.class
+                ExampleTest.class,
+                UnificationHandlerTests.class,
+                ReplacementsTests.class,
+                UnifyTests.class,
+                ShapedRecipeUnifierTests.class,
+                SmithingRecipeUnifierTest.class,
+                GregTechModernRecipeUnifierTests.class,
+                TagSubstitutionTests.class,
+                TagInheritanceTests.class,
+                LootUnificationTests.class
             );
         }
     }

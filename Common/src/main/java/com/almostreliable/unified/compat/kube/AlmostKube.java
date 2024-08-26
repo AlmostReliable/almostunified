@@ -24,21 +24,21 @@ public final class AlmostKube {
 
     public static Set<String> getTags() {
         return getRuntime()
-                .getUnificationLookup()
-                .getTags()
-                .stream()
-                .map(tag -> tag.location().toString())
-                .collect(Collectors.toSet());
+            .getUnificationLookup()
+            .getTags()
+            .stream()
+            .map(tag -> tag.location().toString())
+            .collect(Collectors.toSet());
     }
 
     public static Set<String> getTagEntries(ResourceLocation tag) {
         var tagKey = TagKey.create(Registries.ITEM, tag);
         return getRuntime()
-                .getUnificationLookup()
-                .getTagEntries(tagKey)
-                .stream()
-                .map(holder -> holder.id().toString())
-                .collect(Collectors.toSet());
+            .getUnificationLookup()
+            .getTagEntries(tagKey)
+            .stream()
+            .map(holder -> holder.id().toString())
+            .collect(Collectors.toSet());
     }
 
     @Nullable
@@ -64,8 +64,8 @@ public final class AlmostKube {
 
     private static ResourceLocation getId(ItemStack stack) {
         return BuiltInRegistries.ITEM
-                .getResourceKey(stack.getItem())
-                .map(ResourceKey::location)
-                .orElseThrow(() -> new IllegalArgumentException("Item not found in registry"));
+            .getResourceKey(stack.getItem())
+            .map(ResourceKey::location)
+            .orElseThrow(() -> new IllegalArgumentException("Item not found in registry"));
     }
 }

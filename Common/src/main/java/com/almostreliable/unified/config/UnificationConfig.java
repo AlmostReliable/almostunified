@@ -119,16 +119,16 @@ public final class UnificationConfig extends Config {
 
     private static void logMissingPriorityMods(Collection<UnificationConfig> unificationConfigs) {
         Set<String> mods = unificationConfigs
-                .stream()
-                .map(UnificationConfig::getModPriorities)
-                .flatMap(ModPriorities::stream)
-                .filter(m -> !AlmostUnifiedPlatform.INSTANCE.isModLoaded(m))
-                .collect(Collectors.toSet());
+            .stream()
+            .map(UnificationConfig::getModPriorities)
+            .flatMap(ModPriorities::stream)
+            .filter(m -> !AlmostUnifiedPlatform.INSTANCE.isModLoaded(m))
+            .collect(Collectors.toSet());
 
         if (mods.isEmpty()) return;
         AlmostUnifiedCommon.LOGGER.warn(
-                "The following mods are used in unification settings, but are not loaded: {}",
-                mods
+            "The following mods are used in unification settings, but are not loaded: {}",
+            mods
         );
     }
 
@@ -255,65 +255,65 @@ public final class UnificationConfig extends Config {
         @Override
         public UnificationConfig handleDeserialization(JsonObject json) {
             List<String> modPriorities = safeGet(
-                    () -> JsonUtils.toList(json.getAsJsonArray(MOD_PRIORITIES)),
-                    Defaults.MOD_PRIORITIES
+                () -> JsonUtils.toList(json.getAsJsonArray(MOD_PRIORITIES)),
+                Defaults.MOD_PRIORITIES
             );
             Map<TagKey<Item>, String> priorityOverrides = safeGet(
-                    () -> JsonUtils.deserializeMap(
-                            json,
-                            PRIORITY_OVERRIDES,
-                            e -> TagKey.create(Registries.ITEM, ResourceLocation.parse(e.getKey())),
-                            e -> e.getValue().getAsString()
-                    ),
-                    new HashMap<>()
+                () -> JsonUtils.deserializeMap(
+                    json,
+                    PRIORITY_OVERRIDES,
+                    e -> TagKey.create(Registries.ITEM, ResourceLocation.parse(e.getKey())),
+                    e -> e.getValue().getAsString()
+                ),
+                new HashMap<>()
             );
 
             List<String> stoneVariants = safeGet(
-                    () -> JsonUtils.toList(json.getAsJsonArray(STONE_VARIANTS)),
-                    Defaults.STONE_VARIANTS
+                () -> JsonUtils.toList(json.getAsJsonArray(STONE_VARIANTS)),
+                Defaults.STONE_VARIANTS
             );
 
             List<String> tags = safeGet(() -> JsonUtils.toList(json.getAsJsonArray(TAGS)), Defaults.TAGS);
             Set<TagKey<Item>> ignoredTags = safeGet(
-                    () -> JsonUtils
-                            .toList(json.getAsJsonArray(IGNORED_TAGS))
-                            .stream()
-                            .map(s -> TagKey.create(Registries.ITEM, ResourceLocation.parse(s)))
-                            .collect(Collectors.toSet()),
-                    new HashSet<>()
+                () -> JsonUtils
+                    .toList(json.getAsJsonArray(IGNORED_TAGS))
+                    .stream()
+                    .map(s -> TagKey.create(Registries.ITEM, ResourceLocation.parse(s)))
+                    .collect(Collectors.toSet()),
+                new HashSet<>()
             );
             Set<Pattern> ignoredItems = deserializePatterns(json, IGNORED_ITEMS, List.of());
             Set<Pattern> ignoredRecipeTypes = deserializePatterns(
-                    json,
-                    IGNORED_RECIPE_TYPES,
-                    Defaults.IGNORED_RECIPE_TYPES
+                json,
+                IGNORED_RECIPE_TYPES,
+                Defaults.IGNORED_RECIPE_TYPES
             );
             Set<Pattern> ignoredRecipeIds = deserializePatterns(json, IGNORED_RECIPES_IDS, List.of());
 
             boolean recipeViewerHiding = safeGet(
-                    () -> json.getAsJsonPrimitive(RECIPE_VIEWER_HIDING).getAsBoolean(),
-                    true
+                () -> json.getAsJsonPrimitive(RECIPE_VIEWER_HIDING).getAsBoolean(),
+                true
             );
 
             boolean lootUnification = safeGet(
-                    () -> json.getAsJsonPrimitive(LOOT_UNIFICATION).getAsBoolean(),
-                    false
+                () -> json.getAsJsonPrimitive(LOOT_UNIFICATION).getAsBoolean(),
+                false
             );
             Set<Pattern> ignoredLootTables = deserializePatterns(json, IGNORED_LOOT_TABLES, List.of());
 
             return new UnificationConfig(
-                    name,
-                    modPriorities,
-                    priorityOverrides,
-                    stoneVariants,
-                    tags,
-                    ignoredTags,
-                    ignoredItems,
-                    ignoredRecipeTypes,
-                    ignoredRecipeIds,
-                    recipeViewerHiding,
-                    lootUnification,
-                    ignoredLootTables
+                name,
+                modPriorities,
+                priorityOverrides,
+                stoneVariants,
+                tags,
+                ignoredTags,
+                ignoredItems,
+                ignoredRecipeTypes,
+                ignoredRecipeIds,
+                recipeViewerHiding,
+                lootUnification,
+                ignoredLootTables
             );
         }
 
@@ -324,7 +324,7 @@ public final class UnificationConfig extends Config {
             json.add(MOD_PRIORITIES, JsonUtils.toArray(config.modPriorities));
             JsonObject priorityOverrides = new JsonObject();
             config.priorityOverrides.forEach(
-                    (tag, mod) -> priorityOverrides.addProperty(tag.location().toString(), mod)
+                (tag, mod) -> priorityOverrides.addProperty(tag.location().toString(), mod)
             );
             json.add(PRIORITY_OVERRIDES, priorityOverrides);
 
@@ -332,12 +332,12 @@ public final class UnificationConfig extends Config {
 
             json.add(TAGS, JsonUtils.toArray(config.tags));
             json.add(
-                    IGNORED_TAGS,
-                    JsonUtils.toArray(config.ignoredTags
-                            .stream()
-                            .map(TagKey::location)
-                            .map(ResourceLocation::toString)
-                            .toList())
+                IGNORED_TAGS,
+                JsonUtils.toArray(config.ignoredTags
+                    .stream()
+                    .map(TagKey::location)
+                    .map(ResourceLocation::toString)
+                    .toList())
             );
             serializePatterns(json, IGNORED_ITEMS, config.ignoredItems);
             serializePatterns(json, IGNORED_RECIPE_TYPES, config.ignoredRecipeTypes);

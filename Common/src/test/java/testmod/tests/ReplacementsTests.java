@@ -11,18 +11,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ReplacementsTests {
 
     private static final JsonObject INFLATE_PLACEHOLDERS = JsonUtils.readFromString("""
-            {
-                "type": [
-                    "gems",
-                    "rods",
-                    "raw_materials"
-                ],
-                "material": [
-                    "iron",
-                    "gold"
-                ]
-            }
-            """, JsonObject.class);
+        {
+            "type": [
+                "gems",
+                "rods",
+                "raw_materials"
+            ],
+            "material": [
+                "iron",
+                "gold"
+            ]
+        }
+        """, JsonObject.class);
 
     @SimpleGameTest
     public void testInflate() {

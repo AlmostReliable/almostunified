@@ -32,13 +32,13 @@ public class TestUtils {
     public static final Gson GSON = new GsonBuilder().create();
 
     public static final ModPriorities TEST_MOD_PRIORITIES = new ModPrioritiesImpl(
-            List.of("testmod", "mekanism", "thermal", "create"),
-            new HashMap<>()
+        List.of("testmod", "mekanism", "thermal", "create"),
+        new HashMap<>()
     );
 
     public static final ModPriorities EMPTY_MOD_PRIORITIES = new ModPrioritiesImpl(
-            List.of(),
-            new HashMap<>()
+        List.of(),
+        new HashMap<>()
     );
 
     public static final StoneVariants EMPTY_STONE_VARIANTS = new StoneVariants() {
@@ -92,12 +92,12 @@ public class TestUtils {
 
     public static UnificationLookup unificationLookup() {
         return new UnificationLookupImpl.Builder()
-                .put(itemTag("testmod:test_tag"),
-                        ResourceLocation.parse("minecraft:test_item"),
-                        ResourceLocation.parse("mekanism:test_item"),
-                        ResourceLocation.parse("thermal:test_item"),
-                        ResourceLocation.parse("testmod:test_item"))
-                .build(TEST_MOD_PRIORITIES, EMPTY_STONE_VARIANTS, EMPTY_TAG_SUBSTITUTIONS);
+            .put(itemTag("testmod:test_tag"),
+                ResourceLocation.parse("minecraft:test_item"),
+                ResourceLocation.parse("mekanism:test_item"),
+                ResourceLocation.parse("thermal:test_item"),
+                ResourceLocation.parse("testmod:test_item"))
+            .build(TEST_MOD_PRIORITIES, EMPTY_STONE_VARIANTS, EMPTY_TAG_SUBSTITUTIONS);
     }
 
 
@@ -139,11 +139,11 @@ public class TestUtils {
 
         StringBuilder sb = new StringBuilder();
         sb
-                .append("\nExpected:\t")
-                .append(GSON.toJson(expected))
-                .append("\nActual:\t\t")
-                .append(GSON.toJson(actual))
-                .append("\n");
+            .append("\nExpected:\t")
+            .append(GSON.toJson(expected))
+            .append("\nActual:\t\t")
+            .append(GSON.toJson(actual))
+            .append("\n");
         if (!difference.entriesDiffering().isEmpty()) {
             sb.append("Differences:\n");
             difference.entriesDiffering().forEach((k, v) -> {

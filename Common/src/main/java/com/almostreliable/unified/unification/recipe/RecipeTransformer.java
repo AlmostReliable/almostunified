@@ -58,9 +58,9 @@ public class RecipeTransformer {
         });
 
         AlmostUnifiedCommon.LOGGER.info(
-                "Recipe count afterwards: {} (done in {})",
-                recipes.size(),
-                transformationTimer.stop()
+            "Recipe count afterwards: {} (done in {})",
+            recipes.size(),
+            transformationTimer.stop()
         );
 
         for (UnificationSettings settings : unificationSettings) {
@@ -88,19 +88,19 @@ public class RecipeTransformer {
         var unified = unifyRecipes(recipeLinks, r -> allRecipes.put(r.getId(), r.getUnified()));
         var duplicates = handleDuplicates(duplicateConfig.shouldCompareAll() ? recipeLinks : unified, recipeLinks);
         duplicates
-                .stream()
-                .flatMap(d -> d.getRecipesWithoutMaster().stream())
-                .forEach(r -> allRecipes.remove(r.getId()));
+            .stream()
+            .flatMap(d -> d.getRecipesWithoutMaster().stream())
+            .forEach(r -> allRecipes.remove(r.getId()));
         if (tracker != null) unified.forEach(tracker::add);
     }
 
     public Map<ResourceLocation, List<RecipeLink>> groupRecipesByType(Map<ResourceLocation, JsonElement> recipes) {
         return recipes
-                .entrySet()
-                .stream()
-                .map(entry -> new RecipeLink(entry.getKey(), entry.getValue().getAsJsonObject()))
-                .sorted(Comparator.comparing(entry -> entry.getId().toString()))
-                .collect(Collectors.groupingByConcurrent(RecipeLink::getType));
+            .entrySet()
+            .stream()
+            .map(entry -> new RecipeLink(entry.getKey(), entry.getValue().getAsJsonObject()))
+            .sorted(Comparator.comparing(entry -> entry.getId().toString()))
+            .collect(Collectors.groupingByConcurrent(RecipeLink::getType));
     }
 
     /**
@@ -130,7 +130,7 @@ public class RecipeTransformer {
         for (RecipeLink recipeLink : recipes) {
             if (!curRecipe.getType().equals(recipeLink.getType())) {
                 throw new IllegalStateException(
-                        "Recipe types do not match for " + curRecipe.getId() + " and " + recipeLink.getId());
+                    "Recipe types do not match for " + curRecipe.getId() + " and " + recipeLink.getId());
             }
 
             if (recipeLink == curRecipe || duplicateConfig.shouldIgnoreRecipe(recipeLink)) {

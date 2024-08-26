@@ -52,10 +52,10 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
 
                 if (!unifyTagFilter.test(substituteTag)) {
                     AlmostUnifiedCommon.LOGGER.warn(
-                            "[TagSubstitutions] Substitute tag '#{}' is not configured as a unify tag! Config entry '#{} -> {}' will be ignored.",
-                            substituteTag.location(),
-                            substituteTag.location(),
-                            rawReplacedTags.stream().map(t -> "#" + t).collect(Collectors.joining(", "))
+                        "[TagSubstitutions] Substitute tag '#{}' is not configured as a unify tag! Config entry '#{} -> {}' will be ignored.",
+                        substituteTag.location(),
+                        substituteTag.location(),
+                        rawReplacedTags.stream().map(t -> "#" + t).collect(Collectors.joining(", "))
                     );
                     return; // don't check other replaced tags if the substitute tag is invalid
                 }
@@ -76,17 +76,17 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
 
             if (!invalidReplacedTags.isEmpty()) {
                 AlmostUnifiedCommon.LOGGER.warn(
-                        "[TagSubstitutions] Substitute tag '#{}' contains invalid replaced tags! Affected tags: {}",
-                        rawSubstituteTag,
-                        invalidReplacedTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
+                    "[TagSubstitutions] Substitute tag '#{}' contains invalid replaced tags! Affected tags: {}",
+                    rawSubstituteTag,
+                    invalidReplacedTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
                 );
             }
 
             if (!unifyReplacedTags.isEmpty()) {
                 AlmostUnifiedCommon.LOGGER.warn(
-                        "[TagSubstitutions] Substitute tag '#{}' contains replaced tags that are configured as unify tags! Affected tags: {}",
-                        rawSubstituteTag,
-                        unifyReplacedTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
+                    "[TagSubstitutions] Substitute tag '#{}' contains replaced tags that are configured as unify tags! Affected tags: {}",
+                    rawSubstituteTag,
+                    unifyReplacedTags.stream().map(t -> "#" + t.location()).collect(Collectors.joining(", "))
                 );
             }
         });
@@ -108,16 +108,16 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
                 for (var replacedTagHolder : replacedTagHolders) {
                     itemTags.add(substituteTag.location(), replacedTagHolder);
                     replacedTagHolder
-                            .unwrapKey()
-                            .ifPresent(key -> changedTags.put(substituteTag.location(), key.location()));
+                        .unwrapKey()
+                        .ifPresent(key -> changedTags.put(substituteTag.location(), key.location()));
                 }
             }
         });
 
         changedTags.asMap().forEach((tag, entries) -> AlmostUnifiedCommon.LOGGER.info(
-                "[TagSubstitutions] Added items of replaced tags to substitute tag '#{}'. Added items: {}",
-                tag,
-                entries
+            "[TagSubstitutions] Added items of replaced tags to substitute tag '#{}'. Added items: {}",
+            tag,
+            entries
         ));
     }
 

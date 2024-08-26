@@ -18,12 +18,12 @@ public final class CRTLookup {
         }
 
         return Minecraft.getInstance().level
-                .getRecipeManager()
-                .byKey(link)
-                .map(RecipeHolder::value)
-                .filter(ClientRecipeTracker.class::isInstance)
-                .map(ClientRecipeTracker.class::cast)
-                .map(tracker -> tracker.getLink(recipeId))
-                .orElse(null);
+            .getRecipeManager()
+            .byKey(link)
+            .map(RecipeHolder::value)
+            .filter(ClientRecipeTracker.class::isInstance)
+            .map(ClientRecipeTracker.class::cast)
+            .map(tracker -> tracker.getLink(recipeId))
+            .orElse(null);
     }
 }

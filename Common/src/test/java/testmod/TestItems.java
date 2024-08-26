@@ -40,11 +40,11 @@ public class TestItems {
 
     private static Block ore() {
         BlockBehaviour.Properties props = BlockBehaviour.Properties
-                .of()
-                .mapColor(MapColor.STONE)
-                .instrument(NoteBlockInstrument.BASEDRUM)
-                .requiresCorrectToolForDrops()
-                .strength(3.0F, 3.0F);
+            .of()
+            .mapColor(MapColor.STONE)
+            .instrument(NoteBlockInstrument.BASEDRUM)
+            .requiresCorrectToolForDrops()
+            .strength(3.0F, 3.0F);
         return new DropExperienceBlock(ConstantInt.of(0), props);
     }
 }

@@ -19,14 +19,14 @@ public final class AlmostUnifiedCommands {
 
     public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         var radiusArgument = Commands.argument(RADIUS, IntegerArgumentType.integer(0, 16 * 8))
-                .executes(AlmostUnifiedCommands::onStripCommand);
+            .executes(AlmostUnifiedCommands::onStripCommand);
         var stripSubCommand = Commands.literal("strip")
-                .requires(source -> source.hasPermission(2))
-                .then(radiusArgument)
-                .executes(AlmostUnifiedCommands::onStripCommand);
+            .requires(source -> source.hasPermission(2))
+            .then(radiusArgument)
+            .executes(AlmostUnifiedCommands::onStripCommand);
         var mainCommand = Commands.literal(ModConstants.ALMOST_UNIFIED)
-                .then(stripSubCommand)
-                .executes(AlmostUnifiedCommands::onHelpCommand);
+            .then(stripSubCommand)
+            .executes(AlmostUnifiedCommands::onHelpCommand);
 
         dispatcher.register(mainCommand);
     }
@@ -55,7 +55,7 @@ public final class AlmostUnifiedCommands {
             WorldStripper.stripWorld(player, level, radius);
         } catch (Exception e) {
             context.getSource().sendFailure(
-                    Component.literal("Please provide a valid radius!").withStyle(ChatFormatting.DARK_RED)
+                Component.literal("Please provide a valid radius!").withStyle(ChatFormatting.DARK_RED)
             );
             return 0;
         }

@@ -55,11 +55,11 @@ public final class DebugConfig extends Config {
         @Override
         public DebugConfig handleDeserialization(JsonObject json) {
             return new DebugConfig(
-                    safeGet(() -> json.get(DUMP_DUPLICATES).getAsBoolean(), false),
-                    safeGet(() -> json.get(DUMP_OVERVIEW).getAsBoolean(), false),
-                    safeGet(() -> json.get(DUMP_RECIPES).getAsBoolean(), false),
-                    safeGet(() -> json.get(DUMP_TAGS).getAsBoolean(), false),
-                    safeGet(() -> json.get(DUMP_UNIFICATION).getAsBoolean(), false)
+                safeGet(() -> json.get(DUMP_DUPLICATES).getAsBoolean(), false),
+                safeGet(() -> json.get(DUMP_OVERVIEW).getAsBoolean(), false),
+                safeGet(() -> json.get(DUMP_RECIPES).getAsBoolean(), false),
+                safeGet(() -> json.get(DUMP_TAGS).getAsBoolean(), false),
+                safeGet(() -> json.get(DUMP_UNIFICATION).getAsBoolean(), false)
             );
         }
 

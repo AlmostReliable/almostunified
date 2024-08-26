@@ -13,68 +13,68 @@ public class SmithingRecipeUnifierTest {
     @SimpleGameTest
     public void testTrim() {
         assertUnify(UNIFIER, """
-                {
-                  "type": "minecraft:smithing_trim",
-                  "addition": {
-                    "item": "minecraft:test_item"
-                  },
-                  "base": {
-                    "item": "minecraft:test_item"
-                  },
-                  "template": {
-                    "item": "minecraft:test_item"
-                  }
-                }
-                """, """
-                {
-                  "type": "minecraft:smithing_trim",
-                  "addition": {
-                    "tag": "testmod:test_tag"
-                  },
-                  "base": {
-                    "tag": "testmod:test_tag"
-                  },
-                  "template": {
-                    "tag": "testmod:test_tag"
-                  }
-                }
-                """);
+            {
+              "type": "minecraft:smithing_trim",
+              "addition": {
+                "item": "minecraft:test_item"
+              },
+              "base": {
+                "item": "minecraft:test_item"
+              },
+              "template": {
+                "item": "minecraft:test_item"
+              }
+            }
+            """, """
+            {
+              "type": "minecraft:smithing_trim",
+              "addition": {
+                "tag": "testmod:test_tag"
+              },
+              "base": {
+                "tag": "testmod:test_tag"
+              },
+              "template": {
+                "tag": "testmod:test_tag"
+              }
+            }
+            """);
     }
 
     @SimpleGameTest
     public void testTransform() {
         assertUnify(UNIFIER, """
-                {
-                  "type": "minecraft:smithing_transform",
-                  "addition": {
-                    "item": "minecraft:test_item"
-                  },
-                  "base": {
-                    "item": "minecraft:test_item"
-                  },
-                  "result": {
-                    "item": "minecraft:test_item"
-                  },
-                  "template": {
-                    "item": "minecraft:test_item"
-                  }
-                }
-                """, """
-                {
-                  "type": "minecraft:smithing_transform",
-                  "addition": {
-                    "tag": "testmod:test_tag"
-                  },
-                  "base": {
-                    "tag": "testmod:test_tag"
-                  },
-                  "result": {
-                    "item": "testmod:test_item"
-                  },
-                  "template": {
-                    "tag": "testmod:test_tag"
-                  }
-                }
-                """);
+            {
+              "type": "minecraft:smithing_transform",
+              "addition": {
+                "item": "minecraft:test_item"
+              },
+              "base": {
+                "item": "minecraft:test_item"
+              },
+              "result": {
+                "item": "minecraft:test_item"
+              },
+              "template": {
+                "item": "minecraft:test_item"
+              }
+            }
+            """, """
+            {
+              "type": "minecraft:smithing_transform",
+              "addition": {
+                "tag": "testmod:test_tag"
+              },
+              "base": {
+                "tag": "testmod:test_tag"
+              },
+              "result": {
+                "item": "testmod:test_item"
+              },
+              "template": {
+                "tag": "testmod:test_tag"
+              }
+            }
+            """);
     }
 }

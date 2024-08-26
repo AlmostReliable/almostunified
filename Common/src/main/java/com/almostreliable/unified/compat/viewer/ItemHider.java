@@ -69,11 +69,11 @@ public final class ItemHider {
             if (toHide.isEmpty()) continue;
 
             AlmostUnifiedCommon.LOGGER.info(
-                    "[AutoHiding] Hiding {}/{} items for tag '#{}' -> {}",
-                    toHide.size(),
-                    entriesByTag.size(),
-                    tag.location(),
-                    toHideIds
+                "[AutoHiding] Hiding {}/{} items for tag '#{}' -> {}",
+                toHide.size(),
+                entriesByTag.size(),
+                tag.location(),
+                toHideIds
             );
 
             hidings.addAll(toHide);

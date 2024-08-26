@@ -44,9 +44,9 @@ public final class UnificationSettingsImpl implements UnificationSettings {
 
     public static List<UnificationSettings> create(Collection<UnificationConfig> configs, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagSubstitutionsImpl tagSubstitutions) {
         return configs
-                .stream()
-                .map(config -> create(config, itemTags, blockTags, tagSubstitutions))
-                .toList();
+            .stream()
+            .map(config -> create(config, itemTags, blockTags, tagSubstitutions))
+            .toList();
     }
 
     public static UnificationSettings create(UnificationConfig config, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagSubstitutions tagSubstitutions) {
@@ -65,22 +65,22 @@ public final class UnificationSettingsImpl implements UnificationSettings {
 
         ModPriorities modPriorities = config.getModPriorities();
         StoneVariants stoneVariants = StoneVariantsImpl.create(
-                config.getStoneVariants(),
-                itemTags,
-                blockTags
+            config.getStoneVariants(),
+            itemTags,
+            blockTags
         );
 
         return new UnificationSettingsImpl(
-                config.getName(),
-                modPriorities,
-                stoneVariants,
-                config::shouldIncludeRecipeType,
-                config::shouldIncludeRecipeId,
-                config.shouldHideVariantItems(),
-                config.shouldUnifyLoot(),
-                config::shouldIncludeLootTable,
-                lookupBuilder.build(modPriorities, stoneVariants, tagSubstitutions),
-                config::clearCaches
+            config.getName(),
+            modPriorities,
+            stoneVariants,
+            config::shouldIncludeRecipeType,
+            config::shouldIncludeRecipeId,
+            config.shouldHideVariantItems(),
+            config.shouldUnifyLoot(),
+            config::shouldIncludeLootTable,
+            lookupBuilder.build(modPriorities, stoneVariants, tagSubstitutions),
+            config::clearCaches
         );
     }
 

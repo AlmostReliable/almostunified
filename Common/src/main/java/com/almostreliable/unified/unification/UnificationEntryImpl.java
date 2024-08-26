@@ -25,8 +25,8 @@ public class UnificationEntryImpl<T> implements UnificationEntry<T> {
 
     public UnificationEntryImpl(Registry<T> registry, T entry) {
         this.key = registry
-                .getResourceKey(entry)
-                .orElseThrow(() -> new IllegalArgumentException("Entry " + entry + " does not belong to " + registry));
+            .getResourceKey(entry)
+            .orElseThrow(() -> new IllegalArgumentException("Entry " + entry + " does not belong to " + registry));
         this.registry = registry;
         this.value = entry;
     }
@@ -45,8 +45,8 @@ public class UnificationEntryImpl<T> implements UnificationEntry<T> {
     public T value() {
         if (value == null) {
             value = registry
-                    .getOptional(key)
-                    .orElseThrow(() -> new IllegalStateException("entry " + key + " not found in " + registry));
+                .getOptional(key)
+                .orElseThrow(() -> new IllegalStateException("entry " + key + " not found in " + registry));
         }
 
         return value;

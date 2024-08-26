@@ -32,22 +32,22 @@ final class RecipeIndicator {
 
     static List<Component> constructTooltip(ClientRecipeLink link) {
         var unified = Component.translatable(Utils.prefix("unified")).append(": ")
-                .withStyle(c -> c.withColor(ChatFormatting.AQUA));
+            .withStyle(c -> c.withColor(ChatFormatting.AQUA));
         unified.append(Component.translatable(Utils.prefix(link.isUnified() ? "yes" : "no"))
-                .withStyle(c -> c.withColor(ChatFormatting.WHITE)));
+            .withStyle(c -> c.withColor(ChatFormatting.WHITE)));
 
         var duplicate = Component.translatable(Utils.prefix("duplicate")).append(": ")
-                .withStyle(c -> c.withColor(ChatFormatting.AQUA));
+            .withStyle(c -> c.withColor(ChatFormatting.AQUA));
         duplicate.append(Component.translatable(Utils.prefix(link.isDuplicate() ? "yes" : "no"))
-                .withStyle(c -> c.withColor(ChatFormatting.WHITE)));
+            .withStyle(c -> c.withColor(ChatFormatting.WHITE)));
 
         return List.of(
-                Component.translatable(Utils.prefix("description")).withStyle(c -> c.withColor(ChatFormatting.GOLD)),
-                Component.literal(" "),
-                unified,
-                duplicate,
-                Component.literal(" "),
-                Component.translatable(Utils.prefix("warning")).withStyle(c -> c.withColor(ChatFormatting.RED))
+            Component.translatable(Utils.prefix("description")).withStyle(c -> c.withColor(ChatFormatting.GOLD)),
+            Component.literal(" "),
+            unified,
+            duplicate,
+            Component.literal(" "),
+            Component.translatable(Utils.prefix("warning")).withStyle(c -> c.withColor(ChatFormatting.RED))
         );
     }
 
@@ -58,15 +58,15 @@ final class RecipeIndicator {
         if (screen == null) return;
 
         var tooltip = constructTooltip(link).stream()
-                .map(c -> font.split(c, screen.width - (int) mouseX - 200))
-                .flatMap(List::stream)
-                .toList();
+            .map(c -> font.split(c, screen.width - (int) mouseX - 200))
+            .flatMap(List::stream)
+            .toList();
 
         guiGraphics.renderTooltip(
-                font,
-                tooltip,
-                (int) mouseX,
-                (int) mouseY
+            font,
+            tooltip,
+            (int) mouseX,
+            (int) mouseY
         );
     }
 }

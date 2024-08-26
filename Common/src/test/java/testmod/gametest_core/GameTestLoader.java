@@ -33,7 +33,7 @@ public class GameTestLoader {
             try {
                 instance = providerClass.getConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                    NoSuchMethodException e) {
+                NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
 
@@ -42,7 +42,7 @@ public class GameTestLoader {
                 SimpleGameTest simpleGametest = method.getAnnotation(SimpleGameTest.class);
                 if (gametest != null && simpleGametest != null) {
                     throw new IllegalArgumentException(
-                            "Cannot have both @GameTest and @SimpleGameTest on the same method");
+                        "Cannot have both @GameTest and @SimpleGameTest on the same method");
                 }
 
                 if (gametest != null) {
@@ -64,18 +64,18 @@ public class GameTestLoader {
         }
 
         var test = new TestFunction(
-                gametest.batch(),
-                createTestName(method),
-                template,
-                StructureUtils.getRotationForRotationSteps(gametest.rotationSteps()),
-                gametest.timeoutTicks(),
-                gametest.setupTicks(),
-                gametest.required(),
-                gametest.manualOnly(),
-                gametest.attempts(),
-                gametest.requiredSuccesses(),
-                gametest.skyAccess(),
-                consumer
+            gametest.batch(),
+            createTestName(method),
+            template,
+            StructureUtils.getRotationForRotationSteps(gametest.rotationSteps()),
+            gametest.timeoutTicks(),
+            gametest.setupTicks(),
+            gametest.required(),
+            gametest.manualOnly(),
+            gametest.attempts(),
+            gametest.requiredSuccesses(),
+            gametest.skyAccess(),
+            consumer
         );
 
         GameTestRegistryAccessor.TEST_FUNCTIONS().add(test);
@@ -89,17 +89,17 @@ public class GameTestLoader {
         }
 
         var test = new TestFunction(gametest.batch(),
-                createTestName(method),
-                template,
-                Rotation.NONE,
-                100,
-                0,
-                true,
-                false,
-                gametest.attempts(),
-                1,
-                false,
-                consumer);
+            createTestName(method),
+            template,
+            Rotation.NONE,
+            100,
+            0,
+            true,
+            false,
+            gametest.attempts(),
+            1,
+            false,
+            consumer);
 
         GameTestRegistryAccessor.TEST_FUNCTIONS().add(test);
         GameTestRegistryAccessor.TEST_CLASS_NAMES().add(method.getDeclaringClass().getSimpleName());
@@ -118,10 +118,10 @@ public class GameTestLoader {
                 ENABLED_MODS = Collections.emptyList();
             } else {
                 ENABLED_MODS = Arrays.stream(enabledNamespaces.split(","))
-                        .map(String::trim)
-                        .filter(s -> !s.isEmpty())
-                        .map(Pattern::compile)
-                        .toList();
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(Pattern::compile)
+                    .toList();
 //                AlmostLib.LOGGER.info("Enabled gametests for mods: " + ENABLED_MODS);
             }
         }
@@ -181,7 +181,7 @@ public class GameTestLoader {
             if (parameterTypes.length == 1) {
                 if (!GameTestHelper.class.isAssignableFrom(parameterTypes[0])) {
                     throw new RuntimeException(
-                            "unsupported parameter type, parameter must extend " + GameTestHelper.class.getName());
+                        "unsupported parameter type, parameter must extend " + GameTestHelper.class.getName());
                 }
 
                 // noinspection CastToIncompatibleInterface

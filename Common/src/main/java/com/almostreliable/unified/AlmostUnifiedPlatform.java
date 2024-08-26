@@ -6,8 +6,8 @@ import java.util.ServiceLoader;
 public interface AlmostUnifiedPlatform {
 
     AlmostUnifiedPlatform INSTANCE = ServiceLoader.load(AlmostUnifiedPlatform.class)
-            .findFirst()
-            .orElseThrow(() -> new NullPointerException("Failed to load platform service."));
+        .findFirst()
+        .orElseThrow(() -> new NullPointerException("Failed to load platform service."));
 
     /**
      * Gets the current platform

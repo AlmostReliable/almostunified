@@ -74,11 +74,11 @@ public final class UnificationLookupImpl implements UnificationLookup {
         var tagToCheck = substituteTag != null ? substituteTag : tag;
 
         var items = getTagEntries(tagToCheck)
-                .stream()
-                .filter(entry -> itemFilter.test(entry.id()))
-                // sort by length so clean stone variants come first
-                .sorted(Comparator.comparingInt(value -> value.id().toString().length()))
-                .toList();
+            .stream()
+            .filter(entry -> itemFilter.test(entry.id()))
+            // sort by length so clean stone variants come first
+            .sorted(Comparator.comparingInt(value -> value.id().toString().length()))
+            .toList();
 
         return items.isEmpty() ? null : modPriorities.findTargetItem(tagToCheck, items);
     }
@@ -148,11 +148,11 @@ public final class UnificationLookupImpl implements UnificationLookup {
             });
 
             return new UnificationLookupImpl(
-                    modPriorities,
-                    stoneVariants,
-                    tagSubstitutions,
-                    tagsToEntriesBuilder.build(),
-                    idsToEntriesBuilder.build()
+                modPriorities,
+                stoneVariants,
+                tagSubstitutions,
+                tagsToEntriesBuilder.build(),
+                idsToEntriesBuilder.build()
             );
         }
     }

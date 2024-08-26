@@ -38,23 +38,23 @@ public final class CustomLogger {
         var strategy = DefaultRolloverStrategy.newBuilder().withCustomActions(new Action[]{ deleteAction }).build();
 
         var layout = PatternLayout
-                .newBuilder()
-                .withConfiguration(config)
-                .withCharset(StandardCharsets.UTF_8)
-                .withPattern("[%d{HH:mm:ss.SSS}] [%level]: %minecraftFormatting{%msg{nolookup}}{strip}%n%xEx")
-                .build();
+            .newBuilder()
+            .withConfiguration(config)
+            .withCharset(StandardCharsets.UTF_8)
+            .withPattern("[%d{HH:mm:ss.SSS}] [%level]: %minecraftFormatting{%msg{nolookup}}{strip}%n%xEx")
+            .build();
 
         var fileAppender = RollingRandomAccessFileAppender
-                .newBuilder()
-                .withAppend(true)
-                .withFileName(LOG_PATH + "/" + FILE)
-                .withFilePattern(LOG_PATH + "/" + BACKUP_FILE)
-                .withStrategy(strategy)
-                .withPolicy(new Policy())
-                .setName(BuildConfig.MOD_NAME + " File")
-                .setLayout(layout)
-                .setConfiguration(config)
-                .build();
+            .newBuilder()
+            .withAppend(true)
+            .withFileName(LOG_PATH + "/" + FILE)
+            .withFilePattern(LOG_PATH + "/" + BACKUP_FILE)
+            .withStrategy(strategy)
+            .withPolicy(new Policy())
+            .setName(BuildConfig.MOD_NAME + " File")
+            .setLayout(layout)
+            .setConfiguration(config)
+            .build();
 
         fileAppender.start();
 
@@ -62,11 +62,11 @@ public final class CustomLogger {
         loggerConfig.addAppender(fileAppender, null, null);
 
         Optional.ofNullable(config.getAppenders().get("Console")) // latest.log for neoforge
-                .ifPresent(a -> loggerConfig.addAppender(a, null, null));
+            .ifPresent(a -> loggerConfig.addAppender(a, null, null));
         Optional.ofNullable(config.getAppenders().get("SysOut")) // latest.log for fabric
-                .ifPresent(a -> loggerConfig.addAppender(a, null, null));
+            .ifPresent(a -> loggerConfig.addAppender(a, null, null));
         Optional.ofNullable(config.getAppenders().get("ServerGuiConsole")) // game console
-                .ifPresent(a -> loggerConfig.addAppender(a, null, null));
+            .ifPresent(a -> loggerConfig.addAppender(a, null, null));
 
         config.addLogger(BuildConfig.MOD_NAME, loggerConfig);
         return LogManager.getLogger(BuildConfig.MOD_NAME);

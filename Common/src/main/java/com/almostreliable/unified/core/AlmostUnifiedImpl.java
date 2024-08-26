@@ -50,11 +50,11 @@ public class AlmostUnifiedImpl implements AlmostUnified {
     public Collection<Item> getTagEntries(TagKey<Item> tag) {
         if (!isRuntimeLoaded()) return Set.of();
         return getRuntimeOrThrow()
-                .getUnificationLookup()
-                .getTagEntries(tag)
-                .stream()
-                .map(UnificationEntry::value)
-                .collect(Collectors.toSet());
+            .getUnificationLookup()
+            .getTagEntries(tag)
+            .stream()
+            .map(UnificationEntry::value)
+            .collect(Collectors.toSet());
     }
 
     @Nullable

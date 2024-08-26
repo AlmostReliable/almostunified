@@ -35,8 +35,8 @@ public class LootUnificationTests {
         ItemStack pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
 
         ArrayList<BlockPos> positions = BlockPos
-                .betweenClosedStream(new BlockPos(0, 2, 0), new BlockPos(2, 10, 2))
-                .collect(Collectors.toCollection(ArrayList::new));
+            .betweenClosedStream(new BlockPos(0, 2, 0), new BlockPos(2, 10, 2))
+            .collect(Collectors.toCollection(ArrayList::new));
 
         testDrop(helper, player, pickaxe, positions.removeFirst(), "testmod:osmium_ore", "testmod:osmium_ingot");
         testDrop(helper, player, pickaxe, positions.removeFirst(), "meka_fake:osmium_ore", "testmod:osmium_ingot");
@@ -55,11 +55,11 @@ public class LootUnificationTests {
         Block oreBlock = getBlock(oreId);
         helper.setBlock(orePos, oreBlock.defaultBlockState());
         List<ItemStack> drops = Block.getDrops(helper.getBlockState(orePos),
-                helper.getLevel(),
-                orePos,
-                null,
-                player,
-                tool);
+            helper.getLevel(),
+            orePos,
+            null,
+            player,
+            tool);
         assertEquals(1, drops.size());
         var result = drops.getFirst().getItem();
         var resultId = BuiltInRegistries.ITEM.getKey(result);

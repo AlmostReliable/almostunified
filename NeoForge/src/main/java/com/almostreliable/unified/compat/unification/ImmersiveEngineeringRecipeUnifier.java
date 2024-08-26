@@ -24,22 +24,22 @@ public class ImmersiveEngineeringRecipeUnifier implements RecipeUnifier {
         GenericRecipeUnifier.INSTANCE.unify(helper, recipe);
 
         List.of(
-                // alloy recipes, refinery
-                INPUT_0,
-                INPUT_1,
-                // arc furnace, squeezer, cloche, coke oven, fermenter, fertilizer, metal_press
-                RecipeConstants.INPUT,
-                // arc furnace
-                ADDITIVES,
-                // refinery
-                RecipeConstants.CATALYST
+            // alloy recipes, refinery
+            INPUT_0,
+            INPUT_1,
+            // arc furnace, squeezer, cloche, coke oven, fermenter, fertilizer, metal_press
+            RecipeConstants.INPUT,
+            // arc furnace
+            ADDITIVES,
+            // refinery
+            RecipeConstants.CATALYST
         ).forEach(key -> unifyInputs(helper, recipe, key));
 
         List.of(
-                RecipeConstants.RESULT,
-                RecipeConstants.RESULTS,
-                // arc furnace
-                SLAG
+            RecipeConstants.RESULT,
+            RecipeConstants.RESULTS,
+            // arc furnace
+            SLAG
         ).forEach(key -> helper.unifyOutputs(recipe, key, true, RecipeConstants.ITEM, BASE_INGREDIENT));
 
         unifySecondaries(helper, recipe);

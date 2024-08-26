@@ -37,9 +37,9 @@ public final class ModPrioritiesImpl implements ModPriorities {
         if (entry != null) return entry;
 
         AlmostUnifiedCommon.LOGGER.warn(
-                "Priority override mod '{}' for tag '{}' does not contain a valid item. Falling back to default priority.",
-                priorityOverride,
-                tag.location()
+            "Priority override mod '{}' for tag '{}' does not contain a valid item. Falling back to default priority.",
+            priorityOverride,
+            tag.location()
         );
         return null;
     }

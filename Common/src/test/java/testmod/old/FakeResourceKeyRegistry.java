@@ -14,9 +14,9 @@ public class FakeResourceKeyRegistry {
             Constructor<?> c = ResourceKey.class.getDeclaredConstructor(ResourceLocation.class, ResourceLocation.class);
             c.setAccessible(true);
             return (ResourceKey<Registry<T>>) c.newInstance(ResourceLocation.withDefaultNamespace("test_registry"),
-                    ResourceLocation.parse(name));
+                ResourceLocation.parse(name));
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
-                IllegalAccessException e) {
+            IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }

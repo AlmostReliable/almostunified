@@ -72,17 +72,17 @@ public final class StoneVariantsImpl implements StoneVariants {
         for (var stoneVariantTag : stoneVariantTags) {
             for (var holder : tags.get(stoneVariantTag)) {
                 ResourceLocation id = holder
-                        .unwrapKey()
-                        .orElseThrow(() -> new IllegalStateException("Tag is not bound for holder " + holder))
-                        .location();
+                    .unwrapKey()
+                    .orElseThrow(() -> new IllegalStateException("Tag is not bound for holder " + holder))
+                    .location();
 
                 var oldTag = idToStoneVariantTag.put(id, stoneVariantTag);
                 if (oldTag != null) {
                     AlmostUnifiedCommon.LOGGER.error(
-                            "{} is bound to multiple stone variant tags: {} and {}",
-                            id,
-                            oldTag,
-                            stoneVariantTag
+                        "{} is bound to multiple stone variant tags: {} and {}",
+                        id,
+                        oldTag,
+                        stoneVariantTag
                     );
                 }
             }

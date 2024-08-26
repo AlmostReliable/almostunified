@@ -38,9 +38,9 @@ public class AlmostUnifiedNeoForge {
     private void onRegisterEvent(RegisterEvent event) {
         if (event.getRegistryKey() == NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS) {
             Registry.register(
-                    NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS,
-                    Utils.getRL("worldgen_unification"),
-                    WorldGenBiomeModifier.CODEC
+                NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS,
+                Utils.getRL("worldgen_unification"),
+                WorldGenBiomeModifier.CODEC
             );
         }
 
@@ -48,9 +48,9 @@ public class AlmostUnifiedNeoForge {
 
         if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
             Registry.register(
-                    BuiltInRegistries.RECIPE_SERIALIZER,
-                    ClientRecipeTracker.ID,
-                    ClientRecipeTracker.SERIALIZER
+                BuiltInRegistries.RECIPE_SERIALIZER,
+                ClientRecipeTracker.ID,
+                ClientRecipeTracker.SERIALIZER
             );
         }
 
@@ -112,9 +112,9 @@ public class AlmostUnifiedNeoForge {
             }
 
             AlmostUnifiedCommon.LOGGER.error(
-                    "Plugin {} does not implement {}.",
-                    className,
-                    AlmostUnifiedPlugin.class.getName()
+                "Plugin {} does not implement {}.",
+                className,
+                AlmostUnifiedPlugin.class.getName()
             );
         } catch (ClassNotFoundException e) {
             AlmostUnifiedCommon.LOGGER.error("Failed to load plugin {}.", className, e);

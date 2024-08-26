@@ -18,9 +18,9 @@ public class AlmostUnifiedFabric implements ModInitializer {
     public void onInitialize() {
         if (!AlmostUnifiedCommon.STARTUP_CONFIG.isServerOnly()) {
             Registry.register(
-                    BuiltInRegistries.RECIPE_SERIALIZER,
-                    ClientRecipeTracker.ID,
-                    ClientRecipeTracker.SERIALIZER
+                BuiltInRegistries.RECIPE_SERIALIZER,
+                ClientRecipeTracker.ID,
+                ClientRecipeTracker.SERIALIZER
             );
             Registry.register(BuiltInRegistries.RECIPE_TYPE, ClientRecipeTracker.ID, ClientRecipeTracker.TYPE);
         }
@@ -31,16 +31,16 @@ public class AlmostUnifiedFabric implements ModInitializer {
     private static void initializePluginManager() {
         List<AlmostUnifiedPlugin> plugins = new ArrayList<>();
         var entrypointContainers = FabricLoader.getInstance()
-                .getEntrypointContainers(ModConstants.ALMOST_UNIFIED, AlmostUnifiedPlugin.class);
+            .getEntrypointContainers(ModConstants.ALMOST_UNIFIED, AlmostUnifiedPlugin.class);
 
         for (var entrypointContainer : entrypointContainers) {
             try {
                 plugins.add(entrypointContainer.getEntrypoint());
             } catch (Exception e) {
                 AlmostUnifiedCommon.LOGGER.error(
-                        "Failed to load plugin for mod {}.",
-                        entrypointContainer.getProvider().getMetadata().getName(),
-                        e
+                    "Failed to load plugin for mod {}.",
+                    entrypointContainer.getProvider().getMetadata().getName(),
+                    e
                 );
             }
         }

@@ -29,7 +29,7 @@ import java.util.Map;
  * Each tracker will hold one namespace with a list of recipes that were unified for it.
  */
 public record ClientRecipeTracker(String namespace, Map<ResourceLocation, ClientRecipeLink> recipes)
-        implements Recipe<RecipeInput> {
+    implements Recipe<RecipeInput> {
 
     public static final ResourceLocation ID = Utils.getRL("client_recipe_tracker");
     public static final String RECIPES = "recipes";
@@ -128,11 +128,11 @@ public record ClientRecipeTracker(String namespace, Map<ResourceLocation, Client
          * </pre>
          */
         public static final MapCodec<ClientRecipeTracker> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-                .group(
-                        Codec.STRING.fieldOf("namespace").forGetter(ClientRecipeTracker::namespace),
-                        Codec.list(Codec.STRING).fieldOf("recipes").forGetter(ClientRecipeTracker::getLinkStrings)
-                )
-                .apply(instance, Serializer::of));
+            .group(
+                Codec.STRING.fieldOf("namespace").forGetter(ClientRecipeTracker::namespace),
+                Codec.list(Codec.STRING).fieldOf("recipes").forGetter(ClientRecipeTracker::getLinkStrings)
+            )
+            .apply(instance, Serializer::of));
 
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ClientRecipeTracker> STREAM_CODEC = new StreamCodec<>() {
@@ -172,8 +172,8 @@ public record ClientRecipeTracker(String namespace, Map<ResourceLocation, Client
                 buffer.writeUtf(recipe.namespace);
                 for (ClientRecipeLink clientRecipeLink : recipe.recipes.values()) {
                     String raw = createRaw(clientRecipeLink.isUnified(),
-                            clientRecipeLink.isDuplicate(),
-                            clientRecipeLink.id().getPath());
+                        clientRecipeLink.isDuplicate(),
+                        clientRecipeLink.id().getPath());
                     buffer.writeUtf(raw);
                 }
             }
@@ -213,9 +213,9 @@ public record ClientRecipeTracker(String namespace, Map<ResourceLocation, Client
             boolean isUnified = (flag & UNIFIED_FLAG) != 0;
             boolean isDuplicate = (flag & DUPLICATE_FLAG) != 0;
             return new ClientRecipeLink(
-                    ResourceLocation.fromNamespaceAndPath(namespace, split[1]),
-                    isUnified,
-                    isDuplicate
+                ResourceLocation.fromNamespaceAndPath(namespace, split[1]),
+                isUnified,
+                isDuplicate
             );
         }
     }

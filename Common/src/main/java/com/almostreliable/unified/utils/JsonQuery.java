@@ -83,7 +83,7 @@ public class JsonQuery {
 
     public Optional<Integer> asInt() {
         return asElement().filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
-                .filter(JsonPrimitive::isNumber).map(JsonElement::getAsInt);
+            .filter(JsonPrimitive::isNumber).map(JsonElement::getAsInt);
     }
 
     public JsonQuery shallowCopy() {

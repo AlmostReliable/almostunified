@@ -50,10 +50,10 @@ public final class PluginManager {
         });
 
         String ids = sortedPlugins
-                .stream()
-                .map(AlmostUnifiedPlugin::getPluginId)
-                .map(ResourceLocation::toString)
-                .collect(Collectors.joining(", "));
+            .stream()
+            .map(AlmostUnifiedPlugin::getPluginId)
+            .map(ResourceLocation::toString)
+            .collect(Collectors.joining(", "));
         AlmostUnifiedCommon.LOGGER.info("Loaded plugins: {}", ids);
 
         INSTANCE = new PluginManager(sortedPlugins);
