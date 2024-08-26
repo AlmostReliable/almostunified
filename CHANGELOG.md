@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## Unreleased
-- /
+
+- added `end` stone variant to config defaults
 
 ## [1.0.0] - 2024-08-22
 
