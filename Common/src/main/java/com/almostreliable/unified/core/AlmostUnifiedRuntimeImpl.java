@@ -51,16 +51,16 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final RecipeUnifierRegistry recipeUnifierRegistry;
     private final TagSubstitutions tagSubstitutions;
     private final Placeholders placeholders;
-    private final DebugConfig debugConfig;
     private final UnificationLookup compositeUnificationLookup;
+    private final DebugHandler debugHandler;
 
     private AlmostUnifiedRuntimeImpl(Collection<? extends UnificationSettings> unificationSettings, RecipeUnifierRegistry recipeUnifierRegistry, TagSubstitutions tagSubstitutions, Placeholders placeholders, DebugConfig debugConfig) {
         this.unificationSettings = unificationSettings;
         this.recipeUnifierRegistry = recipeUnifierRegistry;
         this.tagSubstitutions = tagSubstitutions;
         this.placeholders = placeholders;
-        this.debugConfig = debugConfig;
         this.compositeUnificationLookup = new CompositeUnificationLookup(unificationSettings);
+        this.debugHandler = new DebugHandler(debugConfig);
     }
 
     public static AlmostUnifiedRuntimeImpl create(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
@@ -188,7 +188,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     }
 
     public void run(Map<ResourceLocation, JsonElement> recipes) {
-        DebugHandler debugHandler = DebugHandler.onRunStart(recipes, compositeUnificationLookup, debugConfig);
+        debugHandler.onRunStart(recipes, compositeUnificationLookup);
 
         debugHandler.measure(() -> {
             var transformer = new RecipeTransformer(recipeUnifierRegistry, unificationSettings);
@@ -228,6 +228,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     @Override
     public Placeholders getPlaceholders() {
         return placeholders;
+    }
+
+    public RecipeTransformer.Result getRecipeTransformerResult() {
+        return debugHandler.getRecipeTransformerResult();
     }
 
     private static final class CompositeUnificationLookup implements UnificationLookup {

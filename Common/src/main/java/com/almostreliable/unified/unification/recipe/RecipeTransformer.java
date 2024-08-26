@@ -204,10 +204,11 @@ public class RecipeTransformer {
     }
 
     public static class Result {
+
         private final Multimap<ResourceLocation, RecipeLink> allRecipesByType = HashMultimap.create();
         private final Multimap<ResourceLocation, RecipeLink> unifiedRecipesByType = HashMultimap.create();
-
         private final Multimap<ResourceLocation, RecipeLink.DuplicateLink> duplicatesByType = HashMultimap.create();
+        @Nullable private Set<ResourceLocation> unifiedRecipeIds;
 
         private void add(RecipeLink link) {
             if (allRecipesByType.containsEntry(link.getType(), link)) {
@@ -218,7 +219,6 @@ public class RecipeTransformer {
             if (link.isUnified()) {
                 unifiedRecipesByType.put(link.getType(), link);
             }
-
             if (link.hasDuplicateLink()) {
                 duplicatesByType.put(link.getType(), link.getDuplicateLink());
             }
@@ -228,27 +228,39 @@ public class RecipeTransformer {
             links.forEach(this::add);
         }
 
-        public Collection<RecipeLink> getRecipes(ResourceLocation type) {
+        public Collection<RecipeLink> getRecipesByType(ResourceLocation type) {
             return Collections.unmodifiableCollection(allRecipesByType.get(type));
         }
 
-        public Collection<RecipeLink> getUnifiedRecipes(ResourceLocation type) {
+        public Collection<ResourceLocation> getUnifiedRecipes() {
+            if (unifiedRecipeIds == null) {
+                unifiedRecipeIds = unifiedRecipesByType
+                    .values()
+                    .stream()
+                    .map(RecipeLink::getId)
+                    .collect(Collectors.toSet());
+            }
+
+            return unifiedRecipeIds;
+        }
+
+        public Collection<RecipeLink> getUnifiedRecipesByType(ResourceLocation type) {
             return Collections.unmodifiableCollection(unifiedRecipesByType.get(type));
         }
 
-        public Collection<RecipeLink.DuplicateLink> getDuplicates(ResourceLocation type) {
+        public Collection<RecipeLink.DuplicateLink> getDuplicateRecipesByType(ResourceLocation type) {
             return Collections.unmodifiableCollection(duplicatesByType.get(type));
         }
 
-        public int getUnifiedRecipeCount() {
+        public int getUnifiedRecipesCount() {
             return unifiedRecipesByType.size();
         }
 
-        public int getDuplicatesCount() {
+        public int getDuplicateRecipesCount() {
             return duplicatesByType.size();
         }
 
-        public int getDuplicateRecipesCount() {
+        public int getTotalDuplicateRecipesCount() {
             return duplicatesByType.values().stream().mapToInt(l -> l.getRecipes().size()).sum();
         }
 
