@@ -36,23 +36,21 @@ public final class DebugHandler {
 
     private final DebugConfig config;
     private final String lastRun;
-    private final int recipesBefore;
 
+    private int recipesBefore = -1;
     private long startTime;
     private long endTime;
     @Nullable private RecipeTransformer.Result transformerResult;
 
-    private DebugHandler(int recipesBefore, DebugConfig config) {
+    public DebugHandler(DebugConfig config) {
         this.config = config;
         this.lastRun = "# Last run: " + DATE_FORMAT.format(new Date(System.currentTimeMillis()));
-        this.recipesBefore = recipesBefore;
     }
 
-    public static DebugHandler onRunStart(Map<ResourceLocation, JsonElement> recipes, UnificationLookup unificationLookup, DebugConfig config) {
-        DebugHandler handler = new DebugHandler(recipes.size(), config);
-        handler.dumpTags(unificationLookup);
-        handler.dumpRecipes(RECIPES_BEFORE, recipes);
-        return handler;
+    public void onRunStart(Map<ResourceLocation, JsonElement> recipes, UnificationLookup unificationLookup) {
+        dumpTags(unificationLookup);
+        dumpRecipes(RECIPES_BEFORE, recipes);
+        recipesBefore = recipes.size();
     }
 
     public void measure(Supplier<RecipeTransformer.Result> transformerSupplier) {
@@ -62,6 +60,7 @@ public final class DebugHandler {
     }
 
     public void onRunEnd(Map<ResourceLocation, JsonElement> recipes) {
+        Preconditions.checkArgument(recipesBefore >= 0, "recipesBefore not set");
         Preconditions.checkArgument(startTime > 0, "startTime not set");
         Preconditions.checkArgument(endTime > 0, "endTime not set");
         Preconditions.checkNotNull(transformerResult, "transformerResult not set");
@@ -122,12 +121,12 @@ public final class DebugHandler {
                 .append(lastRun).append("\n")
                 .append("# Statistics:\n")
                 .append("- Unified Recipes: ")
-                .append(transformerResult.getUnifiedRecipeCount())
+                .append(transformerResult.getUnifiedRecipesCount())
                 .append("\n")
                 .append("- Duplicate Recipes: ")
-                .append(transformerResult.getDuplicatesCount())
-                .append(" (Individual: ")
                 .append(transformerResult.getDuplicateRecipesCount())
+                .append(" (Individual: ")
+                .append(transformerResult.getTotalDuplicateRecipesCount())
                 .append(")\n")
                 .append("- Recipes Before: ")
                 .append(recipesBefore)
@@ -152,11 +151,11 @@ public final class DebugHandler {
                 .append("\n");
 
             getSortedUnifiedRecipeTypes().forEach(type -> {
-                int unifiedSize = transformerResult.getUnifiedRecipes(type).size();
-                int allSize = transformerResult.getRecipes(type).size();
-                int duplicatesSize = transformerResult.getDuplicates(type).size();
+                int unifiedSize = transformerResult.getUnifiedRecipesByType(type).size();
+                int allSize = transformerResult.getRecipesByType(type).size();
+                int duplicatesSize = transformerResult.getDuplicateRecipesByType(type).size();
                 int individualDuplicatesSize = transformerResult
-                    .getDuplicates(type)
+                    .getDuplicateRecipesByType(type)
                     .stream()
                     .mapToInt(l -> l.getRecipes().size())
                     .sum();
@@ -209,7 +208,7 @@ public final class DebugHandler {
             sb.append(lastRun).append("\n");
             getSortedUnifiedRecipeTypes().forEach(type -> {
                 Collection<RecipeLink.DuplicateLink> duplicates = transformerResult
-                    .getDuplicates(type)
+                    .getDuplicateRecipesByType(type)
                     .stream()
                     .sorted(Comparator.comparing(l -> l.getMaster().getId().toString()))
                     .toList();
@@ -229,7 +228,7 @@ public final class DebugHandler {
             .stream()
             .sorted(Comparator.comparing(r -> r.getId().toString()))
             .map(r -> "\t\t- " + r.getId() + "\n")
-            .collect(Collectors.joining("", String.format("\t%s\n", link.getMaster().getId().toString()), "\n"));
+            .collect(Collectors.joining("", String.format("\t%s\n", link.getMaster().getId()), "\n"));
     }
 
     private static <T> int getMaxLength(Collection<T> collection, ToIntFunction<T> function) {
@@ -255,8 +254,13 @@ public final class DebugHandler {
     private Stream<RecipeLink> getSortedUnifiedRecipes(ResourceLocation type) {
         Preconditions.checkNotNull(transformerResult);
         return transformerResult
-            .getUnifiedRecipes(type)
+            .getUnifiedRecipesByType(type)
             .stream()
             .sorted(Comparator.comparing(r -> r.getId().toString()));
+    }
+
+    public RecipeTransformer.Result getRecipeTransformerResult() {
+        Preconditions.checkNotNull(transformerResult, "transformerResult not available yet");
+        return transformerResult;
     }
 }
