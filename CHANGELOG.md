@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning].
 
 - added `end` stone variant to config defaults
 - added debug option to toggle logging invalid tag warnings, false by default
+- added logging for potentially broken recipes caused by unification
 
 ## [1.0.0] - 2024-08-22
 
