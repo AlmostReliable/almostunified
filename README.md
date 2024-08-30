@@ -34,7 +34,7 @@ Every release of this project is built on and published to the [BlameJared] mave
 
 ```groovy
 repositories {
-    maven { 
+    maven {
         url = 'https://maven.blamejared.com'
         name = 'BlameJared Maven'
     }
@@ -84,7 +84,17 @@ Do not use Fabric related features inside the `common` module!
 The logo was made by [mo_shark].
 
 ## **🎓 License**
-This project is All Rights Reserved.
+This project is All Rights Reserved. Forks should only be created with the intent of submitting changes to the upstream
+repository via pull requests.
+
+The license applies exclusively to the project's source code. Versions published on CurseForge and Modrinth may be used
+for gameplay and modpack creation, provided they are downloaded directly from these platforms. GitHub releases are
+intended for private use or as a fallback if CurseForge and Modrinth are unavailable.
+
+The project's API can be freely used in other mods, as long as this project is not an included dependency. This includes
+custom inclusion methods like Jar-in-Jar.
+
+Redistribution of builds or rehosting is strictly prohibited.
 
 <!-- Badges -->
 [workflow_status_badge]: https://img.shields.io/github/actions/workflow/status/AlmostReliable/almostunified/build.yml?branch=1.21.1&style=for-the-badge
