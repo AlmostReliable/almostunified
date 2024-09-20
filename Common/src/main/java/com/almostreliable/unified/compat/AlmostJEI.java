@@ -5,17 +5,22 @@ import com.almostreliable.unified.AlmostUnifiedFallbackRuntime;
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.config.UnifyConfig;
 import com.almostreliable.unified.recipe.CRTLookup;
+import com.almostreliable.unified.recipe.ClientRecipeTracker;
 import com.almostreliable.unified.utils.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.shedaniel.rei.plugincompatibilities.api.REIPluginCompatIgnore;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.category.extensions.IRecipeCategoryDecorator;
+import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -44,19 +49,40 @@ public class AlmostJEI implements IModPlugin {
         }
     }
 
-    public static <R> void handleIndicator(PoseStack stack, int mX, int mY, int posX, int posY, IRecipeCategory<R> recipeCategory, R recipe) {
-        var recipeId = recipeCategory.getRegistryName(recipe);
-        if (recipeId == null) return;
+    @Override
+    public void registerAdvanced(IAdvancedRegistration registration) {
+        var recipeTypes = registration.getJeiHelpers().getAllRecipeTypes();
+        recipeTypes.forEach(rt -> registration.addRecipeCategoryDecorator(rt, new Decorator<>()));
+    }
 
+    private static class Decorator<T> implements IRecipeCategoryDecorator<T> {
 
-        var link = CRTLookup.getLink(recipeId);
-        if (link == null) return;
+        private static final int RECIPE_BORDER_PADDING = 4;
 
-        var area = new Rect2i(posX, posY, RecipeIndicator.RENDER_SIZE, RecipeIndicator.RENDER_SIZE);
-        RecipeIndicator.renderIndicator(stack, area);
-        if (mX >= area.getX() && mX <= area.getX() + area.getWidth() &&
-            mY >= area.getY() && mY <= area.getY() + area.getHeight()) {
-            Utils.renderTooltip(stack, mX, mY, RecipeIndicator.constructTooltip(link));
+        @Override
+        public void draw(T recipe, IRecipeCategory<T> recipeCategory, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
+            var recipeLink = resolveLink(recipeCategory, recipe);
+            if (recipeLink == null) return;
+
+            var pX = recipeCategory.getWidth() + (2 * RECIPE_BORDER_PADDING) - RecipeIndicator.RENDER_SIZE;
+            var pY = recipeCategory.getHeight() + (2 * RECIPE_BORDER_PADDING) - RecipeIndicator.RENDER_SIZE;
+            RecipeIndicator.renderIndicator(
+                    poseStack,
+                    new Rect2i(pX, pY, RecipeIndicator.RENDER_SIZE, RecipeIndicator.RENDER_SIZE)
+            );
+
+            if (mouseX >= pX && mouseX <= pX + RecipeIndicator.RENDER_SIZE &&
+                mouseY >= pY && mouseY <= pY + RecipeIndicator.RENDER_SIZE) {
+                RecipeIndicator.renderTooltip(poseStack, recipeLink, mouseX, mouseY);
+            }
+        }
+
+        @Nullable
+        private static <R> ClientRecipeTracker.ClientRecipeLink resolveLink(IRecipeCategory<R> recipeCategory, R recipe) {
+            var recipeId = recipeCategory.getRegistryName(recipe);
+            if (recipeId == null) return null;
+
+            return CRTLookup.getLink(recipeId);
         }
     }
 }

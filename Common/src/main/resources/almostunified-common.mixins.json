@@ -3,7 +3,6 @@
   "minVersion": "0.8.5",
   "package": "com.almostreliable.unified.mixin",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "com.almostreliable.unified.mixin.AlmostMixinPlugin",
   "mixins": [
     "runtime.RecipeManagerMixin",
     "runtime.TagLoaderMixin",
@@ -11,7 +10,6 @@
     "unifier.TieredItemMixin"
   ],
   "client": [
-    "compat.JeiRecipeLayoutMixin",
     "runtime.ClientPacketListenerMixin"
   ],
   "injectors": {

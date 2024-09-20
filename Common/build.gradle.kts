@@ -34,7 +34,6 @@ dependencies {
 
     // compile time mods
     modCompileOnly("mezz.jei:jei-$minecraftVersion-common-api:$jeiVersion") // required for jei plugin
-    modCompileOnly("mezz.jei:jei-$minecraftVersion-lib:$jeiVersion") // required for jei mixin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$reiVersion") // required for rei plugin
     modCompileOnly("dev.emi:emi-xplat-intermediary:$emiVersion+$minecraftVersion:api") // required for emi plugin
 

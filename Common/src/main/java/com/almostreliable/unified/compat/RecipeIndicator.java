@@ -5,6 +5,7 @@ import com.almostreliable.unified.utils.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
@@ -40,6 +41,20 @@ public final class RecipeIndicator {
                 Component.literal(""),
                 Component.translatable(Utils.prefix("warning")).withStyle(c -> c.withColor(ChatFormatting.RED))
         );
+    }
+
+    static void renderTooltip(PoseStack poseStack, ClientRecipeLink link, double mouseX, double mouseY) {
+        var mc = Minecraft.getInstance();
+        var font = mc.font;
+        var screen = mc.screen;
+        if (screen == null) return;
+
+        var tooltip = constructTooltip(link).stream()
+                .map(c -> font.split(c, screen.width - (int) mouseX - 200))
+                .flatMap(List::stream)
+                .toList();
+
+        screen.renderTooltip(poseStack, tooltip, (int) mouseX, (int) mouseY);
     }
 
     static void renderIndicator(PoseStack poseStack, Rect2i area) {
