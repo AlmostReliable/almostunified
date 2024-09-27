@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning].
 - added `end` stone variant to config defaults
 - added debug option to toggle logging invalid tag warnings, false by default
 - added logging for potentially broken recipes caused by unification
+- added support for Extended Industrialization ([#92](https://github.com/AlmostReliable/almostunified/pull/92))
 - fixed unification for EnderIO outputs
 - removed EnderIO unifier since it's fully supported by the generic unifier
 
