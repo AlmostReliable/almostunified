@@ -39,7 +39,7 @@ dependencies {
     // compile time
     modCompileOnly("mezz.jei:jei-$minecraftVersion-fabric-api:$jeiVersion") // required for common jei plugin
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:$reiVersion") // required for common rei plugin
-    modCompileOnly("dev.emi:emi-fabric:$emiVersion+1.21:api") // required for common emi plugin TODO: replace on EMI release
+    modCompileOnly("dev.emi:emi-fabric:$emiVersion+$minecraftVersion:api") // required for common emi plugin
 
     // runtime
     if (enableRuntimeRecipeViewer == "true") {
@@ -47,7 +47,7 @@ dependencies {
             when (fabricRecipeViewer) {
                 "jei" -> "mezz.jei:jei-$minecraftVersion-fabric:$jeiVersion"
                 "rei" -> "me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion"
-                "emi" -> "dev.emi:emi-fabric:$emiVersion+1.21" // TODO: replace on EMI release
+                "emi" -> "dev.emi:emi-fabric:$emiVersion+$minecraftVersion"
                 else -> throw GradleException("Invalid fabricRecipeViewer value: $fabricRecipeViewer")
             }
         )
