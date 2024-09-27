@@ -9,7 +9,6 @@ import com.almostreliable.unified.api.unification.bundled.ShapedRecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
 import com.almostreliable.unified.compat.unification.ArsNouveauRecipeUnifier;
 import com.almostreliable.unified.compat.unification.CyclicRecipeUnifier;
-import com.almostreliable.unified.compat.unification.EnderIORecipeUnifier;
 import com.almostreliable.unified.compat.unification.ImmersiveEngineeringRecipeUnifier;
 import com.almostreliable.unified.compat.unification.IntegratedDynamicsRecipeUnifier;
 import com.almostreliable.unified.compat.unification.MekanismRecipeUnifier;
@@ -38,7 +37,6 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
             ModConstants.ARS_SCALAES
         ).forEach(modId -> registry.registerForModId(modId, new ArsNouveauRecipeUnifier()));
         registry.registerForModId(ModConstants.CYCLIC, new CyclicRecipeUnifier());
-        registry.registerForModId(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
         registry.registerForModId(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         registry.registerForModId(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
         registry.registerForModId(ModConstants.MEKANISM, new MekanismRecipeUnifier());
