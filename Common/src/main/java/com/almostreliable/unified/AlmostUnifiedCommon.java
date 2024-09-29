@@ -11,7 +11,6 @@ import com.almostreliable.unified.config.StartupConfig;
 import com.almostreliable.unified.core.AlmostUnifiedRuntimeImpl;
 import com.almostreliable.unified.unification.loot.LootUnification;
 import com.almostreliable.unified.utils.CustomLogger;
-import com.almostreliable.unified.utils.RecipeErrorHandler;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 
 import com.google.common.base.Preconditions;
@@ -48,10 +47,11 @@ public final class AlmostUnifiedCommon {
 
     public static void onRecipeManagerError(ResourceLocation recipe) {
         assert RUNTIME != null;
-        RecipeErrorHandler.collect(RUNTIME.getRecipeTransformerResult(), recipe);
+        RUNTIME.getDebugHandler().collectRecipeError(recipe);
     }
 
     public static void onRecipeManagerEnd() {
-        RecipeErrorHandler.finish();
+        assert RUNTIME != null;
+        RUNTIME.getDebugHandler().finish();
     }
 }

@@ -230,8 +230,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         return placeholders;
     }
 
-    public RecipeTransformer.Result getRecipeTransformerResult() {
-        return debugHandler.getRecipeTransformerResult();
+    public DebugHandler getDebugHandler() {
+        return debugHandler;
     }
 
     private static final class CompositeUnificationLookup implements UnificationLookup {

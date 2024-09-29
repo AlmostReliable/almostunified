@@ -2,6 +2,7 @@ package com.almostreliable.unified.utils;
 
 import net.minecraft.resources.ResourceLocation;
 
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.config.DebugConfig;
 import com.almostreliable.unified.unification.recipe.RecipeLink;
@@ -18,7 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
@@ -34,6 +37,7 @@ public final class DebugHandler {
     private static final String TAGS = "tags.txt";
     private static final String UNIFICATION = "unification.txt";
 
+    private final Set<ResourceLocation> recipeErrors = new HashSet<>();
     private final DebugConfig config;
     private final String lastRun;
 
@@ -69,6 +73,28 @@ public final class DebugHandler {
         dumpOverview(recipes.size());
         dumpUnification();
         dumpDuplicates();
+    }
+
+    public void collectRecipeError(ResourceLocation recipeId) {
+        Preconditions.checkNotNull(transformerResult, "transformerResult not set");
+        if (transformerResult.getUnifiedRecipes().contains(recipeId)) {
+            recipeErrors.add(recipeId);
+        }
+    }
+
+    public void finish() {
+        if (!recipeErrors.isEmpty()) {
+            AlmostUnifiedCommon.LOGGER.error(
+                "The following recipes were unified and threw exceptions when being loaded: {}",
+                recipeErrors
+            );
+            AlmostUnifiedCommon.LOGGER.warn(
+                "Try to add them to the ignore list and if the problem is gone, report it to the Almost Unified developers."
+            );
+        }
+
+        recipeErrors.clear();
+        transformerResult = null;
     }
 
     private void dumpTags(UnificationLookup unificationLookup) {
@@ -257,10 +283,5 @@ public final class DebugHandler {
             .getUnifiedRecipesByType(type)
             .stream()
             .sorted(Comparator.comparing(r -> r.getId().toString()));
-    }
-
-    public RecipeTransformer.Result getRecipeTransformerResult() {
-        Preconditions.checkNotNull(transformerResult, "transformerResult not available yet");
-        return transformerResult;
     }
 }
