@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## Unreleased
-- /
+
+- fixed recipe viewer integration endpoints for Fabric
 
 ## [1.1.0] - 2024-09-27
 
