@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## Unreleased
+- /
+
+## [1.2.0] - 2024-10-06
 
 - added support for custom ingredient types
 - added support for NeoForge compound ingredients
@@ -34,5 +37,6 @@ Initial 1.21.1 port.
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[1.2.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.0
 [1.1.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.1.0
 [1.0.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.0.0
