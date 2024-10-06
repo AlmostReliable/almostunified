@@ -19,6 +19,7 @@ public interface ModConstants {
     String ARS_NOUVEAU = "ars_nouveau";
     String ARS_SCALAES = "ars_scalaes";
     String CYCLIC = "cyclic";
+    String ENDER_IO = "enderio";
     String GREGTECH_MODERN = "gtceu";
     String IMMERSIVE_ENGINEERING = "immersiveengineering";
     String INTEGRATED_DYNAMICS = "integrateddynamics";
