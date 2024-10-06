@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.api.unification.UnificationSettings;
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifierRegistry;
 import com.almostreliable.unified.api.unification.recipe.RecipeJson;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
@@ -36,12 +37,14 @@ import java.util.stream.Collectors;
 
 public class RecipeTransformer {
 
+    private final CustomIngredientUnifierRegistry customIngredientUnifierRegistry;
     private final RecipeUnifierRegistry factory;
     private final Collection<? extends UnificationSettings> unificationSettings;
     private final DuplicateConfig duplicateConfig;
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(RecipeUnifierRegistry factory, Collection<? extends UnificationSettings> unificationSettings) {
+    public RecipeTransformer(CustomIngredientUnifierRegistry customIngredientUnifierRegistry, RecipeUnifierRegistry factory, Collection<? extends UnificationSettings> unificationSettings) {
+        this.customIngredientUnifierRegistry = customIngredientUnifierRegistry;
         this.factory = factory;
         this.unificationSettings = unificationSettings;
         this.duplicateConfig = Config.load(DuplicateConfig.NAME, DuplicateConfig.SERIALIZER);
@@ -188,7 +191,7 @@ public class RecipeTransformer {
                     continue;
                 }
 
-                UnificationHelperImpl helper = new UnificationHelperImpl(settings);
+                UnificationHelperImpl helper = new UnificationHelperImpl(customIngredientUnifierRegistry, settings);
                 RecipeUnifier unifier = factory.getRecipeUnifier(recipe);
                 unifier.unify(helper, json);
             }

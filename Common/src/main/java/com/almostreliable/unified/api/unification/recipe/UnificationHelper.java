@@ -1,5 +1,7 @@
 package com.almostreliable.unified.api.unification.recipe;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.almostreliable.unified.api.constant.RecipeConstants;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
 import com.almostreliable.unified.api.unification.UnificationLookup;
@@ -34,6 +36,16 @@ public interface UnificationHelper {
      * @return the {@link UnificationLookup} this helper is based on
      */
     UnificationLookup getUnificationLookup();
+
+    /**
+     * Returns the {@link CustomIngredientUnifier} for the given type used in the {@link JsonObject}.
+     *
+     * @param type the value of the type property of the {@link JsonObject} as a {@link ResourceLocation}
+     * @return the {@link CustomIngredientUnifier} or null if no custom unifier is associated with the given type
+     * @since 1.2.0
+     */
+    @Nullable
+    CustomIngredientUnifier getCustomIngredientUnifier(ResourceLocation type);
 
     /**
      * Fetches all entries of the given {@link RecipeJson} under the specified keys and unifies them as inputs.<br>

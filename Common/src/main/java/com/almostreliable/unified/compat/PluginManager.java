@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifierRegistry;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
 
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +60,10 @@ public final class PluginManager {
         AlmostUnifiedCommon.LOGGER.info("Loaded plugins: {}", ids);
 
         INSTANCE = new PluginManager(sortedPlugins);
+    }
+
+    public void registerCustomIngredientUnifiers(CustomIngredientUnifierRegistry registry) {
+        forEachPlugin(plugin -> plugin.registerCustomIngredientUnifiers(registry));
     }
 
     public void registerRecipeUnifiers(RecipeUnifierRegistry registry) {

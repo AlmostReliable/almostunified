@@ -9,6 +9,8 @@ import com.almostreliable.unified.api.unification.ModPriorities;
 import com.almostreliable.unified.api.unification.StoneVariants;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
 import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifier;
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifierRegistry;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.UnificationHelper;
 import com.almostreliable.unified.unification.ModPrioritiesImpl;
@@ -109,7 +111,7 @@ public class TestUtils {
 
 
     public static UnificationHelper recipeHelper() {
-        return new UnificationHelperImpl(unificationLookup());
+        return new UnificationHelperImpl(new CustomIngredientUnifierRegistryImpl(), unificationLookup());
     }
 
     public static void assertUnify(RecipeUnifier unifier, String jsonActual, String jsonExpected) {
@@ -173,5 +175,17 @@ public class TestUtils {
         }
 
         fail(sb.toString());
+    }
+
+    private static class CustomIngredientUnifierRegistryImpl implements CustomIngredientUnifierRegistry {
+
+        @Override
+        public void registerForType(ResourceLocation type, CustomIngredientUnifier customIngredientUnifier) {}
+
+        @Nullable
+        @Override
+        public CustomIngredientUnifier getCustomIngredientUnifier(ResourceLocation type) {
+            return null;
+        }
     }
 }

@@ -2,11 +2,13 @@ package com.almostreliable.unified.api.plugin;
 
 import net.minecraft.resources.ResourceLocation;
 
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifier;
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifierRegistry;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
 
 /**
- * Implemented by plugins that wish to register their own {@link RecipeUnifier}s.
+ * Implemented by plugins that wish to register their own unifiers.
  * <p>
  * NeoForge plugins should attach the {@link AlmostUnifiedNeoPlugin} annotation for discovery.<br>
  * Fabric plugins should use the {@code almostunified} entrypoint.
@@ -34,4 +36,12 @@ public interface AlmostUnifiedPlugin {
      * @param registry the {@link RecipeUnifierRegistry} to register with
      */
     default void registerRecipeUnifiers(RecipeUnifierRegistry registry) {}
+
+    /**
+     * Allows registration of custom {@link CustomIngredientUnifier}s.
+     *
+     * @param registry the {@link CustomIngredientUnifierRegistry} to register with
+     * @since 1.2.0
+     */
+    default void registerCustomIngredientUnifiers(CustomIngredientUnifierRegistry registry) {}
 }

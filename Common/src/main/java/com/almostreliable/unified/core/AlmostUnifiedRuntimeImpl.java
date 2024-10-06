@@ -14,6 +14,7 @@ import com.almostreliable.unified.api.unification.TagSubstitutions;
 import com.almostreliable.unified.api.unification.UnificationEntry;
 import com.almostreliable.unified.api.unification.UnificationLookup;
 import com.almostreliable.unified.api.unification.UnificationSettings;
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifierRegistry;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
 import com.almostreliable.unified.compat.PluginManager;
 import com.almostreliable.unified.compat.viewer.ItemHider;
@@ -25,6 +26,7 @@ import com.almostreliable.unified.config.UnificationConfig;
 import com.almostreliable.unified.unification.TagInheritance;
 import com.almostreliable.unified.unification.TagSubstitutionsImpl;
 import com.almostreliable.unified.unification.UnificationSettingsImpl;
+import com.almostreliable.unified.unification.recipe.CustomIngredientUnifierRegistryImpl;
 import com.almostreliable.unified.unification.recipe.RecipeTransformer;
 import com.almostreliable.unified.unification.recipe.RecipeUnifierRegistryImpl;
 import com.almostreliable.unified.utils.DebugHandler;
@@ -48,14 +50,16 @@ import java.util.stream.Collectors;
 public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
     private final Collection<? extends UnificationSettings> unificationSettings;
+    private final CustomIngredientUnifierRegistry customIngredientUnifierRegistry;
     private final RecipeUnifierRegistry recipeUnifierRegistry;
     private final TagSubstitutions tagSubstitutions;
     private final Placeholders placeholders;
     private final UnificationLookup compositeUnificationLookup;
     private final DebugHandler debugHandler;
 
-    private AlmostUnifiedRuntimeImpl(Collection<? extends UnificationSettings> unificationSettings, RecipeUnifierRegistry recipeUnifierRegistry, TagSubstitutions tagSubstitutions, Placeholders placeholders, DebugConfig debugConfig) {
+    private AlmostUnifiedRuntimeImpl(Collection<? extends UnificationSettings> unificationSettings, CustomIngredientUnifierRegistry customIngredientUnifierRegistry, RecipeUnifierRegistry recipeUnifierRegistry, TagSubstitutions tagSubstitutions, Placeholders placeholders, DebugConfig debugConfig) {
         this.unificationSettings = unificationSettings;
+        this.customIngredientUnifierRegistry = customIngredientUnifierRegistry;
         this.recipeUnifierRegistry = recipeUnifierRegistry;
         this.tagSubstitutions = tagSubstitutions;
         this.placeholders = placeholders;
@@ -79,6 +83,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
             debugConfig.shouldLogInvalidTags()
         );
 
+        CustomIngredientUnifierRegistry customIngredientUnifierRegistry = new CustomIngredientUnifierRegistryImpl();
+        PluginManager.instance().registerCustomIngredientUnifiers(customIngredientUnifierRegistry);
         RecipeUnifierRegistry recipeUnifierRegistry = new RecipeUnifierRegistryImpl();
         PluginManager.instance().registerRecipeUnifiers(recipeUnifierRegistry);
         // TODO: add plugin support for registering config defaults
@@ -102,6 +108,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
         return new AlmostUnifiedRuntimeImpl(
             unificationSettings,
+            customIngredientUnifierRegistry,
             recipeUnifierRegistry,
             tagSubstitutions,
             placeholderConfig,
@@ -191,7 +198,9 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         debugHandler.onRunStart(recipes, compositeUnificationLookup);
 
         debugHandler.measure(() -> {
-            var transformer = new RecipeTransformer(recipeUnifierRegistry, unificationSettings);
+            var transformer = new RecipeTransformer(customIngredientUnifierRegistry,
+                recipeUnifierRegistry,
+                unificationSettings);
             return transformer.transformRecipes(recipes);
         });
 

@@ -7,6 +7,8 @@ import net.minecraft.tags.TagKey;
 import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.constant.RecipeConstants;
 import com.almostreliable.unified.api.unification.UnificationLookup;
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifier;
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifierRegistry;
 import com.almostreliable.unified.api.unification.recipe.RecipeJson;
 import com.almostreliable.unified.api.unification.recipe.UnificationHelper;
 
@@ -18,7 +20,14 @@ import com.google.gson.JsonPrimitive;
 
 import org.jetbrains.annotations.Nullable;
 
-public record UnificationHelperImpl(UnificationLookup getUnificationLookup) implements UnificationHelper {
+public record UnificationHelperImpl(CustomIngredientUnifierRegistry customIngredientUnifierRegistry,
+                                    UnificationLookup getUnificationLookup) implements UnificationHelper {
+
+    @Nullable
+    @Override
+    public CustomIngredientUnifier getCustomIngredientUnifier(ResourceLocation type) {
+        return customIngredientUnifierRegistry.getCustomIngredientUnifier(type);
+    }
 
     @Override
     public boolean unifyInputs(RecipeJson recipe, String... keys) {
@@ -57,6 +66,9 @@ public record UnificationHelperImpl(UnificationLookup getUnificationLookup) impl
 
     @Override
     public boolean unifyInputObject(JsonObject jsonObject, String... keys) {
+        Boolean modified = handleCustomIngredientUnification(jsonObject);
+        if (modified != null) return modified;
+
         boolean changed = false;
 
         for (String key : keys.length == 0 ? RecipeConstants.DEFAULT_INPUT_INNER_KEYS : keys) {
@@ -157,6 +169,9 @@ public record UnificationHelperImpl(UnificationLookup getUnificationLookup) impl
 
     @Override
     public boolean unifyOutputObject(JsonObject jsonObject, boolean tagsToItems, String... keys) {
+        Boolean modified = handleCustomIngredientUnification(jsonObject);
+        if (modified != null) return modified;
+
         boolean changed = false;
 
         for (String key : keys.length == 0 ? RecipeConstants.DEFAULT_OUTPUT_INNER_KEYS : keys) {
@@ -219,5 +234,35 @@ public record UnificationHelperImpl(UnificationLookup getUnificationLookup) impl
         var entry = getUnificationLookup.getVariantItemTarget(item);
         if (entry == null || entry.id().equals(item)) return null;
         return new JsonPrimitive(entry.id().toString());
+    }
+
+    /**
+     * Handles custom ingredient unification.
+     * <p>
+     * This method checks if the given {@link JsonObject} has a {@code type} property and if a
+     * {@link CustomIngredientUnifier} is associated with that type. If not, it will return null and the default logic
+     * should continue. Otherwise, it will return whether the {@link CustomIngredientUnifier} modified the
+     * {@link JsonObject}.
+     *
+     * @param jsonObject the ingredient {@link JsonObject} to unify
+     * @return true if the ingredient was changed, false otherwise, or null if no unifier was found
+     */
+    @Nullable
+    private Boolean handleCustomIngredientUnification(JsonObject jsonObject) {
+        if (!(jsonObject.get("type") instanceof JsonPrimitive jsonPrimitive)) {
+            return null;
+        }
+
+        ResourceLocation type = ResourceLocation.tryParse(jsonPrimitive.getAsString());
+        if (type == null) return null;
+
+        CustomIngredientUnifier unifier = getCustomIngredientUnifier(type);
+        if (unifier == null) return null;
+
+        jsonObject.remove("type"); // avoids looping when calling helper methods within ingredient unifiers
+        boolean changed = unifier.unify(this, jsonObject);
+        jsonObject.addProperty("type", type.toString());
+
+        return changed;
     }
 }
