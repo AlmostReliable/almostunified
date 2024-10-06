@@ -7,12 +7,12 @@ import com.almostreliable.unified.api.unification.recipe.UnificationHelper;
 
 public class MekanismRecipeUnifier implements RecipeUnifier {
 
-    private static final String MAIN_INPUT = "mainInput";
-    private static final String ITEM_INPUT = "itemInput";
-    private static final String EXTRA_INPUT = "extraInput";
-    private static final String MAIN_OUTPUT = "mainOutput";
-    private static final String ITEM_OUTPUT = "itemOutput";
-    private static final String SECONDARY_OUTPUT = "secondaryOutput";
+    private static final String MAIN_INPUT = "main_input";
+    private static final String ITEM_INPUT = "item_input";
+    private static final String EXTRA_INPUT = "extra_input";
+    private static final String MAIN_OUTPUT = "main_output";
+    private static final String ITEM_OUTPUT = "item_output";
+    private static final String SECONDARY_OUTPUT = "secondary_output";
 
     @Override
     public void unify(UnificationHelper helper, RecipeJson recipe) {

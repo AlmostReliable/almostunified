@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning].
 
 - fixed recipe viewer integration endpoints for Fabric
 - fixed unnecessary memory usage for debug handler
+- fixed Mekanism recipe unifier using wrong recipe keys
 
 ## [1.1.0] - 2024-09-27
 
