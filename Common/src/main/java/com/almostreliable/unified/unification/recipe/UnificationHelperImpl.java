@@ -20,13 +20,15 @@ import com.google.gson.JsonPrimitive;
 
 import org.jetbrains.annotations.Nullable;
 
-public record UnificationHelperImpl(CustomIngredientUnifierRegistry customIngredientUnifierRegistry,
-                                    UnificationLookup getUnificationLookup) implements UnificationHelper {
+public record UnificationHelperImpl(
+    CustomIngredientUnifierRegistry ingredientUnifierRegistry,
+    UnificationLookup getUnificationLookup
+) implements UnificationHelper {
 
     @Nullable
     @Override
     public CustomIngredientUnifier getCustomIngredientUnifier(ResourceLocation type) {
-        return customIngredientUnifierRegistry.getCustomIngredientUnifier(type);
+        return ingredientUnifierRegistry.getCustomIngredientUnifier(type);
     }
 
     @Override

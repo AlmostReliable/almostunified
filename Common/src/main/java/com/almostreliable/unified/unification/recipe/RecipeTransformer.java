@@ -37,15 +37,15 @@ import java.util.stream.Collectors;
 
 public class RecipeTransformer {
 
-    private final CustomIngredientUnifierRegistry customIngredientUnifierRegistry;
-    private final RecipeUnifierRegistry factory;
+    private final CustomIngredientUnifierRegistry ingredientUnifierRegistry;
+    private final RecipeUnifierRegistry recipeUnifierRegistry;
     private final Collection<? extends UnificationSettings> unificationSettings;
     private final DuplicateConfig duplicateConfig;
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(CustomIngredientUnifierRegistry customIngredientUnifierRegistry, RecipeUnifierRegistry factory, Collection<? extends UnificationSettings> unificationSettings) {
-        this.customIngredientUnifierRegistry = customIngredientUnifierRegistry;
-        this.factory = factory;
+    public RecipeTransformer(CustomIngredientUnifierRegistry ingredientUnifierRegistry, RecipeUnifierRegistry recipeUnifierRegistry, Collection<? extends UnificationSettings> unificationSettings) {
+        this.ingredientUnifierRegistry = ingredientUnifierRegistry;
+        this.recipeUnifierRegistry = recipeUnifierRegistry;
         this.unificationSettings = unificationSettings;
         this.duplicateConfig = Config.load(DuplicateConfig.NAME, DuplicateConfig.SERIALIZER);
     }
@@ -191,8 +191,8 @@ public class RecipeTransformer {
                     continue;
                 }
 
-                UnificationHelperImpl helper = new UnificationHelperImpl(customIngredientUnifierRegistry, settings);
-                RecipeUnifier unifier = factory.getRecipeUnifier(recipe);
+                UnificationHelperImpl helper = new UnificationHelperImpl(ingredientUnifierRegistry, settings);
+                RecipeUnifier unifier = recipeUnifierRegistry.getRecipeUnifier(recipe);
                 unifier.unify(helper, json);
             }
 
