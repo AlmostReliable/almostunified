@@ -22,7 +22,7 @@ import com.almostreliable.unified.api.unification.bundled.GenericRecipeUnifier;
 public interface RecipeUnifier {
 
     /**
-     * Uses of the given {@link UnificationHelper} to unify the given {@link RecipeJson}.
+     * Uses the given {@link UnificationHelper} to unify the given {@link RecipeJson}.
      * <p>
      * {@link RecipeJson} is a utility wrapper that allows to easily access recipe information such as the recipe id,
      * the recipe type and provides methods to check or modify the raw JSON.
