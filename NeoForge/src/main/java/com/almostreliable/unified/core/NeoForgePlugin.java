@@ -6,8 +6,10 @@ import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.api.unification.bundled.ShapedRecipeUnifier;
+import com.almostreliable.unified.api.unification.recipe.CustomIngredientUnifierRegistry;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
 import com.almostreliable.unified.compat.unification.ArsNouveauRecipeUnifier;
+import com.almostreliable.unified.compat.unification.CompoundIngredientUnifier;
 import com.almostreliable.unified.compat.unification.CyclicRecipeUnifier;
 import com.almostreliable.unified.compat.unification.ImmersiveEngineeringRecipeUnifier;
 import com.almostreliable.unified.compat.unification.IntegratedDynamicsRecipeUnifier;
@@ -48,6 +50,14 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
         registry.registerForRecipeType(
             ResourceLocation.fromNamespaceAndPath(ModConstants.THEURGY, "divination_rod"),
             ShapedRecipeUnifier.INSTANCE
+        );
+    }
+
+    @Override
+    public void registerCustomIngredientUnifiers(CustomIngredientUnifierRegistry registry) {
+        registry.registerForType(
+            ResourceLocation.fromNamespaceAndPath("neoforge", "compound"),
+            new CompoundIngredientUnifier()
         );
     }
 }
