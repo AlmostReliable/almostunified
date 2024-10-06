@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning].
 - added support for custom ingredient types
 - added support for NeoForge compound ingredients
 - added API endpoint for registering custom ingredient unifiers
+- added unification helper methods to convert tags to items
 - fixed recipe viewer integration endpoints for Fabric
 - fixed unnecessary memory usage for debug handler
 - fixed Mekanism recipe unifier using wrong recipe keys

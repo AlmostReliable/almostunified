@@ -1,6 +1,8 @@
 package com.almostreliable.unified.api.unification.recipe;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 import com.almostreliable.unified.api.constant.RecipeConstants;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
@@ -225,6 +227,27 @@ public interface UnificationHelper {
      * @return true if the tag was changed, false otherwise
      */
     boolean unifyOutputTag(JsonObject jsonObject, boolean tagsToItems);
+
+    /**
+     * Handles the tag to item replacement.
+     *
+     * @param jsonObject the {@link JsonObject} to unify containing the tag
+     * @param tag        the tag to replace with the target item
+     * @return true if the tag was changed, false otherwise
+     * @since 1.2.0
+     */
+    boolean handleTagToItemReplacement(JsonObject jsonObject, TagKey<Item> tag);
+
+    /**
+     * Handles the tag to item replacement.
+     *
+     * @param jsonObject the {@link JsonObject} to unify containing the tag
+     * @param key        the key the item should be stored under
+     * @param tag        the tag to replace with the target item
+     * @return true if the tag was changed, false otherwise
+     * @since 1.2.0
+     */
+    boolean handleTagToItemReplacement(JsonObject jsonObject, String key, TagKey<Item> tag);
 
     /**
      * Unifies a {@link JsonObject} as an item output.<br>

@@ -3,6 +3,7 @@ package com.almostreliable.unified.unification.recipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.constant.RecipeConstants;
@@ -196,18 +197,28 @@ public record UnificationHelperImpl(
         var tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(jsonPrimitive.getAsString()));
 
         if (tagsToItems) {
-            var entry = getUnificationLookup.getTagTargetItem(tag);
-            if (entry == null) return false;
-
-            jsonObject.remove(RecipeConstants.TAG);
-            jsonObject.addProperty(RecipeConstants.ITEM, entry.id().toString());
-            return true;
+            return handleTagToItemReplacement(jsonObject, tag);
         }
 
         var substituteTag = AlmostUnified.INSTANCE.getRuntimeOrThrow().getTagSubstitutions().getSubstituteTag(tag);
         if (substituteTag == null) return false;
 
         jsonObject.addProperty(RecipeConstants.TAG, substituteTag.location().toString());
+        return true;
+    }
+
+    @Override
+    public boolean handleTagToItemReplacement(JsonObject jsonObject, TagKey<Item> tag) {
+        return handleTagToItemReplacement(jsonObject, RecipeConstants.ITEM, tag);
+    }
+
+    @Override
+    public boolean handleTagToItemReplacement(JsonObject jsonObject, String key, TagKey<Item> tag) {
+        var entry = getUnificationLookup.getTagTargetItem(tag);
+        if (entry == null) return false;
+
+        jsonObject.remove(RecipeConstants.TAG);
+        jsonObject.addProperty(key, entry.id().toString());
         return true;
     }
 
