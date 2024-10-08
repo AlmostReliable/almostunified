@@ -1,5 +1,7 @@
 package com.almostreliable.unified.utils;
 
+import com.almostreliable.unified.unification.recipe.RecipeLink;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,8 +10,6 @@ import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -47,8 +47,8 @@ public final class JsonCompare {
     }
 
     @Nullable
-    public static JsonObject compareShaped(JsonObject first, JsonObject second, CompareSettings compareSettings) {
-        if (!matches(first, second, compareSettings)) return null;
+    public static JsonObject compareShaped(JsonObject first, JsonObject second, CompareContext compareContext) {
+        if (!matches(first, second, compareContext)) return null;
 
         JsonArray firstPattern = JsonUtils.arrayOrSelf(first.get("pattern"));
         JsonArray secondPattern = JsonUtils.arrayOrSelf(second.get("pattern"));
@@ -97,19 +97,17 @@ public final class JsonCompare {
         return keyMap;
     }
 
-    public static boolean matches(JsonObject first, JsonObject second, CompareSettings compareSettings) {
-        Collection<String> ignoredFields = compareSettings.getIgnoredFields();
-        if (ignoredFields.isEmpty() && first.size() != second.size()) {
+    public static boolean matches(JsonObject first, JsonObject second, CompareContext compareContext) {
+        CompareSettings compareSettings = compareContext.settings;
+        if (!compareSettings.hasIgnoredFields() && first.size() != second.size()) {
             return false;
         }
 
-        for (Map.Entry<String, JsonElement> firstEntry : first.entrySet()) {
-            if (ignoredFields.contains(firstEntry.getKey())) continue;
-
-            JsonElement firstElem = firstEntry.getValue();
-            JsonElement secondElem = second.get(firstEntry.getKey());
-
+        for (String field : compareContext.compareFields()) {
+            JsonElement secondElem = second.get(field);
             if (secondElem == null) return false;
+
+            JsonElement firstElem = first.get(field);
 
             // sanitize elements for implicit counts of 1
             if (compareSettings.handleImplicitCounts && needsSanitizing(firstElem, secondElem)) {
@@ -270,6 +268,17 @@ public final class JsonCompare {
         }
     }
 
+    public record CompareContext(CompareSettings settings, List<String> compareFields) {
+        public static CompareContext create(CompareSettings settings, RecipeLink curRecipe) {
+            Set<String> compareFields = curRecipe.getActual().keySet();
+            if (!settings.ignoredFields.isEmpty()) {
+                compareFields = new HashSet<>(compareFields);
+                compareFields.removeAll(settings.ignoredFields);
+            }
+            return new CompareContext(settings, List.copyOf(compareFields));
+        }
+    }
+
     public static class CompareSettings {
 
         public static final String IGNORED_FIELDS = "ignored_fields";
@@ -292,8 +301,8 @@ public final class JsonCompare {
             }
         }
 
-        public Set<String> getIgnoredFields() {
-            return Collections.unmodifiableSet(ignoredFields);
+        public boolean hasIgnoredFields() {
+            return !ignoredFields.isEmpty();
         }
 
         public JsonObject serialize() {
