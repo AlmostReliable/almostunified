@@ -2,6 +2,7 @@ package com.almostreliable.unified.unification.recipe;
 
 import net.minecraft.resources.ResourceLocation;
 
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.unification.recipe.RecipeData;
 import com.almostreliable.unified.utils.JsonCompare;
 
@@ -15,19 +16,35 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RecipeLink implements RecipeData {
+public final class RecipeLink implements RecipeData {
+
     private final ResourceLocation id;
     private final ResourceLocation type;
     private final JsonObject originalRecipe;
     @Nullable private DuplicateLink duplicateLink;
     @Nullable private JsonObject unifiedRecipe;
 
-    public RecipeLink(ResourceLocation id, JsonObject originalRecipe) {
+    private RecipeLink(ResourceLocation id, JsonObject originalRecipe, ResourceLocation type) {
         this.id = id;
         this.originalRecipe = originalRecipe;
+        this.type = type;
+    }
 
+    @Nullable
+    public static RecipeLink of(ResourceLocation id, JsonObject originalRecipe) {
+        ResourceLocation type = ResourceLocation.tryParse(originalRecipe.get("type").getAsString());
+        if (type == null) {
+            AlmostUnifiedCommon.LOGGER.warn("Could not detect recipe type for recipe '{}', skipping.", id);
+            return null;
+        }
+
+        return new RecipeLink(id, originalRecipe, type);
+    }
+
+    public static RecipeLink ofOrThrow(ResourceLocation id, JsonObject originalRecipe) {
         try {
-            this.type = ResourceLocation.parse(originalRecipe.get("type").getAsString());
+            ResourceLocation type = ResourceLocation.parse(originalRecipe.get("type").getAsString());
+            return new RecipeLink(id, originalRecipe, type);
         } catch (Exception e) {
             throw new IllegalArgumentException("could not detect recipe type for recipe " + id);
         }

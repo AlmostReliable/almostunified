@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 - added logging for cases where items are assigned to multiple unification tags
 - added logging for cases where the recipe type can't be found
+- added skipping logic for recipes with invalid recipe types
 - added Turkish translation ([#102](https://github.com/AlmostReliable/almostunified/pull/102))
 - fixed crash when runtime isn't loaded ([#101](https://github.com/AlmostReliable/almostunified/issues/101))
 - fixed newly created custom tags not being considered for unification

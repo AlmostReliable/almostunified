@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -111,7 +112,8 @@ public class RecipeTransformer {
         return recipes
             .entrySet()
             .stream()
-            .map(entry -> new RecipeLink(entry.getKey(), entry.getValue().getAsJsonObject()))
+            .map(entry -> RecipeLink.of(entry.getKey(), entry.getValue().getAsJsonObject()))
+            .filter(Objects::nonNull)
             .sorted(Comparator.comparing(entry -> entry.getId().toString()))
             .collect(Collectors.groupingByConcurrent(RecipeLink::getType));
     }
