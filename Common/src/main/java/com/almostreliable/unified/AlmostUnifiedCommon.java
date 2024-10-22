@@ -46,12 +46,12 @@ public final class AlmostUnifiedCommon {
     }
 
     public static void onRecipeManagerError(ResourceLocation recipe) {
-        assert RUNTIME != null;
+        if (RUNTIME == null) return;
         RUNTIME.getDebugHandler().collectRecipeError(recipe);
     }
 
     public static void onRecipeManagerEnd() {
-        assert RUNTIME != null;
+        if (RUNTIME == null) return;
         RUNTIME.getDebugHandler().finish();
     }
 }

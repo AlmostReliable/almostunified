@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## Unreleased
-- /
+
+- fixed crash when runtime isn't loaded ([#101](https://github.com/AlmostReliable/almostunified/issues/101))
 
 ## [1.2.0] - 2024-10-06
 
