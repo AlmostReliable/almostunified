@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.2.1] - 2024-10-22
 
 - added logging for cases where items are assigned to multiple unification tags
 - added logging for cases where the recipe type can't be found
@@ -37,6 +40,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.2.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.1
 [1.2.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.0
 [1.1.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.1.0
 [1.0.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.0.0
