@@ -76,12 +76,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         var tagConfig = Config.load(TagConfig.NAME, TagConfig.SERIALIZER);
         var unificationConfigs = UnificationConfig.safeLoadConfigs();
 
-        var unificationTags = bakeAndValidateTags(
-            unificationConfigs,
-            itemTags,
-            placeholderConfig,
-            debugConfig.shouldLogInvalidTags()
-        );
+        TagReloadHandler.applyCustomTags(tagConfig.getCustomTags(), itemTags);
 
         CustomIngredientUnifierRegistry ingredientUnifierRegistry = new CustomIngredientUnifierRegistryImpl();
         PluginManager.instance().registerCustomIngredientUnifiers(ingredientUnifierRegistry);
@@ -89,7 +84,13 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         PluginManager.instance().registerRecipeUnifiers(recipeUnifierRegistry);
         // TODO: add plugin support for registering config defaults
 
-        TagReloadHandler.applyCustomTags(tagConfig.getCustomTags(), itemTags);
+        var unificationTags = bakeAndValidateTags(
+            unificationConfigs,
+            itemTags,
+            placeholderConfig,
+            debugConfig.shouldLogInvalidTags()
+        );
+
         TagSubstitutionsImpl tagSubstitutions = TagSubstitutionsImpl.create(
             itemTags::has,
             unificationTags::contains,
