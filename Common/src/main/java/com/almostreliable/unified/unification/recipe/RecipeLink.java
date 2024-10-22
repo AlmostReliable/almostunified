@@ -27,7 +27,7 @@ public class RecipeLink implements RecipeData {
         this.originalRecipe = originalRecipe;
 
         try {
-            this.type = ResourceLocation.tryParse(originalRecipe.get("type").getAsString());
+            this.type = ResourceLocation.parse(originalRecipe.get("type").getAsString());
         } catch (Exception e) {
             throw new IllegalArgumentException("could not detect recipe type");
         }
