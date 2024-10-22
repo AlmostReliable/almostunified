@@ -29,7 +29,7 @@ public class RecipeLink implements RecipeData {
         try {
             this.type = ResourceLocation.parse(originalRecipe.get("type").getAsString());
         } catch (Exception e) {
-            throw new IllegalArgumentException("could not detect recipe type");
+            throw new IllegalArgumentException("could not detect recipe type for recipe " + id);
         }
     }
 
