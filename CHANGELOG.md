@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning].
 
 ## Unreleased
 
+- added better logging for cases where items are assigned to multiple unification tags
 - fixed crash when runtime isn't loaded ([#101](https://github.com/AlmostReliable/almostunified/issues/101))
 - fixed newly created custom tags not being considered for unification
+- fixed runtime not being available when items are assigned to multiple unification tags
 
 ## [1.2.0] - 2024-10-06
 
