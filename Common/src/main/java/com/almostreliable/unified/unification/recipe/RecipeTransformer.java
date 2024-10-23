@@ -112,6 +112,7 @@ public class RecipeTransformer {
         return recipes
             .entrySet()
             .stream()
+            .filter(entry -> entry.getValue() instanceof JsonObject jsonObject && !jsonObject.isEmpty())
             .map(entry -> RecipeLink.of(entry.getKey(), entry.getValue().getAsJsonObject()))
             .filter(Objects::nonNull)
             .sorted(Comparator.comparing(entry -> entry.getId().toString()))

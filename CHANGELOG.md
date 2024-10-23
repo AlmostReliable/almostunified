@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- fixed crash on empty recipe JSONs
 
 ## [1.2.1] - 2024-10-22
 
