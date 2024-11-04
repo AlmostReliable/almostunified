@@ -2,6 +2,7 @@ package com.almostreliable.unified.unification.recipe;
 
 import net.minecraft.resources.ResourceLocation;
 
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.unification.recipe.RecipeData;
 import com.almostreliable.unified.utils.JsonCompare;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RecipeLink implements RecipeData {
+public final class RecipeLink implements RecipeData {
     /**
      * This cache is an optimization to avoid creating many ResourceLocations for just a few different types.
      * Having fewer ResourceLocation instances can greatly speed up equality checking when these are used as map keys.
@@ -30,15 +31,30 @@ public class RecipeLink implements RecipeData {
     @Nullable private DuplicateLink duplicateLink;
     @Nullable private JsonObject unifiedRecipe;
 
-    public RecipeLink(ResourceLocation id, JsonObject originalRecipe) {
+    private RecipeLink(ResourceLocation id, JsonObject originalRecipe, ResourceLocation type) {
         this.id = id;
         this.originalRecipe = originalRecipe;
+        this.type = type;
+    }
 
+    @Nullable
+    public static RecipeLink of(ResourceLocation id, JsonObject originalRecipe) {
+        try {
+            ResourceLocation type = ResourceLocation.parse(originalRecipe.get("type").getAsString());
+            return new RecipeLink(id, originalRecipe, type);
+        } catch (Exception e) {
+            AlmostUnifiedCommon.LOGGER.warn("Could not detect recipe type for recipe '{}', skipping.", id);
+            return null;
+        }
+    }
+
+    public static RecipeLink ofOrThrow(ResourceLocation id, JsonObject originalRecipe) {
         try {
             String typeString = originalRecipe.get("type").getAsString();
-            this.type = PARSED_TYPE_CACHE.computeIfAbsent(typeString, ResourceLocation::parse);
+            ResourceLocation type = PARSED_TYPE_CACHE.computeIfAbsent(typeString, ResourceLocation::parse);
+            return new RecipeLink(id, originalRecipe, type);
         } catch (Exception e) {
-            throw new IllegalArgumentException("could not detect recipe type");
+            throw new IllegalArgumentException("could not detect recipe type for recipe " + id);
         }
     }
 

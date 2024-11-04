@@ -83,11 +83,11 @@ public class TestUtils {
 
     public static RecipeLink recipe(String jsonStr) {
         var json = json(jsonStr);
-        return new RecipeLink(ResourceLocation.parse("test"), json);
+        return RecipeLink.ofOrThrow(ResourceLocation.parse("test"), json);
     }
 
     public static RecipeLink recipe(JsonObject json) {
-        return new RecipeLink(ResourceLocation.parse("test"), json);
+        return RecipeLink.ofOrThrow(ResourceLocation.parse("test"), json);
     }
 
     public static JsonObject json(String json) {

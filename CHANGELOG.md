@@ -2,11 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog],
-and this project adheres to [Semantic Versioning].
-
 ## Unreleased
 - /
+
+## [1.2.2] - 2024-10-23
+
+- fixed crash on empty recipe JSONs
+
+## [1.2.1] - 2024-10-22
+
+- added logging for cases where items are assigned to multiple unification tags
+- added logging for cases where the recipe type can't be found
+- added skipping logic for recipes with invalid recipe types
+- added Turkish translation ([#102](https://github.com/AlmostReliable/almostunified/pull/102))
+- fixed crash when runtime isn't loaded ([#101](https://github.com/AlmostReliable/almostunified/issues/101))
+- fixed newly created custom tags not being considered for unification
+- fixed runtime not being available when items are assigned to multiple unification tags
 
 ## [1.2.0] - 2024-10-06
 
@@ -32,11 +43,9 @@ and this project adheres to [Semantic Versioning].
 
 Initial 1.21.1 port.
 
-<!-- Links -->
-[keep a changelog]: https://keepachangelog.com/en/1.0.0/
-[semantic versioning]: https://semver.org/spec/v2.0.0.html
-
 <!-- Versions -->
+[1.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.2
+[1.2.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.1
 [1.2.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.0
 [1.1.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.1.0
 [1.0.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.0.0

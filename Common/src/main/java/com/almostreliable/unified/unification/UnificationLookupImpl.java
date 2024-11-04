@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.unification.ModPriorities;
 import com.almostreliable.unified.api.unification.StoneVariants;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
@@ -117,15 +118,22 @@ public final class UnificationLookupImpl implements UnificationLookup {
 
     public static class Builder {
 
-        private final Set<UnificationEntry<Item>> createdEntries = new HashSet<>();
+        private final Map<UnificationEntry<Item>, TagKey<Item>> entriesToTags = new HashMap<>();
         private final Map<TagKey<Item>, Set<UnificationEntry<Item>>> tagsToEntries = new HashMap<>();
 
         private void put(TagKey<Item> tag, UnificationEntry<Item> entry) {
-            if (createdEntries.contains(entry)) {
-                throw new IllegalStateException("entry " + entry + " already created");
+            if (entriesToTags.containsKey(entry)) {
+                var boundTag = entriesToTags.get(entry);
+                AlmostUnifiedCommon.LOGGER.error(
+                    "Unification entry for item '{}' with tag '#{}' is already part of tag '#{}'.",
+                    entry.id(),
+                    tag.location(),
+                    boundTag.location()
+                );
+                return;
             }
 
-            createdEntries.add(entry);
+            entriesToTags.put(entry, tag);
             tagsToEntries.computeIfAbsent(tag, $ -> new HashSet<>()).add(entry);
         }
 
