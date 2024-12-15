@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- fixed `c:ores_in_ground` block tag not being considered when no respective item tag is present
 
 ## [1.2.2] - 2024-10-23
 
