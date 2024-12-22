@@ -63,17 +63,15 @@ public final class DuplicateConfig extends Config {
         ResourceLocation type = recipe.getType();
         Boolean ignored = ignoredRecipeTypesCache.get(type);
         if (ignored == null) {
-            ignored = computeIsRecipeTypeIgnored(recipe);
+            ignored = computeIsRecipeTypeIgnored(type.toString());
             ignoredRecipeTypesCache.put(type, ignored);
         }
         return ignored;
     }
 
-    private boolean computeIsRecipeTypeIgnored(RecipeLink recipe) {
-        ResourceLocation type = recipe.getType();
-        String typeString = type.toString();
+    private boolean computeIsRecipeTypeIgnored(String recipeType) {
         for (Pattern ignorePattern : ignoreRecipeTypes) {
-            if (ignorePattern.matcher(typeString).matches()) {
+            if (ignorePattern.matcher(recipeType).matches()) {
                 return true;
             }
         }
