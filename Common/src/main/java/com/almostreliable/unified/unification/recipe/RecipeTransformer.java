@@ -141,7 +141,8 @@ public class RecipeTransformer {
             return false;
         }
 
-        JsonCompare.CompareSettings compareSettings = duplicateConfig.getCompareSettings(curRecipe.getType());
+        JsonCompare.CompareContext compareContext = duplicateConfig.getCompareContext(curRecipe);
+
         boolean foundDuplicate = false;
         for (RecipeLink recipeLink : recipes) {
             if (!curRecipe.getType().equals(recipeLink.getType())) {
@@ -153,7 +154,7 @@ public class RecipeTransformer {
                 continue;
             }
 
-            foundDuplicate |= curRecipe.handleDuplicate(recipeLink, compareSettings);
+            foundDuplicate |= curRecipe.handleDuplicate(recipeLink, compareContext);
         }
 
         return foundDuplicate;

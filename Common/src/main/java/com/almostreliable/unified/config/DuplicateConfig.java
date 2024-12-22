@@ -60,18 +60,34 @@ public final class DuplicateConfig extends Config {
      * @return True if the recipe type is ignored, false otherwise
      */
     private boolean isRecipeTypeIgnored(RecipeLink recipe) {
-        return ignoredRecipeTypesCache.computeIfAbsent(recipe.getType(), type -> {
-            for (Pattern ignorePattern : ignoreRecipeTypes) {
-                if (ignorePattern.matcher(type.toString()).matches()) {
-                    return true;
-                }
+        ResourceLocation type = recipe.getType();
+        Boolean ignored = ignoredRecipeTypesCache.get(type);
+
+        if (ignored == null) {
+            ignored = computeIsRecipeTypeIgnored(type.toString());
+            ignoredRecipeTypesCache.put(type, ignored);
+        }
+
+        return ignored;
+    }
+
+    private boolean computeIsRecipeTypeIgnored(String recipeType) {
+        for (Pattern ignorePattern : ignoreRecipeTypes) {
+            if (ignorePattern.matcher(recipeType).matches()) {
+                return true;
             }
-            return false;
-        });
+        }
+
+        return false;
     }
 
     public JsonCompare.CompareSettings getCompareSettings(ResourceLocation type) {
         return overrideRules.getOrDefault(type, defaultRules);
+    }
+
+    public JsonCompare.CompareContext getCompareContext(RecipeLink recipe) {
+        JsonCompare.CompareSettings compareSettings = getCompareSettings(recipe.getType());
+        return JsonCompare.CompareContext.create(compareSettings, recipe);
     }
 
     public boolean shouldCompareAll() {

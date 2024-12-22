@@ -12,11 +12,18 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class RecipeLink implements RecipeData {
+    /**
+     * This cache is an optimization to avoid creating many ResourceLocations for just a few different types.
+     * Having fewer ResourceLocation instances can greatly speed up equality checking when these are used as map keys.
+     */
+    private static final Map<String, ResourceLocation> PARSED_TYPE_CACHE = new HashMap<>();
 
     private final ResourceLocation id;
     private final ResourceLocation type;
@@ -33,7 +40,8 @@ public final class RecipeLink implements RecipeData {
     @Nullable
     public static RecipeLink of(ResourceLocation id, JsonObject originalRecipe) {
         try {
-            ResourceLocation type = ResourceLocation.parse(originalRecipe.get("type").getAsString());
+            String typeString = originalRecipe.get("type").getAsString();
+            ResourceLocation type = PARSED_TYPE_CACHE.computeIfAbsent(typeString, ResourceLocation::parse);
             return new RecipeLink(id, originalRecipe, type);
         } catch (Exception e) {
             AlmostUnifiedCommon.LOGGER.warn("Could not detect recipe type for recipe '{}', skipping.", id);
@@ -43,7 +51,8 @@ public final class RecipeLink implements RecipeData {
 
     public static RecipeLink ofOrThrow(ResourceLocation id, JsonObject originalRecipe) {
         try {
-            ResourceLocation type = ResourceLocation.parse(originalRecipe.get("type").getAsString());
+            String typeString = originalRecipe.get("type").getAsString();
+            ResourceLocation type = PARSED_TYPE_CACHE.computeIfAbsent(typeString, ResourceLocation::parse);
             return new RecipeLink(id, originalRecipe, type);
         } catch (Exception e) {
             throw new IllegalArgumentException("could not detect recipe type for recipe " + id);
@@ -55,21 +64,21 @@ public final class RecipeLink implements RecipeData {
      * If base comparison succeed then the recipes will be compared for equality with rules from {@link JsonCompare.Rule}.
      * Rules are sorted, first rule with the highest priority will be used.
      *
-     * @param first           first recipe to compare
-     * @param second          second recipe to compare
-     * @param compareSettings Settings to use for comparison.
+     * @param first          first recipe to compare
+     * @param second         second recipe to compare
+     * @param compareContext Settings and context to use for comparison.
      * @return the recipe where rules are applied and the recipes are compared for equality, or null if the recipes are not equal
      */
     @Nullable
-    public static RecipeLink compare(RecipeLink first, RecipeLink second, JsonCompare.CompareSettings compareSettings) {
+    public static RecipeLink compare(RecipeLink first, RecipeLink second, JsonCompare.CompareContext compareContext) {
         JsonObject selfActual = first.getActual();
         JsonObject toCompareActual = second.getActual();
 
         JsonObject compare = null;
         if (first.getType().toString().equals("minecraft:crafting_shaped")) {
-            compare = JsonCompare.compareShaped(selfActual, toCompareActual, compareSettings);
-        } else if (JsonCompare.matches(selfActual, toCompareActual, compareSettings)) {
-            compare = JsonCompare.compare(compareSettings.getRules(), selfActual, toCompareActual);
+            compare = JsonCompare.compareShaped(selfActual, toCompareActual, compareContext);
+        } else if (JsonCompare.matches(selfActual, toCompareActual, compareContext)) {
+            compare = JsonCompare.compare(compareContext.settings().getRules(), selfActual, toCompareActual);
         }
 
         if (compare == null) return null;
@@ -145,11 +154,11 @@ public final class RecipeLink implements RecipeData {
      * Checks for duplicate against given recipe data. If recipe data already has a duplicate link,
      * the master from the link will be used. Otherwise, we will create a new link if needed.
      *
-     * @param otherRecipe     Recipe data to check for duplicate against.
-     * @param compareSettings Settings to use for comparison.
+     * @param otherRecipe    Recipe data to check for duplicate against.
+     * @param compareContext Settings and context to use for comparison.
      * @return True if recipe is a duplicate, false otherwise.
      */
-    public boolean handleDuplicate(RecipeLink otherRecipe, JsonCompare.CompareSettings compareSettings) {
+    public boolean handleDuplicate(RecipeLink otherRecipe, JsonCompare.CompareContext compareContext) {
         DuplicateLink selfDuplicate = getDuplicateLink();
         DuplicateLink otherDuplicate = otherRecipe.getDuplicateLink();
 
@@ -158,7 +167,7 @@ public final class RecipeLink implements RecipeData {
         }
 
         if (selfDuplicate == null && otherDuplicate == null) {
-            RecipeLink compare = compare(this, otherRecipe, compareSettings);
+            RecipeLink compare = compare(this, otherRecipe, compareContext);
             if (compare == null) {
                 return false;
             }
@@ -170,7 +179,7 @@ public final class RecipeLink implements RecipeData {
         }
 
         if (otherDuplicate != null) {
-            RecipeLink compare = compare(this, otherDuplicate.getMaster(), compareSettings);
+            RecipeLink compare = compare(this, otherDuplicate.getMaster(), compareContext);
             if (compare == null) {
                 return false;
             }
@@ -180,7 +189,7 @@ public final class RecipeLink implements RecipeData {
         }
 
         // selfDuplicate != null
-        RecipeLink compare = compare(selfDuplicate.getMaster(), otherRecipe, compareSettings);
+        RecipeLink compare = compare(selfDuplicate.getMaster(), otherRecipe, compareContext);
         if (compare == null) {
             return false;
         }
