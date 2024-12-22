@@ -271,7 +271,7 @@ public final class JsonCompare {
     public record CompareContext(CompareSettings settings, List<String> compareFields) {
         public static CompareContext create(CompareSettings settings, RecipeLink curRecipe) {
             Set<String> compareFields = curRecipe.getActual().keySet();
-            if (!settings.ignoredFields.isEmpty()) {
+            if (settings.hasIgnoredFields()) {
                 compareFields = new HashSet<>(compareFields);
                 compareFields.removeAll(settings.ignoredFields);
             }

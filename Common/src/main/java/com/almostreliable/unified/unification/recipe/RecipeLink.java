@@ -64,9 +64,9 @@ public final class RecipeLink implements RecipeData {
      * If base comparison succeed then the recipes will be compared for equality with rules from {@link JsonCompare.Rule}.
      * Rules are sorted, first rule with the highest priority will be used.
      *
-     * @param first           first recipe to compare
-     * @param second          second recipe to compare
-     * @param compareContext  Settings and context to use for comparison.
+     * @param first          first recipe to compare
+     * @param second         second recipe to compare
+     * @param compareContext Settings and context to use for comparison.
      * @return the recipe where rules are applied and the recipes are compared for equality, or null if the recipes are not equal
      */
     @Nullable
@@ -154,8 +154,8 @@ public final class RecipeLink implements RecipeData {
      * Checks for duplicate against given recipe data. If recipe data already has a duplicate link,
      * the master from the link will be used. Otherwise, we will create a new link if needed.
      *
-     * @param otherRecipe     Recipe data to check for duplicate against.
-     * @param compareContext  Settings and context to use for comparison.
+     * @param otherRecipe    Recipe data to check for duplicate against.
+     * @param compareContext Settings and context to use for comparison.
      * @return True if recipe is a duplicate, false otherwise.
      */
     public boolean handleDuplicate(RecipeLink otherRecipe, JsonCompare.CompareContext compareContext) {

@@ -62,10 +62,12 @@ public final class DuplicateConfig extends Config {
     private boolean isRecipeTypeIgnored(RecipeLink recipe) {
         ResourceLocation type = recipe.getType();
         Boolean ignored = ignoredRecipeTypesCache.get(type);
+
         if (ignored == null) {
             ignored = computeIsRecipeTypeIgnored(type.toString());
             ignoredRecipeTypesCache.put(type, ignored);
         }
+
         return ignored;
     }
 
@@ -75,6 +77,7 @@ public final class DuplicateConfig extends Config {
                 return true;
             }
         }
+
         return false;
     }
 
