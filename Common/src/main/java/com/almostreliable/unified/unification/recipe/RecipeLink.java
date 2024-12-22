@@ -40,7 +40,8 @@ public final class RecipeLink implements RecipeData {
     @Nullable
     public static RecipeLink of(ResourceLocation id, JsonObject originalRecipe) {
         try {
-            ResourceLocation type = ResourceLocation.parse(originalRecipe.get("type").getAsString());
+            String typeString = originalRecipe.get("type").getAsString();
+            ResourceLocation type = PARSED_TYPE_CACHE.computeIfAbsent(typeString, ResourceLocation::parse);
             return new RecipeLink(id, originalRecipe, type);
         } catch (Exception e) {
             AlmostUnifiedCommon.LOGGER.warn("Could not detect recipe type for recipe '{}', skipping.", id);
