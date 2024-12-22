@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 - fixed `c:ores_in_ground` block tag not being considered when no respective item tag is present
 - fixed stone variant defaults not using the correct registry names
+- improved performance for unification ([mezz](https://github.com/mezz)@[#97](https://github.com/AlmostReliable/almostunified/pull/97))
 
 ## [1.2.2] - 2024-10-23
 
