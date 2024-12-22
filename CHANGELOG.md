@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.2.3] - 2024-12-22
 
 - fixed `c:ores_in_ground` block tag not being considered when no respective item tag is present
 - fixed stone variant defaults not using the correct registry names
@@ -47,6 +50,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.2.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.3
 [1.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.2
 [1.2.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.1
 [1.2.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.0
