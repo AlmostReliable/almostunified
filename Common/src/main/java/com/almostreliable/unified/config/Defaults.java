@@ -25,8 +25,8 @@ public final class Defaults {
         "deepslate",
         "diorite",
         "granite",
-        "nether",
-        "end"
+        "netherrack",
+        "end_stone"
     );
 
     public static final Map<String, Collection<String>> PLACEHOLDERS = Util.make(() -> {

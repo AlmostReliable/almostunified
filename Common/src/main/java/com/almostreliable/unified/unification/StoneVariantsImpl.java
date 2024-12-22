@@ -10,6 +10,8 @@ import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.unification.StoneVariants;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -47,20 +49,27 @@ public final class StoneVariantsImpl implements StoneVariants {
         var blockToStoneVariantTag = mapEntriesToStoneVariantTags(stoneVariantBlockTags, blockTags);
 
         Map<ResourceLocation, String> itemToStoneVariant = new HashMap<>();
-        itemToStoneVariantTag.forEach((item, tag) -> {
-            String itemStoneVariant = getVariantFromStoneVariantTag(tag);
 
-            var blockTagFromItem = blockToStoneVariantTag.get(item);
-            if (blockTagFromItem != null) {
-                String blockStoneVariant = getVariantFromStoneVariantTag(blockTagFromItem);
-                if (blockStoneVariant.length() > itemStoneVariant.length()) {
-                    itemToStoneVariant.put(item, blockStoneVariant);
-                    return;
-                }
+        for (var entry : itemToStoneVariantTag.entrySet()) {
+            ResourceLocation item = entry.getKey();
+            TagKey<Item> tag = entry.getValue();
+            String itemTagStoneVariant = getVariantFromStoneVariantTag(stoneVariants, tag);
+            if (itemTagStoneVariant != null) {
+                itemToStoneVariant.put(item, itemTagStoneVariant);
             }
+        }
 
-            itemToStoneVariant.put(item, itemStoneVariant);
-        });
+        for (var entry : blockToStoneVariantTag.entrySet()) {
+            ResourceLocation item = entry.getKey();
+            TagKey<Block> tag = entry.getValue();
+            String blockTagStoneVariant = getVariantFromStoneVariantTag(stoneVariants, tag);
+            if (blockTagStoneVariant == null) continue;
+
+            String itemTagStoneVariant = itemToStoneVariant.get(item);
+            if (itemTagStoneVariant == null || blockTagStoneVariant.length() > itemTagStoneVariant.length()) {
+                itemToStoneVariant.put(item, blockTagStoneVariant);
+            }
+        }
 
         return new StoneVariantsImpl(stoneVariants, itemToStoneVariant);
     }
@@ -103,15 +112,20 @@ public final class StoneVariantsImpl implements StoneVariants {
      * <p>
      * Example: {@code c:ores_in_ground/deepslate} -> {@code deepslate}
      *
-     * @param tag the stone variant tag
-     * @return the stone variant
+     * @param stoneVariants the available stone variants
+     * @param tag           the stone variant tag
+     * @return the stone variant, or null if the stone strata is not a configured variant
      */
-    private static String getVariantFromStoneVariantTag(TagKey<?> tag) {
+    @Nullable
+    private static String getVariantFromStoneVariantTag(Collection<String> stoneVariants, TagKey<?> tag) {
         String tagString = tag.location().toString();
         int i = tagString.lastIndexOf('/');
         String stoneVariant = tagString.substring(i + 1);
-        stoneVariant = stoneVariant.equals("stone") ? "" : stoneVariant;
-        return stoneVariant;
+        if (!stoneVariants.contains(stoneVariant)) {
+            return null;
+        }
+
+        return stoneVariant.equals("stone") ? "" : stoneVariant;
     }
 
     @Override
