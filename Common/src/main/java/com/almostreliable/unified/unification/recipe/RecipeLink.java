@@ -27,6 +27,8 @@ public final class RecipeLink implements RecipeData {
      */
     private static final Map<String, ResourceLocation> PARSED_TYPE_CACHE = new HashMap<>();
 
+    private static final ResourceLocation SHAPED_RECIPE = PARSED_TYPE_CACHE.computeIfAbsent("minecraft:crafting_shaped", ResourceLocation::parse);
+    
     private final ResourceLocation id;
     private final ResourceLocation type;
     private final JsonObject originalRecipe;
@@ -39,7 +41,7 @@ public final class RecipeLink implements RecipeData {
         this.id = id;
         this.originalRecipe = originalRecipe;
         this.type = type;
-        this.isShapedRecipe = type.toString().equals("minecraft:crafting_shaped");
+        this.isShapedRecipe = type == SHAPED_RECIPE; // These RLs are interned, so we can use == for comparison.
         if (this.isShapedRecipe) {
             String outputString = originalRecipe.get("result").getAsJsonObject().get("item").getAsString();
             this.shapedRecipeOutput = BuiltInRegistries.ITEM.get(ResourceLocation.parse(outputString));
