@@ -1,6 +1,8 @@
 package com.almostreliable.unified.unification.recipe;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.unification.recipe.RecipeData;
@@ -28,13 +30,20 @@ public final class RecipeLink implements RecipeData {
     private final ResourceLocation id;
     private final ResourceLocation type;
     private final JsonObject originalRecipe;
+    private final boolean isShapedRecipe;
     @Nullable private DuplicateLink duplicateLink;
     @Nullable private JsonObject unifiedRecipe;
+    @Nullable private Item shapedRecipeOutput; // Ideally we would deserialize the entire ItemStack, but the context isn't available here.
 
     private RecipeLink(ResourceLocation id, JsonObject originalRecipe, ResourceLocation type) {
         this.id = id;
         this.originalRecipe = originalRecipe;
         this.type = type;
+        this.isShapedRecipe = type.toString().equals("minecraft:crafting_shaped");
+        if (this.isShapedRecipe) {
+            String outputString = originalRecipe.get("result").getAsJsonObject().get("item").getAsString();
+            this.shapedRecipeOutput = BuiltInRegistries.ITEM.get(ResourceLocation.parse(outputString));
+        }
     }
 
     @Nullable
@@ -75,8 +84,10 @@ public final class RecipeLink implements RecipeData {
         JsonObject toCompareActual = second.getActual();
 
         JsonObject compare = null;
-        if (first.getType().toString().equals("minecraft:crafting_shaped")) {
-            compare = JsonCompare.compareShaped(selfActual, toCompareActual, compareContext);
+        if (first.isShapedRecipe) {
+            if (first.shapedRecipeOutput == second.shapedRecipeOutput) {
+                compare = JsonCompare.compareShaped(selfActual, toCompareActual, compareContext);
+            }
         } else if (JsonCompare.matches(selfActual, toCompareActual, compareContext)) {
             compare = JsonCompare.compare(compareContext.settings().getRules(), selfActual, toCompareActual);
         }
