@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.2.4] - 2025-04-27
 
 - added Mexican Spanish translation ([#112](https://github.com/AlmostReliable/almostunified/pull/112))
 - drastically improved startup performance ([Shadows-of-Fire](https://github.com/Shadows-of-Fire)@[#115](https://github.com/AlmostReliable/almostunified/pull/115))
@@ -52,6 +55,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.2.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.4
 [1.2.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.3
 [1.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.2
 [1.2.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.1
