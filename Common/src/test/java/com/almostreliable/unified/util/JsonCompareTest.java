@@ -85,7 +85,8 @@ public class JsonCompareTest {
     public void simpleMatch() {
         JsonObject first = TestUtils.json(TestUtils.Recipes.SMELTING);
         JsonObject second = TestUtils.json(TestUtils.Recipes.SMELTING);
-        boolean matches = JsonCompare.matches(first, second, TestUtils.DEFAULT_COMPARE_SETTINGS);
+        var compareContext = JsonCompare.CompareContext.create(TestUtils.DEFAULT_COMPARE_SETTINGS, first);
+        boolean matches = JsonCompare.matches(first, second, compareContext);
         assertTrue(matches);
     }
 
@@ -93,7 +94,8 @@ public class JsonCompareTest {
     public void noMatch() {
         JsonObject first = TestUtils.json(TestUtils.Recipes.SMELTING, j -> j.addProperty(EXPERIENCE, 100));
         JsonObject second = TestUtils.json(TestUtils.Recipes.SMELTING);
-        boolean matches = JsonCompare.matches(first, second, new JsonCompare.CompareSettings());
+        var compareContext = JsonCompare.CompareContext.create(new JsonCompare.CompareSettings(), first);
+        boolean matches = JsonCompare.matches(first, second, compareContext);
         assertFalse(matches);
     }
 
@@ -103,7 +105,8 @@ public class JsonCompareTest {
         JsonObject second = TestUtils.json(TestUtils.Recipes.SMELTING);
         var compareSettings = TestUtils.getDefaultCompareSettings();
         compareSettings.ignoreField(EXPERIENCE);
-        boolean matches = JsonCompare.matches(first, second, compareSettings);
+        var compareContext = JsonCompare.CompareContext.create(compareSettings, first);
+        boolean matches = JsonCompare.matches(first, second, compareContext);
         assertTrue(matches);
     }
 
@@ -111,7 +114,8 @@ public class JsonCompareTest {
     public void shapedNoMatch() {
         JsonObject first = TestUtils.json(TestUtils.Recipes.SHAPED_NO_MATCH_1);
         JsonObject second = TestUtils.json(TestUtils.Recipes.SHAPED_NO_MATCH_2);
-        JsonObject result = JsonCompare.compareShaped(first, second, TestUtils.DEFAULT_SHAPED_COMPARE_SETTINGS);
+        var compareContext = JsonCompare.CompareContext.create(TestUtils.DEFAULT_SHAPED_COMPARE_SETTINGS, first);
+        JsonObject result = JsonCompare.compareShaped(first, second, compareContext);
         assertNull(result);
     }
 
@@ -119,7 +123,8 @@ public class JsonCompareTest {
     public void shapedSpecialMatch() {
         JsonObject first = TestUtils.json(TestUtils.Recipes.SHAPED_SPECIAL_MATCH_1);
         JsonObject second = TestUtils.json(TestUtils.Recipes.SHAPED_SPECIAL_MATCH_2);
-        JsonObject result = JsonCompare.compareShaped(first, second, TestUtils.DEFAULT_SHAPED_COMPARE_SETTINGS);
+        var compareContext = JsonCompare.CompareContext.create(TestUtils.DEFAULT_SHAPED_COMPARE_SETTINGS, first);
+        JsonObject result = JsonCompare.compareShaped(first, second, compareContext);
         assertEquals(first, result);
     }
 
@@ -129,7 +134,8 @@ public class JsonCompareTest {
         JsonObject second = TestUtils.json(TestUtils.Recipes.SHAPED_SANITIZE_2);
         var compareSettings = TestUtils.getDefaultShapedCompareSettings();
         compareSettings.setShouldSanitize(true);
-        JsonObject result = JsonCompare.compareShaped(first, second, compareSettings);
+        var compareContext = JsonCompare.CompareContext.create(compareSettings, first);
+        JsonObject result = JsonCompare.compareShaped(first, second, compareContext);
         assertEquals(first, result);
     }
 
@@ -139,7 +145,8 @@ public class JsonCompareTest {
         JsonObject second = TestUtils.json(TestUtils.Recipes.CRUSHING_NESTED_SANITIZE_2);
         var compareSettings = TestUtils.getDefaultCompareSettings();
         compareSettings.setShouldSanitize(true);
-        boolean result = JsonCompare.matches(first, second, compareSettings);
+        var compareContext = JsonCompare.CompareContext.create(compareSettings, first);
+        boolean result = JsonCompare.matches(first, second, compareContext);
         assertTrue(result);
     }
 }

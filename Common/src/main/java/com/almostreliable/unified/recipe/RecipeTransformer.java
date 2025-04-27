@@ -74,7 +74,8 @@ public class RecipeTransformer {
             result.addAll(recipeLinks);
         });
 
-        AlmostUnified.LOG.warn("Recipe count afterwards: " + recipes.size() + " (done in " + transformationTimer.stop() + ")");
+        AlmostUnified.LOG.warn(
+                "Recipe count afterwards: " + recipes.size() + " (done in " + transformationTimer.stop() + ")");
 
         unifyConfig.clearCache();
         duplicationConfig.clearCache();
@@ -91,7 +92,7 @@ public class RecipeTransformer {
                 JsonQuery
                         .of(element, "recipe")
                         .asObject()
-                        .map(jsonObject -> new RecipeLink(recipeLink.getId(), jsonObject))
+                        .map(jsonObject -> RecipeLink.of(recipeLink.getId(), jsonObject))
                         .ifPresent(temporaryLink -> {
                             unifyRecipe(temporaryLink);
                             if (temporaryLink.isUnified()) {
@@ -136,7 +137,8 @@ public class RecipeTransformer {
                 .entrySet()
                 .stream()
                 .filter(entry -> includeRecipe(entry.getKey(), entry.getValue()))
-                .map(entry -> new RecipeLink(entry.getKey(), entry.getValue().getAsJsonObject()))
+                .map(entry -> RecipeLink.of(entry.getKey(), entry.getValue().getAsJsonObject()))
+                .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(entry -> entry.getId().toString()))
                 .collect(Collectors.groupingByConcurrent(RecipeLink::getType));
     }
@@ -174,7 +176,8 @@ public class RecipeTransformer {
             return false;
         }
 
-        JsonCompare.CompareSettings compareSettings = duplicationConfig.getCompareSettings(curRecipe.getType());
+        JsonCompare.CompareContext compareContext = duplicationConfig.getCompareContext(curRecipe);
+
         boolean foundDuplicate = false;
         for (RecipeLink recipeLink : recipes) {
             if (!curRecipe.getType().equals(recipeLink.getType())) {
@@ -186,7 +189,7 @@ public class RecipeTransformer {
                 continue;
             }
 
-            foundDuplicate |= curRecipe.handleDuplicate(recipeLink, compareSettings);
+            foundDuplicate |= curRecipe.handleDuplicate(recipeLink, compareContext);
         }
 
         return foundDuplicate;
