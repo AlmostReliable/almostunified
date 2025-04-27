@@ -1,9 +1,12 @@
 package com.almostreliable.unified.recipe;
 
 import com.almostreliable.unified.AlmostUnified;
+import com.almostreliable.unified.api.recipe.RecipeConstants;
 import com.almostreliable.unified.utils.JsonCompare;
 import com.google.gson.JsonObject;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -15,17 +18,42 @@ public final class RecipeLink {
      * Having fewer ResourceLocation instances can greatly speed up equality checking when these are used as map keys.
      */
     private static final Map<String, ResourceLocation> PARSED_TYPE_CACHE = new HashMap<>();
+    private static final ResourceLocation SHAPED_RECIPE_TYPE = PARSED_TYPE_CACHE.computeIfAbsent(
+            "minecraft:crafting_shaped",
+            ResourceLocation::new
+    );
+    private static final ResourceLocation SHAPELESS_RECIPE_TYPE = PARSED_TYPE_CACHE.computeIfAbsent(
+            "minecraft:crafting_shapeless",
+            ResourceLocation::new
+    );
 
     private final ResourceLocation id;
     private final ResourceLocation type;
     private final JsonObject originalRecipe;
+    private final boolean isCraftingRecipe;
+
     @Nullable private DuplicateLink duplicateLink;
     @Nullable private JsonObject unifiedRecipe;
+    @Nullable private Item craftingRecipeOutput;
 
     private RecipeLink(ResourceLocation id, JsonObject originalRecipe, ResourceLocation type) {
         this.id = id;
         this.originalRecipe = originalRecipe;
         this.type = type;
+        this.isCraftingRecipe = type == SHAPED_RECIPE_TYPE || type == SHAPELESS_RECIPE_TYPE;
+
+        if (isCraftingRecipe) {
+            try {
+                String outputString = originalRecipe
+                        .getAsJsonObject(RecipeConstants.RESULT)
+                        .getAsJsonPrimitive(RecipeConstants.ITEM)
+                        .getAsString();
+                this.craftingRecipeOutput = BuiltInRegistries.ITEM.get(new ResourceLocation(outputString));
+            } catch (Exception e) {
+                AlmostUnified.LOG.warn("Could not detect crafting recipe output for recipe '{}'.", id);
+                this.craftingRecipeOutput = null;
+            }
+        }
     }
 
     @Nullable
@@ -52,11 +80,15 @@ public final class RecipeLink {
      */
     @Nullable
     public static RecipeLink compare(RecipeLink first, RecipeLink second, JsonCompare.CompareContext compareContext) {
+        if (first.isCraftingRecipe && first.craftingRecipeOutput != second.craftingRecipeOutput) {
+            return null;
+        }
+
         JsonObject selfActual = first.getActual();
         JsonObject toCompareActual = second.getActual();
 
         JsonObject compare = null;
-        if (first.getType().toString().equals("minecraft:crafting_shaped")) {
+        if (first.isCraftingRecipe) {
             compare = JsonCompare.compareShaped(selfActual, toCompareActual, compareContext);
         } else if (JsonCompare.matches(selfActual, toCompareActual, compareContext)) {
             compare = JsonCompare.compare(compareContext.settings().getRules(), selfActual, toCompareActual);

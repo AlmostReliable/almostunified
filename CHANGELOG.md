@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning].
 - added Turkish translation ([#102](https://github.com/AlmostReliable/almostunified/pull/102))
 - added Mexican Spanish translation ([#112](https://github.com/AlmostReliable/almostunified/pull/112))
 - improved performance for unification ([mezz](https://github.com/mezz)@[#97](https://github.com/AlmostReliable/almostunified/pull/97))
+- drastically improved startup performance ([Shadows-of-Fire](https://github.com/Shadows-of-Fire)@[#115](https://github.com/AlmostReliable/almostunified/pull/115))
 
 ## [0.9.3] - 2024-04-18
 
