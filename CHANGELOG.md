@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- drastically improved startup performance ([Shadows-of-Fire](https://github.com/Shadows-of-Fire)@[#115](https://github.com/AlmostReliable/almostunified/pull/115))
 
 ## [1.2.3] - 2024-12-22
 
