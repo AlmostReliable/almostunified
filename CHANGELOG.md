@@ -5,10 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## [0.9.4] - 2024-07-09
+## Unreleased
 
-### Fixed
-- fixed Ad Astra outputs not being unified
+- added `end` stone variant to config defaults
 
 ## [0.9.3] - 2024-04-18
 

@@ -12,11 +12,12 @@ public final class Defaults {
 
     public static final List<String> STONE_STRATA = List.of(
             "stone",
-            "nether",
+            "andesite",
             "deepslate",
-            "granite",
             "diorite",
-            "andesite"
+            "granite",
+            "nether",
+            "end"
     );
     public static final List<String> MATERIALS = List.of(
             "aeternium",
