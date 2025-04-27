@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning].
 ## Unreleased
 
 - added `end` stone variant to config defaults
+- added Turkish translation ([#102](https://github.com/AlmostReliable/almostunified/pull/102))
 
 ## [0.9.3] - 2024-04-18
 
