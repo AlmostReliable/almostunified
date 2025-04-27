@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -41,19 +42,6 @@ public final class RecipeLink {
         this.originalRecipe = originalRecipe;
         this.type = type;
         this.isCraftingRecipe = type == SHAPED_RECIPE_TYPE || type == SHAPELESS_RECIPE_TYPE;
-
-        if (isCraftingRecipe) {
-            try {
-                String outputString = originalRecipe
-                        .getAsJsonObject(RecipeConstants.RESULT)
-                        .getAsJsonPrimitive(RecipeConstants.ITEM)
-                        .getAsString();
-                this.craftingRecipeOutput = BuiltInRegistries.ITEM.get(new ResourceLocation(outputString));
-            } catch (Exception e) {
-                AlmostUnified.LOG.warn("Could not detect crafting recipe output for recipe '{}'.", id);
-                this.craftingRecipeOutput = null;
-            }
-        }
     }
 
     @Nullable
@@ -80,7 +68,7 @@ public final class RecipeLink {
      */
     @Nullable
     public static RecipeLink compare(RecipeLink first, RecipeLink second, JsonCompare.CompareContext compareContext) {
-        if (first.isCraftingRecipe && first.craftingRecipeOutput != second.craftingRecipeOutput) {
+        if (first.isCraftingRecipe && first.getCraftingRecipeOutput() != second.getCraftingRecipeOutput()) {
             return null;
         }
 
@@ -147,6 +135,29 @@ public final class RecipeLink {
         }
 
         this.unifiedRecipe = json;
+    }
+
+    @Nullable
+    private Item getCraftingRecipeOutput() {
+        if (craftingRecipeOutput == null) {
+            JsonObject recipe = unifiedRecipe == null ? originalRecipe : unifiedRecipe;
+            try {
+                String outputString = recipe
+                        .getAsJsonObject(RecipeConstants.RESULT)
+                        .getAsJsonPrimitive(RecipeConstants.ITEM)
+                        .getAsString();
+                craftingRecipeOutput = BuiltInRegistries.ITEM.get(new ResourceLocation(outputString));
+            } catch (Exception e) {
+                AlmostUnified.LOG.warn("Could not detect crafting recipe output for recipe '{}'.", id);
+                craftingRecipeOutput = Items.AIR;
+            }
+        }
+
+        if (craftingRecipeOutput == Items.AIR) {
+            return null;
+        }
+
+        return craftingRecipeOutput;
     }
 
     @Override
