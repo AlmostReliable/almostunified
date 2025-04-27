@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## Unreleased
+## [0.9.5] - 2025-04-27
 
 - added `end` stone variant to config defaults
 - added Turkish translation ([#102](https://github.com/AlmostReliable/almostunified/pull/102))
@@ -141,6 +141,7 @@ Initial 1.20.1 release!
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
+[0.9.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.5
 [0.9.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.4
 [0.9.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.3
 [0.9.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.2
