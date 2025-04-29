@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.2.5] - 2025-04-29
 
 - fixed spam of errors because the output resolver didn't use the correct inner key of result item stacks ([#116](https://github.com/AlmostReliable/almostunified/issues/116))
 
@@ -56,6 +59,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.2.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.5
 [1.2.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.4
 [1.2.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.3
 [1.2.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.2
