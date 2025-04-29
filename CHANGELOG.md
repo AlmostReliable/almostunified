@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- fixed spam of errors because the output resolver didn't use the correct inner key of result item stacks ([#116](https://github.com/AlmostReliable/almostunified/issues/116))
 
 ## [1.2.4] - 2025-04-27
 

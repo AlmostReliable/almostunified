@@ -170,7 +170,7 @@ public final class RecipeLink implements RecipeData {
             try {
                 String outputString = recipe
                     .getAsJsonObject(RecipeConstants.RESULT)
-                    .getAsJsonPrimitive(RecipeConstants.ITEM)
+                    .getAsJsonPrimitive(RecipeConstants.ID)
                     .getAsString();
                 craftingRecipeOutput = BuiltInRegistries.ITEM.get(ResourceLocation.parse(outputString));
             } catch (Exception e) {
