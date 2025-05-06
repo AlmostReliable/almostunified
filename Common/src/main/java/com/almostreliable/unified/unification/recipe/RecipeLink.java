@@ -37,6 +37,11 @@ public final class RecipeLink implements RecipeData {
         ResourceLocation::parse
     );
 
+    static {
+        PARSED_TYPE_CACHE.putIfAbsent("crafting_shaped", SHAPED_RECIPE_TYPE);
+        PARSED_TYPE_CACHE.putIfAbsent("crafting_shapeless", SHAPELESS_RECIPE_TYPE);
+    }
+
     private final ResourceLocation id;
     private final ResourceLocation type;
     private final JsonObject originalRecipe;

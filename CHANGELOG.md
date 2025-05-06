@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- fixed rare case of missing recipes without a recipe type namespace
 
 ## [1.2.5] - 2025-04-29
 
