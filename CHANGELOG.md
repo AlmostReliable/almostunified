@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.2.6] - 2025-05-06
 
 - fixed rare case of missing recipes without a recipe type namespace
 
@@ -60,6 +63,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.2.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.6
 [1.2.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.5
 [1.2.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.4
 [1.2.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.3
