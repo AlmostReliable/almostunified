@@ -2,8 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog],
-and this project adheres to [Semantic Versioning].
+## Unreleased
+
+- fixed rare case of missing recipes without a recipe type namespace
 
 ## [0.9.5] - 2025-04-27
 
@@ -12,6 +13,9 @@ and this project adheres to [Semantic Versioning].
 - added Mexican Spanish translation ([#112](https://github.com/AlmostReliable/almostunified/pull/112))
 - improved performance for unification ([mezz](https://github.com/mezz)@[#97](https://github.com/AlmostReliable/almostunified/pull/97))
 - drastically improved startup performance ([Shadows-of-Fire](https://github.com/Shadows-of-Fire)@[#115](https://github.com/AlmostReliable/almostunified/pull/115))
+
+## [0.9.4] - 2024-07-09
+- fixed Ad Astra outputs not being unified
 
 ## [0.9.3] - 2024-04-18
 
@@ -135,10 +139,6 @@ be preserved. However, an automatic backup will be created in case something goe
 ## [0.5.0] - 2023-06-14
 
 Initial 1.20.1 release!
-
-<!-- Links -->
-[keep a changelog]: https://keepachangelog.com/en/1.0.0/
-[semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
 [0.9.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.5
