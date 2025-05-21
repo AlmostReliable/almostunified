@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## [0.10.0] - 2025-05-21
 
 - added support for Enchanted: Witchcraft
 - fixed rare case of missing recipes without a recipe type namespace
@@ -142,6 +142,7 @@ be preserved. However, an automatic backup will be created in case something goe
 Initial 1.20.1 release!
 
 <!-- Versions -->
+[0.10.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.10.0
 [0.9.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.5
 [0.9.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.4
 [0.9.3]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.20.1-0.9.3
