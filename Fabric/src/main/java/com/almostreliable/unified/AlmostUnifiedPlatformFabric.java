@@ -2,11 +2,13 @@ package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.compat.*;
+import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.auto.service.AutoService;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import java.nio.file.Path;
@@ -47,6 +49,11 @@ public class AlmostUnifiedPlatformFabric implements AlmostUnifiedPlatform {
         factory.registerForMod(ModConstants.ALLOY_FORGERY, new AlloyForgeryRecipeUnifier());
         factory.registerForMod(ModConstants.APPLIED_ENERGISTICS, new AppliedEnergisticsUnifier());
         factory.registerForMod(ModConstants.AMETHYST_IMBUEMENT, new AmethystImbuementRecipeUnifier());
+        factory.registerForMod(ModConstants.ENCHANTED_WITCHCRAFT, new EnchantedWitchcraftRecipeUnifier());
+        factory.registerForType(
+                new ResourceLocation(ModConstants.ENCHANTED_WITCHCRAFT, "byproduct"),
+                GenericRecipeUnifier.INSTANCE
+        );
         factory.registerForMod(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
         factory.registerForMod(ModConstants.MODERN_INDUSTRIALIZATION, new ModernIndustrializationRecipeUnifier());
     }

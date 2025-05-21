@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- added support for Enchanted: Witchcraft
 - fixed rare case of missing recipes without a recipe type namespace
 
 ## [0.9.5] - 2025-04-27

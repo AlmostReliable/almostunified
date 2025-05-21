@@ -2,6 +2,7 @@ package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
 import com.almostreliable.unified.compat.*;
+import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.UnifyTag;
 import com.google.auto.service.AutoService;
@@ -62,6 +63,11 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
         ).forEach(modId -> factory.registerForMod(modId, new ArsNouveauRecipeUnifier()));
         factory.registerForMod(ModConstants.BLOOD_MAGIC, new BloodMagicRecipeUnifier());
         factory.registerForMod(ModConstants.CYCLIC, new CyclicRecipeUnifier());
+        factory.registerForMod(ModConstants.ENCHANTED_WITCHCRAFT, new EnchantedWitchcraftRecipeUnifier());
+        factory.registerForType(
+                new ResourceLocation(ModConstants.ENCHANTED_WITCHCRAFT, "byproduct"),
+                GenericRecipeUnifier.INSTANCE
+        );
         factory.registerForMod(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
         factory.registerForMod(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
         factory.registerForMod(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
