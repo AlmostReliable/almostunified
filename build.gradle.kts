@@ -22,7 +22,7 @@ val githubRepo: String by project
 val githubUser: String by project
 
 plugins {
-    id("architectury-plugin") version "3.4.+"
+    id("architectury-plugin") version "3.4.161"
     id("dev.architectury.loom") version "1.4.+" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     java
