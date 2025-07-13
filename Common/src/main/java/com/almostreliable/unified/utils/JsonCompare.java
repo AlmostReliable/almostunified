@@ -103,6 +103,22 @@ public final class JsonCompare {
             return false;
         }
 
+        /*
+        TODO:
+        This is a workaround for recipes that are unintentionally marked as duplicates.
+        It happens when RecipeA has more JSON entries that are not ignored than RecipeB. When RecipeA is checked
+        against RecipeB, the old logic works correctly because it can't find a specific entry on RecipeB. But when
+        the recipes are checked the other way around, it fails because `compareSettings.compareFields()` doesn't include
+        the additional key. A better approach would be to have a compare context registry for each recipe link that
+        can be quickly fetched from. Alternatively, we could merge the compare fields of both recipes and check
+        against that.
+         */
+        Set<String> secondKeys = new HashSet<>(second.keySet());
+        secondKeys.removeAll(compareSettings.getIgnoredFields());
+        if (compareContext.compareFields().size() != secondKeys.size()) {
+            return false;
+        }
+
         for (String field : compareContext.compareFields()) {
             JsonElement secondElem = second.get(field);
             if (secondElem == null) return false;
@@ -303,6 +319,10 @@ public final class JsonCompare {
 
         public boolean hasIgnoredFields() {
             return !ignoredFields.isEmpty();
+        }
+
+        public Set<String> getIgnoredFields() {
+            return ignoredFields;
         }
 
         public JsonObject serialize() {
