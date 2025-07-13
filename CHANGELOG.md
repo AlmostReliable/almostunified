@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.2.7] - 2025-07-13
 
 - added Hungarian translation ([#121](https://github.com/AlmostReliable/almostunified/pull/121))
 - fixed duplicate checking for recipes with different recipe key counts
@@ -66,6 +69,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.2.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.7
 [1.2.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.6
 [1.2.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.5
 [1.2.4]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.4
