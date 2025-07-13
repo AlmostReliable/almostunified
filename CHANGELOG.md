@@ -3,7 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- added Hungarian translation ([#121](https://github.com/AlmostReliable/almostunified/pull/121))
+- fixed duplicate checking for recipes with different recipe key counts
+- removed built-in recipe unifiers for Modern Industrialization and Extended Industrialization
 
 ## [1.2.6] - 2025-05-06
 
