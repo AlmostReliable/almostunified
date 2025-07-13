@@ -15,7 +15,6 @@ import com.almostreliable.unified.compat.unification.EnderIORecipeUnifier;
 import com.almostreliable.unified.compat.unification.ImmersiveEngineeringRecipeUnifier;
 import com.almostreliable.unified.compat.unification.IntegratedDynamicsRecipeUnifier;
 import com.almostreliable.unified.compat.unification.MekanismRecipeUnifier;
-import com.almostreliable.unified.compat.unification.ModernIndustrializationRecipeUnifier;
 import com.almostreliable.unified.compat.unification.OccultismRecipeUnifier;
 import com.almostreliable.unified.compat.unification.ProductiveTreesRecipeUnifier;
 import com.almostreliable.unified.compat.unification.TheurgyRecipeUnifier;
@@ -47,8 +46,6 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
         registry.registerForModId(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         registry.registerForModId(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
         registry.registerForModId(ModConstants.MEKANISM, new MekanismRecipeUnifier());
-        registry.registerForModId(ModConstants.MODERN_INDUSTRIALIZATION, new ModernIndustrializationRecipeUnifier());
-        registry.registerForModId(ModConstants.EXTENDED_INDUSTRIALIZATION, new ModernIndustrializationRecipeUnifier());
         registry.registerForModId(ModConstants.OCCULTISM, new OccultismRecipeUnifier());
         registry.registerForModId(ModConstants.PRODUCTIVE_TREES, new ProductiveTreesRecipeUnifier());
         registry.registerForModId(ModConstants.THEURGY, new TheurgyRecipeUnifier());

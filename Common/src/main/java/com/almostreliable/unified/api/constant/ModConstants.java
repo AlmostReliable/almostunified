@@ -24,8 +24,6 @@ public interface ModConstants {
     String IMMERSIVE_ENGINEERING = "immersiveengineering";
     String INTEGRATED_DYNAMICS = "integrateddynamics";
     String MEKANISM = "mekanism";
-    String MODERN_INDUSTRIALIZATION = "modern_industrialization";
-    String EXTENDED_INDUSTRIALIZATION = "extended_industrialization";
     String OCCULTISM = "occultism";
     String PRODUCTIVE_TREES = "productivetrees";
     String THEURGY = "theurgy";

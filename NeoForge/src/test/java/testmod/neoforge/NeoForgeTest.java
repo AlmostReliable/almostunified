@@ -17,7 +17,6 @@ import testmod.neoforge.tests.ArsNouveauRecipeTests;
 import testmod.neoforge.tests.ImmersiveEngineeringRecipeUnifierTests;
 import testmod.neoforge.tests.IntegratedDynamicsRecipeUnifierTests;
 import testmod.neoforge.tests.MekanismRecipeUnifierTests;
-import testmod.neoforge.tests.ModernIndustrializationRecipeUnifierTests;
 
 @Mod("testmod")
 public class NeoForgeTest {
@@ -26,7 +25,6 @@ public class NeoForgeTest {
         CommonTest.init(GameTestHooks.isGametestEnabled());
         GameTestLoader.registerProviders(ArsNouveauRecipeTests.class,
             MekanismRecipeUnifierTests.class,
-            ModernIndustrializationRecipeUnifierTests.class,
             ImmersiveEngineeringRecipeUnifierTests.class,
             IntegratedDynamicsRecipeUnifierTests.class);
 
