@@ -54,7 +54,7 @@ public final class DuplicateConfig extends Config {
         Boolean ignored = ignoredRecipeTypesCache.get(type);
 
         if (ignored == null) {
-            ignored = computeIgnoreState(ignoreRecipeTypes, type.toString());
+            ignored = hasMatchInPatterns(ignoreRecipeTypes, type.toString());
             ignoredRecipeTypesCache.put(type, ignored);
         }
 
@@ -66,7 +66,7 @@ public final class DuplicateConfig extends Config {
         Boolean ignored = ignoredRecipeIdsCache.get(id);
 
         if (ignored == null) {
-            ignored = computeIgnoreState(ignoreRecipeIds, id.toString());
+            ignored = hasMatchInPatterns(ignoreRecipeIds, id.toString());
             ignoredRecipeIdsCache.put(id, ignored);
         }
 

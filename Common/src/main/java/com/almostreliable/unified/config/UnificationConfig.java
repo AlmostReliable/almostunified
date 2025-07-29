@@ -182,7 +182,7 @@ public final class UnificationConfig extends Config {
         Boolean ignored = ignoredItemsCache.get(item);
 
         if (ignored == null) {
-            ignored = computeIgnoreState(ignoredItems, item.toString());
+            ignored = hasMatchInPatterns(ignoredItems, item.toString());
             ignoredItemsCache.put(item, ignored);
         }
 
@@ -193,7 +193,7 @@ public final class UnificationConfig extends Config {
         Boolean ignored = ignoredRecipeTypesCache.get(type);
 
         if (ignored == null) {
-            ignored = computeIgnoreState(ignoredRecipeTypes, type.toString());
+            ignored = hasMatchInPatterns(ignoredRecipeTypes, type.toString());
             ignoredRecipeTypesCache.put(type, ignored);
         }
 
@@ -204,7 +204,7 @@ public final class UnificationConfig extends Config {
         Boolean ignored = ignoredRecipeIdsCache.get(id);
 
         if (ignored == null) {
-            ignored = computeIgnoreState(ignoredRecipeIds, id.toString());
+            ignored = hasMatchInPatterns(ignoredRecipeIds, id.toString());
             ignoredRecipeIdsCache.put(id, ignored);
         }
 
