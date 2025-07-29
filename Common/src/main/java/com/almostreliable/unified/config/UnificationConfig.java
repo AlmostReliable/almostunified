@@ -178,43 +178,37 @@ public final class UnificationConfig extends Config {
         return bakedTags;
     }
 
-    public boolean shouldIncludeItem(ResourceLocation item) {
-        return ignoredItemsCache.computeIfAbsent(item, i -> {
-            String itemString = i.toString();
-            for (Pattern pattern : ignoredItems) {
-                if (pattern.matcher(itemString).matches()) {
-                    return false;
-                }
-            }
+    public boolean shouldIgnoreItem(ResourceLocation item) {
+        Boolean ignored = ignoredItemsCache.get(item);
 
-            return true;
-        });
+        if (ignored == null) {
+            ignored = computeIgnoreState(ignoredItems, item.toString());
+            ignoredItemsCache.put(item, ignored);
+        }
+
+        return ignored;
     }
 
     public boolean shouldIncludeRecipeType(ResourceLocation type) {
-        return ignoredRecipeTypesCache.computeIfAbsent(type, t -> {
-            String typeString = t.toString();
-            for (Pattern pattern : ignoredRecipeTypes) {
-                if (pattern.matcher(typeString).matches()) {
-                    return false;
-                }
-            }
+        Boolean ignored = ignoredRecipeTypesCache.get(type);
 
-            return true;
-        });
+        if (ignored == null) {
+            ignored = computeIgnoreState(ignoredRecipeTypes, type.toString());
+            ignoredRecipeTypesCache.put(type, ignored);
+        }
+
+        return !ignored;
     }
 
     public boolean shouldIncludeRecipeId(ResourceLocation id) {
-        return ignoredRecipeIdsCache.computeIfAbsent(id, i -> {
-            String idString = i.toString();
-            for (Pattern pattern : ignoredRecipeIds) {
-                if (pattern.matcher(idString).matches()) {
-                    return false;
-                }
-            }
+        Boolean ignored = ignoredRecipeIdsCache.get(id);
 
-            return true;
-        });
+        if (ignored == null) {
+            ignored = computeIgnoreState(ignoredRecipeIds, id.toString());
+            ignoredRecipeIdsCache.put(id, ignored);
+        }
+
+        return !ignored;
     }
 
     public boolean shouldHideVariantItems() {

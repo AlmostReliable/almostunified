@@ -63,9 +63,8 @@ public final class UnificationSettingsImpl implements UnificationSettings {
             for (var itemHolder : itemHolders) {
                 itemHolder.unwrapKey().ifPresent(itemKey -> {
                     var itemId = itemKey.location();
-                    if (config.shouldIncludeItem(itemId)) {
-                        lookupBuilder.put(tag, itemId);
-                    }
+                    if (config.shouldIgnoreItem(itemId)) return;
+                    lookupBuilder.put(tag, itemId);
                 });
             }
         }

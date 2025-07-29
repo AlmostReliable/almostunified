@@ -27,7 +27,8 @@ public final class DuplicateConfig extends Config {
     private final Set<Pattern> ignoreRecipeIds;
     private final boolean compareAll;
 
-    private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache;
+    private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache = new HashMap<>();
+    private final Map<ResourceLocation, Boolean> ignoredRecipeIdsCache = new HashMap<>();
 
     private DuplicateConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipeIds, boolean compareAll) {
         super(NAME);
@@ -36,22 +37,10 @@ public final class DuplicateConfig extends Config {
         this.ignoreRecipeTypes = ignoreRecipeTypes;
         this.ignoreRecipeIds = ignoreRecipeIds;
         this.compareAll = compareAll;
-        this.ignoredRecipeTypesCache = new HashMap<>();
     }
 
     public boolean shouldIgnoreRecipe(RecipeLink recipe) {
-        if (isRecipeTypeIgnored(recipe)) {
-            return true;
-        }
-
-        String recipeId = recipe.getId().toString();
-        for (Pattern ignoreRecipePattern : ignoreRecipeIds) {
-            if (ignoreRecipePattern.matcher(recipeId).matches()) {
-                return true;
-            }
-        }
-
-        return false;
+        return isRecipeTypeIgnored(recipe) || isRecipeIdIgnored(recipe);
     }
 
     /**
@@ -65,21 +54,23 @@ public final class DuplicateConfig extends Config {
         Boolean ignored = ignoredRecipeTypesCache.get(type);
 
         if (ignored == null) {
-            ignored = computeIsRecipeTypeIgnored(type.toString());
+            ignored = computeIgnoreState(ignoreRecipeTypes, type.toString());
             ignoredRecipeTypesCache.put(type, ignored);
         }
 
         return ignored;
     }
 
-    private boolean computeIsRecipeTypeIgnored(String recipeType) {
-        for (Pattern ignorePattern : ignoreRecipeTypes) {
-            if (ignorePattern.matcher(recipeType).matches()) {
-                return true;
-            }
+    private boolean isRecipeIdIgnored(RecipeLink recipe) {
+        ResourceLocation id = recipe.getId();
+        Boolean ignored = ignoredRecipeIdsCache.get(id);
+
+        if (ignored == null) {
+            ignored = computeIgnoreState(ignoreRecipeIds, id.toString());
+            ignoredRecipeIdsCache.put(id, ignored);
         }
 
-        return false;
+        return ignored;
     }
 
     public JsonCompare.CompareSettings getCompareSettings(ResourceLocation type) {
@@ -97,6 +88,7 @@ public final class DuplicateConfig extends Config {
 
     public void clearCache() {
         ignoredRecipeTypesCache.clear();
+        ignoredRecipeIdsCache.clear();
     }
 
     public static final class DuplicateSerializer extends Config.Serializer<DuplicateConfig> {

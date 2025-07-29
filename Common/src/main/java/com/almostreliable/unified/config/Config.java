@@ -85,6 +85,16 @@ public class Config {
         }
     }
 
+    boolean computeIgnoreState(Iterable<Pattern> patterns, String toCheck) {
+        for (Pattern pattern : patterns) {
+            if (pattern.matcher(toCheck).matches()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static void backupConfig(Path path) {
         AlmostUnifiedCommon.LOGGER.warn("Config '{}' is invalid. Backing up and recreating.", path.getFileName());
 
