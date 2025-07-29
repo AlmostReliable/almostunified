@@ -71,7 +71,7 @@ public class RecipeTransformer {
             var recipeLinks = entry.getValue();
             if (recipeLinks.isEmpty()) continue;
 
-            transformRecipes(recipeLinks, recipes, tracker);
+            transformRecipes(type, recipeLinks, recipes, tracker);
             result.addAll(recipeLinks);
         }
 
@@ -98,17 +98,22 @@ public class RecipeTransformer {
      * <p>
      * This method will also add the recipes to the given {@link ClientRecipeTracker.RawBuilder}
      *
+     * @param type        The recipe type that is currently being processed.
      * @param recipeLinks The list of recipes to transform.
      * @param allRecipes  The map of all existing recipes.
      * @param tracker     The tracker to add the recipes to. Can be null in a server only environment.
      */
-    private void transformRecipes(List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> allRecipes, @Nullable ClientRecipeTracker.RawBuilder tracker) {
+    private void transformRecipes(ResourceLocation type, List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> allRecipes, @Nullable ClientRecipeTracker.RawBuilder tracker) {
         var unified = unifyRecipes(recipeLinks, r -> allRecipes.put(r.getId(), r.getUnified()));
-        var duplicates = handleDuplicates(duplicateConfig.shouldCompareAll() ? recipeLinks : unified, recipeLinks);
-        duplicates
-            .stream()
-            .flatMap(d -> d.getRecipesWithoutMaster().stream())
-            .forEach(r -> allRecipes.remove(r.getId()));
+
+        if (!duplicateConfig.isRecipeTypeIgnored(type)) {
+            var duplicates = handleDuplicates(duplicateConfig.shouldCompareAll() ? recipeLinks : unified, recipeLinks);
+            duplicates
+                .stream()
+                .flatMap(d -> d.getRecipesWithoutMaster().stream())
+                .forEach(r -> allRecipes.remove(r.getId()));
+        }
+
         if (tracker != null) unified.forEach(tracker::add);
     }
 
@@ -141,7 +146,7 @@ public class RecipeTransformer {
     }
 
     private boolean handleDuplicate(RecipeLink curRecipe, List<RecipeLink> recipes) {
-        if (duplicateConfig.shouldIgnoreRecipe(curRecipe)) {
+        if (duplicateConfig.isRecipeIdIgnored(curRecipe)) {
             return false;
         }
 
@@ -149,12 +154,7 @@ public class RecipeTransformer {
 
         boolean foundDuplicate = false;
         for (RecipeLink recipeLink : recipes) {
-            if (!curRecipe.getType().equals(recipeLink.getType())) {
-                throw new IllegalStateException(
-                    "Recipe types do not match for " + curRecipe.getId() + " and " + recipeLink.getId());
-            }
-
-            if (recipeLink == curRecipe || duplicateConfig.shouldIgnoreRecipe(recipeLink)) {
+            if (recipeLink == curRecipe || duplicateConfig.isRecipeIdIgnored(recipeLink)) {
                 continue;
             }
 

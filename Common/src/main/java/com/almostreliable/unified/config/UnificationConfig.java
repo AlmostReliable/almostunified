@@ -179,6 +179,8 @@ public final class UnificationConfig extends Config {
     }
 
     public boolean shouldIgnoreItem(ResourceLocation item) {
+        if (ignoredItems.isEmpty()) return false;
+
         Boolean ignored = ignoredItemsCache.get(item);
 
         if (ignored == null) {
@@ -190,6 +192,8 @@ public final class UnificationConfig extends Config {
     }
 
     public boolean shouldIncludeRecipeType(ResourceLocation type) {
+        if (ignoredRecipeTypes.isEmpty()) return true;
+
         Boolean ignored = ignoredRecipeTypesCache.get(type);
 
         if (ignored == null) {
@@ -201,6 +205,8 @@ public final class UnificationConfig extends Config {
     }
 
     public boolean shouldIncludeRecipeId(ResourceLocation id) {
+        if (ignoredRecipeIds.isEmpty()) return true;
+
         Boolean ignored = ignoredRecipeIdsCache.get(id);
 
         if (ignored == null) {

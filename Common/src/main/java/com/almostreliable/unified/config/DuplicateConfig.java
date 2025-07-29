@@ -39,18 +39,9 @@ public final class DuplicateConfig extends Config {
         this.compareAll = compareAll;
     }
 
-    public boolean shouldIgnoreRecipe(RecipeLink recipe) {
-        return isRecipeTypeIgnored(recipe) || isRecipeIdIgnored(recipe);
-    }
+    public boolean isRecipeTypeIgnored(ResourceLocation type) {
+        if (ignoreRecipeTypes.isEmpty()) return false;
 
-    /**
-     * Checks if the recipe type is ignored. This is cached to avoid having to recompute the regex for every recipe.
-     *
-     * @param recipe The recipe to check
-     * @return True if the recipe type is ignored, false otherwise
-     */
-    private boolean isRecipeTypeIgnored(RecipeLink recipe) {
-        ResourceLocation type = recipe.getType();
         Boolean ignored = ignoredRecipeTypesCache.get(type);
 
         if (ignored == null) {
@@ -61,7 +52,9 @@ public final class DuplicateConfig extends Config {
         return ignored;
     }
 
-    private boolean isRecipeIdIgnored(RecipeLink recipe) {
+    public boolean isRecipeIdIgnored(RecipeLink recipe) {
+        if (ignoreRecipeIds.isEmpty()) return false;
+
         ResourceLocation id = recipe.getId();
         Boolean ignored = ignoredRecipeIdsCache.get(id);
 
