@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- improved config ignoring logic performance drastically
+- improved general load performance
+- improved Portuguese translation ([#122](https://github.com/AlmostReliable/almostunified/pull/122))
 - removed built-in recipe unifier for Immersive Engineering
-  - it's now part of the Immersive Engineering add-on [here](https://github.com/AlmostReliable/almostunified-ie)
+    - it's now part of the Immersive Engineering add-on [here](https://github.com/AlmostReliable/almostunified-ie)
 
 ## [1.2.7] - 2025-07-13
 
