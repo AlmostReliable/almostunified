@@ -180,8 +180,9 @@ public final class UnificationConfig extends Config {
 
     public boolean shouldIncludeItem(ResourceLocation item) {
         return ignoredItemsCache.computeIfAbsent(item, i -> {
+            String itemString = i.toString();
             for (Pattern pattern : ignoredItems) {
-                if (pattern.matcher(i.toString()).matches()) {
+                if (pattern.matcher(itemString).matches()) {
                     return false;
                 }
             }
@@ -192,8 +193,9 @@ public final class UnificationConfig extends Config {
 
     public boolean shouldIncludeRecipeType(ResourceLocation type) {
         return ignoredRecipeTypesCache.computeIfAbsent(type, t -> {
+            String typeString = t.toString();
             for (Pattern pattern : ignoredRecipeTypes) {
-                if (pattern.matcher(t.toString()).matches()) {
+                if (pattern.matcher(typeString).matches()) {
                     return false;
                 }
             }
@@ -204,8 +206,9 @@ public final class UnificationConfig extends Config {
 
     public boolean shouldIncludeRecipeId(ResourceLocation id) {
         return ignoredRecipeIdsCache.computeIfAbsent(id, i -> {
+            String idString = i.toString();
             for (Pattern pattern : ignoredRecipeIds) {
-                if (pattern.matcher(i.toString()).matches()) {
+                if (pattern.matcher(idString).matches()) {
                     return false;
                 }
             }
@@ -224,8 +227,9 @@ public final class UnificationConfig extends Config {
 
     public boolean shouldIncludeLootTable(ResourceLocation table) {
         return ignoredLootTablesCache.computeIfAbsent(table, t -> {
+            String tableString = t.toString();
             for (Pattern pattern : ignoredRecipeIds) {
-                if (pattern.matcher(t.toString()).matches()) {
+                if (pattern.matcher(tableString).matches()) {
                     return false;
                 }
             }

@@ -44,8 +44,9 @@ public final class DuplicateConfig extends Config {
             return true;
         }
 
+        String recipeId = recipe.getId().toString();
         for (Pattern ignoreRecipePattern : ignoreRecipeIds) {
-            if (ignoreRecipePattern.matcher(recipe.getId().toString()).matches()) {
+            if (ignoreRecipePattern.matcher(recipeId).matches()) {
                 return true;
             }
         }
