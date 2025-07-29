@@ -66,10 +66,14 @@ public class RecipeTransformer {
         Result result = new Result();
         Map<ResourceLocation, List<RecipeLink>> byType = groupRecipesByType(recipes);
 
-        byType.forEach((type, recipeLinks) -> {
+        for (var entry : byType.entrySet()) {
+            ResourceLocation type = entry.getKey();
+            var recipeLinks = entry.getValue();
+            if (recipeLinks.isEmpty()) continue;
+
             transformRecipes(recipeLinks, recipes, tracker);
             result.addAll(recipeLinks);
-        });
+        }
 
         AlmostUnifiedCommon.LOGGER.info(
             "Recipe count afterwards: {} (done in {})",
