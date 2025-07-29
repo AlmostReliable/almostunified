@@ -21,7 +21,6 @@ public interface ModConstants {
     String CYCLIC = "cyclic";
     String ENDER_IO = "enderio";
     String GREGTECH_MODERN = "gtceu";
-    String IMMERSIVE_ENGINEERING = "immersiveengineering";
     String INTEGRATED_DYNAMICS = "integrateddynamics";
     String MEKANISM = "mekanism";
     String OCCULTISM = "occultism";

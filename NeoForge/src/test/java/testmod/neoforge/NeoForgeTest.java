@@ -14,7 +14,6 @@ import testmod.CommonTest;
 import testmod.TestItems;
 import testmod.gametest_core.GameTestLoader;
 import testmod.neoforge.tests.ArsNouveauRecipeTests;
-import testmod.neoforge.tests.ImmersiveEngineeringRecipeUnifierTests;
 import testmod.neoforge.tests.IntegratedDynamicsRecipeUnifierTests;
 import testmod.neoforge.tests.MekanismRecipeUnifierTests;
 
@@ -25,7 +24,6 @@ public class NeoForgeTest {
         CommonTest.init(GameTestHooks.isGametestEnabled());
         GameTestLoader.registerProviders(ArsNouveauRecipeTests.class,
             MekanismRecipeUnifierTests.class,
-            ImmersiveEngineeringRecipeUnifierTests.class,
             IntegratedDynamicsRecipeUnifierTests.class);
 
         bus.addListener(this::onRegistry);

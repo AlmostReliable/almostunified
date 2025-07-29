@@ -12,7 +12,6 @@ import com.almostreliable.unified.compat.unification.ArsNouveauRecipeUnifier;
 import com.almostreliable.unified.compat.unification.CompoundIngredientUnifier;
 import com.almostreliable.unified.compat.unification.CyclicRecipeUnifier;
 import com.almostreliable.unified.compat.unification.EnderIORecipeUnifier;
-import com.almostreliable.unified.compat.unification.ImmersiveEngineeringRecipeUnifier;
 import com.almostreliable.unified.compat.unification.IntegratedDynamicsRecipeUnifier;
 import com.almostreliable.unified.compat.unification.MekanismRecipeUnifier;
 import com.almostreliable.unified.compat.unification.OccultismRecipeUnifier;
@@ -43,7 +42,6 @@ public class NeoForgePlugin implements AlmostUnifiedPlugin {
             ResourceLocation.fromNamespaceAndPath(ModConstants.ENDER_IO, "sag_milling"),
             new EnderIORecipeUnifier()
         );
-        registry.registerForModId(ModConstants.IMMERSIVE_ENGINEERING, new ImmersiveEngineeringRecipeUnifier());
         registry.registerForModId(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
         registry.registerForModId(ModConstants.MEKANISM, new MekanismRecipeUnifier());
         registry.registerForModId(ModConstants.OCCULTISM, new OccultismRecipeUnifier());

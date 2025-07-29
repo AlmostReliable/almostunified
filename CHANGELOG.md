@@ -3,7 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- removed built-in recipe unifier for Immersive Engineering
+  - it's now part of the Immersive Engineering add-on [here](https://github.com/AlmostReliable/almostunified-ie)
 
 ## [1.2.7] - 2025-07-13
 
