@@ -10,6 +10,7 @@ import com.almostreliable.unified.unification.recipe.RecipeTransformer;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
 import org.jetbrains.annotations.Nullable;
@@ -213,21 +214,34 @@ public final class DebugHandler {
                 sb.append(type.toString()).append(" {\n");
 
                 getSortedUnifiedRecipes(type).forEach(recipe -> {
+                    var original = copyWithoutConditions(recipe.getOriginal());
+                    var unified = recipe.getUnified() == null ? null : copyWithoutConditions(recipe.getUnified());
+
                     sb
                         .append("\t- ")
                         .append(recipe.getId())
                         .append("\n")
                         .append("\t\t    Original: ")
-                        .append(recipe.getOriginal())
+                        .append(original)
                         .append("\n")
                         .append("\t\t Transformed: ")
-                        .append(recipe.getUnified() == null ? "NOT UNIFIED" : recipe.getUnified().toString())
+                        .append(unified == null ? "NOT UNIFIED" : unified.toString())
                         .append("\n\n");
                 });
 
                 sb.append("}\n\n");
             });
         });
+    }
+
+    private JsonObject copyWithoutConditions(JsonObject recipe) {
+        var copy = new JsonObject();
+        for (var entry : recipe.entrySet()) {
+            if (entry.getKey().equals("neoforge:conditions")) continue;
+            copy.add(entry.getKey(), entry.getValue());
+        }
+
+        return copy;
     }
 
     private void dumpDuplicates() {
