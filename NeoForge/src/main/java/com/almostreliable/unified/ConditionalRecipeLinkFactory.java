@@ -50,6 +50,10 @@ public class ConditionalRecipeLinkFactory implements RecipeLinkFactory {
                 recipe.add(ConditionalOps.DEFAULT_CONDITIONS_KEY, arr);
             }
 
+            if (!conditionsMet) {
+                return null;
+            }
+
             return RecipeLink.of(id, recipe);
         } catch (IllegalArgumentException | JsonParseException e) {
             // Do we silent here? So the neoforge handling will throw the correct exception.
