@@ -3,6 +3,7 @@ package com.almostreliable.unified;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.Block;
 
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
@@ -38,10 +39,10 @@ public final class AlmostUnifiedCommon {
         RUNTIME = AlmostUnifiedRuntimeImpl.create(itemTags, blockTags);
     }
 
-    public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes, HolderLookup.Provider registries) {
+    public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes, HolderLookup.Provider registries, RecipeManager recipeManager) {
         Preconditions.checkNotNull(RUNTIME, "runtime was not loaded correctly");
 
-        RUNTIME.run(recipes);
+        RUNTIME.run(recipes, recipeManager);
         LootUnification.unifyLoot(RUNTIME, registries);
     }
 

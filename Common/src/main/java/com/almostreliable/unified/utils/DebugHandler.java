@@ -51,6 +51,10 @@ public final class DebugHandler {
         this.lastRun = "# Last run: " + DATE_FORMAT.format(new Date(System.currentTimeMillis()));
     }
 
+    public DebugConfig config() {
+        return config;
+    }
+
     public void onRunStart(Map<ResourceLocation, JsonElement> recipes, UnificationLookup unificationLookup) {
         dumpTags(unificationLookup);
         dumpRecipes(RECIPES_BEFORE, recipes);

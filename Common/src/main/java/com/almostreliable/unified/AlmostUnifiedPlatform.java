@@ -1,5 +1,9 @@
 package com.almostreliable.unified;
 
+import net.minecraft.world.item.crafting.RecipeManager;
+
+import com.almostreliable.unified.unification.recipe.RecipeLinkFactory;
+
 import java.nio.file.Path;
 import java.util.ServiceLoader;
 
@@ -29,6 +33,8 @@ public interface AlmostUnifiedPlatform {
     Path getConfigPath();
 
     Path getDebugLogPath();
+
+    RecipeLinkFactory getRecipeLinkFactory(RecipeManager recipeManager, boolean cache);
 
     enum Platform {
         NEO_FORGE,

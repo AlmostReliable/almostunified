@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,8 +32,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -41,13 +42,15 @@ public class RecipeTransformer {
     private final CustomIngredientUnifierRegistry ingredientUnifierRegistry;
     private final RecipeUnifierRegistry recipeUnifierRegistry;
     private final Collection<? extends UnificationSettings> unificationSettings;
+    private final RecipeLinkFactory recipeLinkFactory;
     private final DuplicateConfig duplicateConfig;
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(CustomIngredientUnifierRegistry ingredientUnifierRegistry, RecipeUnifierRegistry recipeUnifierRegistry, Collection<? extends UnificationSettings> unificationSettings) {
+    public RecipeTransformer(CustomIngredientUnifierRegistry ingredientUnifierRegistry, RecipeUnifierRegistry recipeUnifierRegistry, Collection<? extends UnificationSettings> unificationSettings, RecipeLinkFactory recipeLinkFactory) {
         this.ingredientUnifierRegistry = ingredientUnifierRegistry;
         this.recipeUnifierRegistry = recipeUnifierRegistry;
         this.unificationSettings = unificationSettings;
+        this.recipeLinkFactory = recipeLinkFactory;
         this.duplicateConfig = Config.load(DuplicateConfig.NAME, DuplicateConfig.SERIALIZER);
     }
 
@@ -118,14 +121,26 @@ public class RecipeTransformer {
     }
 
     public Map<ResourceLocation, List<RecipeLink>> groupRecipesByType(Map<ResourceLocation, JsonElement> recipes) {
-        return recipes
-            .entrySet()
-            .stream()
-            .filter(entry -> entry.getValue() instanceof JsonObject jsonObject && !jsonObject.isEmpty())
-            .map(entry -> RecipeLink.of(entry.getKey(), entry.getValue().getAsJsonObject()))
-            .filter(Objects::nonNull)
-            .sorted(Comparator.comparing(entry -> entry.getId().toString()))
-            .collect(Collectors.groupingByConcurrent(RecipeLink::getType));
+        var result = new ConcurrentHashMap<ResourceLocation, List<RecipeLink>>();
+
+        int added = 0;
+        for (var entry : recipes.entrySet()) {
+            var value = entry.getValue();
+            if (value instanceof JsonObject json && !json.isEmpty()) {
+                var link = recipeLinkFactory.create(entry.getKey(), json.getAsJsonObject());
+                if (link == null) continue;
+
+                added++;
+                result.computeIfAbsent(link.getType(), k -> new ArrayList<>()).add(link);
+            }
+        }
+
+        for (var value : result.values()) {
+            value.sort(Comparator.naturalOrder());
+        }
+
+        AlmostUnifiedCommon.LOGGER.info("Out of {} recipes, {} were loaded for unification", recipes.size(), added);
+        return result;
     }
 
     /**

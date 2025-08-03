@@ -5,9 +5,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.Block;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import com.almostreliable.unified.api.unification.Placeholders;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
@@ -195,11 +197,13 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         return unificationSettings;
     }
 
-    public void run(Map<ResourceLocation, JsonElement> recipes) {
+    public void run(Map<ResourceLocation, JsonElement> recipes, RecipeManager recipeManager) {
         debugHandler.onRunStart(recipes, compositeUnificationLookup);
 
+        var factory = AlmostUnifiedPlatform.INSTANCE.getRecipeLinkFactory(recipeManager,
+            debugHandler.config().cacheRecipeConditions());
         debugHandler.measure(() ->
-            new RecipeTransformer(ingredientUnifierRegistry, recipeUnifierRegistry, unificationSettings)
+            new RecipeTransformer(ingredientUnifierRegistry, recipeUnifierRegistry, unificationSettings, factory)
                 .transformRecipes(recipes)
         );
 

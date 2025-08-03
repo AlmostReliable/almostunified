@@ -1,6 +1,11 @@
 package com.almostreliable.unified;
 
+import net.minecraft.world.item.crafting.RecipeManager;
+
 import com.almostreliable.unified.api.constant.ModConstants;
+import com.almostreliable.unified.mixin.neoforge.ContextAwareReloadListenerAccessor;
+import com.almostreliable.unified.unification.recipe.RecipeLink;
+import com.almostreliable.unified.unification.recipe.RecipeLinkFactory;
 
 import com.google.auto.service.AutoService;
 import net.neoforged.api.distmarker.Dist;
@@ -41,5 +46,16 @@ public class AlmostUnifiedPlatformNeoForge implements AlmostUnifiedPlatform {
     @Override
     public Path getDebugLogPath() {
         return FMLPaths.GAMEDIR.get().resolve("logs").resolve(ModConstants.ALMOST_UNIFIED).resolve("debug");
+    }
+
+    @Override
+    public RecipeLinkFactory getRecipeLinkFactory(RecipeManager recipeManager, boolean cache) {
+        try {
+            var conOps = ((ContextAwareReloadListenerAccessor) recipeManager).au$makeConditionalOps();
+            return new ConditionalRecipeLinkFactory(conOps, cache);
+        } catch (Exception e) {
+            AlmostUnifiedCommon.LOGGER.error(e.getMessage(), e);
+            return RecipeLink::of;
+        }
     }
 }

@@ -28,7 +28,9 @@ public class RecipeManagerMixin {
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
     private void almostunified$onRecipeReload(Map<ResourceLocation, JsonElement> recipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         try {
-            AlmostUnifiedCommon.onRecipeManagerReload(recipes, registries);
+            // TODO: when switching to neoforge only, don't pass RecipeManager as we can directly pass the ConditionalOps from neoforge then
+            //noinspection DataFlowIssue
+            AlmostUnifiedCommon.onRecipeManagerReload(recipes, registries, (RecipeManager) (Object) this);
         } catch (Exception e) {
             AlmostUnifiedCommon.LOGGER.error(e.getMessage(), e);
         }

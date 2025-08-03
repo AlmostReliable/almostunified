@@ -13,8 +13,9 @@ public final class DebugConfig extends Config {
     private final boolean dumpTags;
     private final boolean dumpUnification;
     private final boolean logInvalidTags;
+    private final boolean cacheRecipeConditions;
 
-    private DebugConfig(boolean dumpDuplicates, boolean dumpOverview, boolean dumpRecipes, boolean dumpTags, boolean dumpUnification, boolean logInvalidTags) {
+    private DebugConfig(boolean dumpDuplicates, boolean dumpOverview, boolean dumpRecipes, boolean dumpTags, boolean dumpUnification, boolean logInvalidTags, boolean cacheRecipeConditions) {
         super(NAME);
         this.dumpDuplicates = dumpDuplicates;
         this.dumpOverview = dumpOverview;
@@ -22,6 +23,7 @@ public final class DebugConfig extends Config {
         this.dumpTags = dumpTags;
         this.dumpUnification = dumpUnification;
         this.logInvalidTags = logInvalidTags;
+        this.cacheRecipeConditions = cacheRecipeConditions;
     }
 
     public boolean shouldDumpDuplicates() {
@@ -48,6 +50,10 @@ public final class DebugConfig extends Config {
         return logInvalidTags;
     }
 
+    public boolean cacheRecipeConditions() {
+        return cacheRecipeConditions;
+    }
+
     public static final class DebugSerializer extends Config.Serializer<DebugConfig> {
 
         private static final String DUMP_DUPLICATES = "dump_duplicates";
@@ -56,6 +62,7 @@ public final class DebugConfig extends Config {
         private static final String DUMP_TAGS = "dump_tags";
         private static final String DUMP_UNIFICATION = "dump_unification";
         private static final String LOG_INVALID_TAGS = "log_invalid_tags";
+        private static final String CACHE_RECIPE_CONDITIONS = "recipe_condition_cache_mode";
 
         private DebugSerializer() {}
 
@@ -67,7 +74,8 @@ public final class DebugConfig extends Config {
                 safeGet(() -> json.get(DUMP_RECIPES).getAsBoolean(), false),
                 safeGet(() -> json.get(DUMP_TAGS).getAsBoolean(), false),
                 safeGet(() -> json.get(DUMP_UNIFICATION).getAsBoolean(), false),
-                safeGet(() -> json.get(LOG_INVALID_TAGS).getAsBoolean(), false)
+                safeGet(() -> json.get(LOG_INVALID_TAGS).getAsBoolean(), false),
+                safeGet(() -> json.get(CACHE_RECIPE_CONDITIONS).getAsBoolean(), true)
             );
         }
 
@@ -80,6 +88,7 @@ public final class DebugConfig extends Config {
             json.addProperty(DUMP_TAGS, config.dumpTags);
             json.addProperty(DUMP_UNIFICATION, config.dumpUnification);
             json.addProperty(LOG_INVALID_TAGS, config.logInvalidTags);
+            json.addProperty(CACHE_RECIPE_CONDITIONS, config.cacheRecipeConditions);
             return json;
         }
     }

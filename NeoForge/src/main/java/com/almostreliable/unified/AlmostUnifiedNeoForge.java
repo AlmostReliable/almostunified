@@ -51,6 +51,12 @@ public class AlmostUnifiedNeoForge {
             );
         }
 
+        if (event.getRegistryKey() == NeoForgeRegistries.Keys.CONDITION_CODECS) {
+            Registry.register(NeoForgeRegistries.CONDITION_SERIALIZERS,
+                RecipeLoadCondition.ID,
+                RecipeLoadCondition.CODEC);
+        }
+
         if (AlmostUnifiedCommon.STARTUP_CONFIG.isServerOnly()) return;
 
         if (event.getRegistryKey() == Registries.RECIPE_SERIALIZER) {
