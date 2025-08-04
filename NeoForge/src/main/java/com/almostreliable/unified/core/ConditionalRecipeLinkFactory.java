@@ -56,8 +56,8 @@ public class ConditionalRecipeLinkFactory implements RecipeLinkFactory {
 
             return RecipeLink.of(id, originalRecipe);
         } catch (IllegalArgumentException | JsonParseException e) {
-            // Do we silent here? So the neoforge handling will throw the correct exception.
-            // We should not do this.
+            // If an exception is caught, mark the recipe link as invalid, so Almost Unified doesn't track it.
+            // NeoForge should report a problem with the recipe the usual way.
             return null;
         }
     }
