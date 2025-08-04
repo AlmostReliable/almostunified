@@ -202,7 +202,7 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
         var factory = AlmostUnifiedPlatform.INSTANCE.getRecipeLinkFactory(
             recipeManager,
-            debugHandler.config().shouldCacheRecipeConditions()
+            debugHandler.getConfig().shouldCacheRecipeConditions()
         );
         debugHandler.measure(() ->
             new RecipeTransformer(ingredientUnifierRegistry, recipeUnifierRegistry, unificationSettings, factory)
