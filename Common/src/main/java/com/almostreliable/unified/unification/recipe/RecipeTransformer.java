@@ -121,26 +121,30 @@ public class RecipeTransformer {
     }
 
     public Map<ResourceLocation, List<RecipeLink>> groupRecipesByType(Map<ResourceLocation, JsonElement> recipes) {
-        var result = new ConcurrentHashMap<ResourceLocation, List<RecipeLink>>();
+        var groupedRecipes = new ConcurrentHashMap<ResourceLocation, List<RecipeLink>>();
 
-        int added = 0;
+        int recipeCount = 0;
         for (var entry : recipes.entrySet()) {
-            var value = entry.getValue();
-            if (value instanceof JsonObject json && !json.isEmpty()) {
-                var link = recipeLinkFactory.create(entry.getKey(), json);
+            var recipe = entry.getValue();
+            if (recipe instanceof JsonObject recipeJson && !recipeJson.isEmpty()) {
+                var link = recipeLinkFactory.create(entry.getKey(), recipeJson);
                 if (link == null) continue;
 
-                added++;
-                result.computeIfAbsent(link.getType(), k -> new ArrayList<>()).add(link);
+                recipeCount++;
+                groupedRecipes.computeIfAbsent(link.getType(), k -> new ArrayList<>()).add(link);
             }
         }
 
-        for (var value : result.values()) {
-            value.sort(Comparator.naturalOrder());
+        for (var recipesByType : groupedRecipes.values()) {
+            recipesByType.sort(Comparator.naturalOrder());
         }
 
-        AlmostUnifiedCommon.LOGGER.info("Out of {} recipes, {} were loaded for unification", recipes.size(), added);
-        return result;
+        AlmostUnifiedCommon.LOGGER.info(
+            "{} out of {} recipes were loaded for unification.",
+            recipeCount,
+            recipes.size()
+        );
+        return groupedRecipes;
     }
 
     /**
