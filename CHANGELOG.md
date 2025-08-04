@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- added logic to ignore recipes with non-matching recipe conditions for NeoForge
+    - this should get rid of some unfixable errors and warnings in your Almost Unified log
 - improved config ignoring logic performance drastically
 - improved general load performance
 - improved Portuguese translation ([#122](https://github.com/AlmostReliable/almostunified/pull/122))
