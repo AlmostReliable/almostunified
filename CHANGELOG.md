@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.3.0] - 2025-08-04
 
 - added logic to ignore recipes with non-matching recipe conditions for NeoForge
     - this should get rid of some unfixable errors and warnings in your Almost Unified log
@@ -76,6 +79,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.3.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.3.0
 [1.2.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.7
 [1.2.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.6
 [1.2.5]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.5
