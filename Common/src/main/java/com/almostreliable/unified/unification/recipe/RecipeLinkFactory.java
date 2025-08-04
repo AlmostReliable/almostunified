@@ -9,5 +9,5 @@ import javax.annotation.Nullable;
 public interface RecipeLinkFactory {
 
     @Nullable
-    RecipeLink create(ResourceLocation id, JsonObject recipe);
+    RecipeLink create(ResourceLocation id, JsonObject originalRecipe);
 }

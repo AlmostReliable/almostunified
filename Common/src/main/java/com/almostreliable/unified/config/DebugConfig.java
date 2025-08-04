@@ -50,7 +50,7 @@ public final class DebugConfig extends Config {
         return logInvalidTags;
     }
 
-    public boolean cacheRecipeConditions() {
+    public boolean shouldCacheRecipeConditions() {
         return cacheRecipeConditions;
     }
 
@@ -62,7 +62,7 @@ public final class DebugConfig extends Config {
         private static final String DUMP_TAGS = "dump_tags";
         private static final String DUMP_UNIFICATION = "dump_unification";
         private static final String LOG_INVALID_TAGS = "log_invalid_tags";
-        private static final String CACHE_RECIPE_CONDITIONS = "recipe_condition_cache_mode";
+        private static final String CACHE_RECIPE_CONDITIONS = "cache_recipe_conditions";
 
         private DebugSerializer() {}
 

@@ -31,14 +31,14 @@ public class ConditionalRecipeLinkFactory implements RecipeLinkFactory {
 
     @Nullable
     @Override
-    public RecipeLink create(ResourceLocation id, JsonObject recipe) {
-        var conditions = recipe.get(ConditionalOps.DEFAULT_CONDITIONS_KEY);
+    public RecipeLink create(ResourceLocation id, JsonObject originalRecipe) {
+        var conditions = originalRecipe.get(ConditionalOps.DEFAULT_CONDITIONS_KEY);
         if (conditions == null) {
-            return RecipeLink.of(id, recipe);
+            return RecipeLink.of(id, originalRecipe);
         }
 
         try {
-            boolean conditionsMet = codec.parse(conOps, recipe).getOrThrow(JsonParseException::new).isPresent();
+            boolean conditionsMet = codec.parse(conOps, originalRecipe).getOrThrow(JsonParseException::new).isPresent();
             if (cache) {
                 var conJson = new JsonObject();
                 conJson.addProperty("type", RecipeLoadCondition.ID);
@@ -47,14 +47,14 @@ public class ConditionalRecipeLinkFactory implements RecipeLinkFactory {
 
                 var arr = new JsonArray();
                 arr.add(conJson);
-                recipe.add(ConditionalOps.DEFAULT_CONDITIONS_KEY, arr);
+                originalRecipe.add(ConditionalOps.DEFAULT_CONDITIONS_KEY, arr);
             }
 
             if (!conditionsMet) {
                 return null;
             }
 
-            return RecipeLink.of(id, recipe);
+            return RecipeLink.of(id, originalRecipe);
         } catch (IllegalArgumentException | JsonParseException e) {
             // Do we silent here? So the neoforge handling will throw the correct exception.
             // We should not do this.

@@ -200,8 +200,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     public void run(Map<ResourceLocation, JsonElement> recipes, RecipeManager recipeManager) {
         debugHandler.onRunStart(recipes, compositeUnificationLookup);
 
-        var factory = AlmostUnifiedPlatform.INSTANCE.getRecipeLinkFactory(recipeManager,
-            debugHandler.config().cacheRecipeConditions());
+        var factory = AlmostUnifiedPlatform.INSTANCE.getRecipeLinkFactory(
+            recipeManager,
+            debugHandler.config().shouldCacheRecipeConditions()
+        );
         debugHandler.measure(() ->
             new RecipeTransformer(ingredientUnifierRegistry, recipeUnifierRegistry, unificationSettings, factory)
                 .transformRecipes(recipes)

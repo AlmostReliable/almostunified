@@ -11,5 +11,4 @@ public interface ContextAwareReloadListenerAccessor {
 
     @Invoker("makeConditionalOps")
     ConditionalOps<JsonElement> au$makeConditionalOps();
-
 }
