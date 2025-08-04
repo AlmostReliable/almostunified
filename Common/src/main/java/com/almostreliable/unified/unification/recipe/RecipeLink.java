@@ -13,7 +13,6 @@ import com.almostreliable.unified.utils.JsonCompare;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -252,7 +251,18 @@ public final class RecipeLink implements RecipeData, Comparable<RecipeLink> {
     }
 
     @Override
-    public int compareTo(@NotNull RecipeLink o) {
+    public boolean equals(Object o) {
+        return o instanceof RecipeLink recipeLink && id.equals(recipeLink.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public int compareTo(@Nullable RecipeLink o) {
+        if (o == null) throw new NullPointerException("recipe link cannot be null");
         return id.compareTo(o.id);
     }
 
