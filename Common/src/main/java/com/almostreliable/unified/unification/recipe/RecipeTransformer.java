@@ -127,7 +127,7 @@ public class RecipeTransformer {
         for (var entry : recipes.entrySet()) {
             var value = entry.getValue();
             if (value instanceof JsonObject json && !json.isEmpty()) {
-                var link = recipeLinkFactory.create(entry.getKey(), json.getAsJsonObject());
+                var link = recipeLinkFactory.create(entry.getKey(), json);
                 if (link == null) continue;
 
                 added++;
