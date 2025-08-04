@@ -1,4 +1,4 @@
-package com.almostreliable.unified;
+package com.almostreliable.unified.core;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;

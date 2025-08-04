@@ -3,6 +3,7 @@ package com.almostreliable.unified;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import com.almostreliable.unified.api.constant.ModConstants;
+import com.almostreliable.unified.core.ConditionalRecipeLinkFactory;
 import com.almostreliable.unified.mixin.neoforge.ContextAwareReloadListenerAccessor;
 import com.almostreliable.unified.unification.recipe.RecipeLink;
 import com.almostreliable.unified.unification.recipe.RecipeLinkFactory;

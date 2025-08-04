@@ -1,4 +1,4 @@
-package com.almostreliable.unified;
+package com.almostreliable.unified.core;
 
 import com.almostreliable.unified.utils.Utils;
 

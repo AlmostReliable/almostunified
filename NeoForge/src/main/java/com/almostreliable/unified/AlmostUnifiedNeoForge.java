@@ -10,6 +10,7 @@ import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.compat.PluginManager;
 import com.almostreliable.unified.compat.viewer.ClientRecipeTracker;
 import com.almostreliable.unified.core.AlmostUnifiedCommands;
+import com.almostreliable.unified.core.RecipeLoadCondition;
 import com.almostreliable.unified.unification.worldgen.WorldGenBiomeModifier;
 import com.almostreliable.unified.unification.worldgen.WorldStripper;
 import com.almostreliable.unified.utils.Utils;
@@ -52,9 +53,11 @@ public class AlmostUnifiedNeoForge {
         }
 
         if (event.getRegistryKey() == NeoForgeRegistries.Keys.CONDITION_CODECS) {
-            Registry.register(NeoForgeRegistries.CONDITION_SERIALIZERS,
+            Registry.register(
+                NeoForgeRegistries.CONDITION_SERIALIZERS,
                 RecipeLoadCondition.ID,
-                RecipeLoadCondition.CODEC);
+                RecipeLoadCondition.CODEC
+            );
         }
 
         if (AlmostUnifiedCommon.STARTUP_CONFIG.isServerOnly()) return;
