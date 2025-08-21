@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- added Hungarian translation ([#121](https://github.com/AlmostReliable/almostunified/pull/121))
+- improved Portuguese translation ([#122](https://github.com/AlmostReliable/almostunified/pull/122))
+- fixed duplicate checking for recipes with different recipe key counts
+
 ## [0.10.0] - 2025-05-21
 
 - added support for Enchanted: Witchcraft
