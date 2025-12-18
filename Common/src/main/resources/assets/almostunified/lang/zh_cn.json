@@ -1,8 +1,8 @@
 {
-  "almostunified.description": "此版本由Almost Unified修改！",
-  "almostunified.warning": "请不要提交问题给原作者！",
-  "almostunified.unified": "大一统！",
-  "almostunified.duplicate": "存在重复的？！",
-  "almostunified.yes": "是！",
-  "almostunified.no": "否！"
+  "almostunified.description": "此配方由Almost Unified提供！",
+  "almostunified.warning": "请不要向原作者反馈此配方的问题。",
+  "almostunified.unified": "配方统一",
+  "almostunified.duplicate": "存在重复配方",
+  "almostunified.yes": "是",
+  "almostunified.no": "否"
 }
