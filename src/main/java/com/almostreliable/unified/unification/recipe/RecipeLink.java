@@ -1,0 +1,309 @@
+package com.almostreliable.unified.unification.recipe;
+
+import com.almostreliable.unified.AlmostUnifiedCommon;
+import com.almostreliable.unified.api.constant.RecipeConstants;
+import com.almostreliable.unified.api.unification.recipe.RecipeData;
+import com.almostreliable.unified.utils.JsonCompare;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+
+import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public final class RecipeLink implements RecipeData, Comparable<RecipeLink> {
+
+    /**
+     * This cache is an optimization to avoid creating many Identifiers for just a few different types.
+     * Having fewer Identifier instances can greatly speed up equality checking when these are used as map keys.
+     */
+    private static final Map<String, Identifier> PARSED_TYPE_CACHE = new HashMap<>();
+    private static final Identifier SHAPED_RECIPE_TYPE = PARSED_TYPE_CACHE.computeIfAbsent(
+        "minecraft:crafting_shaped",
+        Identifier::parse
+    );
+    private static final Identifier SHAPELESS_RECIPE_TYPE = PARSED_TYPE_CACHE.computeIfAbsent(
+        "minecraft:crafting_shapeless",
+        Identifier::parse
+    );
+
+    static {
+        PARSED_TYPE_CACHE.putIfAbsent("crafting_shaped", SHAPED_RECIPE_TYPE);
+        PARSED_TYPE_CACHE.putIfAbsent("crafting_shapeless", SHAPELESS_RECIPE_TYPE);
+    }
+
+    private final Identifier id;
+    private final Identifier type;
+    private final JsonObject originalRecipe;
+    private final boolean isCraftingRecipe;
+
+    @Nullable
+    private DuplicateLink duplicateLink;
+    @Nullable
+    private JsonObject unifiedRecipe;
+    @Nullable
+    private Item craftingRecipeOutput;
+
+    private RecipeLink(Identifier id, JsonObject originalRecipe, Identifier type) {
+        this.id = id;
+        this.originalRecipe = originalRecipe;
+        this.type = type;
+        this.isCraftingRecipe = type == SHAPED_RECIPE_TYPE || type == SHAPELESS_RECIPE_TYPE;
+    }
+
+    @Nullable
+    public static RecipeLink of(Identifier id, JsonObject originalRecipe) {
+        try {
+            String typeString = originalRecipe.get("type").getAsString();
+            Identifier type = PARSED_TYPE_CACHE.computeIfAbsent(typeString, Identifier::parse);
+            return new RecipeLink(id, originalRecipe, type);
+        } catch (Exception e) {
+            AlmostUnifiedCommon.LOGGER.warn("Could not detect recipe type for recipe '{}', skipping.", id);
+            return null;
+        }
+    }
+
+    public static RecipeLink ofOrThrow(Identifier id, JsonObject originalRecipe) {
+        try {
+            String typeString = originalRecipe.get("type").getAsString();
+            Identifier type = PARSED_TYPE_CACHE.computeIfAbsent(typeString, Identifier::parse);
+            return new RecipeLink(id, originalRecipe, type);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("could not detect recipe type for recipe " + id);
+        }
+    }
+
+    /**
+     * Compare two recipes for equality with given rules. Keys from rules will automatically count as ignored field for the base comparison.
+     * If base comparison succeed then the recipes will be compared for equality with rules from {@link JsonCompare.Rule}.
+     * Rules are sorted, first rule with the highest priority will be used.
+     *
+     * @param first          first recipe to compare
+     * @param second         second recipe to compare
+     * @param compareContext Settings and context to use for comparison.
+     * @return the recipe where rules are applied and the recipes are compared for equality, or null if the recipes are not equal
+     */
+    @Nullable
+    public static RecipeLink compare(RecipeLink first, RecipeLink second, JsonCompare.CompareContext compareContext) {
+        if (first.isCraftingRecipe && first.getCraftingRecipeOutput() != second.getCraftingRecipeOutput()) {
+            return null;
+        }
+
+        JsonObject selfActual = first.getActual();
+        JsonObject toCompareActual = second.getActual();
+
+        JsonObject compare = null;
+        if (first.isCraftingRecipe) {
+            compare = JsonCompare.compareShaped(selfActual, toCompareActual, compareContext);
+        } else if (JsonCompare.matches(selfActual, toCompareActual, compareContext)) {
+            compare = JsonCompare.compare(compareContext.settings().getRules(), selfActual, toCompareActual);
+        }
+
+        if (compare == null) return null;
+        if (compare == selfActual) return first;
+        if (compare == toCompareActual) return second;
+        return null;
+    }
+
+    @Override
+    public Identifier getId() {
+        return id;
+    }
+
+    @Override
+    public Identifier getType() {
+        return type;
+    }
+
+    @Override
+    public boolean hasProperty(String key) {
+        return getOriginal().has(key);
+    }
+
+    public JsonObject getOriginal() {
+        return originalRecipe;
+    }
+
+    public boolean hasDuplicateLink() {
+        return duplicateLink != null;
+    }
+
+    @Nullable
+    public DuplicateLink getDuplicateLink() {
+        return duplicateLink;
+    }
+
+    private void updateDuplicateLink(@Nullable DuplicateLink duplicateLink) {
+        Preconditions.checkNotNull(duplicateLink);
+        if (hasDuplicateLink() && getDuplicateLink() != duplicateLink) {
+            throw new IllegalStateException("recipe is already linked to " + getDuplicateLink());
+        }
+
+        this.duplicateLink = duplicateLink;
+        this.duplicateLink.addDuplicate(this);
+    }
+
+    @Nullable
+    public JsonObject getUnified() {
+        return unifiedRecipe;
+    }
+
+    public boolean isUnified() {
+        return unifiedRecipe != null;
+    }
+
+    void setUnified(JsonObject json) {
+        Preconditions.checkNotNull(json);
+        if (isUnified()) {
+            throw new IllegalStateException("recipe already unified");
+        }
+
+        this.unifiedRecipe = json;
+    }
+
+    @Nullable
+    public Item getCraftingRecipeOutput() {
+        if (craftingRecipeOutput == null) {
+            JsonObject recipe = unifiedRecipe == null ? originalRecipe : unifiedRecipe;
+            try {
+                String outputString = recipe
+                    .getAsJsonObject(RecipeConstants.RESULT)
+                    .getAsJsonPrimitive(RecipeConstants.ID)
+                    .getAsString();
+                craftingRecipeOutput = BuiltInRegistries.ITEM.getValue(Identifier.parse(outputString));
+            } catch (Exception e) {
+                AlmostUnifiedCommon.LOGGER.warn("Could not detect crafting recipe output for recipe '{}'.", id);
+                craftingRecipeOutput = Items.AIR;
+            }
+        }
+
+        if (craftingRecipeOutput == Items.AIR) {
+            return null;
+        }
+
+        return craftingRecipeOutput;
+    }
+
+    @Override
+    public String toString() {
+        String duplicate = duplicateLink != null ? " (duplicate)" : "";
+        String unified = unifiedRecipe != null ? " (unified)" : "";
+        return String.format("['%s'] %s%s%s", type, id, duplicate, unified);
+    }
+
+    /**
+     * Checks for duplicate against given recipe data. If recipe data already has a duplicate link,
+     * the master from the link will be used. Otherwise, we will create a new link if needed.
+     *
+     * @param otherRecipe    Recipe data to check for duplicate against.
+     * @param compareContext Settings and context to use for comparison.
+     * @return True if recipe is a duplicate, false otherwise.
+     */
+    public boolean handleDuplicate(RecipeLink otherRecipe, JsonCompare.CompareContext compareContext) {
+        DuplicateLink selfDuplicate = getDuplicateLink();
+        DuplicateLink otherDuplicate = otherRecipe.getDuplicateLink();
+
+        if (selfDuplicate != null && otherDuplicate != null) {
+            return selfDuplicate == otherDuplicate;
+        }
+
+        if (selfDuplicate == null && otherDuplicate == null) {
+            RecipeLink compare = compare(this, otherRecipe, compareContext);
+            if (compare == null) {
+                return false;
+            }
+
+            DuplicateLink newLink = new DuplicateLink(compare);
+            updateDuplicateLink(newLink);
+            otherRecipe.updateDuplicateLink(newLink);
+            return true;
+        }
+
+        if (otherDuplicate != null) {
+            RecipeLink compare = compare(this, otherDuplicate.getMaster(), compareContext);
+            if (compare == null) {
+                return false;
+            }
+            otherDuplicate.updateMaster(compare);
+            updateDuplicateLink(otherDuplicate);
+            return true;
+        }
+
+        // selfDuplicate != null
+        RecipeLink compare = compare(selfDuplicate.getMaster(), otherRecipe, compareContext);
+        if (compare == null) {
+            return false;
+        }
+        selfDuplicate.updateMaster(compare);
+        otherRecipe.updateDuplicateLink(selfDuplicate);
+        return true;
+    }
+
+    public JsonObject getActual() {
+        return getUnified() != null ? getUnified() : getOriginal();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof RecipeLink recipeLink && id.equals(recipeLink.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public int compareTo(@Nullable RecipeLink o) {
+        if (o == null) throw new NullPointerException("recipe link cannot be null");
+        return id.compareTo(o.id);
+    }
+
+    public static final class DuplicateLink {
+
+        private final Set<RecipeLink> recipes = new HashSet<>();
+        private RecipeLink currentMaster;
+
+        private DuplicateLink(RecipeLink master) {
+            updateMaster(master);
+        }
+
+        private void updateMaster(RecipeLink master) {
+            Preconditions.checkNotNull(master);
+            addDuplicate(master);
+            this.currentMaster = master;
+        }
+
+        private void addDuplicate(RecipeLink recipe) {
+            recipes.add(recipe);
+        }
+
+        public RecipeLink getMaster() {
+            return currentMaster;
+        }
+
+        public Set<RecipeLink> getRecipes() {
+            return Collections.unmodifiableSet(recipes);
+        }
+
+        public Set<RecipeLink> getRecipesWithoutMaster() {
+            return recipes.stream().filter(recipe -> recipe != currentMaster).collect(Collectors.toSet());
+        }
+
+        @Override
+        public String toString() {
+            return "Link{currentMaster=" + currentMaster + ", recipes=" + recipes.size() + "}";
+        }
+    }
+}

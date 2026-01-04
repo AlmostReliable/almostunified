@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "com.almostreliable.unified.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ContextAwareReloadListenerAccessor",
+    "loot.CompositeEntryBaseMixin",
+    "loot.LootItemMixin",
+    "loot.LootPoolMixin",
+    "loot.LootTableMixin",
+    "runtime.RecipeManagerMixin",
+    "runtime.TagLoaderMixin",
+    "unification.ArmorItemMixin",
+    "unification.TieredItemMixin",
+    "worldgen.OreConfigurationAccessor",
+    "worldgen.ServerLifecycleHooksMixin"
+  ],
+  "client": [
+    "runtime.ClientPacketListenerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
