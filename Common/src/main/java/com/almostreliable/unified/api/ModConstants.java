@@ -8,6 +8,7 @@ public final class ModConstants {
 
     // custom unify handlers
     public static final String AD_ASTRA = "ad_astra";
+    public static final String ALSHANEX_FAMILIARS = "alshanex_familiars";
     public static final String APPLIED_ENERGISTICS = "ae2";
     public static final String ALLOY_FORGERY = "alloy_forgery";
     public static final String AMETHYST_IMBUEMENT = "amethyst_imbuement";

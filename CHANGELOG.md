@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- added support for Alshanex's Familiars ([#139](https://github.com/AlmostReliable/almostunified/issues/139))
+- improved Chinese translation ([#134](https://github.com/AlmostReliable/almostunified/pull/134))
+
 ## [0.10.1] - 2025-08-21
 
 - added Hungarian translation ([#121](https://github.com/AlmostReliable/almostunified/pull/121))

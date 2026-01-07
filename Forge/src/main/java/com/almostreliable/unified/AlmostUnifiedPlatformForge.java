@@ -1,13 +1,27 @@
 package com.almostreliable.unified;
 
 import com.almostreliable.unified.api.ModConstants;
-import com.almostreliable.unified.compat.*;
+import com.almostreliable.unified.compat.AdAstraRecipeUnifier;
+import com.almostreliable.unified.compat.AlshanexFamiliarsRecipeUnifier;
+import com.almostreliable.unified.compat.AppliedEnergisticsUnifier;
+import com.almostreliable.unified.compat.ArsNouveauRecipeUnifier;
+import com.almostreliable.unified.compat.BloodMagicRecipeUnifier;
+import com.almostreliable.unified.compat.CyclicRecipeUnifier;
+import com.almostreliable.unified.compat.EnchantedWitchcraftRecipeUnifier;
+import com.almostreliable.unified.compat.EnderIORecipeUnifier;
+import com.almostreliable.unified.compat.GregTechModernRecipeUnifier;
+import com.almostreliable.unified.compat.ImmersiveEngineeringRecipeUnifier;
+import com.almostreliable.unified.compat.IntegratedDynamicsRecipeUnifier;
+import com.almostreliable.unified.compat.MekanismRecipeUnifier;
+import com.almostreliable.unified.compat.TerraFirmaCraftRecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.GenericRecipeUnifier;
 import com.almostreliable.unified.recipe.unifier.RecipeHandlerFactory;
 import com.almostreliable.unified.utils.UnifyTag;
-import com.google.auto.service.AutoService;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+
+import com.google.auto.service.AutoService;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -54,19 +68,20 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
     @Override
     public void bindRecipeHandlers(RecipeHandlerFactory factory) {
         factory.registerForMod(ModConstants.AD_ASTRA, new AdAstraRecipeUnifier());
+        factory.registerForMod(ModConstants.ALSHANEX_FAMILIARS, new AlshanexFamiliarsRecipeUnifier());
         factory.registerForMod(ModConstants.APPLIED_ENERGISTICS, new AppliedEnergisticsUnifier());
         List.of(
-                ModConstants.ARS_CREO,
-                ModConstants.ARS_ELEMENTAL,
-                ModConstants.ARS_NOUVEAU,
-                ModConstants.ARS_SCALAES
+            ModConstants.ARS_CREO,
+            ModConstants.ARS_ELEMENTAL,
+            ModConstants.ARS_NOUVEAU,
+            ModConstants.ARS_SCALAES
         ).forEach(modId -> factory.registerForMod(modId, new ArsNouveauRecipeUnifier()));
         factory.registerForMod(ModConstants.BLOOD_MAGIC, new BloodMagicRecipeUnifier());
         factory.registerForMod(ModConstants.CYCLIC, new CyclicRecipeUnifier());
         factory.registerForMod(ModConstants.ENCHANTED_WITCHCRAFT, new EnchantedWitchcraftRecipeUnifier());
         factory.registerForType(
-                new ResourceLocation(ModConstants.ENCHANTED_WITCHCRAFT, "byproduct"),
-                GenericRecipeUnifier.INSTANCE
+            new ResourceLocation(ModConstants.ENCHANTED_WITCHCRAFT, "byproduct"),
+            GenericRecipeUnifier.INSTANCE
         );
         factory.registerForMod(ModConstants.ENDER_IO, new EnderIORecipeUnifier());
         factory.registerForMod(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
@@ -74,20 +89,20 @@ public class AlmostUnifiedPlatformForge implements AlmostUnifiedPlatform {
         factory.registerForMod(ModConstants.INTEGRATED_DYNAMICS, new IntegratedDynamicsRecipeUnifier());
         factory.registerForMod(ModConstants.MEKANISM, new MekanismRecipeUnifier());
         List.of(
-                ModConstants.TERRAFIRMACRAFT,
-                ModConstants.ADVANCED_TFC_TECH,
-                ModConstants.FIRMALIFE,
-                ModConstants.TFC_WATER_FLASKS,
-                ModConstants.WOODENCOG
+            ModConstants.TERRAFIRMACRAFT,
+            ModConstants.ADVANCED_TFC_TECH,
+            ModConstants.FIRMALIFE,
+            ModConstants.TFC_WATER_FLASKS,
+            ModConstants.WOODENCOG
         ).forEach(modId -> factory.registerForMod(modId, new TerraFirmaCraftRecipeUnifier()));
     }
 
     @Override
     public Set<UnifyTag<Item>> getStoneStrataTags(List<String> stoneStrataIds) {
         return stoneStrataIds
-                .stream()
-                .map(id -> new ResourceLocation("forge", "ores_in_ground/" + id))
-                .map(UnifyTag::item)
-                .collect(Collectors.toSet());
+            .stream()
+            .map(id -> new ResourceLocation("forge", "ores_in_ground/" + id))
+            .map(UnifyTag::item)
+            .collect(Collectors.toSet());
     }
 }
