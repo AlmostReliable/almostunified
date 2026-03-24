@@ -28,13 +28,13 @@ versionRange = "[${minecraftVersion},)"
 modId = "jei"
 type = "optional"
 versionRange = "[${jeiVersion},)"
-
-[[dependencies."${modId}"]]
-modId = "roughlyenoughitems"
-type = "optional"
-versionRange = "[${reiVersion},)"
-
-[[dependencies."${modId}"]]
-modId = "emi"
-type = "optional"
-versionRange = "[${emiVersion},)"
+#
+#[[dependencies."${modId}"]]
+#modId = "roughlyenoughitems"
+#type = "optional"
+#versionRange = "[${reiVersion},)"
+#
+#[[dependencies."${modId}"]]
+#modId = "emi"
+#type = "optional"
+#versionRange = "[${emiVersion},)"
