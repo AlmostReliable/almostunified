@@ -1,4 +1,4 @@
-@NonnullDefault
+@NotNullByDefault
 package com.almostreliable.unified.core;
 
-import org.lwjgl.system.NonnullDefault;
+import org.jetbrains.annotations.NotNullByDefault;

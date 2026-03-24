@@ -4,7 +4,6 @@ import com.almostreliable.unified.utils.Utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -19,13 +18,14 @@ public final class CRTLookup {
             return null;
         }
 
-        return Minecraft.getInstance().level
-            .getRecipeManager()
-            .byKey(link)
-            .map(RecipeHolder::value)
-            .filter(ClientRecipeTracker.class::isInstance)
-            .map(ClientRecipeTracker.class::cast)
-            .map(tracker -> tracker.getLink(recipeId))
-            .orElse(null);
+        // return Minecraft.getInstance().level
+        //     .getRecipeManager()
+        //     .byKey(link)
+        //     .map(RecipeHolder::value)
+        //     .filter(ClientRecipeTracker.class::isInstance)
+        //     .map(ClientRecipeTracker.class::cast)
+        //     .map(tracker -> tracker.getLink(recipeId))
+        //     .orElse(null);
+        return null;
     }
 }

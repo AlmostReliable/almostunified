@@ -114,18 +114,16 @@ public final class Defaults {
 
     public static final List<String> IGNORED_RECIPE_TYPES = List.of("cucumber:shaped_tag");
 
-    public static JsonCompare.CompareSettings getDefaultDuplicateRules(AlmostUnifiedPlatform.Platform platform) {
-        JsonCompare.CompareSettings result = getDefaultCompareSettings(platform);
+    public static JsonCompare.CompareSettings getDefaultDuplicateRules() {
+        JsonCompare.CompareSettings result = getDefaultCompareSettings();
         result.addRule("cookingtime", new JsonCompare.HigherRule());
         result.addRule("energy", new JsonCompare.HigherRule());
         result.addRule("experience", new JsonCompare.HigherRule());
         return result;
     }
 
-    public static LinkedHashMap<Identifier, JsonCompare.CompareSettings> getDefaultDuplicateOverrides(
-        AlmostUnifiedPlatform.Platform platform
-    ) {
-        JsonCompare.CompareSettings result = getDefaultCompareSettings(platform);
+    public static LinkedHashMap<Identifier, JsonCompare.CompareSettings> getDefaultDuplicateOverrides() {
+        JsonCompare.CompareSettings result = getDefaultCompareSettings();
         result.ignoreField("pattern");
         result.ignoreField("key");
 
@@ -134,12 +132,9 @@ public final class Defaults {
         return resultMap;
     }
 
-    public static JsonCompare.CompareSettings getDefaultCompareSettings(AlmostUnifiedPlatform.Platform platform) {
+    public static JsonCompare.CompareSettings getDefaultCompareSettings() {
         JsonCompare.CompareSettings result = new JsonCompare.CompareSettings();
-        result.ignoreField(switch (platform) {
-            case NEO_FORGE -> "neoforge:conditions";
-            case FABRIC -> "fabric:load_conditions";
-        });
+        result.ignoreField("neoforge:conditions");
         result.ignoreField("group");
         result.ignoreField("category");
         result.ignoreField("show_notification");

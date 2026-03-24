@@ -1,18 +1,20 @@
 package com.almostreliable.unified.compat.viewer;
 
-import net.minecraft.core.HolderLookup;
+import com.almostreliable.unified.unification.recipe.RecipeLink;
+import com.almostreliable.unified.utils.Utils;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-
-import com.almostreliable.unified.unification.recipe.RecipeLink;
-import com.almostreliable.unified.utils.Utils;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
@@ -39,7 +41,6 @@ public record ClientRecipeTracker(String namespace, Map<Identifier, ClientRecipe
     public static final String NAMESPACE = "namespace";
     public static final int UNIFIED_FLAG = 1;
     public static final int DUPLICATE_FLAG = 2;
-    public static final RecipeSerializer<ClientRecipeTracker> SERIALIZER = new Serializer();
     public static final RecipeType<ClientRecipeTracker> TYPE = new RecipeType<>() {
         @Override
         public String toString() {
@@ -69,29 +70,39 @@ public record ClientRecipeTracker(String namespace, Map<Identifier, ClientRecipe
     }
 
     @Override
-    public ItemStack assemble(RecipeInput recipeInput, HolderLookup.Provider provider) {
+    public ItemStack assemble(RecipeInput recipeInput) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
+    public boolean showNotification() {
         return false;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
-        return ItemStack.EMPTY;
+    public String group() {
+        return "";
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
     //</editor-fold>
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
+    public RecipeType<? extends Recipe<RecipeInput>> getType() {
+        return TYPE;
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return TYPE;
+    public RecipeSerializer<? extends Recipe<RecipeInput>> getSerializer() {
+        return SERIALIZER;
     }
 
     private void add(ClientRecipeLink clientRecipeLink) {
@@ -109,117 +120,106 @@ public record ClientRecipeTracker(String namespace, Map<Identifier, ClientRecipe
         return recipes.values().stream().map(l -> createRaw(l.isUnified, l.isDuplicate, l.id.getPath())).toList();
     }
 
-    public static class Serializer implements RecipeSerializer<ClientRecipeTracker> {
+    /**
+     * Codec for the recipe tracker. The recipe will look like this:
+     * <pre>
+     * {@code
+     * {
+     *      "type": "almostunified:client_recipe_tracker",
+     *      "namespace": "minecraft", // The namespace of the recipes.
+     *      "recipes": [
+     *          "flag$recipePath",
+     *          "flag$recipe2Path",
+     *          ...
+     *          "flag$recipeNPath"
+     *      ]
+     * }
+     * }
+     * </pre>
+     */
+    public static final MapCodec<ClientRecipeTracker> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+        .group(
+            Codec.STRING.fieldOf("namespace").forGetter(ClientRecipeTracker::namespace),
+            Codec.list(Codec.STRING).fieldOf("recipes").forGetter(ClientRecipeTracker::getLinkStrings)
+        )
+        .apply(instance, ClientRecipeTracker::of));
 
-        /**
-         * Codec for the recipe tracker. The recipe will look like this:
-         * <pre>
-         * {@code
-         * {
-         *      "type": "almostunified:client_recipe_tracker",
-         *      "namespace": "minecraft", // The namespace of the recipes.
-         *      "recipes": [
-         *          "flag$recipePath",
-         *          "flag$recipe2Path",
-         *          ...
-         *          "flag$recipeNPath"
-         *      ]
-         * }
-         * }
-         * </pre>
-         */
-        public static final MapCodec<ClientRecipeTracker> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-            .group(
-                Codec.STRING.fieldOf("namespace").forGetter(ClientRecipeTracker::namespace),
-                Codec.list(Codec.STRING).fieldOf("recipes").forGetter(ClientRecipeTracker::getLinkStrings)
-            )
-            .apply(instance, Serializer::of));
-
-        public static final StreamCodec<RegistryFriendlyByteBuf, ClientRecipeTracker> STREAM_CODEC = new StreamCodec<>() {
-            @Override
-            public ClientRecipeTracker decode(RegistryFriendlyByteBuf buffer) {
-                int size = buffer.readInt();
-                String namespace = buffer.readUtf();
-
-                ImmutableMap.Builder<Identifier, ClientRecipeLink> builder = ImmutableMap.builder();
-                for (int i = 0; i < size; i++) {
-                    String raw = buffer.readUtf();
-                    ClientRecipeLink clientRecipeLink = parseRaw(namespace, raw);
-                    builder.put(clientRecipeLink.id(), clientRecipeLink);
-                }
-
-                return new ClientRecipeTracker(namespace, builder.build());
-            }
-
-            /**
-             * Writes the tracker to the buffer. The namespace is written separately to save some bytes.
-             * Buffer output will look like:
-             * <pre>
-             *     size
-             *     namespace
-             *     flag$recipePath
-             *     flag$recipe2Path
-             *     ...
-             *     flag$recipeNPath
-             * </pre>
-             *
-             * @param buffer The buffer to write to
-             * @param recipe The recipe to write
-             */
-            @Override
-            public void encode(RegistryFriendlyByteBuf buffer, ClientRecipeTracker recipe) {
-                buffer.writeInt(recipe.recipes.size());
-                buffer.writeUtf(recipe.namespace);
-                for (ClientRecipeLink clientRecipeLink : recipe.recipes.values()) {
-                    String raw = createRaw(
-                        clientRecipeLink.isUnified(),
-                        clientRecipeLink.isDuplicate(),
-                        clientRecipeLink.id().getPath()
-                    );
-                    buffer.writeUtf(raw);
-                }
-            }
-        };
-
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientRecipeTracker> STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public MapCodec<ClientRecipeTracker> codec() {
-            return CODEC;
-        }
+        public ClientRecipeTracker decode(RegistryFriendlyByteBuf buffer) {
+            int size = buffer.readInt();
+            String namespace = buffer.readUtf();
 
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, ClientRecipeTracker> streamCodec() {
-            return STREAM_CODEC;
-        }
-
-        private static ClientRecipeTracker of(String namespace, List<String> recipes) {
             ImmutableMap.Builder<Identifier, ClientRecipeLink> builder = ImmutableMap.builder();
-
-            for (String recipe : recipes) {
-                ClientRecipeLink link = parseRaw(namespace, recipe);
-                builder.put(link.id(), link);
+            for (int i = 0; i < size; i++) {
+                String raw = buffer.readUtf();
+                ClientRecipeLink clientRecipeLink = parseRaw(namespace, raw);
+                builder.put(clientRecipeLink.id(), clientRecipeLink);
             }
 
             return new ClientRecipeTracker(namespace, builder.build());
         }
 
         /**
-         * Creates a {@link ClientRecipeLink} from a raw string for the given namespace.
+         * Writes the tracker to the buffer. The namespace is written separately to save some bytes.
+         * Buffer output will look like:
+         * <pre>
+         *     size
+         *     namespace
+         *     flag$recipePath
+         *     flag$recipe2Path
+         *     ...
+         *     flag$recipeNPath
+         * </pre>
          *
-         * @param namespace The namespace to use.
-         * @param raw       The raw string.
-         * @return The client sided recipe link.
+         * @param buffer The buffer to write to
+         * @param recipe The recipe to write
          */
-        public static ClientRecipeLink parseRaw(String namespace, String raw) {
-            String[] split = raw.split("\\$", 2);
-            int flag = Integer.parseInt(split[0]);
-            boolean isUnified = (flag & UNIFIED_FLAG) != 0;
-            boolean isDuplicate = (flag & DUPLICATE_FLAG) != 0;
-            return new ClientRecipeLink(
-                Identifier.fromNamespaceAndPath(namespace, split[1]),
-                isUnified,
-                isDuplicate
-            );
+        @Override
+        public void encode(RegistryFriendlyByteBuf buffer, ClientRecipeTracker recipe) {
+            buffer.writeInt(recipe.recipes.size());
+            buffer.writeUtf(recipe.namespace);
+            for (ClientRecipeLink clientRecipeLink : recipe.recipes.values()) {
+                String raw = createRaw(
+                    clientRecipeLink.isUnified(),
+                    clientRecipeLink.isDuplicate(),
+                    clientRecipeLink.id().getPath()
+                );
+                buffer.writeUtf(raw);
+            }
         }
+    };
+
+    public static final RecipeSerializer<ClientRecipeTracker> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
+    private static ClientRecipeTracker of(String namespace, List<String> recipes) {
+        ImmutableMap.Builder<Identifier, ClientRecipeLink> builder = ImmutableMap.builder();
+
+        for (String recipe : recipes) {
+            ClientRecipeLink link = parseRaw(namespace, recipe);
+            builder.put(link.id(), link);
+        }
+
+        return new ClientRecipeTracker(namespace, builder.build());
+    }
+
+    /**
+     * Creates a {@link ClientRecipeLink} from a raw string for the given namespace.
+     *
+     * @param namespace The namespace to use.
+     * @param raw       The raw string.
+     * @return The client sided recipe link.
+     */
+    public static ClientRecipeLink parseRaw(String namespace, String raw) {
+        String[] split = raw.split("\\$", 2);
+        int flag = Integer.parseInt(split[0]);
+        boolean isUnified = (flag & UNIFIED_FLAG) != 0;
+        boolean isDuplicate = (flag & DUPLICATE_FLAG) != 0;
+        return new ClientRecipeLink(
+            Identifier.fromNamespaceAndPath(namespace, split[1]),
+            isUnified,
+            isDuplicate
+        );
     }
 
     public static class RawBuilder {

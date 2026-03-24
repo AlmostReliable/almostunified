@@ -3,7 +3,7 @@ package com.almostreliable.unified.unification.worldgen;
 import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.api.AlmostUnified;
 import com.almostreliable.unified.api.unification.UnificationLookup;
-import com.almostreliable.unified.mixin.neoforge.worldgen.OreConfigurationAccessor;
+import com.almostreliable.unified.mixin.worldgen.OreConfigurationAccessor;
 import com.almostreliable.unified.utils.Utils;
 
 import net.minecraft.core.Holder;

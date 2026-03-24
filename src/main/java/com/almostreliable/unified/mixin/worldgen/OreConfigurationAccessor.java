@@ -1,4 +1,4 @@
-package com.almostreliable.unified.mixin.neoforge.worldgen;
+package com.almostreliable.unified.mixin.worldgen;
 
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 

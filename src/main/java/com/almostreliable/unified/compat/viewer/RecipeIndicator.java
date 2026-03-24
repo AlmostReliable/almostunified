@@ -63,11 +63,11 @@ final class RecipeIndicator {
             .flatMap(List::stream)
             .toList();
 
-        guiGraphics.renderTooltip(
-            font,
-            tooltip,
-            (int) mouseX,
-            (int) mouseY
-        );
+        // guiGraphics.renderTooltip(
+        //     font,
+        //     tooltip,
+        //     (int) mouseX,
+        //     (int) mouseY
+        // );
     }
 }

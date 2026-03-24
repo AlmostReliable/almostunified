@@ -1,5 +1,9 @@
 package com.almostreliable.unified.compat.viewer;
 
+import com.almostreliable.unified.api.constant.ModConstants;
+import com.almostreliable.unified.compat.viewer.ClientRecipeTracker.ClientRecipeLink;
+import com.almostreliable.unified.utils.Utils;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -7,11 +11,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import com.almostreliable.unified.api.constant.ModConstants;
-import com.almostreliable.unified.compat.viewer.ClientRecipeTracker.ClientRecipeLink;
-import com.almostreliable.unified.utils.Utils;
-
-import me.shedaniel.rei.plugincompatibilities.api.REIPluginCompatIgnore;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -26,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@REIPluginCompatIgnore
 @JeiPlugin
 public class AlmostJEI implements IModPlugin {
 
@@ -77,7 +75,7 @@ public class AlmostJEI implements IModPlugin {
 
         @Nullable
         private static <R> ClientRecipeLink resolveLink(IRecipeCategory<R> recipeCategory, R recipe) {
-            var recipeId = recipeCategory.getRegistryName(recipe);
+            var recipeId = recipeCategory.getIdentifier(recipe);
             if (recipeId == null) return null;
 
             return CRTLookup.getLink(recipeId);

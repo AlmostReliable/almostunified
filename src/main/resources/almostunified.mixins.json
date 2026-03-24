@@ -11,8 +11,6 @@
     "loot.LootTableMixin",
     "runtime.RecipeManagerMixin",
     "runtime.TagLoaderMixin",
-    "unification.ArmorItemMixin",
-    "unification.TieredItemMixin",
     "worldgen.OreConfigurationAccessor",
     "worldgen.ServerLifecycleHooksMixin"
   ],

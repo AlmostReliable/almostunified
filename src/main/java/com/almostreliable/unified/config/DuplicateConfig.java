@@ -1,10 +1,9 @@
 package com.almostreliable.unified.config;
 
-import net.minecraft.resources.Identifier;
-
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.unification.recipe.RecipeLink;
 import com.almostreliable.unified.utils.JsonCompare;
+
+import net.minecraft.resources.Identifier;
 
 import com.google.gson.JsonObject;
 
@@ -99,7 +98,6 @@ public final class DuplicateConfig extends Config {
 
         @Override
         public DuplicateConfig handleDeserialization(JsonObject json) {
-            var platform = AlmostUnifiedPlatform.INSTANCE.getPlatform();
             Set<Pattern> ignoreRecipeTypes = deserializePatterns(
                 json,
                 IGNORED_RECIPE_TYPES,
@@ -110,11 +108,11 @@ public final class DuplicateConfig extends Config {
             JsonCompare.CompareSettings defaultRules = safeGet(
                 () -> createCompareSet(json.getAsJsonObject(
                     DEFAULT_DUPLICATE_RULES)),
-                Defaults.getDefaultDuplicateRules(platform)
+                Defaults.getDefaultDuplicateRules()
             );
             LinkedHashMap<Identifier, JsonCompare.CompareSettings> overrideRules = safeGet(
                 () -> getOverrideRules(
-                    json), Defaults.getDefaultDuplicateOverrides(platform)
+                    json), Defaults.getDefaultDuplicateOverrides()
             );
             boolean compareAll = safeGet(() -> json.get(COMPARE_ALL).getAsBoolean(), false);
 

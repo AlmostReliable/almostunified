@@ -1,4 +1,4 @@
-@NonnullDefault
+@NotNullByDefault
 package com.almostreliable.unified.unification.loot;
 
-import org.lwjgl.system.NonnullDefault;
+import org.jetbrains.annotations.NotNullByDefault;

@@ -1,4 +1,4 @@
-@NonnullDefault
+@NotNullByDefault
 package com.almostreliable.unified.compat.kube;
 
-import org.lwjgl.system.NonnullDefault;
+import org.jetbrains.annotations.NotNullByDefault;

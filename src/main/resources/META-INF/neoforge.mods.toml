@@ -11,10 +11,7 @@ authors = "${modAuthor}"
 description = '''${modDescription}'''
 
 [[mixins]]
-config = "$modId.mixins.json"
-
-[[mixins]]
-config = "$modId-neoforge.mixins.json"
+config = "${modId}.mixins.json"
 
 [[dependencies."${modId}"]]
 modId = "neoforge"
@@ -32,9 +29,9 @@ versionRange = "[${jeiVersion},)"
 #[[dependencies."${modId}"]]
 #modId = "roughlyenoughitems"
 #type = "optional"
-#versionRange = "[${reiVersion},)"
+#versionRange = "[{reiVersion},)"
 #
 #[[dependencies."${modId}"]]
 #modId = "emi"
 #type = "optional"
-#versionRange = "[${emiVersion},)"
+#versionRange = "[{emiVersion},)"
