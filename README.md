@@ -7,13 +7,12 @@
 
 A [Minecraft] mod to unify resources.
 
-[![Workflow Status][workflow_status_badge]][workflow_status_link]
-![License][license_badge]
-
 [![Version][version_badge]][version_link]
 [![Total Downloads CF][total_downloads_cf_badge]][curseforge]
 [![Total Downloads MR][total_downloads_mr_badge]][modrinth]
 
+[![Workflow Status][workflow_status_badge]][workflow_status_link]
+![License][license_badge]
 [![Discord][discord_badge]][discord]
 [![Wiki][wiki_badge]][wiki]
 
@@ -64,22 +63,6 @@ dependencies {
 }
 ```
 
-### Examples
-For code examples on how to use the API, check out the [wiki][api-wiki].
-
-## **🖥️ Dev Environment Setup**
-1. Clone the repository
-2. Import into IntelliJ (VSCode and Eclipse are not tested)
-3. Run
-- `gradle -> common -> Tasks -> fabric -> genSources`
-- `gradle -> fabric -> Tasks -> fabric -> genSources`
-- `gradle -> neoforge -> Tasks -> loom -> genSources`
-- `gradle -> Tasks -> buildconfig -> generateBuildConfig`
-4. Restart the IDE
-
-The `common` module uses [fabric-loom]. This allows to use [ParchmentMC][parchment].<br>
-Do not use Fabric related features inside the `common` module!
-
 ## **💚 Credits**
 The logo was made by [mo_shark].
 
@@ -96,34 +79,33 @@ custom inclusion methods like Jar-in-Jar.
 
 Redistribution of builds or rehosting is strictly prohibited.
 
-<!-- Badges -->
-[workflow_status_badge]: https://img.shields.io/github/actions/workflow/status/AlmostReliable/almostunified/build.yml?branch=1.21.1&style=for-the-badge
-[workflow_status_link]: https://github.com/AlmostReliable/almostunified/actions
+<!-- Badge Images -->
+[version_badge]: https://img.shields.io/github/v/release/almostreliable/almostunified?include_prereleases&filter=v1.21.1-*&style=for-the-badge&logo=github&color=%23181717
+[total_downloads_cf_badge]: https://img.shields.io/curseforge/dt/633823?style=for-the-badge&logo=curseforge&label=CurseForge&color=%23F16436
+[total_downloads_mr_badge]: https://img.shields.io/modrinth/dt/sdaSaQEz?style=for-the-badge&logo=modrinth&label=Modrinth&color=%2300AF5C
+[workflow_status_badge]: https://img.shields.io/github/actions/workflow/status/almostreliable/almostunified/build.yml?branch=1.21.1&style=for-the-badge
 [license_badge]: https://img.shields.io/badge/License-ARR-ffa200?style=for-the-badge
-[version_badge]: https://img.shields.io/badge/dynamic/json?color=0078FF&label=release&style=for-the-badge&query=name&url=https://api.razonyang.com/v1/github/tag/AlmostReliable/almostunified%3Fprefix=v1.21.1-
-[version_link]: https://github.com/AlmostReliable/almostunified/releases/latest
-[total_downloads_cf_badge]: https://img.shields.io/badge/dynamic/json?color=e04e14&label=CurseForge&style=for-the-badge&query=downloads.total&url=https%3A%2F%2Fapi.cfwidget.com%2F633823&logo=curseforge
-[total_downloads_mr_badge]: https://img.shields.io/modrinth/dt/sdaSaQEz?color=5da545&label=Modrinth&style=for-the-badge&logo=modrinth
 [discord_badge]: https://img.shields.io/discord/917251858974789693?color=5865f2&label=Discord&logo=discord&style=for-the-badge
 [wiki_badge]: https://img.shields.io/badge/Read%20the-Wiki-ba00ff?style=for-the-badge
 [maven_common_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-common%2Fmaven-metadata.xml&style=flat-square
-[maven_common_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-common/
 [maven_fabric_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-fabric%2Fmaven-metadata.xml&style=flat-square
+[maven_neoforge_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-neoforge%2Fmaven-metadata.xml&style=flat-square
+
+<!-- Badge Links -->
+[version_link]: https://github.com/AlmostReliable/almostunified/releases/latest
+[curseforge]: https://www.curseforge.com/minecraft/mc-mods/almostunified
+[modrinth]: https://modrinth.com/mod/almostunified
+[workflow_status_link]: https://github.com/AlmostReliable/almostunified/actions
+[discord]: https://discord.com/invite/ThFnwZCyYY
+[wiki]: https://github.com/AlmostReliable/almostunified/wiki
+[maven_common_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-common/
 [maven_fabric_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-fabric/
-[maven_neoforge_badge]: https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Falmostreliable%2Fmods%2Falmostunified-forge%2Fmaven-metadata.xml&style=flat-square
-[maven_neoforge_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-forge/
+[maven_neoforge_link]: https://maven.blamejared.com/com/almostreliable/mods/almostunified-neoforge/
 
 <!-- Links -->
 [minecraft]: https://www.minecraft.net/
-[discord]: https://discord.com/invite/ThFnwZCyYY
-[wiki]: https://github.com/AlmostReliable/almostunified/wiki
-[curseforge]: https://www.curseforge.com/minecraft/mc-mods/almost-unified
-[modrinth]: https://modrinth.com/mod/almost-unified
 [releases]: https://github.com/AlmostReliable/almostunified/releases
 [neoforge]: https://neoforged.net/
 [fabric]: https://fabricmc.net/
 [blamejared]: https://maven.blamejared.com
-[api-wiki]: https://github.com/AlmostReliable/almostunified/wiki/API
-[fabric-loom]: https://github.com/FabricMC/fabric-loom
-[parchment]: https://parchmentmc.org/
 [mo_shark]: https://www.curseforge.com/members/mo_shark
