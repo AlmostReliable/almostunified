@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.4.0] - 2026-04-03
 
 - added support for Create Sequenced Assembly ([ATM10#3990](https://github.com/AllTheMods/ATM-10/issues/3990))
 - added Polish translation ([#140](https://github.com/AlmostReliable/almostunified/pull/140))
@@ -82,6 +85,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.4.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.4.0
 [1.3.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.3.0
 [1.2.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.7
 [1.2.6]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.6
