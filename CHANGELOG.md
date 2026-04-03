@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- added support for Create Sequenced Assembly ([ATM10#3990](https://github.com/AllTheMods/ATM-10/issues/3990))
 
 ## [1.3.0] - 2025-08-04
 

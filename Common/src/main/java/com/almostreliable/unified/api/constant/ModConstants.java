@@ -2,7 +2,7 @@ package com.almostreliable.unified.api.constant;
 
 import com.almostreliable.unified.BuildConfig;
 
-@SuppressWarnings({ "SpellCheckingInspection", "StaticMethodOnlyUsedInOneClass" })
+@SuppressWarnings({"SpellCheckingInspection", "StaticMethodOnlyUsedInOneClass"})
 public interface ModConstants {
 
     String ALMOST_UNIFIED = BuildConfig.MOD_ID;
@@ -18,6 +18,7 @@ public interface ModConstants {
     String ARS_ELEMENTAL = "ars_elemental";
     String ARS_NOUVEAU = "ars_nouveau";
     String ARS_SCALAES = "ars_scalaes";
+    String CREATE = "create";
     String CYCLIC = "cyclic";
     String ENDER_IO = "enderio";
     String GREGTECH_MODERN = "gtceu";

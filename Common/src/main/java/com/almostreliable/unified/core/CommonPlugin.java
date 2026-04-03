@@ -1,13 +1,14 @@
 package com.almostreliable.unified.core;
 
-import net.minecraft.resources.ResourceLocation;
-
 import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedNeoPlugin;
 import com.almostreliable.unified.api.plugin.AlmostUnifiedPlugin;
 import com.almostreliable.unified.api.unification.recipe.RecipeUnifierRegistry;
+import com.almostreliable.unified.compat.unification.CreateRecipeUnifier;
 import com.almostreliable.unified.compat.unification.GregTechModernRecipeUnifier;
 import com.almostreliable.unified.utils.Utils;
+
+import net.minecraft.resources.ResourceLocation;
 
 @AlmostUnifiedNeoPlugin
 public class CommonPlugin implements AlmostUnifiedPlugin {
@@ -19,6 +20,7 @@ public class CommonPlugin implements AlmostUnifiedPlugin {
 
     @Override
     public void registerRecipeUnifiers(RecipeUnifierRegistry registry) {
+        registry.registerForModId(ModConstants.CREATE, new CreateRecipeUnifier());
         registry.registerForModId(ModConstants.GREGTECH_MODERN, new GregTechModernRecipeUnifier());
     }
 }
