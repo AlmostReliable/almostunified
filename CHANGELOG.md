@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- fixed non-Create Sequenced Assembly recipes not being unified anymore
 
 ## [1.4.0] - 2026-04-03
 
