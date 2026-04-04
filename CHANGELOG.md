@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.4.1] - 2026-04-04
 
 - fixed non-Create Sequenced Assembly recipes not being unified anymore
 
@@ -86,6 +89,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.4.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.4.1
 [1.4.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.4.0
 [1.3.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.3.0
 [1.2.7]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.2.7
