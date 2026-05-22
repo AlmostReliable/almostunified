@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
-- /
+
+- fixed unification not working with empty placeholder definitions
 
 ## [1.4.1] - 2026-04-04
 

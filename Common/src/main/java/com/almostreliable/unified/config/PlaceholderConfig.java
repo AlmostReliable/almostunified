@@ -52,6 +52,8 @@ public final class PlaceholderConfig extends Config implements Placeholders {
     }
 
     private static Collection<String> inflate(Collection<String> values, String placeholder, Collection<String> replacements) {
+        if (replacements.isEmpty()) return values;
+
         String formattedPlaceholder = "{" + placeholder + "}";
         Set<String> result = new HashSet<>();
 
