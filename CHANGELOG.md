@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased
+- /
+
+## [1.4.2] - 2026-05-22
 
 - fixed unification not working with empty placeholder definitions
 
@@ -90,6 +93,7 @@ All notable changes to this project will be documented in this file.
 Initial 1.21.1 port.
 
 <!-- Versions -->
+[1.4.2]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.4.2
 [1.4.1]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.4.1
 [1.4.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.4.0
 [1.3.0]: https://github.com/AlmostReliable/almostunified/releases/tag/v1.21.1-1.3.0
