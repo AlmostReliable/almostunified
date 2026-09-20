@@ -4,7 +4,7 @@ import com.almostreliable.unified.api.constant.ModConstants;
 import com.almostreliable.unified.compat.viewer.ClientRecipeTracker.ClientRecipeLink;
 import com.almostreliable.unified.utils.Utils;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.category.extensions.IRecipeCategoryDecorator;
@@ -57,8 +58,8 @@ public class AlmostJEI implements IModPlugin {
 
         @Override
         public void draw(
-            T recipe, IRecipeCategory<T> recipeCategory, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX,
-            double mouseY
+            T recipe, IRecipeCategory<T> recipeCategory, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics,
+            double mouseX, double mouseY
         ) {
             var recipeLink = resolveLink(recipeCategory, recipe);
             if (recipeLink == null) return;
@@ -66,10 +67,21 @@ public class AlmostJEI implements IModPlugin {
             var pX = recipeCategory.getWidth() + (2 * RECIPE_BORDER_PADDING) - RecipeIndicator.RENDER_SIZE;
             var pY = recipeCategory.getHeight() + (2 * RECIPE_BORDER_PADDING) - RecipeIndicator.RENDER_SIZE;
             RecipeIndicator.renderIndicator(guiGraphics, pX, pY, RecipeIndicator.RENDER_SIZE);
+        }
 
+        @Override
+        public void decorateTooltips(
+            ITooltipBuilder tooltip, T recipe, IRecipeCategory<T> recipeCategory, IRecipeSlotsView recipeSlotsView,
+            double mouseX, double mouseY
+        ) {
+            var recipeLink = resolveLink(recipeCategory, recipe);
+            if (recipeLink == null) return;
+
+            var pX = recipeCategory.getWidth() + (2 * RECIPE_BORDER_PADDING) - RecipeIndicator.RENDER_SIZE;
+            var pY = recipeCategory.getHeight() + (2 * RECIPE_BORDER_PADDING) - RecipeIndicator.RENDER_SIZE;
             if (mouseX >= pX && mouseX <= pX + RecipeIndicator.RENDER_SIZE &&
                 mouseY >= pY && mouseY <= pY + RecipeIndicator.RENDER_SIZE) {
-                RecipeIndicator.renderTooltip(guiGraphics, recipeLink, mouseX, mouseY);
+                tooltip.addAll(RecipeIndicator.constructTooltip(recipeLink));
             }
         }
 

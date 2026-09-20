@@ -4,8 +4,8 @@ import com.almostreliable.unified.compat.viewer.ClientRecipeTracker.ClientRecipe
 import com.almostreliable.unified.utils.Utils;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -19,14 +19,14 @@ final class RecipeIndicator {
 
     private RecipeIndicator() {}
 
-    static void renderIndicator(GuiGraphics guiGraphics, int pX, int pY, int size) {
+    static void renderIndicator(GuiGraphicsExtractor guiGraphics, int pX, int pY, int size) {
         var matrix = guiGraphics.pose();
         matrix.pushMatrix();
 
         matrix.translate(pX, pY);
         var scale = size / (float) TEXTURE_SIZE;
         matrix.scale(scale, scale);
-        guiGraphics.blit(TEXTURE, 0, 0, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE);
 
         matrix.popMatrix();
     }
@@ -50,24 +50,5 @@ final class RecipeIndicator {
             Component.literal(" "),
             Component.translatable(Utils.prefix("warning")).withStyle(c -> c.withColor(ChatFormatting.RED))
         );
-    }
-
-    static void renderTooltip(GuiGraphics guiGraphics, ClientRecipeLink link, double mouseX, double mouseY) {
-        var mc = Minecraft.getInstance();
-        var font = mc.font;
-        var screen = mc.screen;
-        if (screen == null) return;
-
-        var tooltip = constructTooltip(link).stream()
-            .map(c -> font.split(c, screen.width - (int) mouseX - 200))
-            .flatMap(List::stream)
-            .toList();
-
-        // guiGraphics.renderTooltip(
-        //     font,
-        //     tooltip,
-        //     (int) mouseX,
-        //     (int) mouseY
-        // );
     }
 }
