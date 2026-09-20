@@ -5,13 +5,13 @@ import com.almostreliable.unified.config.Config;
 import com.almostreliable.unified.config.StartupConfig;
 import com.almostreliable.unified.core.AlmostUnifiedRuntimeImpl;
 import com.almostreliable.unified.unification.loot.LootUnification;
+import com.almostreliable.unified.unification.recipe.RecipeLinkFactory;
 import com.almostreliable.unified.utils.CustomLogger;
 import com.almostreliable.unified.utils.VanillaTagWrapper;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.Block;
 
 import com.google.common.base.Preconditions;
@@ -41,10 +41,11 @@ public final class AlmostUnifiedCommon {
     }
 
     public static void onRecipeManagerReload(
-        Map<Identifier, JsonElement> recipes, HolderLookup.Provider registries, RecipeManager recipeManager) {
+        Map<Identifier, JsonElement> recipes, HolderLookup.Provider registries,
+        RecipeLinkFactory.Provider linkFactory) {
         Preconditions.checkNotNull(RUNTIME, "runtime was not loaded correctly");
 
-        RUNTIME.run(recipes, recipeManager);
+        RUNTIME.run(recipes, linkFactory);
         LootUnification.unifyLoot(RUNTIME, registries);
     }
 

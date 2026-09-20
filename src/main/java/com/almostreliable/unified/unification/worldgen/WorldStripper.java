@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +27,7 @@ public final class WorldStripper {
     private WorldStripper() {}
 
     @SuppressWarnings("StaticVariableUsedBeforeInitialization")
-    public static void onServerTick(ServerTickEvent.Post ignoredEvent) {
+    public static void onServerTick() {
         if (WORKER == null) return;
         WORKER.doWork();
         if (WORKER.isDone()) WORKER = null;

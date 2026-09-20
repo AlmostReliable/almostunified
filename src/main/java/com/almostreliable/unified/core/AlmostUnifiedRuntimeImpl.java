@@ -5,11 +5,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.Block;
 
 import com.almostreliable.unified.AlmostUnifiedCommon;
-import com.almostreliable.unified.AlmostUnifiedPlatform;
 import com.almostreliable.unified.api.AlmostUnifiedRuntime;
 import com.almostreliable.unified.api.unification.Placeholders;
 import com.almostreliable.unified.api.unification.TagSubstitutions;
@@ -30,6 +28,7 @@ import com.almostreliable.unified.unification.TagSubstitutionsImpl;
 import com.almostreliable.unified.unification.UnificationSettingsImpl;
 import com.almostreliable.unified.unification.recipe.CustomIngredientUnifierRegistryImpl;
 import com.almostreliable.unified.unification.recipe.RecipeTransformer;
+import com.almostreliable.unified.unification.recipe.RecipeLinkFactory;
 import com.almostreliable.unified.unification.recipe.RecipeUnifierRegistryImpl;
 import com.almostreliable.unified.utils.DebugHandler;
 import com.almostreliable.unified.utils.FileUtils;
@@ -211,13 +210,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         return unificationSettings;
     }
 
-    public void run(Map<Identifier, JsonElement> recipes, RecipeManager recipeManager) {
+    public void run(Map<Identifier, JsonElement> recipes, RecipeLinkFactory.Provider linkFactory) {
         debugHandler.onRunStart(recipes, compositeUnificationLookup);
 
-        var factory = AlmostUnifiedPlatform.INSTANCE.getRecipeLinkFactory(
-            recipeManager,
-            debugHandler.getConfig().shouldCacheRecipeConditions()
-        );
+        var factory = linkFactory.get(debugHandler.getConfig().shouldCacheRecipeConditions());
         debugHandler.measure(() ->
             new RecipeTransformer(ingredientUnifierRegistry, recipeUnifierRegistry, unificationSettings, factory)
                 .transformRecipes(recipes)

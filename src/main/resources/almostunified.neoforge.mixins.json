@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "com.almostreliable.unified.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "runtime.NeoForgeRecipeManagerMixin",
+    "worldgen.ServerLifecycleHooksMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "com.almostreliable.unified.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "runtime.FabricRecipeManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

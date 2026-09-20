@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "${modId}",
+  "version": "${version}",
+  "name": "${modName}",
+  "description": "${modDescription}",
+  "authors": [
+    "${modAuthor}"
+  ],
+  "contact": {
+    "homepage": "https://almostreliable.com/",
+    "sources": "https://github.com/${githubUser}/${githubRepo}"
+  },
+  "license": "${license}",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.almostreliable.unified.AlmostUnifiedFabric"
+    ],
+    "jei_mod_plugin": [
+      "com.almostreliable.unified.compat.viewer.AlmostJEI"
+    ],
+    "almostunified": [
+      "com.almostreliable.unified.core.CommonPlugin",
+      "com.almostreliable.unified.core.FabricPlugin"
+    ]
+  },
+  "mixins": [
+    "almostunified.mixins.json",
+    "almostunified.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabricLoaderVersion}",
+    "fabric-api": "*",
+    "minecraft": ">=${minecraftVersion}",
+    "java": ">=25"
+  },
+  "suggests": {
+    "jei": ">=${jeiVersion}"
+  }
+}

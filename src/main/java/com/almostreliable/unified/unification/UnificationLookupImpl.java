@@ -104,8 +104,7 @@ public final class UnificationLookupImpl implements UnificationLookup {
     public boolean isUnifiedIngredientItem(Ingredient ingredient, ItemStack item) {
         Set<TagKey<Item>> checkedTags = new HashSet<>();
 
-        var itemIds = ingredient.getValues()
-            .stream()
+        var itemIds = ingredient.items()
             .map(h -> BuiltInRegistries.ITEM.getKey(h.value()))
             .collect(ImmutableSet.toImmutableSet());
 

@@ -4,15 +4,13 @@
   "package": "com.almostreliable.unified.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ContextAwareReloadListenerAccessor",
     "loot.CompositeEntryBaseMixin",
     "loot.LootItemMixin",
     "loot.LootPoolMixin",
     "loot.LootTableMixin",
     "runtime.RecipeManagerMixin",
     "runtime.TagLoaderMixin",
-    "worldgen.OreConfigurationAccessor",
-    "worldgen.ServerLifecycleHooksMixin"
+    "worldgen.OreConfigurationAccessor"
   ],
   "client": [
     "runtime.ClientPacketListenerMixin"

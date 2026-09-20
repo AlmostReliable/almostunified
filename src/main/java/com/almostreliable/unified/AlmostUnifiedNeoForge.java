@@ -19,6 +19,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -39,7 +40,7 @@ public class AlmostUnifiedNeoForge {
         eventBus.addListener(this::onRegisterEvent);
         eventBus.addListener(this::onCommonSetup);
         NeoForge.EVENT_BUS.addListener(this::onCommandsRegister);
-        NeoForge.EVENT_BUS.addListener(WorldStripper::onServerTick);
+        NeoForge.EVENT_BUS.addListener((ServerTickEvent.Post ignored) -> WorldStripper.onServerTick());
     }
 
     private void onRegisterEvent(RegisterEvent event) {
