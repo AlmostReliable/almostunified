@@ -59,7 +59,7 @@ public final class ShapedRecipeUnifier implements RecipeUnifier {
     @SuppressWarnings("FoldExpressionIntoStream")
     private static boolean hasShapedCraftingLikeStructure(RecipeData recipe) {
         return recipe.hasProperty(KEY_PROPERTY) &&
-               recipe.hasProperty(PATTERN_PROPERTY) &&
-               recipe.hasProperty(RecipeConstants.RESULT);
+            recipe.hasProperty(PATTERN_PROPERTY) &&
+            recipe.hasProperty(RecipeConstants.RESULT);
     }
 }

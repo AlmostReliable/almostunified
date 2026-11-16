@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
+
 import net.neoforged.neoforge.common.conditions.ConditionalOps;
 
 import org.jetbrains.annotations.Nullable;

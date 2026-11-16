@@ -52,9 +52,23 @@ public final class UnificationConfig extends Config {
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache = new HashMap<>();
     private final Map<ResourceLocation, Boolean> ignoredRecipeIdsCache = new HashMap<>();
     private final Map<ResourceLocation, Boolean> ignoredLootTablesCache = new HashMap<>();
-    @Nullable private Set<TagKey<Item>> bakedTags;
+    @Nullable
+    private Set<TagKey<Item>> bakedTags;
 
-    private UnificationConfig(String name, List<String> modPriorities, Map<TagKey<Item>, String> priorityOverrides, List<String> stoneVariants, List<String> tags, Set<TagKey<Item>> ignoredTags, Set<Pattern> ignoredItems, Set<Pattern> ignoredRecipeTypes, Set<Pattern> ignoredRecipeIds, boolean recipeViewerHiding, boolean lootUnification, Set<Pattern> ignoredLootTables) {
+    private UnificationConfig(
+        String name,
+        List<String> modPriorities,
+        Map<TagKey<Item>, String> priorityOverrides,
+        List<String> stoneVariants,
+        List<String> tags,
+        Set<TagKey<Item>> ignoredTags,
+        Set<Pattern> ignoredItems,
+        Set<Pattern> ignoredRecipeTypes,
+        Set<Pattern> ignoredRecipeIds,
+        boolean recipeViewerHiding,
+        boolean lootUnification,
+        Set<Pattern> ignoredLootTables
+    ) {
         super(name);
         this.modPriorities = modPriorities;
         this.priorityOverrides = priorityOverrides;
@@ -111,7 +125,7 @@ public final class UnificationConfig extends Config {
 
     private static Map<String, JsonObject> readJsons(Path subFolder) throws IOException {
         Files.createDirectories(subFolder);
-        var files = FileUtils.listFiles(subFolder.toFile(), new String[]{ "json" }, false);
+        var files = FileUtils.listFiles(subFolder.toFile(), new String[] {"json"}, false);
 
         Map<String, JsonObject> jsons = new HashMap<>();
         for (var file : files) {
@@ -226,16 +240,18 @@ public final class UnificationConfig extends Config {
     }
 
     public boolean shouldIncludeLootTable(ResourceLocation table) {
-        return ignoredLootTablesCache.computeIfAbsent(table, t -> {
-            String tableString = t.toString();
-            for (Pattern pattern : ignoredRecipeIds) {
-                if (pattern.matcher(tableString).matches()) {
-                    return false;
+        return ignoredLootTablesCache.computeIfAbsent(
+            table, t -> {
+                String tableString = t.toString();
+                for (Pattern pattern : ignoredRecipeIds) {
+                    if (pattern.matcher(tableString).matches()) {
+                        return false;
+                    }
                 }
-            }
 
-            return true;
-        });
+                return true;
+            }
+        );
     }
 
     public void clearCaches() {

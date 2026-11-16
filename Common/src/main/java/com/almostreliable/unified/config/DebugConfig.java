@@ -15,7 +15,15 @@ public final class DebugConfig extends Config {
     private final boolean logInvalidTags;
     private final boolean cacheRecipeConditions;
 
-    private DebugConfig(boolean dumpDuplicates, boolean dumpOverview, boolean dumpRecipes, boolean dumpTags, boolean dumpUnification, boolean logInvalidTags, boolean cacheRecipeConditions) {
+    private DebugConfig(
+        boolean dumpDuplicates,
+        boolean dumpOverview,
+        boolean dumpRecipes,
+        boolean dumpTags,
+        boolean dumpUnification,
+        boolean logInvalidTags,
+        boolean cacheRecipeConditions
+    ) {
         super(NAME);
         this.dumpDuplicates = dumpDuplicates;
         this.dumpOverview = dumpOverview;

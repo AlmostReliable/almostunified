@@ -23,10 +23,14 @@ public class UnifyTests {
     private static final ResourceLocation TEST_ID = ResourceLocation.fromNamespaceAndPath("testmod", "test_recipe");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    public static final ModPriorities MOD_PRIORITIES = new ModPrioritiesImpl(List.of("minecraft",
-        "mekanism",
-        "thermal",
-        "create"), new HashMap<>());
+    public static final ModPriorities MOD_PRIORITIES = new ModPrioritiesImpl(
+        List.of(
+            "minecraft",
+            "mekanism",
+            "thermal",
+            "create"
+        ), new HashMap<>()
+    );
 
     public static UnificationLookup unificationLookup() {
         return new UnificationLookupImpl.Builder()
@@ -42,29 +46,28 @@ public class UnifyTests {
     public void test() {
         var rm = unificationLookup();
         var recipe = json("""
-            {
-              "type": "minecraft:crafting_shaped",
-              "category": "equipment",
-              "key": {
-                "#": {
-                  "item": "minecraft:stick"
-                },
-                "X": {
-                  "item": "minecraft:iron_ingot"
-                }
-              },
-              "pattern": [
-                "X",
-                "#",
-                "#"
-              ],
-              "result": {
-                "item": "minecraft:iron_shovel"
-              },
-              "show_notification": true
-            }
-            """);
-
+                          {
+                            "type": "minecraft:crafting_shaped",
+                            "category": "equipment",
+                            "key": {
+                              "#": {
+                                "item": "minecraft:stick"
+                              },
+                              "X": {
+                                "item": "minecraft:iron_ingot"
+                              }
+                            },
+                            "pattern": [
+                              "X",
+                              "#",
+                              "#"
+                            ],
+                            "result": {
+                              "item": "minecraft:iron_shovel"
+                            },
+                            "show_notification": true
+                          }
+                          """);
     }
 
     @SimpleGameTest

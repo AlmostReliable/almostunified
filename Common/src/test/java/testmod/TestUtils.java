@@ -98,17 +98,17 @@ public class TestUtils {
         return TagKey.create(Registries.ITEM, ResourceLocation.parse(s));
     }
 
-
     public static UnificationLookup unificationLookup() {
         return new UnificationLookupImpl.Builder()
-            .put(itemTag("testmod:test_tag"),
+            .put(
+                itemTag("testmod:test_tag"),
                 ResourceLocation.parse("minecraft:test_item"),
                 ResourceLocation.parse("mekanism:test_item"),
                 ResourceLocation.parse("thermal:test_item"),
-                ResourceLocation.parse("testmod:test_item"))
+                ResourceLocation.parse("testmod:test_item")
+            )
             .build(TEST_MOD_PRIORITIES, EMPTY_STONE_VARIANTS, EMPTY_TAG_SUBSTITUTIONS);
     }
-
 
     public static UnificationHelper recipeHelper() {
         return new UnificationHelperImpl(new CustomIngredientUnifierRegistryImpl(), unificationLookup());

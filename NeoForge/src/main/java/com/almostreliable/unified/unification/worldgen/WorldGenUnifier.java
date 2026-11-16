@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 public class WorldGenUnifier {
+
     public static final ResourceLocation UNKNOWN_FEATURE_ID = Utils.getRL("unknown_feature_id");
     private final Registry<ConfiguredFeature<?, ?>> cfRegistry;
     private final Set<Holder.Reference<ConfiguredFeature<?, ?>>> featuresToRemove = new HashSet<>();
@@ -40,13 +41,17 @@ public class WorldGenUnifier {
                     // do nothing
                 }
                 case REMOVE -> {
-                    AlmostUnifiedCommon.LOGGER.info("[WorldGen] Mark ConfiguredFeature '{}' for removal:",
-                        holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID));
+                    AlmostUnifiedCommon.LOGGER.info(
+                        "[WorldGen] Mark ConfiguredFeature '{}' for removal:",
+                        holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID)
+                    );
                     featuresToRemove.add(holder);
                 }
                 case CHANGE -> {
-                    AlmostUnifiedCommon.LOGGER.info("[WorldGen] Changed ConfiguredFeature '{}':",
-                        holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID));
+                    AlmostUnifiedCommon.LOGGER.info(
+                        "[WorldGen] Changed ConfiguredFeature '{}':",
+                        holder.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_FEATURE_ID)
+                    );
                 }
             }
         });
@@ -94,7 +99,8 @@ public class WorldGenUnifier {
             AlmostUnifiedCommon.LOGGER.error(
                 "Trying to find replacement for block {} (Replacement: {}), but it does not exist.",
                 blockId,
-                replacement.id());
+                replacement.id()
+            );
             return false;
         }
 

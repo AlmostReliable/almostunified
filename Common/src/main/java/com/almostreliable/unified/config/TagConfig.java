@@ -35,7 +35,15 @@ public final class TagConfig extends Config {
     private final Map<TagKey<Block>, Set<Pattern>> blockTagInheritance;
     private final boolean emiStrictHiding;
 
-    private TagConfig(Map<ResourceLocation, Set<ResourceLocation>> customTags, Map<ResourceLocation, Set<ResourceLocation>> tagSubstitutions, TagInheritance.Mode itemTagInheritanceMode, Map<TagKey<Item>, Set<Pattern>> itemTagInheritance, TagInheritance.Mode blockTagInheritanceMode, Map<TagKey<Block>, Set<Pattern>> blockTagInheritance, boolean emiStrictHiding) {
+    private TagConfig(
+        Map<ResourceLocation, Set<ResourceLocation>> customTags,
+        Map<ResourceLocation, Set<ResourceLocation>> tagSubstitutions,
+        TagInheritance.Mode itemTagInheritanceMode,
+        Map<TagKey<Item>, Set<Pattern>> itemTagInheritance,
+        TagInheritance.Mode blockTagInheritanceMode,
+        Map<TagKey<Block>, Set<Pattern>> blockTagInheritance,
+        boolean emiStrictHiding
+    ) {
         super(NAME);
         this.customTags = customTags;
         this.tagSubstitutions = tagSubstitutions;
@@ -47,10 +55,12 @@ public final class TagConfig extends Config {
     }
 
     public TagInheritance getTagInheritance() {
-        return new TagInheritance(itemTagInheritanceMode,
+        return new TagInheritance(
+            itemTagInheritanceMode,
             itemTagInheritance,
             blockTagInheritanceMode,
-            blockTagInheritance);
+            blockTagInheritance
+        );
     }
 
     public Map<ResourceLocation, Set<ResourceLocation>> getCustomTags() {
@@ -79,31 +89,46 @@ public final class TagConfig extends Config {
 
         @Override
         public TagConfig handleDeserialization(JsonObject json) {
-            Map<ResourceLocation, Set<ResourceLocation>> customTags = safeGet(() -> JsonUtils.deserializeMapSet(json,
-                CUSTOM_TAGS,
-                e -> ResourceLocation.parse(e.getKey()),
-                ResourceLocation::parse), new HashMap<>());
+            Map<ResourceLocation, Set<ResourceLocation>> customTags = safeGet(
+                () -> JsonUtils.deserializeMapSet(
+                    json,
+                    CUSTOM_TAGS,
+                    e -> ResourceLocation.parse(e.getKey()),
+                    ResourceLocation::parse
+                ), new HashMap<>()
+            );
 
-            Map<ResourceLocation, Set<ResourceLocation>> tagSubstitutions = safeGet(() -> JsonUtils.deserializeMapSet(
-                json,
-                TAG_SUBSTITUTIONS,
-                e -> ResourceLocation.parse(e.getKey()),
-                ResourceLocation::parse), new HashMap<>());
+            Map<ResourceLocation, Set<ResourceLocation>> tagSubstitutions = safeGet(
+                () -> JsonUtils.deserializeMapSet(
+                    json,
+                    TAG_SUBSTITUTIONS,
+                    e -> ResourceLocation.parse(e.getKey()),
+                    ResourceLocation::parse
+                ), new HashMap<>()
+            );
 
-            TagInheritance.Mode itemTagInheritanceMode = deserializeTagInheritanceMode(json,
-                ITEM_TAG_INHERITANCE_MODE);
-            Map<TagKey<Item>, Set<Pattern>> itemTagInheritance = deserializePatternsForLocations(Registries.ITEM,
+            TagInheritance.Mode itemTagInheritanceMode = deserializeTagInheritanceMode(
                 json,
-                ITEM_TAG_INHERITANCE);
-            TagInheritance.Mode blockTagInheritanceMode = deserializeTagInheritanceMode(json,
-                BLOCK_TAG_INHERITANCE_MODE);
-            Map<TagKey<Block>, Set<Pattern>> blockTagInheritance = deserializePatternsForLocations(Registries.BLOCK,
+                ITEM_TAG_INHERITANCE_MODE
+            );
+            Map<TagKey<Item>, Set<Pattern>> itemTagInheritance = deserializePatternsForLocations(
+                Registries.ITEM,
                 json,
-                BLOCK_TAG_INHERITANCE);
+                ITEM_TAG_INHERITANCE
+            );
+            TagInheritance.Mode blockTagInheritanceMode = deserializeTagInheritanceMode(
+                json,
+                BLOCK_TAG_INHERITANCE_MODE
+            );
+            Map<TagKey<Block>, Set<Pattern>> blockTagInheritance = deserializePatternsForLocations(
+                Registries.BLOCK,
+                json,
+                BLOCK_TAG_INHERITANCE
+            );
 
             boolean emiStrictHiding = AlmostUnifiedPlatform.INSTANCE.isModLoaded(ModConstants.EMI) ?
-                                      safeGet(() -> json.get(EMI_STRICT_HIDING).getAsBoolean(), true) :
-                                      false;
+                safeGet(() -> json.get(EMI_STRICT_HIDING).getAsBoolean(), true) :
+                false;
 
             return new TagConfig(
                 customTags,
@@ -122,30 +147,38 @@ public final class TagConfig extends Config {
 
             JsonObject customTags = new JsonObject();
             config.customTags.forEach((parent, child) -> {
-                customTags.add(parent.toString(),
-                    JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
+                customTags.add(
+                    parent.toString(),
+                    JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList())
+                );
             });
             json.add(CUSTOM_TAGS, customTags);
 
             JsonObject tagSubstitutions = new JsonObject();
             config.tagSubstitutions.forEach((parent, child) -> {
-                tagSubstitutions.add(parent.toString(),
-                    JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList()));
+                tagSubstitutions.add(
+                    parent.toString(),
+                    JsonUtils.toArray(child.stream().map(ResourceLocation::toString).toList())
+                );
             });
             json.add(TAG_SUBSTITUTIONS, tagSubstitutions);
 
             JsonObject itemTagInheritance = new JsonObject();
             config.itemTagInheritance.forEach((tag, patterns) -> {
-                itemTagInheritance.add(tag.toString(),
-                    JsonUtils.toArray(patterns.stream().map(Pattern::toString).toList()));
+                itemTagInheritance.add(
+                    tag.toString(),
+                    JsonUtils.toArray(patterns.stream().map(Pattern::toString).toList())
+                );
             });
             json.add(ITEM_TAG_INHERITANCE_MODE, new JsonPrimitive(config.itemTagInheritanceMode.toString()));
             json.add(ITEM_TAG_INHERITANCE, itemTagInheritance);
 
             JsonObject blockTagInheritance = new JsonObject();
             config.blockTagInheritance.forEach((tag, patterns) -> {
-                blockTagInheritance.add(tag.toString(),
-                    JsonUtils.toArray(patterns.stream().map(Pattern::toString).toList()));
+                blockTagInheritance.add(
+                    tag.toString(),
+                    JsonUtils.toArray(patterns.stream().map(Pattern::toString).toList())
+                );
             });
             json.add(BLOCK_TAG_INHERITANCE_MODE, new JsonPrimitive(config.blockTagInheritanceMode.toString()));
             json.add(BLOCK_TAG_INHERITANCE, blockTagInheritance);
@@ -172,24 +205,37 @@ public final class TagConfig extends Config {
          * @param baseKey       The base key
          * @return The deserialized patterns separated by location
          */
-        private <T> Map<TagKey<T>, Set<Pattern>> unsafeDeserializePatternsForLocations(ResourceKey<Registry<T>> registry, JsonObject rawConfigJson, String baseKey) {
-            return JsonUtils.deserializeMapSet(rawConfigJson,
+        private <T> Map<TagKey<T>, Set<Pattern>> unsafeDeserializePatternsForLocations(
+            ResourceKey<Registry<T>> registry,
+            JsonObject rawConfigJson,
+            String baseKey
+        ) {
+            return JsonUtils.deserializeMapSet(
+                rawConfigJson,
                 baseKey,
                 e -> TagKey.create(registry, ResourceLocation.parse(e.getKey())),
-                Pattern::compile);
+                Pattern::compile
+            );
         }
 
-        private <T> Map<TagKey<T>, Set<Pattern>> deserializePatternsForLocations(ResourceKey<Registry<T>> registry, JsonObject rawConfigJson, String baseKey) {
-            return safeGet(() -> unsafeDeserializePatternsForLocations(registry, rawConfigJson, baseKey),
-                new HashMap<>());
+        private <T> Map<TagKey<T>, Set<Pattern>> deserializePatternsForLocations(
+            ResourceKey<Registry<T>> registry,
+            JsonObject rawConfigJson,
+            String baseKey
+        ) {
+            return safeGet(
+                () -> unsafeDeserializePatternsForLocations(registry, rawConfigJson, baseKey),
+                new HashMap<>()
+            );
         }
-
 
         private TagInheritance.Mode deserializeTagInheritanceMode(JsonObject json, String key) {
-            return safeGet(() -> TagInheritance.Mode.valueOf(json
-                .getAsJsonPrimitive(key)
-                .getAsString()
-                .toUpperCase()), TagInheritance.Mode.ALLOW);
+            return safeGet(
+                () -> TagInheritance.Mode.valueOf(json
+                    .getAsJsonPrimitive(key)
+                    .getAsString()
+                    .toUpperCase()), TagInheritance.Mode.ALLOW
+            );
         }
     }
 }

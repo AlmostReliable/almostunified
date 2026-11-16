@@ -45,7 +45,8 @@ public final class DebugHandler {
     private int recipesBefore = -1;
     private long startTime;
     private long endTime;
-    @Nullable private RecipeTransformer.Result transformerResult;
+    @Nullable
+    private RecipeTransformer.Result transformerResult;
 
     public DebugHandler(DebugConfig config) {
         this.config = config;
@@ -103,22 +104,24 @@ public final class DebugHandler {
 
         int maxLength = getMaxLength(unificationLookup.getTags(), t -> t.location().toString().length());
 
-        FileUtils.writeDebugLog(TAGS, sb -> sb
-            .append(lastRun).append("\n")
-            .append(unificationLookup
-                .getTags()
-                .stream()
-                .map(t -> rf(t.location(), maxLength) + " => " +
-                          unificationLookup
-                              .getTagEntries(t)
-                              .stream()
-                              .map(entry -> entry.id().toString())
-                              .sorted()
-                              .collect(Collectors.joining(", ")) + "\n"
+        FileUtils.writeDebugLog(
+            TAGS, sb -> sb
+                .append(lastRun).append("\n")
+                .append(unificationLookup
+                    .getTags()
+                    .stream()
+                    .map(t -> rf(t.location(), maxLength) + " => " +
+                        unificationLookup
+                            .getTagEntries(t)
+                            .stream()
+                            .map(entry -> entry.id().toString())
+                            .sorted()
+                            .collect(Collectors.joining(", ")) + "\n"
+                    )
+                    .sorted()
+                    .collect(Collectors.joining())
                 )
-                .sorted()
-                .collect(Collectors.joining())
-            ));
+        );
     }
 
     private void dumpRecipes(String fileName, Map<ResourceLocation, JsonElement> recipes) {
@@ -126,14 +129,15 @@ public final class DebugHandler {
 
         int maxLength = getMaxLength(recipes.keySet(), id -> id.toString().length());
 
-        FileUtils.writeDebugLog(fileName, sb -> sb
-            .append(lastRun).append("\n")
-            .append(recipes
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(e -> rf(e.getKey(), maxLength) + " => " + e.getValue().toString())
-                .collect(Collectors.joining("\n")))
+        FileUtils.writeDebugLog(
+            fileName, sb -> sb
+                .append(lastRun).append("\n")
+                .append(recipes
+                    .entrySet()
+                    .stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .map(e -> rf(e.getKey(), maxLength) + " => " + e.getValue().toString())
+                    .collect(Collectors.joining("\n")))
         );
     }
 
@@ -143,91 +147,95 @@ public final class DebugHandler {
 
         int maxLength = getMaxLength(transformerResult.getUnifiedRecipeTypes(), t -> t.toString().length());
 
-        FileUtils.writeDebugLog(OVERVIEW, sb -> {
-            sb
-                .append(lastRun).append("\n")
-                .append("# Statistics:\n")
-                .append("- Unified Recipes: ")
-                .append(transformerResult.getUnifiedRecipesCount())
-                .append("\n")
-                .append("- Duplicate Recipes: ")
-                .append(transformerResult.getDuplicateRecipesCount())
-                .append(" (Individual: ")
-                .append(transformerResult.getTotalDuplicateRecipesCount())
-                .append(")\n")
-                .append("- Recipes Before: ")
-                .append(recipesBefore)
-                .append("\n")
-                .append("- Recipes After: ")
-                .append(recipesAfter)
-                .append("\n")
-                .append("- Elapsed Time: ")
-                .append(endTime - startTime)
-                .append(" ms")
-                .append("\n\n")
-                .append("# Summary:\n")
-                .append(rf("Recipe type", maxLength))
-                .append(" | ")
-                .append(lf("Unified", 10))
-                .append(" | ")
-                .append(lf("Duplicates", 10))
-                .append(" | ")
-                .append(lf("All", 5))
-                .append("\n")
-                .append(StringUtils.repeat("-", maxLength + 10 + 10 + 5 + 9))
-                .append("\n");
-
-            getSortedUnifiedRecipeTypes().forEach(type -> {
-                int unifiedSize = transformerResult.getUnifiedRecipesByType(type).size();
-                int allSize = transformerResult.getRecipesByType(type).size();
-                int duplicatesSize = transformerResult.getDuplicateRecipesByType(type).size();
-                int individualDuplicatesSize = transformerResult
-                    .getDuplicateRecipesByType(type)
-                    .stream()
-                    .mapToInt(l -> l.getRecipes().size())
-                    .sum();
-
-                String dStr = String.format("%s (%s)", lf(duplicatesSize, 3), lf(individualDuplicatesSize, 3));
+        FileUtils.writeDebugLog(
+            OVERVIEW, sb -> {
                 sb
-                    .append(rf(type, maxLength))
+                    .append(lastRun).append("\n")
+                    .append("# Statistics:\n")
+                    .append("- Unified Recipes: ")
+                    .append(transformerResult.getUnifiedRecipesCount())
+                    .append("\n")
+                    .append("- Duplicate Recipes: ")
+                    .append(transformerResult.getDuplicateRecipesCount())
+                    .append(" (Individual: ")
+                    .append(transformerResult.getTotalDuplicateRecipesCount())
+                    .append(")\n")
+                    .append("- Recipes Before: ")
+                    .append(recipesBefore)
+                    .append("\n")
+                    .append("- Recipes After: ")
+                    .append(recipesAfter)
+                    .append("\n")
+                    .append("- Elapsed Time: ")
+                    .append(endTime - startTime)
+                    .append(" ms")
+                    .append("\n\n")
+                    .append("# Summary:\n")
+                    .append(rf("Recipe type", maxLength))
                     .append(" | ")
-                    .append(lf(unifiedSize, 10))
+                    .append(lf("Unified", 10))
                     .append(" | ")
-                    .append(lf(duplicatesSize == 0 ? " " : dStr, 10))
+                    .append(lf("Duplicates", 10))
                     .append(" | ")
-                    .append(lf(allSize, 5))
+                    .append(lf("All", 5))
+                    .append("\n")
+                    .append(StringUtils.repeat("-", maxLength + 10 + 10 + 5 + 9))
                     .append("\n");
-            });
-        });
+
+                getSortedUnifiedRecipeTypes().forEach(type -> {
+                    int unifiedSize = transformerResult.getUnifiedRecipesByType(type).size();
+                    int allSize = transformerResult.getRecipesByType(type).size();
+                    int duplicatesSize = transformerResult.getDuplicateRecipesByType(type).size();
+                    int individualDuplicatesSize = transformerResult
+                        .getDuplicateRecipesByType(type)
+                        .stream()
+                        .mapToInt(l -> l.getRecipes().size())
+                        .sum();
+
+                    String dStr = String.format("%s (%s)", lf(duplicatesSize, 3), lf(individualDuplicatesSize, 3));
+                    sb
+                        .append(rf(type, maxLength))
+                        .append(" | ")
+                        .append(lf(unifiedSize, 10))
+                        .append(" | ")
+                        .append(lf(duplicatesSize == 0 ? " " : dStr, 10))
+                        .append(" | ")
+                        .append(lf(allSize, 5))
+                        .append("\n");
+                });
+            }
+        );
     }
 
     private void dumpUnification() {
         if (!config.shouldDumpUnification()) return;
 
-        FileUtils.writeDebugLog(UNIFICATION, sb -> {
-            sb.append(lastRun).append("\n");
-            getSortedUnifiedRecipeTypes().forEach(type -> {
-                sb.append(type.toString()).append(" {\n");
+        FileUtils.writeDebugLog(
+            UNIFICATION, sb -> {
+                sb.append(lastRun).append("\n");
+                getSortedUnifiedRecipeTypes().forEach(type -> {
+                    sb.append(type.toString()).append(" {\n");
 
-                getSortedUnifiedRecipes(type).forEach(recipe -> {
-                    var original = copyWithoutConditions(recipe.getOriginal());
-                    var unified = recipe.getUnified() == null ? null : copyWithoutConditions(recipe.getUnified());
+                    getSortedUnifiedRecipes(type).forEach(recipe -> {
+                        var original = copyWithoutConditions(recipe.getOriginal());
+                        var unified = recipe.getUnified() == null ? null : copyWithoutConditions(recipe.getUnified());
 
-                    sb
-                        .append("\t- ")
-                        .append(recipe.getId())
-                        .append("\n")
-                        .append("\t\t    Original: ")
-                        .append(original)
-                        .append("\n")
-                        .append("\t\t Transformed: ")
-                        .append(unified == null ? "NOT UNIFIED" : unified.toString())
-                        .append("\n\n");
+                        sb
+                            .append("\t- ")
+                            .append(recipe.getId())
+                            .append("\n")
+                            .append("\t\t    Original: ")
+                            .append(original)
+                            .append("\n")
+                            .append("\t\t Transformed: ")
+                            .append(unified == null ? "NOT UNIFIED" : unified.toString())
+                            .append("\n\n");
+                    });
+
+                    sb.append("}\n\n");
                 });
-
-                sb.append("}\n\n");
-            });
-        });
+            }
+        );
     }
 
     private JsonObject copyWithoutConditions(JsonObject recipe) {
@@ -244,22 +252,24 @@ public final class DebugHandler {
         if (!config.shouldDumpDuplicates()) return;
         assert transformerResult != null;
 
-        FileUtils.writeDebugLog(DUPLICATES, sb -> {
-            sb.append(lastRun).append("\n");
-            getSortedUnifiedRecipeTypes().forEach(type -> {
-                Collection<RecipeLink.DuplicateLink> duplicates = transformerResult
-                    .getDuplicateRecipesByType(type)
-                    .stream()
-                    .sorted(Comparator.comparing(l -> l.getMaster().getId().toString()))
-                    .toList();
-                if (duplicates.isEmpty()) return;
+        FileUtils.writeDebugLog(
+            DUPLICATES, sb -> {
+                sb.append(lastRun).append("\n");
+                getSortedUnifiedRecipeTypes().forEach(type -> {
+                    Collection<RecipeLink.DuplicateLink> duplicates = transformerResult
+                        .getDuplicateRecipesByType(type)
+                        .stream()
+                        .sorted(Comparator.comparing(l -> l.getMaster().getId().toString()))
+                        .toList();
+                    if (duplicates.isEmpty()) return;
 
-                sb.append(duplicates
-                    .stream()
-                    .map(this::createDuplicatesDump)
-                    .collect(Collectors.joining("", type + " {\n", "}\n\n")));
-            });
-        });
+                    sb.append(duplicates
+                        .stream()
+                        .map(this::createDuplicatesDump)
+                        .collect(Collectors.joining("", type + " {\n", "}\n\n")));
+                });
+            }
+        );
     }
 
     private String createDuplicatesDump(RecipeLink.DuplicateLink link) {

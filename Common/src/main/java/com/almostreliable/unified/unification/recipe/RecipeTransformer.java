@@ -46,7 +46,12 @@ public class RecipeTransformer {
     private final DuplicateConfig duplicateConfig;
     private final RecipeTypePropertiesLogger propertiesLogger = new RecipeTypePropertiesLogger();
 
-    public RecipeTransformer(CustomIngredientUnifierRegistry ingredientUnifierRegistry, RecipeUnifierRegistry recipeUnifierRegistry, Collection<? extends UnificationSettings> unificationSettings, RecipeLinkFactory recipeLinkFactory) {
+    public RecipeTransformer(
+        CustomIngredientUnifierRegistry ingredientUnifierRegistry,
+        RecipeUnifierRegistry recipeUnifierRegistry,
+        Collection<? extends UnificationSettings> unificationSettings,
+        RecipeLinkFactory recipeLinkFactory
+    ) {
         this.ingredientUnifierRegistry = ingredientUnifierRegistry;
         this.recipeUnifierRegistry = recipeUnifierRegistry;
         this.unificationSettings = unificationSettings;
@@ -106,7 +111,12 @@ public class RecipeTransformer {
      * @param allRecipes  The map of all existing recipes.
      * @param tracker     The tracker to add the recipes to. Can be null in a server only environment.
      */
-    private void transformRecipes(ResourceLocation type, List<RecipeLink> recipeLinks, Map<ResourceLocation, JsonElement> allRecipes, @Nullable ClientRecipeTracker.RawBuilder tracker) {
+    private void transformRecipes(
+        ResourceLocation type,
+        List<RecipeLink> recipeLinks,
+        Map<ResourceLocation, JsonElement> allRecipes,
+        @Nullable ClientRecipeTracker.RawBuilder tracker
+    ) {
         var unified = unifyRecipes(recipeLinks, r -> allRecipes.put(r.getId(), r.getUnified()));
 
         if (!duplicateConfig.isRecipeTypeIgnored(type)) {
@@ -238,7 +248,8 @@ public class RecipeTransformer {
         private final Multimap<ResourceLocation, RecipeLink> allRecipesByType = HashMultimap.create();
         private final Multimap<ResourceLocation, RecipeLink> unifiedRecipesByType = HashMultimap.create();
         private final Multimap<ResourceLocation, RecipeLink.DuplicateLink> duplicatesByType = HashMultimap.create();
-        @Nullable private Set<ResourceLocation> unifiedRecipeIds;
+        @Nullable
+        private Set<ResourceLocation> unifiedRecipeIds;
 
         private void add(RecipeLink link) {
             if (allRecipesByType.containsEntry(link.getType(), link)) {

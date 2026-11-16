@@ -14,7 +14,11 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(LootItem.class)
 public class LootItemMixin implements LootUnificationHandler {
-    @Shadow @Final @Mutable private Holder<Item> item;
+
+    @Shadow
+    @Final
+    @Mutable
+    private Holder<Item> item;
 
     @Override
     public boolean almostunified$unify(UnificationLookup lookup) {

@@ -11,5 +11,4 @@ public class ExampleTest {
         // Currently safe check that gradle conf is correct :')
         assertTrue(true);
     }
-
 }

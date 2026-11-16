@@ -49,14 +49,14 @@ public final class SmithingRecipeUnifier implements RecipeUnifier {
      */
     public static boolean isApplicable(RecipeData recipe) {
         return recipe.getType().equals(TRANSFORM_TYPE) ||
-               recipe.getType().equals(TRIM_TYPE) ||
-               hasSmithingLikeStructure(recipe);
+            recipe.getType().equals(TRIM_TYPE) ||
+            hasSmithingLikeStructure(recipe);
     }
 
     @SuppressWarnings("FoldExpressionIntoStream")
     private static boolean hasSmithingLikeStructure(RecipeData recipe) {
         return recipe.hasProperty(ADDITION_PROPERTY) &&
-               recipe.hasProperty(BASE_PROPERTY) &&
-               recipe.hasProperty(RecipeConstants.RESULT);
+            recipe.hasProperty(BASE_PROPERTY) &&
+            recipe.hasProperty(RecipeConstants.RESULT);
     }
 }

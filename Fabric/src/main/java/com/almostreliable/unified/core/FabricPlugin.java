@@ -1,6 +1,5 @@
 package com.almostreliable.unified.core;
 
-
 import net.minecraft.resources.ResourceLocation;
 
 import com.almostreliable.unified.api.constant.ModConstants;

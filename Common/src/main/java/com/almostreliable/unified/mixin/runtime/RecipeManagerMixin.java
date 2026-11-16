@@ -23,13 +23,20 @@ import java.util.Map;
 @Mixin(value = RecipeManager.class, priority = 1_099)
 public class RecipeManagerMixin {
 
-    @Shadow @Final private HolderLookup.Provider registries;
+    @Shadow
+    @Final
+    private HolderLookup.Provider registries;
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
-    private void almostunified$onRecipeReload(Map<ResourceLocation, JsonElement> recipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
+    private void almostunified$onRecipeReload(
+        Map<ResourceLocation, JsonElement> recipes,
+        ResourceManager resourceManager,
+        ProfilerFiller profiler,
+        CallbackInfo ci
+    ) {
         try {
             // TODO: when switching to neoforge only, don't pass RecipeManager as we can directly pass the ConditionalOps from neoforge then
-            //noinspection DataFlowIssue
+            // noinspection DataFlowIssue
             AlmostUnifiedCommon.onRecipeManagerReload(recipes, registries, (RecipeManager) (Object) this);
         } catch (Exception e) {
             AlmostUnifiedCommon.LOGGER.error(e.getMessage(), e);
@@ -37,12 +44,23 @@ public class RecipeManagerMixin {
     }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"), remap = false)
-    private void almostunified$onRecipeError(Map<ResourceLocation, JsonElement> recipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci, @Local ResourceLocation recipe) {
+    private void almostunified$onRecipeError(
+        Map<ResourceLocation, JsonElement> recipes,
+        ResourceManager resourceManager,
+        ProfilerFiller profiler,
+        CallbackInfo ci,
+        @Local ResourceLocation recipe
+    ) {
         AlmostUnifiedCommon.onRecipeManagerError(recipe);
     }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("TAIL"))
-    private void almostunified$onRecipeReloadEnd(Map<ResourceLocation, JsonElement> recipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
+    private void almostunified$onRecipeReloadEnd(
+        Map<ResourceLocation, JsonElement> recipes,
+        ResourceManager resourceManager,
+        ProfilerFiller profiler,
+        CallbackInfo ci
+    ) {
         AlmostUnifiedCommon.onRecipeManagerEnd();
     }
 }

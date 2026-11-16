@@ -34,9 +34,9 @@ public final class CustomLogger {
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
 
-        PathCondition[] conditions = { IfFileName.createNameCondition(BACKUP_FILE, null) };
+        PathCondition[] conditions = {IfFileName.createNameCondition(BACKUP_FILE, null)};
         var deleteAction = DeleteAction.createDeleteAction(LOG_PATH, false, 1, false, null, conditions, null, config);
-        var strategy = DefaultRolloverStrategy.newBuilder().withCustomActions(new Action[]{ deleteAction }).build();
+        var strategy = DefaultRolloverStrategy.newBuilder().withCustomActions(new Action[] {deleteAction}).build();
 
         var layout = PatternLayout
             .newBuilder()

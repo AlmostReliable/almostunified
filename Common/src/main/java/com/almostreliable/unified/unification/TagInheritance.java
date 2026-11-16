@@ -33,12 +33,21 @@ public class TagInheritance {
     private final Options<Item> itemOptions;
     private final Options<Block> blockOptions;
 
-    public TagInheritance(Mode itemMode, Map<TagKey<Item>, Set<Pattern>> itemInheritance, Mode blockMode, Map<TagKey<Block>, Set<Pattern>> blockInheritance) {
+    public TagInheritance(
+        Mode itemMode,
+        Map<TagKey<Item>, Set<Pattern>> itemInheritance,
+        Mode blockMode,
+        Map<TagKey<Block>, Set<Pattern>> blockInheritance
+    ) {
         itemOptions = new Options<>(itemMode, itemInheritance);
         blockOptions = new Options<>(blockMode, blockInheritance);
     }
 
-    public boolean apply(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, List<? extends UnificationLookup> unificationLookups) {
+    public boolean apply(
+        VanillaTagWrapper<Item> itemTags,
+        VanillaTagWrapper<Block> blockTags,
+        List<? extends UnificationLookup> unificationLookups
+    ) {
         Multimap<UnificationEntry<Item>, ResourceLocation> changedItemTags = HashMultimap.create();
         Multimap<UnificationEntry<Item>, ResourceLocation> changedBlockTags = HashMultimap.create();
 
@@ -91,7 +100,12 @@ public class TagInheritance {
         return BuiltInRegistries.BLOCK.getHolderOrThrow(ResourceKey.create(Registries.BLOCK, targetItem.id()));
     }
 
-    private Set<ResourceLocation> applyItemTags(VanillaTagWrapper<Item> vanillaTags, Holder<Item> targetItem, Set<TagKey<Item>> targetItemTags, UnificationEntry<Item> item) {
+    private Set<ResourceLocation> applyItemTags(
+        VanillaTagWrapper<Item> vanillaTags,
+        Holder<Item> targetItem,
+        Set<TagKey<Item>> targetItemTags,
+        UnificationEntry<Item> item
+    ) {
         var itemTags = vanillaTags.getTags(item);
         Set<ResourceLocation> changed = new HashSet<>();
 
@@ -105,7 +119,12 @@ public class TagInheritance {
         return changed;
     }
 
-    private Set<ResourceLocation> applyBlockTags(VanillaTagWrapper<Block> blockTagMap, Holder<Block> targetBlock, Set<TagKey<Item>> targetItemTags, UnificationEntry<Item> item) {
+    private Set<ResourceLocation> applyBlockTags(
+        VanillaTagWrapper<Block> blockTagMap,
+        Holder<Block> targetBlock,
+        Set<TagKey<Item>> targetItemTags,
+        UnificationEntry<Item> item
+    ) {
         var blockTags = blockTagMap.getTags(item.id());
         Set<ResourceLocation> changed = new HashSet<>();
 
@@ -180,8 +199,10 @@ public class TagInheritance {
         return result;
     }
 
-    private record TagRelation(TagKey<Item> tag, UnificationEntry<Item> targetItem,
-                               Set<UnificationEntry<Item>> items) {}
+    private record TagRelation(
+        TagKey<Item> tag, UnificationEntry<Item> targetItem,
+        Set<UnificationEntry<Item>> items
+    ) {}
 
     public enum Mode {
         ALLOW,

@@ -35,7 +35,8 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public class AlmostREI implements REIClientPlugin {
 
-    @Nullable private BasicFilteringRule.MarkDirty filterUpdate;
+    @Nullable
+    private BasicFilteringRule.MarkDirty filterUpdate;
 
     public AlmostREI() {
         ClientTagUpdateEvent.register(() -> {
@@ -74,7 +75,11 @@ public class AlmostREI implements REIClientPlugin {
         implements CategoryExtensionProvider<Display> {
 
         @Override
-        public DisplayCategoryView<Display> provide(Display display, DisplayCategory<Display> category, DisplayCategoryView<Display> lastView) {
+        public DisplayCategoryView<Display> provide(
+            Display display,
+            DisplayCategory<Display> category,
+            DisplayCategoryView<Display> lastView
+        ) {
             return display
                 .getDisplayLocation()
                 .map(CRTLookup::getLink)

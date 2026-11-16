@@ -11,7 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReplacementsTests {
 
-    private static final JsonObject INFLATE_PLACEHOLDERS = JsonUtils.readFromString("""
+    private static final JsonObject INFLATE_PLACEHOLDERS = JsonUtils.readFromString(
+        """
         {
             "type": [
                 "gems",
@@ -23,9 +24,11 @@ public class ReplacementsTests {
                 "gold"
             ]
         }
-        """, JsonObject.class);
+        """, JsonObject.class
+    );
 
-    private static final JsonObject EMPTY_PLACEHOLDERS = JsonUtils.readFromString("""
+    private static final JsonObject EMPTY_PLACEHOLDERS = JsonUtils.readFromString(
+        """
         {
             "type": [],
             "material": [
@@ -33,7 +36,8 @@ public class ReplacementsTests {
                 "gold"
             ]
         }
-        """, JsonObject.class);
+        """, JsonObject.class
+    );
 
     @SimpleGameTest
     public void testInflate() {

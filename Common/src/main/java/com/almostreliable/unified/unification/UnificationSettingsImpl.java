@@ -36,7 +36,18 @@ public final class UnificationSettingsImpl implements UnificationSettings {
     private final UnificationLookup unificationLookup;
     private final Runnable clearCaches;
 
-    private UnificationSettingsImpl(String name, ModPriorities modPriorities, StoneVariants stoneVariants, Function<ResourceLocation, Boolean> recipeTypeCheck, Function<ResourceLocation, Boolean> recipeIdCheck, boolean recipeViewerHiding, boolean lootUnification, Function<ResourceLocation, Boolean> lootTableCheck, UnificationLookup unificationLookup, Runnable clearCaches) {
+    private UnificationSettingsImpl(
+        String name,
+        ModPriorities modPriorities,
+        StoneVariants stoneVariants,
+        Function<ResourceLocation, Boolean> recipeTypeCheck,
+        Function<ResourceLocation, Boolean> recipeIdCheck,
+        boolean recipeViewerHiding,
+        boolean lootUnification,
+        Function<ResourceLocation, Boolean> lootTableCheck,
+        UnificationLookup unificationLookup,
+        Runnable clearCaches
+    ) {
         this.name = name;
         this.modPriorities = modPriorities;
         this.stoneVariants = stoneVariants;
@@ -49,14 +60,24 @@ public final class UnificationSettingsImpl implements UnificationSettings {
         this.clearCaches = clearCaches;
     }
 
-    public static List<UnificationSettings> create(Collection<UnificationConfig> configs, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagSubstitutionsImpl tagSubstitutions) {
+    public static List<UnificationSettings> create(
+        Collection<UnificationConfig> configs,
+        VanillaTagWrapper<Item> itemTags,
+        VanillaTagWrapper<Block> blockTags,
+        TagSubstitutionsImpl tagSubstitutions
+    ) {
         return configs
             .stream()
             .map(config -> create(config, itemTags, blockTags, tagSubstitutions))
             .toList();
     }
 
-    public static UnificationSettings create(UnificationConfig config, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, TagSubstitutions tagSubstitutions) {
+    public static UnificationSettings create(
+        UnificationConfig config,
+        VanillaTagWrapper<Item> itemTags,
+        VanillaTagWrapper<Block> blockTags,
+        TagSubstitutions tagSubstitutions
+    ) {
         var lookupBuilder = new UnificationLookupImpl.Builder();
         for (var tag : config.getTags()) {
             var itemHolders = itemTags.get(tag);

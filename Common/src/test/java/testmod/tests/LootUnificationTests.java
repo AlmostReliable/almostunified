@@ -55,16 +55,17 @@ public class LootUnificationTests {
     private void testDrop(AlmostGameTestHelper helper, Player player, ItemStack tool, BlockPos orePos, String oreId, String exceptedId) {
         Block oreBlock = getBlock(oreId);
         helper.setBlock(orePos, oreBlock.defaultBlockState());
-        List<ItemStack> drops = Block.getDrops(helper.getBlockState(orePos),
+        List<ItemStack> drops = Block.getDrops(
+            helper.getBlockState(orePos),
             helper.getLevel(),
             orePos,
             null,
             player,
-            tool);
+            tool
+        );
         assertEquals(1, drops.size());
         var result = drops.getFirst().getItem();
         var resultId = BuiltInRegistries.ITEM.getKey(result);
         assertEquals(exceptedId, resultId.toString());
     }
-
 }

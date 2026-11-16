@@ -23,7 +23,8 @@ public final class WorldStripper {
 
     private static final int BLOCKS_PER_TICK = 16 * 16 * 16;
 
-    @Nullable private static Worker WORKER;
+    @Nullable
+    private static Worker WORKER;
 
     private WorldStripper() {}
 
@@ -84,12 +85,12 @@ public final class WorldStripper {
         private boolean shouldRemove(BlockInWorld block) {
             BlockState state = block.getState();
             return !(state.isAir() || state.is(Blocks.BEDROCK) ||
-                     block.getEntity() != null ||
-                     state.getBlock() instanceof DropExperienceBlock ||
-                     BuiltInRegistries.BLOCK
-                         .wrapAsHolder(state.getBlock())
-                         .tags()
-                         .anyMatch(t -> t.location().toString().startsWith("c:ores")));
+                block.getEntity() != null ||
+                state.getBlock() instanceof DropExperienceBlock ||
+                BuiltInRegistries.BLOCK
+                    .wrapAsHolder(state.getBlock())
+                    .tags()
+                    .anyMatch(t -> t.location().toString().startsWith("c:ores")));
         }
     }
 }

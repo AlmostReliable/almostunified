@@ -59,7 +59,14 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
     private final UnificationLookup compositeUnificationLookup;
     private final DebugHandler debugHandler;
 
-    private AlmostUnifiedRuntimeImpl(Collection<? extends UnificationSettings> unificationSettings, CustomIngredientUnifierRegistry ingredientUnifierRegistry, RecipeUnifierRegistry recipeUnifierRegistry, TagSubstitutions tagSubstitutions, Placeholders placeholders, DebugConfig debugConfig) {
+    private AlmostUnifiedRuntimeImpl(
+        Collection<? extends UnificationSettings> unificationSettings,
+        CustomIngredientUnifierRegistry ingredientUnifierRegistry,
+        RecipeUnifierRegistry recipeUnifierRegistry,
+        TagSubstitutions tagSubstitutions,
+        Placeholders placeholders,
+        DebugConfig debugConfig
+    ) {
         this.unificationSettings = unificationSettings;
         this.ingredientUnifierRegistry = ingredientUnifierRegistry;
         this.recipeUnifierRegistry = recipeUnifierRegistry;
@@ -133,7 +140,12 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
      * @param logInvalidTags     Whether to log invalid tags
      * @return The baked tags combined from all unify configs
      */
-    private static Set<TagKey<Item>> bakeAndValidateTags(Collection<UnificationConfig> unificationConfigs, VanillaTagWrapper<Item> itemTags, Placeholders placeholders, boolean logInvalidTags) {
+    private static Set<TagKey<Item>> bakeAndValidateTags(
+        Collection<UnificationConfig> unificationConfigs,
+        VanillaTagWrapper<Item> itemTags,
+        Placeholders placeholders,
+        boolean logInvalidTags
+    ) {
         Set<TagKey<Item>> result = new HashSet<>();
 
         Map<TagKey<Item>, String> visitedTags = new HashMap<>();
@@ -151,7 +163,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
                         "Tag '{}' from unify config '{}' was already created in unify config '{}'",
                         config.getName(),
                         tag.location(),
-                        visitedTags.get(tag));
+                        visitedTags.get(tag)
+                    );
                     return false;
                 }
 
@@ -164,8 +177,10 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
         }
 
         if (!wrongTags.isEmpty() && logInvalidTags) {
-            AlmostUnifiedCommon.LOGGER.warn("The following tags are invalid or not in use and will be ignored: {}",
-                wrongTags.stream().map(TagKey::location).collect(Collectors.toList()));
+            AlmostUnifiedCommon.LOGGER.warn(
+                "The following tags are invalid or not in use and will be ignored: {}",
+                wrongTags.stream().map(TagKey::location).collect(Collectors.toList())
+            );
         }
 
         return result;
@@ -183,11 +198,19 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
      * @param tagInheritance     Tag inheritance data
      * @return All unify handlers
      */
-    private static List<UnificationSettings> createUnificationLookups(VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags, Collection<UnificationConfig> unificationConfigs, TagSubstitutionsImpl tagSubstitutions, TagInheritance tagInheritance) {
-        var unificationSettings = UnificationSettingsImpl.create(unificationConfigs,
+    private static List<UnificationSettings> createUnificationLookups(
+        VanillaTagWrapper<Item> itemTags,
+        VanillaTagWrapper<Block> blockTags,
+        Collection<UnificationConfig> unificationConfigs,
+        TagSubstitutionsImpl tagSubstitutions,
+        TagInheritance tagInheritance
+    ) {
+        var unificationSettings = UnificationSettingsImpl.create(
+            unificationConfigs,
             itemTags,
             blockTags,
-            tagSubstitutions);
+            tagSubstitutions
+        );
 
         var needsRebuild = tagInheritance.apply(itemTags, blockTags, unificationSettings);
         if (needsRebuild) {
@@ -252,7 +275,8 @@ public final class AlmostUnifiedRuntimeImpl implements AlmostUnifiedRuntime {
 
         private final Iterable<? extends UnificationLookup> unificationLookups;
 
-        @Nullable private Collection<TagKey<Item>> unificationTagsView;
+        @Nullable
+        private Collection<TagKey<Item>> unificationTagsView;
 
         private CompositeUnificationLookup(Iterable<? extends UnificationLookup> unificationLookups) {
             this.unificationLookups = unificationLookups;

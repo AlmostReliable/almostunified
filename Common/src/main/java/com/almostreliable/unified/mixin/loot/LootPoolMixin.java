@@ -15,7 +15,9 @@ import java.util.List;
 @Mixin(LootPool.class)
 public class LootPoolMixin implements LootUnificationHandler {
 
-    @Shadow @Final private List<LootPoolEntryContainer> entries;
+    @Shadow
+    @Final
+    private List<LootPoolEntryContainer> entries;
 
     @Override
     public boolean almostunified$unify(UnificationLookup lookup) {

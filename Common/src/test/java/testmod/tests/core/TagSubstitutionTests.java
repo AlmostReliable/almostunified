@@ -39,6 +39,5 @@ public class TagSubstitutionTests {
         assertEquals(silverTag, unifyTag);
         UnificationEntry<Item> silverOreEntry = unificationLookup.getTagTargetItem(silverTag);
         assertEquals(silverOreId, silverOreEntry.id());
-
     }
 }

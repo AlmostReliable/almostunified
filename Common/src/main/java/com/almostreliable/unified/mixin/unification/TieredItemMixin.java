@@ -18,7 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TieredItem.class)
 public class TieredItemMixin {
 
-    @Shadow @Final private Tier tier;
+    @Shadow
+    @Final
+    private Tier tier;
 
     @Inject(method = "isValidRepairItem", at = @At("HEAD"), cancellable = true)
     private void almostunified$onItemRepair(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {

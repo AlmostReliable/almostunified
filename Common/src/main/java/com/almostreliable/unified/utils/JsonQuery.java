@@ -12,7 +12,8 @@ import java.util.Optional;
 
 public class JsonQuery {
 
-    @Nullable private final JsonElement element;
+    @Nullable
+    private final JsonElement element;
 
     JsonQuery(@Nullable JsonElement element) {
         this.element = element;
@@ -56,7 +57,6 @@ public class JsonQuery {
             if (child != null) {
                 return new JsonQuery(child);
             }
-
         }
 
         return new JsonQuery();

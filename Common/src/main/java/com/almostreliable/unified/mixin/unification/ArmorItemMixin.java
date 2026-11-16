@@ -19,7 +19,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ArmorItem.class)
 public class ArmorItemMixin {
 
-    @Shadow @Final protected Holder<ArmorMaterial> material;
+    @Shadow
+    @Final
+    protected Holder<ArmorMaterial> material;
 
     @Inject(method = "isValidRepairItem", at = @At("HEAD"), cancellable = true)
     private void almostunified$onArmorRepair(ItemStack stack, ItemStack repairCandidate, CallbackInfoReturnable<Boolean> cir) {

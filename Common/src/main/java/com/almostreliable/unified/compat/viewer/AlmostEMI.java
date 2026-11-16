@@ -50,8 +50,10 @@ public class AlmostEMI implements EmiPlugin {
             int pY = recipe.getDisplayHeight() - 3;
             int size = RecipeIndicator.RENDER_SIZE - 1;
 
-            widgets.addDrawable(0, 0, 0, 0, (guiGraphics, mX, mY, delta) ->
-                RecipeIndicator.renderIndicator(guiGraphics, pX, pY, size));
+            widgets.addDrawable(
+                0, 0, 0, 0, (guiGraphics, mX, mY, delta) ->
+                    RecipeIndicator.renderIndicator(guiGraphics, pX, pY, size)
+            );
             widgets.addTooltipText(RecipeIndicator.constructTooltip(link), pX, pY, size, size);
         }
     }

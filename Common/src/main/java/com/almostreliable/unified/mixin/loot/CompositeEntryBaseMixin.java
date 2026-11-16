@@ -14,7 +14,10 @@ import java.util.List;
 
 @Mixin(CompositeEntryBase.class)
 public class CompositeEntryBaseMixin implements LootUnificationHandler {
-    @Shadow @Final protected List<LootPoolEntryContainer> children;
+
+    @Shadow
+    @Final
+    protected List<LootPoolEntryContainer> children;
 
     @Override
     public boolean almostunified$unify(UnificationLookup lookup) {

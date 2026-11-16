@@ -86,177 +86,177 @@ public final class TestUtils {
         return ResourceLocation.fromNamespaceAndPath(TEST_MOD_5, name);
     }
 
-//    public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {
-//        TagOwnerships tagOwnerships = new TagOwnerships(
-//                DEFAULT_UNIFY_CONFIG.bakeTags(),
-//                DEFAULT_UNIFY_CONFIG.getTagOwnerships()
-//        );
-//        ReplacementMap map = new ReplacementMap(
-//                DEFAULT_UNIFY_CONFIG,
-//                TagMapTests.testTagMap(),
-//                createTestStrataHandler(),
-//                tagOwnerships
-//        );
-//        RecipeHandlerFactory factory = new RecipeHandlerFactory();
-//        consumer.accept(factory);
-//        return new RecipeTransformer(factory, map, DEFAULT_UNIFY_CONFIG, null);
-//    }
-//
-//    public static JsonObject json(String json) {
-//        return new Gson().fromJson(json, JsonObject.class);
-//    }
-//
-//    public static JsonObject json(String json, Consumer<JsonObject> consumer) {
-//        Gson gson = new Gson();
-//        JsonObject obj = gson.fromJson(json, JsonObject.class);
-//        consumer.accept(obj);
-//        return obj;
-//    }
+    //    public static RecipeTransformer basicTransformer(Consumer<RecipeHandlerFactory> consumer) {
+    //        TagOwnerships tagOwnerships = new TagOwnerships(
+    //                DEFAULT_UNIFY_CONFIG.bakeTags(),
+    //                DEFAULT_UNIFY_CONFIG.getTagOwnerships()
+    //        );
+    //        ReplacementMap map = new ReplacementMap(
+    //                DEFAULT_UNIFY_CONFIG,
+    //                TagMapTests.testTagMap(),
+    //                createTestStrataHandler(),
+    //                tagOwnerships
+    //        );
+    //        RecipeHandlerFactory factory = new RecipeHandlerFactory();
+    //        consumer.accept(factory);
+    //        return new RecipeTransformer(factory, map, DEFAULT_UNIFY_CONFIG, null);
+    //    }
+    //
+    //    public static JsonObject json(String json) {
+    //        return new Gson().fromJson(json, JsonObject.class);
+    //    }
+    //
+    //    public static JsonObject json(String json, Consumer<JsonObject> consumer) {
+    //        Gson gson = new Gson();
+    //        JsonObject obj = gson.fromJson(json, JsonObject.class);
+    //        consumer.accept(obj);
+    //        return obj;
+    //    }
 
     public static final class Recipes {
 
         public static final String SMELTING = """
-            {
-              "type": "minecraft:smelting",
-              "group": "coal",
-              "ingredient": {
-                "item": "minecraft:coal_ore"
-              },
-              "result": "minecraft:coal",
-              "experience": 0.1,
-              "cookingtime": 200
-            }
-            """;
+                                              {
+                                                "type": "minecraft:smelting",
+                                                "group": "coal",
+                                                "ingredient": {
+                                                  "item": "minecraft:coal_ore"
+                                                },
+                                                "result": "minecraft:coal",
+                                                "experience": 0.1,
+                                                "cookingtime": 200
+                                              }
+                                              """;
         public static final String SHAPED_NO_MATCH_1 = """
-            {
-              "type": "minecraft:crafting_shaped",
-              "pattern": [
-                "iii",
-                "ici",
-                "iii"
-              ],
-              "key": {
-                "i": {
-                  "tag": "c:raw_materials/iron"
-                },
-                "k": {
-                  "item": "minecraft:carrot"
-                }
-              },
-              "result": "minecraft:iron_ingot"
-            }
-            """;
+                                                       {
+                                                         "type": "minecraft:crafting_shaped",
+                                                         "pattern": [
+                                                           "iii",
+                                                           "ici",
+                                                           "iii"
+                                                         ],
+                                                         "key": {
+                                                           "i": {
+                                                             "tag": "c:raw_materials/iron"
+                                                           },
+                                                           "k": {
+                                                             "item": "minecraft:carrot"
+                                                           }
+                                                         },
+                                                         "result": "minecraft:iron_ingot"
+                                                       }
+                                                       """;
         public static final String SHAPED_NO_MATCH_2 = """
-            {
-              "type": "minecraft:crafting_shaped",
-              "pattern": [
-                "iii",
-                "ici",
-                "iii"
-              ],
-              "key": {
-                "i": {
-                  "tag": "c:raw_materials/iron"
-                },
-                "k": {
-                  "item": "minecraft:pumpkin"
-                }
-              },
-              "result": "minecraft:iron_ingot"
-            }
-            """;
+                                                       {
+                                                         "type": "minecraft:crafting_shaped",
+                                                         "pattern": [
+                                                           "iii",
+                                                           "ici",
+                                                           "iii"
+                                                         ],
+                                                         "key": {
+                                                           "i": {
+                                                             "tag": "c:raw_materials/iron"
+                                                           },
+                                                           "k": {
+                                                             "item": "minecraft:pumpkin"
+                                                           }
+                                                         },
+                                                         "result": "minecraft:iron_ingot"
+                                                       }
+                                                       """;
         public static final String SHAPED_SPECIAL_MATCH_1 = """
-            {
-              "type": "minecraft:crafting_shaped",
-              "pattern": [
-                "iii",
-                "iii",
-                "iii"
-              ],
-              "key": {
-                "i": {
-                  "tag": "c:raw_materials/iron"
-                }
-              },
-              "result": "minecraft:iron_ingot"
-            }
-            """;
+                                                            {
+                                                              "type": "minecraft:crafting_shaped",
+                                                              "pattern": [
+                                                                "iii",
+                                                                "iii",
+                                                                "iii"
+                                                              ],
+                                                              "key": {
+                                                                "i": {
+                                                                  "tag": "c:raw_materials/iron"
+                                                                }
+                                                              },
+                                                              "result": "minecraft:iron_ingot"
+                                                            }
+                                                            """;
         public static final String SHAPED_SPECIAL_MATCH_2 = """
-            {
-              "type": "minecraft:crafting_shaped",
-              "pattern": [
-                "iii",
-                "iki",
-                "iii"
-              ],
-              "key": {
-                "i": {
-                  "tag": "c:raw_materials/iron"
-                },
-                "k": {
-                  "tag": "c:raw_materials/iron"
-                }
-              },
-              "result": "minecraft:iron_ingot"
-            }
-            """;
+                                                            {
+                                                              "type": "minecraft:crafting_shaped",
+                                                              "pattern": [
+                                                                "iii",
+                                                                "iki",
+                                                                "iii"
+                                                              ],
+                                                              "key": {
+                                                                "i": {
+                                                                  "tag": "c:raw_materials/iron"
+                                                                },
+                                                                "k": {
+                                                                  "tag": "c:raw_materials/iron"
+                                                                }
+                                                              },
+                                                              "result": "minecraft:iron_ingot"
+                                                            }
+                                                            """;
         public static final String SHAPED_SANITIZE_1 = """
-            {
-              "type": "minecraft:crafting_shaped",
-              "pattern": [
-                "iii",
-                "iii",
-                "iii"
-              ],
-              "key": {
-                "i": {
-                  "tag": "c:raw_materials/iron"
-                }
-              },
-              "result": "minecraft:iron_ingot"
-            }
-            """;
+                                                       {
+                                                         "type": "minecraft:crafting_shaped",
+                                                         "pattern": [
+                                                           "iii",
+                                                           "iii",
+                                                           "iii"
+                                                         ],
+                                                         "key": {
+                                                           "i": {
+                                                             "tag": "c:raw_materials/iron"
+                                                           }
+                                                         },
+                                                         "result": "minecraft:iron_ingot"
+                                                       }
+                                                       """;
         public static final String SHAPED_SANITIZE_2 = """
-            {
-              "type": "minecraft:crafting_shaped",
-              "pattern": [
-                "iii",
-                "iii",
-                "iii"
-              ],
-              "key": {
-                "i": {
-                  "tag": "c:raw_materials/iron"
-                }
-              },
-              "result": {
-                "item": "minecraft:iron_ingot",
-                "count": 1
-              }
-            }
-            """;
+                                                       {
+                                                         "type": "minecraft:crafting_shaped",
+                                                         "pattern": [
+                                                           "iii",
+                                                           "iii",
+                                                           "iii"
+                                                         ],
+                                                         "key": {
+                                                           "i": {
+                                                             "tag": "c:raw_materials/iron"
+                                                           }
+                                                         },
+                                                         "result": {
+                                                           "item": "minecraft:iron_ingot",
+                                                           "count": 1
+                                                         }
+                                                       }
+                                                       """;
         public static final String CRUSHING_NESTED_SANITIZE_1 = """
-            {
-              "type": "create:crushing",
-              "ingredients": [{ "tag": "c:raw_materials/lead" }],
-              "processingTime": 400,
-              "results": [
-                { "item": "emendatusenigmatica:crushed_lead_ore" },
-                { "chance": 0.75, "item": "create:experience_nugget" }
-              ]
-            }
-            """;
+                                                                {
+                                                                  "type": "create:crushing",
+                                                                  "ingredients": [{ "tag": "c:raw_materials/lead" }],
+                                                                  "processingTime": 400,
+                                                                  "results": [
+                                                                    { "item": "emendatusenigmatica:crushed_lead_ore" },
+                                                                    { "chance": 0.75, "item": "create:experience_nugget" }
+                                                                  ]
+                                                                }
+                                                                """;
         public static final String CRUSHING_NESTED_SANITIZE_2 = """
-            {
-              "type": "create:crushing",
-              "ingredients": [{ "tag": "c:raw_materials/lead" }],
-              "processingTime": 400,
-              "results": [
-                { "count": 1, "item": "emendatusenigmatica:crushed_lead_ore" },
-                { "chance": 0.75, "count": 1, "item": "create:experience_nugget" }
-              ]
-            }
-            """;
+                                                                {
+                                                                  "type": "create:crushing",
+                                                                  "ingredients": [{ "tag": "c:raw_materials/lead" }],
+                                                                  "processingTime": 400,
+                                                                  "results": [
+                                                                    { "count": 1, "item": "emendatusenigmatica:crushed_lead_ore" },
+                                                                    { "chance": 0.75, "count": 1, "item": "create:experience_nugget" }
+                                                                  ]
+                                                                }
+                                                                """;
 
         private Recipes() {}
     }

@@ -47,7 +47,6 @@ public record ClientRecipeTracker(String namespace, Map<ResourceLocation, Client
         }
     };
 
-
     /**
      * Creates a raw string representation.
      *
@@ -106,7 +105,6 @@ public record ClientRecipeTracker(String namespace, Map<ResourceLocation, Client
 
     public record ClientRecipeLink(ResourceLocation id, boolean isUnified, boolean isDuplicate) {}
 
-
     public List<String> getLinkStrings() {
         return recipes.values().stream().map(l -> createRaw(l.isUnified, l.isDuplicate, l.id.getPath())).toList();
     }
@@ -136,7 +134,6 @@ public record ClientRecipeTracker(String namespace, Map<ResourceLocation, Client
                 Codec.list(Codec.STRING).fieldOf("recipes").forGetter(ClientRecipeTracker::getLinkStrings)
             )
             .apply(instance, Serializer::of));
-
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ClientRecipeTracker> STREAM_CODEC = new StreamCodec<>() {
             @Override
@@ -174,9 +171,11 @@ public record ClientRecipeTracker(String namespace, Map<ResourceLocation, Client
                 buffer.writeInt(recipe.recipes.size());
                 buffer.writeUtf(recipe.namespace);
                 for (ClientRecipeLink clientRecipeLink : recipe.recipes.values()) {
-                    String raw = createRaw(clientRecipeLink.isUnified(),
+                    String raw = createRaw(
+                        clientRecipeLink.isUnified(),
                         clientRecipeLink.isDuplicate(),
-                        clientRecipeLink.id().getPath());
+                        clientRecipeLink.id().getPath()
+                    );
                     buffer.writeUtf(raw);
                 }
             }

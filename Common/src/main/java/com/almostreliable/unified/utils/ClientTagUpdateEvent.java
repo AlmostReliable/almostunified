@@ -18,6 +18,7 @@ public class ClientTagUpdateEvent {
     }
 
     public interface Invoker {
+
         void invoke();
     }
 }

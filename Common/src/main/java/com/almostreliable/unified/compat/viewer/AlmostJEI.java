@@ -58,7 +58,14 @@ public class AlmostJEI implements IModPlugin {
         private static final int RECIPE_BORDER_PADDING = 4;
 
         @Override
-        public void draw(T recipe, IRecipeCategory<T> recipeCategory, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        public void draw(
+            T recipe,
+            IRecipeCategory<T> recipeCategory,
+            IRecipeSlotsView recipeSlotsView,
+            GuiGraphics guiGraphics,
+            double mouseX,
+            double mouseY
+        ) {
             var recipeLink = resolveLink(recipeCategory, recipe);
             if (recipeLink == null) return;
 

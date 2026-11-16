@@ -6,6 +6,7 @@ import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.UnificationHelper;
 
 public class AmethystImbuementRecipeUnifier implements RecipeUnifier {
+
     @Override
     public void unify(UnificationHelper helper, RecipeJson recipe) {
         GenericRecipeUnifier.INSTANCE.unify(helper, recipe);

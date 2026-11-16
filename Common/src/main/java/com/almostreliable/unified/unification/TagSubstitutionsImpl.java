@@ -29,7 +29,10 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
     private final Map<TagKey<Item>, TagKey<Item>> replacedToSubstitute;
     private final Multimap<TagKey<Item>, TagKey<Item>> substituteToReplaced;
 
-    private TagSubstitutionsImpl(Map<TagKey<Item>, TagKey<Item>> replacedToSubstitute, Multimap<TagKey<Item>, TagKey<Item>> substituteToReplaced) {
+    private TagSubstitutionsImpl(
+        Map<TagKey<Item>, TagKey<Item>> replacedToSubstitute,
+        Multimap<TagKey<Item>, TagKey<Item>> substituteToReplaced
+    ) {
         this.replacedToSubstitute = replacedToSubstitute;
         this.substituteToReplaced = substituteToReplaced;
     }
@@ -46,7 +49,11 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
      * @param configuredSubstitutes the tag substitution relationships from the config
      * @return the new tag substitutions instance
      */
-    public static TagSubstitutionsImpl create(Predicate<TagKey<Item>> validTagFilter, Predicate<TagKey<Item>> unifyTagFilter, Map<ResourceLocation, Set<ResourceLocation>> configuredSubstitutes) {
+    public static TagSubstitutionsImpl create(
+        Predicate<TagKey<Item>> validTagFilter,
+        Predicate<TagKey<Item>> unifyTagFilter,
+        Map<ResourceLocation, Set<ResourceLocation>> configuredSubstitutes
+    ) {
         ImmutableMap.Builder<TagKey<Item>, TagKey<Item>> refsToSubsBuilder = ImmutableMap.builder();
         ImmutableMultimap.Builder<TagKey<Item>, TagKey<Item>> subsToRefsBuilder = ImmutableMultimap.builder();
         Set<TagKey<Item>> invalidReplacedTags = new HashSet<>();
@@ -127,7 +134,6 @@ public final class TagSubstitutionsImpl implements TagSubstitutions {
             entries
         ));
     }
-
 
     @Override
     @Nullable

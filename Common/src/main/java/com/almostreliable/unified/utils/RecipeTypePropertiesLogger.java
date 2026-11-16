@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RecipeTypePropertiesLogger {
+
     private final Map<String, List<String>> properties = new HashMap<>();
 
     private List<String> getProperties(String mod) {

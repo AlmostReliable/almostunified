@@ -78,21 +78,23 @@ public final class PlaceholderConfig extends Config implements Placeholders {
                 return new PlaceholderConfig(Defaults.PLACEHOLDERS);
             }
 
-            Map<String, Collection<String>> replacements = safeGet(() -> {
-                ImmutableMap.Builder<String, Collection<String>> builder = ImmutableMap.builder();
-                for (var entry : json.entrySet()) {
-                    ImmutableSet.Builder<String> placeholders = ImmutableSet.builder();
-                    for (JsonElement element : entry.getValue().getAsJsonArray()) {
-                        if (element.isJsonPrimitive()) {
-                            placeholders.add(element.getAsString().trim());
+            Map<String, Collection<String>> replacements = safeGet(
+                () -> {
+                    ImmutableMap.Builder<String, Collection<String>> builder = ImmutableMap.builder();
+                    for (var entry : json.entrySet()) {
+                        ImmutableSet.Builder<String> placeholders = ImmutableSet.builder();
+                        for (JsonElement element : entry.getValue().getAsJsonArray()) {
+                            if (element.isJsonPrimitive()) {
+                                placeholders.add(element.getAsString().trim());
+                            }
                         }
+
+                        builder.put(entry.getKey().trim(), placeholders.build());
                     }
 
-                    builder.put(entry.getKey().trim(), placeholders.build());
-                }
-
-                return builder.build();
-            }, Defaults.PLACEHOLDERS);
+                    return builder.build();
+                }, Defaults.PLACEHOLDERS
+            );
 
             return new PlaceholderConfig(replacements);
         }

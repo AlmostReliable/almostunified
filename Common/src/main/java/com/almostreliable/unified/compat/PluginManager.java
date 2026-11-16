@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 
 public final class PluginManager {
 
-    @Nullable private static PluginManager INSTANCE;
+    @Nullable
+    private static PluginManager INSTANCE;
     private final List<AlmostUnifiedPlugin> plugins;
 
     private PluginManager(List<AlmostUnifiedPlugin> plugins) {

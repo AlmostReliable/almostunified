@@ -39,7 +39,11 @@ public final class LootUnification {
         }
     }
 
-    public static void unifyLoot(LootTable lootTable, ResourceLocation tableId, Collection<? extends UnificationSettings> unificationSettings) {
+    public static void unifyLoot(
+        LootTable lootTable,
+        ResourceLocation tableId,
+        Collection<? extends UnificationSettings> unificationSettings
+    ) {
         LootUnificationHandler lootUnificationHandler = LootUnificationHandler.cast(lootTable);
 
         Set<UnificationSettings> modifiedTable = new HashSet<>();
@@ -52,10 +56,12 @@ public final class LootUnification {
         }
 
         if (!modifiedTable.isEmpty()) {
-            AlmostUnifiedCommon.LOGGER.info("Loot table '{}' was unified by: {}",
+            AlmostUnifiedCommon.LOGGER.info(
+                "Loot table '{}' was unified by: {}",
                 tableId,
                 modifiedTable.stream().map(UnificationSettings::getName).collect(
-                    Collectors.joining(", ")));
+                    Collectors.joining(", "))
+            );
         }
     }
 }

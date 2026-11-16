@@ -30,7 +30,13 @@ public final class DuplicateConfig extends Config {
     private final Map<ResourceLocation, Boolean> ignoredRecipeTypesCache = new HashMap<>();
     private final Map<ResourceLocation, Boolean> ignoredRecipeIdsCache = new HashMap<>();
 
-    private DuplicateConfig(JsonCompare.CompareSettings defaultRules, LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules, Set<Pattern> ignoreRecipeTypes, Set<Pattern> ignoreRecipeIds, boolean compareAll) {
+    private DuplicateConfig(
+        JsonCompare.CompareSettings defaultRules,
+        LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules,
+        Set<Pattern> ignoreRecipeTypes,
+        Set<Pattern> ignoreRecipeIds,
+        boolean compareAll
+    ) {
         super(NAME);
         this.defaultRules = defaultRules;
         this.overrideRules = overrideRules;
@@ -104,11 +110,15 @@ public final class DuplicateConfig extends Config {
             );
             Set<Pattern> ignoreRecipeIds = deserializePatterns(json, IGNORED_RECIPE_IDS, List.of());
 
-            JsonCompare.CompareSettings defaultRules = safeGet(() -> createCompareSet(json.getAsJsonObject(
+            JsonCompare.CompareSettings defaultRules = safeGet(
+                () -> createCompareSet(json.getAsJsonObject(
                     DEFAULT_DUPLICATE_RULES)),
-                Defaults.getDefaultDuplicateRules(platform));
-            LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules = safeGet(() -> getOverrideRules(
-                json), Defaults.getDefaultDuplicateOverrides(platform));
+                Defaults.getDefaultDuplicateRules(platform)
+            );
+            LinkedHashMap<ResourceLocation, JsonCompare.CompareSettings> overrideRules = safeGet(
+                () -> getOverrideRules(
+                    json), Defaults.getDefaultDuplicateOverrides(platform)
+            );
             boolean compareAll = safeGet(() -> json.get(COMPARE_ALL).getAsBoolean(), false);
 
             return new DuplicateConfig(
@@ -127,10 +137,12 @@ public final class DuplicateConfig extends Config {
                 .getAsJsonObject(OVERRIDE_DUPLICATE_RULES)
                 .entrySet()
                 .stream()
-                .collect(Collectors.toMap(entry -> ResourceLocation.parse(entry.getKey()),
+                .collect(Collectors.toMap(
+                    entry -> ResourceLocation.parse(entry.getKey()),
                     entry -> createCompareSet(entry.getValue().getAsJsonObject()),
                     (a, b) -> b,
-                    LinkedHashMap::new));
+                    LinkedHashMap::new
+                ));
         }
 
         private JsonCompare.CompareSettings createCompareSet(JsonObject rules) {
@@ -154,6 +166,5 @@ public final class DuplicateConfig extends Config {
 
             return json;
         }
-
     }
 }

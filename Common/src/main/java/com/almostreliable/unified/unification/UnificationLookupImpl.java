@@ -36,7 +36,13 @@ public final class UnificationLookupImpl implements UnificationLookup {
     private final Map<TagKey<Item>, Set<UnificationEntry<Item>>> tagsToEntries;
     private final Map<ResourceLocation, UnificationEntry<Item>> idsToEntries;
 
-    private UnificationLookupImpl(ModPriorities modPriorities, StoneVariants stoneVariants, TagSubstitutions tagSubstitutions, Map<TagKey<Item>, Set<UnificationEntry<Item>>> tagsToEntries, Map<ResourceLocation, UnificationEntry<Item>> idsToEntries) {
+    private UnificationLookupImpl(
+        ModPriorities modPriorities,
+        StoneVariants stoneVariants,
+        TagSubstitutions tagSubstitutions,
+        Map<TagKey<Item>, Set<UnificationEntry<Item>>> tagsToEntries,
+        Map<ResourceLocation, UnificationEntry<Item>> idsToEntries
+    ) {
         this.modPriorities = modPriorities;
         this.stoneVariants = stoneVariants;
         this.tagSubstitutions = tagSubstitutions;

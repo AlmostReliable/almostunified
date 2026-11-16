@@ -152,10 +152,10 @@ public final class JsonCompare {
      */
     private static boolean needsSanitizing(JsonElement firstElem, JsonElement secondElem) {
         return (firstElem instanceof JsonArray firstArray && secondElem instanceof JsonArray secondArray &&
-                firstArray.size() == secondArray.size()) ||
-               (firstElem instanceof JsonObject && secondElem instanceof JsonObject) ||
-               (firstElem instanceof JsonPrimitive && secondElem instanceof JsonObject) ||
-               (firstElem instanceof JsonObject && secondElem instanceof JsonPrimitive);
+            firstArray.size() == secondArray.size()) ||
+            (firstElem instanceof JsonObject && secondElem instanceof JsonObject) ||
+            (firstElem instanceof JsonPrimitive && secondElem instanceof JsonObject) ||
+            (firstElem instanceof JsonObject && secondElem instanceof JsonPrimitive);
     }
 
     /**
@@ -243,6 +243,7 @@ public final class JsonCompare {
     }
 
     public interface Rule {
+
         /**
          * Compare two JsonElements. The caller must ensure that at least one element is not null.
          */
@@ -253,6 +254,7 @@ public final class JsonCompare {
     }
 
     public static class LowerRule implements Rule {
+
         public static final String NAME = "LowerRule";
 
         @Override
@@ -269,6 +271,7 @@ public final class JsonCompare {
     }
 
     public static class HigherRule implements Rule {
+
         public static final String NAME = "HigherRule";
 
         @Override
@@ -285,6 +288,7 @@ public final class JsonCompare {
     }
 
     public record CompareContext(CompareSettings settings, List<String> compareFields) {
+
         public static CompareContext create(CompareSettings settings, RecipeLink curRecipe) {
             Set<String> compareFields = curRecipe.getActual().keySet();
             if (settings.hasIgnoredFields()) {

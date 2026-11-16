@@ -20,12 +20,14 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-@SuppressWarnings({ "StaticVariableMayNotBeInitialized", "StaticVariableUsedBeforeInitialization" })
+@SuppressWarnings({"StaticVariableMayNotBeInitialized", "StaticVariableUsedBeforeInitialization"})
 public final class TagReloadHandler {
 
     private static final Object LOCK = new Object();
-    @Nullable private static VanillaTagWrapper<Item> VANILLA_ITEM_TAGS;
-    @Nullable private static VanillaTagWrapper<Block> VANILLA_BLOCK_TAGS;
+    @Nullable
+    private static VanillaTagWrapper<Item> VANILLA_ITEM_TAGS;
+    @Nullable
+    private static VanillaTagWrapper<Block> VANILLA_BLOCK_TAGS;
 
     private TagReloadHandler() {}
 
@@ -63,9 +65,11 @@ public final class TagReloadHandler {
 
             for (ResourceLocation itemId : itemIds) {
                 if (!BuiltInRegistries.ITEM.containsKey(itemId)) {
-                    AlmostUnifiedCommon.LOGGER.warn("[CustomTags] Custom tag '{}' contains invalid item '{}'",
+                    AlmostUnifiedCommon.LOGGER.warn(
+                        "[CustomTags] Custom tag '{}' contains invalid item '{}'",
                         tag,
-                        itemId);
+                        itemId
+                    );
                     continue;
                 }
 
@@ -77,9 +81,11 @@ public final class TagReloadHandler {
 
                 if (!currentHolders.isEmpty()) {
                     if (currentHolders.contains(itemHolder)) {
-                        AlmostUnifiedCommon.LOGGER.warn("[CustomTags] Custom tag '{}' already contains item '{}'",
+                        AlmostUnifiedCommon.LOGGER.warn(
+                            "[CustomTags] Custom tag '{}' already contains item '{}'",
                             tag,
-                            itemId);
+                            itemId
+                        );
                         continue;
                     }
                 }

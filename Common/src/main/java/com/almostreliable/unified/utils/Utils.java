@@ -11,6 +11,7 @@ import com.almostreliable.unified.api.unification.UnificationEntry;
 import java.util.Collection;
 
 public final class Utils {
+
     public static final ResourceLocation UNUSED_ID = getRL("unused_id");
     public static final TagKey<Item> UNUSED_TAG = TagKey.create(Registries.ITEM, UNUSED_ID);
 

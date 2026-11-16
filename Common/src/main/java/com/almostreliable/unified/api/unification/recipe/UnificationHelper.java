@@ -44,6 +44,7 @@ public interface UnificationHelper {
      *
      * @param type the value of the type property of the {@link JsonObject} as a {@link ResourceLocation}
      * @return the {@link CustomIngredientUnifier} or null if no custom unifier is associated with the given type
+     *
      * @since 1.2.0
      */
     @Nullable
@@ -234,6 +235,7 @@ public interface UnificationHelper {
      * @param jsonObject the {@link JsonObject} to unify containing the tag
      * @param tag        the tag to replace with the target item
      * @return true if the tag was changed, false otherwise
+     *
      * @since 1.2.0
      */
     boolean handleTagToItemReplacement(JsonObject jsonObject, TagKey<Item> tag);
@@ -245,6 +247,7 @@ public interface UnificationHelper {
      * @param key        the key the item should be stored under
      * @param tag        the tag to replace with the target item
      * @return true if the tag was changed, false otherwise
+     *
      * @since 1.2.0
      */
     boolean handleTagToItemReplacement(JsonObject jsonObject, String key, TagKey<Item> tag);

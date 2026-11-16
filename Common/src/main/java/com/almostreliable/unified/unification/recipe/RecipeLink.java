@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class RecipeLink implements RecipeData, Comparable<RecipeLink> {
+
     /**
      * This cache is an optimization to avoid creating many ResourceLocations for just a few different types.
      * Having fewer ResourceLocation instances can greatly speed up equality checking when these are used as map keys.
@@ -47,9 +48,12 @@ public final class RecipeLink implements RecipeData, Comparable<RecipeLink> {
     private final JsonObject originalRecipe;
     private final boolean isCraftingRecipe;
 
-    @Nullable private DuplicateLink duplicateLink;
-    @Nullable private JsonObject unifiedRecipe;
-    @Nullable private Item craftingRecipeOutput;
+    @Nullable
+    private DuplicateLink duplicateLink;
+    @Nullable
+    private JsonObject unifiedRecipe;
+    @Nullable
+    private Item craftingRecipeOutput;
 
     private RecipeLink(ResourceLocation id, JsonObject originalRecipe, ResourceLocation type) {
         this.id = id;
@@ -267,6 +271,7 @@ public final class RecipeLink implements RecipeData, Comparable<RecipeLink> {
     }
 
     public static final class DuplicateLink {
+
         private final Set<RecipeLink> recipes = new HashSet<>();
         private RecipeLink currentMaster;
 

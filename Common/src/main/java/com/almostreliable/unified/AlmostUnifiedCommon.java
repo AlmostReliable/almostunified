@@ -22,13 +22,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-@SuppressWarnings({ "UtilityClassWithoutPrivateConstructor", "StaticVariableUsedBeforeInitialization" })
+@SuppressWarnings({"UtilityClassWithoutPrivateConstructor", "StaticVariableUsedBeforeInitialization"})
 public final class AlmostUnifiedCommon {
 
     public static final Logger LOGGER = CustomLogger.create();
     public static final StartupConfig STARTUP_CONFIG = Config.load(StartupConfig.NAME, StartupConfig.SERIALIZER);
 
-    @Nullable private static AlmostUnifiedRuntimeImpl RUNTIME;
+    @Nullable
+    private static AlmostUnifiedRuntimeImpl RUNTIME;
 
     @Nullable
     public static AlmostUnifiedRuntime getRuntime() {
@@ -39,7 +40,11 @@ public final class AlmostUnifiedCommon {
         RUNTIME = AlmostUnifiedRuntimeImpl.create(itemTags, blockTags);
     }
 
-    public static void onRecipeManagerReload(Map<ResourceLocation, JsonElement> recipes, HolderLookup.Provider registries, RecipeManager recipeManager) {
+    public static void onRecipeManagerReload(
+        Map<ResourceLocation, JsonElement> recipes,
+        HolderLookup.Provider registries,
+        RecipeManager recipeManager
+    ) {
         Preconditions.checkNotNull(RUNTIME, "runtime was not loaded correctly");
 
         RUNTIME.run(recipes, recipeManager);

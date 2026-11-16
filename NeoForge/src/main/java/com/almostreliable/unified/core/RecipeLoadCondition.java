@@ -5,6 +5,7 @@ import com.almostreliable.unified.utils.Utils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 public record RecipeLoadCondition(boolean conditionsMet) implements ICondition {

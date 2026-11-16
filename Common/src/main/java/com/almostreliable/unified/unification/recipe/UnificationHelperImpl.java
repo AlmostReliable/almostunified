@@ -156,7 +156,6 @@ public record UnificationHelperImpl(
             case JsonObject jsonObject -> unifyOutputObject(jsonObject, tagsToItems, keys);
             default -> false;
         };
-
     }
 
     @Override

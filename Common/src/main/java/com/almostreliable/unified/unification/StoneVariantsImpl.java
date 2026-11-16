@@ -35,7 +35,11 @@ public final class StoneVariantsImpl implements StoneVariants {
         this.itemToStoneVariant = itemToStoneVariant;
     }
 
-    public static StoneVariants create(Collection<String> stoneVariants, VanillaTagWrapper<Item> itemTags, VanillaTagWrapper<Block> blockTags) {
+    public static StoneVariants create(
+        Collection<String> stoneVariants,
+        VanillaTagWrapper<Item> itemTags,
+        VanillaTagWrapper<Block> blockTags
+    ) {
         Set<TagKey<Item>> stoneVariantItemTags = new HashSet<>();
         Set<TagKey<Block>> stoneVariantBlockTags = new HashSet<>();
 
@@ -82,7 +86,10 @@ public final class StoneVariantsImpl implements StoneVariants {
      * @param <T>              the tag type
      * @return the entry to stone variant tag mapping
      */
-    private static <T> Map<ResourceLocation, TagKey<T>> mapEntriesToStoneVariantTags(Set<TagKey<T>> stoneVariantTags, VanillaTagWrapper<T> tags) {
+    private static <T> Map<ResourceLocation, TagKey<T>> mapEntriesToStoneVariantTags(
+        Set<TagKey<T>> stoneVariantTags,
+        VanillaTagWrapper<T> tags
+    ) {
         Map<ResourceLocation, TagKey<T>> idToStoneVariantTag = new HashMap<>();
 
         for (var stoneVariantTag : stoneVariantTags) {

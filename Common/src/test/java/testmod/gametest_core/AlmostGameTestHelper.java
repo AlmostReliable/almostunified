@@ -50,10 +50,12 @@ public class AlmostGameTestHelper extends GameTestHelper {
      * @param task     The task to run.
      */
     public void succeedAtTickTime(long tickTime, Runnable task) {
-        runAtTickTime(tickTime, () -> {
-            task.run();
-            succeed();
-        });
+        runAtTickTime(
+            tickTime, () -> {
+                task.run();
+                succeed();
+            }
+        );
     }
 
     /**

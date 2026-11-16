@@ -17,8 +17,10 @@ public class UnificationEntryImpl<T> implements UnificationEntry<T> {
     private final Registry<T> registry;
     private final ResourceKey<T> key;
 
-    @Nullable private T value;
-    @Nullable private TagKey<T> tag;
+    @Nullable
+    private T value;
+    @Nullable
+    private TagKey<T> tag;
 
     public UnificationEntryImpl(Registry<T> registry, ResourceLocation key) {
         this.registry = registry;

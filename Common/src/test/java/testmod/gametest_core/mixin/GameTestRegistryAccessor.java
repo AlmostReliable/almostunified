@@ -1,6 +1,5 @@
 package testmod.gametest_core.mixin;
 
-
 import net.minecraft.gametest.framework.GameTestRegistry;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.server.level.ServerLevel;

@@ -5,6 +5,7 @@ import testmod.gametest_core.GameTestLoader;
 import testmod.tests.AmethystImbuementRecipeUnifierTests;
 
 public class FabricTest implements ModInitializer {
+
     @Override
     public void onInitialize() {
         CommonTest.init("true".equals(System.getProperty("fabric-api.gametest")));

@@ -10,6 +10,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.gametest.GameTestHooks;
 import net.neoforged.neoforge.registries.RegisterEvent;
+
 import testmod.CommonTest;
 import testmod.TestItems;
 import testmod.gametest_core.GameTestLoader;
@@ -22,9 +23,11 @@ public class NeoForgeTest {
 
     public NeoForgeTest(IEventBus bus) {
         CommonTest.init(GameTestHooks.isGametestEnabled());
-        GameTestLoader.registerProviders(ArsNouveauRecipeTests.class,
+        GameTestLoader.registerProviders(
+            ArsNouveauRecipeTests.class,
             MekanismRecipeUnifierTests.class,
-            IntegratedDynamicsRecipeUnifierTests.class);
+            IntegratedDynamicsRecipeUnifierTests.class
+        );
 
         bus.addListener(this::onRegistry);
     }

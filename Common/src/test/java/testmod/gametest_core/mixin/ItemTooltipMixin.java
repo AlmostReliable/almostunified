@@ -20,7 +20,12 @@ import java.util.List;
 public class ItemTooltipMixin {
 
     @Inject(method = "getTooltipLines", at = @At("TAIL"))
-    private void auTest$injectTagsToItem(Item.TooltipContext tooltipContext, @Nullable Player player, TooltipFlag tooltipFlag, CallbackInfoReturnable<List<Component>> cir) {
+    private void auTest$injectTagsToItem(
+        Item.TooltipContext tooltipContext,
+        @Nullable Player player,
+        TooltipFlag tooltipFlag,
+        CallbackInfoReturnable<List<Component>> cir
+    ) {
         var stack = (ItemStack) (Object) this;
         List<Component> l = cir.getReturnValue();
         l.add(Component.literal("---------------"));

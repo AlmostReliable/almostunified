@@ -12,6 +12,7 @@ import com.almostreliable.unified.AlmostUnifiedCommon;
 import com.almostreliable.unified.utils.Utils;
 
 import com.mojang.serialization.MapCodec;
+
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 
@@ -64,8 +65,10 @@ public class WorldGenBiomeModifier implements BiomeModifier {
         }
 
         if (!removedFeatures.isEmpty()) {
-            AlmostUnifiedCommon.LOGGER.info("[WorldGen] Removed features from Biome {}:",
-                biome.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_BIOME_ID));
+            AlmostUnifiedCommon.LOGGER.info(
+                "[WorldGen] Removed features from Biome {}:",
+                biome.unwrapKey().map(ResourceKey::location).orElse(UNKNOWN_BIOME_ID)
+            );
             removedFeatures.forEach((decoration, features) -> {
                 String ids = features
                     .stream()

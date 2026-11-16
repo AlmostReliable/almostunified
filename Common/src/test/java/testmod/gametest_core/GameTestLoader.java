@@ -62,7 +62,6 @@ public class GameTestLoader {
         }
     }
 
-
     private static void register(Method method, GameTest gametest, Consumer<GameTestHelper> consumer) {
         String template = gametest.template();
         if (template.isEmpty()) {
@@ -94,7 +93,8 @@ public class GameTestLoader {
             template = "testmod:empty_test_structure";
         }
 
-        var test = new TestFunction(gametest.batch(),
+        var test = new TestFunction(
+            gametest.batch(),
             createTestName(method),
             template,
             Rotation.NONE,
@@ -105,7 +105,8 @@ public class GameTestLoader {
             gametest.attempts(),
             1,
             false,
-            consumer);
+            consumer
+        );
 
         GameTestRegistryAccessor.TEST_FUNCTIONS().add(test);
         GameTestRegistryAccessor.TEST_CLASS_NAMES().add(method.getDeclaringClass().getSimpleName());
@@ -128,7 +129,7 @@ public class GameTestLoader {
                     .filter(s -> !s.isEmpty())
                     .map(Pattern::compile)
                     .toList();
-//                AlmostLib.LOGGER.info("Enabled gametests for mods: " + ENABLED_MODS);
+                //                AlmostLib.LOGGER.info("Enabled gametests for mods: " + ENABLED_MODS);
             }
         }
 
